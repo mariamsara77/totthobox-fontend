@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // ১. ইমেজের কনফিগারেশন
   images: {
     remotePatterns: [
       {
@@ -9,21 +10,31 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "admin.totthobox.com", // Backend / API storage host
+        hostname: "admin.totthobox.com",
       },
       {
         protocol: "https",
-        hostname: "*.totthobox.com", // All subdomains
+        hostname: "*.totthobox.com",
       },
       {
         protocol: "http",
-        hostname: "localhost", // For local backend images
+        hostname: "localhost",
       },
       {
         protocol: "http",
         hostname: "127.0.0.1",
       },
     ],
+  },
+
+  // ২. প্রোডাকশনে কন্সোল লগ রিমুভ করা
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production",
+  },
+
+  // ৩. প্যাকেজ অপ্টিমাইজেশন
+  experimental: {
+    optimizePackageImports: ["lucide-react", "react-icons"],
   },
 };
 
