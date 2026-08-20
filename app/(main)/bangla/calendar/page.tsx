@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useMemo, useEffect, useRef } from "react";
-import { motion, AnimatePresence, type Variants } from "framer-motion";
 import {
   format,
   addMonths,
