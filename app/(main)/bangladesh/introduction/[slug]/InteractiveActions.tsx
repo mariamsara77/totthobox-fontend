@@ -1,35 +1,47 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { ThumbsUp, ThumbsDown, Share2 } from "lucide-react";
 import { getAuthHeaders, isLoggedIn } from "@/lib/auth";
+
+type Reactions = {
+  like_count: number;
+  dislike_count: number;
+  user_has_liked: boolean;
+  user_has_disliked: boolean;
+};
 
 type Props = {
   introId: number;
   initialData: {
-    reactions: {
-      like_count: number;
-      dislike_count: number;
-      user_has_liked: boolean;
-      user_has_disliked: boolean;
-    };
+    reactions: Reactions;
     title: string;
     slug: string;
   };
 };
 
 export default function InteractiveActions({ introId, initialData }: Props) {
-  const [reactions, setReactions] = useState(initialData.reactions);
+  const router = useRouter();
+  const API_BASE =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "https://totthobox.com";
+
+  const [reactions, setReactions] = useState<Reactions>({
+    like_count: initialData.reactions?.like_count ?? 0,
+    dislike_count: initialData.reactions?.dislike_count ?? 0,
+    user_has_liked: initialData.reactions?.user_has_liked ?? false,
+    user_has_disliked: initialData.reactions?.user_has_disliked ?? false,
+  });
   const [loading, setLoading] = useState(false);
   const [statusLoading, setStatusLoading] = useState(true);
 
-  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://totthobox.com";
-
-  // পেজ লোডে ইউজারের আসল reaction status
+  // পেজ লোডে ইউজারের আসল reaction status আনো
   useEffect(() => {
+    let cancelled = false;
+
     async function fetchUserReaction() {
       if (!isLoggedIn()) {
-        setStatusLoading(false);
+        if (!cancelled) setStatusLoading(false);
         return;
       }
 
@@ -37,27 +49,48 @@ export default function InteractiveActions({ introId, initialData }: Props) {
         const res = await fetch(
           `${API_BASE}/api/intro-bd/${introId}/reaction-status`,
           {
-            headers: getAuthHeaders(),
+            headers: {
+              ...getAuthHeaders(),
+              Accept: "application/json",
+            },
           }
         );
 
-        if (res.ok) {
+        if (res.ok && !cancelled) {
           const data = await res.json();
           setReactions((prev) => ({
             ...prev,
-            user_has_liked: data.has_like ?? data.user_has_liked ?? false,
-            user_has_disliked: data.has_dislike ?? data.user_has_disliked ?? false,
+            user_has_liked:
+              data.has_like ?? data.user_has_liked ?? prev.user_has_liked,
+            user_has_disliked:
+              data.has_dislike ??
+              data.user_has_disliked ??
+              prev.user_has_disliked,
           }));
         }
       } catch (error) {
         console.error("Failed to fetch reaction status", error);
       } finally {
-        setStatusLoading(false);
+        if (!cancelled) setStatusLoading(false);
       }
     }
 
     fetchUserReaction();
+
+    return () => {
+      cancelled = true;
+    };
   }, [introId, API_BASE]);
+
+  // initialData বদলালে (router.refresh এর পর) state আপডেট
+  useEffect(() => {
+    setReactions({
+      like_count: initialData.reactions?.like_count ?? 0,
+      dislike_count: initialData.reactions?.dislike_count ?? 0,
+      user_has_liked: initialData.reactions?.user_has_liked ?? false,
+      user_has_disliked: initialData.reactions?.user_has_disliked ?? false,
+    });
+  }, [initialData.reactions]);
 
   const handleReact = async (type: "like" | "dislike") => {
     if (!isLoggedIn()) {
@@ -66,7 +99,9 @@ export default function InteractiveActions({ introId, initialData }: Props) {
       return;
     }
 
+    if (loading) return;
     setLoading(true);
+
     try {
       const res = await fetch(
         `${API_BASE}/api/intro-bd/${introId}/react`,
@@ -88,18 +123,26 @@ export default function InteractiveActions({ introId, initialData }: Props) {
         return;
       }
 
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        alert(err.message || "রিয়্যাকশন দিতে সমস্যা হয়েছে");
+        return;
+      }
+
       const json = await res.json();
 
-      if (json.success || json.like_count !== undefined) {
-        setReactions({
-          like_count: json.like_count ?? json.reactions?.like_count ?? 0,
-          dislike_count: json.dislike_count ?? json.reactions?.dislike_count ?? 0,
-          user_has_liked: json.has_like ?? json.reactions?.user_has_liked ?? false,
-          user_has_disliked: json.has_dislike ?? json.reactions?.user_has_disliked ?? false,
-        });
-      } else {
-        alert(json.message || "রিয়্যাকশন দিতে সমস্যা হয়েছে");
-      }
+      setReactions({
+        like_count: json.like_count ?? json.reactions?.like_count ?? 0,
+        dislike_count:
+          json.dislike_count ?? json.reactions?.dislike_count ?? 0,
+        user_has_liked:
+          json.has_like ?? json.reactions?.user_has_liked ?? false,
+        user_has_disliked:
+          json.has_dislike ?? json.reactions?.user_has_disliked ?? false,
+      });
+
+      // Server Component data refresh → reload-এও count ঠিক থাকবে
+      router.refresh();
     } catch (err) {
       console.error(err);
       alert("কিছু সমস্যা হয়েছে");
@@ -111,14 +154,18 @@ export default function InteractiveActions({ introId, initialData }: Props) {
   const handleShare = async () => {
     const url = `${window.location.origin}/bangladesh/introduction/${initialData.slug}`;
 
-    if (navigator.share) {
-      await navigator.share({
-        title: initialData.title,
-        url,
-      });
-    } else {
-      await navigator.clipboard.writeText(url);
-      alert("লিংক কপি করা হয়েছে!");
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: initialData.title,
+          url,
+        });
+      } else {
+        await navigator.clipboard.writeText(url);
+        alert("লিংক কপি করা হয়েছে!");
+      }
+    } catch {
+      // user cancelled share
     }
   };
 
@@ -126,28 +173,28 @@ export default function InteractiveActions({ introId, initialData }: Props) {
     <div className="flex items-center justify-between gap-4">
       <div className="flex gap-3">
         <button
+          type="button"
           onClick={() => handleReact("like")}
           disabled={loading || statusLoading}
-          className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors
-            ${
-              reactions.user_has_liked
-                ? "bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
-                : "bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
-            }`}
+          className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 ${
+            reactions.user_has_liked
+              ? "bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
+              : "bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+          }`}
         >
           <ThumbsUp className="w-4 h-4" />
           {reactions.like_count}
         </button>
 
         <button
+          type="button"
           onClick={() => handleReact("dislike")}
           disabled={loading || statusLoading}
-          className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors
-            ${
-              reactions.user_has_disliked
-                ? "bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400"
-                : "bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
-            }`}
+          className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 ${
+            reactions.user_has_disliked
+              ? "bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400"
+              : "bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+          }`}
         >
           <ThumbsDown className="w-4 h-4" />
           {reactions.dislike_count}
@@ -155,6 +202,7 @@ export default function InteractiveActions({ introId, initialData }: Props) {
       </div>
 
       <button
+        type="button"
         onClick={handleShare}
         className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
       >
