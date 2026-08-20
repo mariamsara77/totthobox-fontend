@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect, useRef } from "react";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
 import {
   format,
   addMonths,
@@ -258,22 +259,28 @@ export default function AdvancedBanglaCalendar() {
     window.open(url, "_blank");
   };
 
-  const slideVariants = {
-    enter: (direction: number) => ({
-      x: direction > 0 ? 80 : -80,
-      opacity: 0,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-      transition: { duration: 0.28, ease: [0.25, 0.1, 0.25, 1] },
+  const slideVariants: Variants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? 80 : -80,
+    opacity: 0,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+    transition: { 
+      duration: 0.28, 
+      ease: [0.25, 0.1, 0.25, 1] as const 
     },
-    exit: (direction: number) => ({
-      x: direction < 0 ? 80 : -80,
-      opacity: 0,
-      transition: { duration: 0.28, ease: [0.25, 0.1, 0.25, 1] },
-    }),
-  };
+  },
+  exit: (direction: number) => ({
+    x: direction < 0 ? 80 : -80,
+    opacity: 0,
+    transition: { 
+      duration: 0.28, 
+      ease: [0.25, 0.1, 0.25, 1] as const 
+    },
+  }),
+};
 
   return (
     <div className="max-w-xl mx-auto space-y-6 select-none relative p-4 pb-12">

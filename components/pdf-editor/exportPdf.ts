@@ -85,7 +85,7 @@ export async function exportEditedPdf(
   }
 
   const pdfBytes = await pdfDoc.save();
-  return new Blob([pdfBytes], { type: "application/pdf" });
+  return new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
 }
 
 function hexToRgb(hex: string) {

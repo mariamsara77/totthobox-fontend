@@ -358,8 +358,13 @@ function convertToAdarshalipi(sample: string): string {
     }
     i4 += outputText[i];
   }
-  return i4.replace(/ত্র্ক/g, "ক্র").replace(/ত্রে্‌কা/g, /ক্রো/g).replace(/ত্ত্ক/g, 'ক্ত').replace(/ত্তি্ক/g,
-    "ক্তি").replace(/ত্রে্ক/g, "ক্রে").replace(/অা/g, "আ");
+ return i4
+  .replace(/ত্র্ক/g, "ক্র")
+  .replace(/ত্রে্‌কা/g, "ক্রো")
+  .replace(/ত্ত্ক/g, "ক্ত")
+  .replace(/ত্তি্ক/g, "ক্তি")
+  .replace(/ত্রে্ক/g, "ক্রে")
+  .replace(/অা/g, "আ");
 }
 
 /* ───────────────────────── React Component ───────────────────────── */
