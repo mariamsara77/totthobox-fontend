@@ -47,7 +47,7 @@ const services = [
     details: "হেল্পলাইন ও জরুরি নম্বর।",
   },
   {
-    href: "/bangladesh",
+    href: "/bangladesh/introduction",
     icon: MapPin,
     label: "বাংলাদেশ",
     details: "দর্শনীয় স্থান, গুণীজন ও তথ্য।",

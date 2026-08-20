@@ -344,7 +344,7 @@ export default function Sidebar() {
           <div className="space-y-6">
 
             {/* ===================== CALENDAR ===================== */}
-            {pathname.startsWith("/bangla") && (
+            {pathname.startsWith("/bangla/") && (
               <div className="space-y-1">
                 {!collapsed && (
                   <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
@@ -493,21 +493,21 @@ export default function Sidebar() {
 
             {/* ===================== BANGLADESH ===================== */}
             {pathname.startsWith("/bangladesh") && (
-              <div className="space-y-1">
-                {!collapsed && (
-                  <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
-                    বাংলাদেশ
-                  </h3>
-                )}
-                <SidebarItem
-                  href="/bangladesh/introduction"
-                  icon={Flag}
-                  label="পরিচিতি"
-                  isActive={pathname === "/bangladesh/introduction"}
-                  collapsed={collapsed}
-                  onHover={handleMouseEnter}
-                  onLeave={handleMouseLeave}
-                />
+  <div className="space-y-1">
+    {!collapsed && (
+      <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+        বাংলাদেশ
+      </h3>
+    )}
+    <SidebarItem
+      href="/bangladesh/introduction"
+      icon={Flag}
+      label="পরিচিতি"
+      isActive={pathname.startsWith("/bangladesh/introduction")}
+      collapsed={collapsed}
+      onHover={handleMouseEnter}
+      onLeave={handleMouseLeave}
+    />
                 <SidebarItem
                   href="/bangladesh/tourism"
                   icon={LucideMap}
