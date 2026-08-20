@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 
-export default function FacebookCallbackPage() {
+function FacebookCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -35,5 +35,22 @@ export default function FacebookCallbackPage() {
         <p className="text-zinc-600">লগইন সম্পন্ন হচ্ছে...</p>
       </div>
     </div>
+  );
+}
+
+export default function FacebookCallbackPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p className="text-zinc-600">লোড হচ্ছে...</p>
+          </div>
+        </div>
+      }
+    >
+      <FacebookCallbackContent />
+    </Suspense>
   );
 }

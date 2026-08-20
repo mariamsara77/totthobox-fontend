@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 
-export default function GoogleCallbackPage() {
+function GoogleCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -19,12 +19,8 @@ export default function GoogleCallbackPage() {
     }
 
     if (token) {
-      // Token সেভ করো
       localStorage.setItem("token", token);
-
       toast.success("সফলভাবে লগইন হয়েছে!");
-      
-      // হোম পেজে পাঠাও
       router.replace("/");
     } else {
       toast.error("টোকেন পাওয়া যায়নি");
@@ -39,5 +35,22 @@ export default function GoogleCallbackPage() {
         <p className="text-zinc-600">লগইন সম্পন্ন হচ্ছে...</p>
       </div>
     </div>
+  );
+}
+
+export default function GoogleCallbackPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p className="text-zinc-600">লোড হচ্ছে...</p>
+          </div>
+        </div>
+      }
+    >
+      <GoogleCallbackContent />
+    </Suspense>
   );
 }

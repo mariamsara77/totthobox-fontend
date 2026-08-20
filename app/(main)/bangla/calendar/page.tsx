@@ -23,7 +23,7 @@ import {
   Info,
   ChevronDown,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
 import useSWR from "swr";
 
 // --- Types ---
