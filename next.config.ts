@@ -1,21 +1,27 @@
 import type { NextConfig } from "next";
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'totthobox.com',
+        protocol: "https",
+        hostname: "totthobox.com",
       },
       {
-        protocol: 'https',
-        hostname: '**.totthobox.com',
+        protocol: "https",
+        hostname: "admin.totthobox.com", // Backend / API storage host
       },
-      // যদি Cloudflare / S3 / অন্য CDN ব্যবহার করেন
       {
-        protocol: 'https',
-        hostname: '**.cloudflare.com',
+        protocol: "https",
+        hostname: "*.totthobox.com", // All subdomains
+      },
+      {
+        protocol: "http",
+        hostname: "localhost", // For local backend images
+      },
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
       },
     ],
   },
