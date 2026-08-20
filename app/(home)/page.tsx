@@ -35,13 +35,13 @@ const services = [
     details: "ছবি রিসাইজ, বয়স ক্যালকুলেটর।",
   },
   {
-    href: "/software",
+    href: "/software/all",
     icon: Cpu,
     label: "সফটওয়্যার",
     details: "সফটওয়্যার পরিচিতি ও তথ্য।",
   },
   {
-    href: "/emergency-contact",
+    href: "/contact/police",
     icon: PhoneCall,
     label: "জরুরি সেবা",
     details: "হেল্পলাইন ও জরুরি নম্বর।",

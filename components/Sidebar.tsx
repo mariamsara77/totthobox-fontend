@@ -2,30 +2,36 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import BrandIcon from "@/components/BrandIcon";
-import { 
-  FaCalendar, 
-  FaCalendarMinus, 
-  FaRulerCombined, 
-  FaWeightHanging, 
-  FaFlask, 
-  FaMap, 
-  FaRegClock, 
-  FaVectorSquare, 
-  FaTemperatureHigh, 
-  FaTachometerAlt, 
-  FaDatabase, 
-  FaBolt 
+import SidebarProfileMenu from "./SidebarProfileMenu";
+
+// React Icons
+import {
+  FaCalendar,
+  FaCalendarMinus,
+  FaRulerCombined,
+  FaWeightHanging,
+  FaFlask,
+  FaMap,
+  FaRegClock,
+  FaVectorSquare,
+  FaTemperatureHigh,
+  FaTachometerAlt,
+  FaDatabase,
+  FaBolt,
+  FaShoppingCart,
+  FaPlus,
+  FaNewspaper,
+  FaFlag,
+  FaBookOpen,
 } from "react-icons/fa";
 import { TfiExchangeVertical } from "react-icons/tfi";
 import { GoNumber } from "react-icons/go";
-import { useSettingsModal } from "@/context/SettingsModalContext";
 import { RiImageEditFill } from "react-icons/ri";
 import { MdEditDocument, MdCurrencyExchange } from "react-icons/md";
 import { GrMultimedia } from "react-icons/gr";
 import { FaFileImport } from "react-icons/fa6";
-
 import {
   Settings,
   Flag,
@@ -36,8 +42,16 @@ import {
   PanelLeft,
   ChevronDown,
   ChevronRight,
-  Layers
+  Layers,
+  Presentation,
+  SquareActivity,
+  Paperclip,
+  ShoppingCart,
+  Plus,
+  Newspaper,
 } from "lucide-react";
+
+import { useSettingsModal } from "@/context/SettingsModalContext";
 import { useSidebar } from "@/context/SidebarContext";
 
 function cn(...classes: (string | boolean | undefined | null)[]) {
@@ -53,6 +67,7 @@ type SidebarItemProps = {
   collapsed?: boolean;
   onHover?: (e: React.MouseEvent<HTMLElement>, label: string) => void;
   onLeave?: () => void;
+  badge?: string | number;
 };
 
 function SidebarItem({
@@ -64,6 +79,7 @@ function SidebarItem({
   collapsed,
   onHover,
   onLeave,
+  badge,
 }: SidebarItemProps) {
   const content = (
     <>
@@ -75,7 +91,14 @@ function SidebarItem({
             : "text-zinc-500 group-hover:text-zinc-700 dark:group-hover:text-zinc-200"
         )}
       />
-      {!collapsed && <span className="truncate">{label}</span>}
+      {!collapsed && (
+        <span className="truncate flex-1 text-left">{label}</span>
+      )}
+      {!collapsed && badge !== undefined && (
+        <span className="ml-auto rounded-full bg-zinc-200 px-2 py-0.5 text-xs dark:bg-zinc-700">
+          {badge}
+        </span>
+      )}
     </>
   );
 
@@ -113,14 +136,27 @@ function SidebarItem({
   );
 }
 
+// ====================== MAIN COMPONENT ======================
 export default function Sidebar() {
   const { openSettingsModal } = useSettingsModal();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { isOpen, setIsOpen, isCollapsed, toggleCollapsed } = useSidebar();
 
-  // States
+  // Tooltip
   const [tooltip, setTooltip] = useState<{ label: string; top: number } | null>(null);
-  const [isExtraConvertersOpen, setIsExtraConvertersOpen] = useState(false); // Collapsible state
+  const [isExtraConvertersOpen, setIsExtraConvertersOpen] = useState(false);
+
+  // ========== Dynamic Data States ==========
+  const [newsSources, setNewsSources] = useState<{ bn?: any[]; en?: any[] }>({});
+  const [buysellCategories, setBuysellCategories] = useState<any[]>([]);
+  const [contactCategories, setContactCategories] = useState<any[]>([]);
+  const [signCategories, setSignCategories] = useState<any[]>([]);
+  const [excelChapters, setExcelChapters] = useState<Record<string, any[]>>({});
+  const [softwarePlatforms, setSoftwarePlatforms] = useState<string[]>([]);
+
+  // API Base URL
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://totthobox.com/api";
 
   // Mobile scroll lock
   useEffect(() => {
@@ -131,9 +167,86 @@ export default function Sidebar() {
     };
   }, [isOpen]);
 
-  const collapsed = isCollapsed; // desktop only
+  // ========== Fetch Dynamic Data ==========
+  useEffect(() => {
+    const controller = new AbortController();
 
-  // Tooltip position handler
+    const fetchData = async () => {
+      try {
+        if (pathname.startsWith("/news")) {
+          const res = await fetch(`${API_URL}/sidebar/news-sources`, {
+            signal: controller.signal,
+          });
+          if (res.ok) {
+            const data = await res.json();
+            setNewsSources(data);
+          }
+        }
+
+        if (pathname.startsWith("/buysell")) {
+          const res = await fetch(`${API_URL}/sidebar/buysell-categories`, {
+            signal: controller.signal,
+          });
+          if (res.ok) {
+            const data = await res.json();
+            setBuysellCategories(data);
+          }
+        }
+
+        if (pathname.startsWith("/contact")) {
+          const res = await fetch(`${API_URL}/sidebar/contact-categories`, {
+            signal: controller.signal,
+          });
+          if (res.ok) {
+            const data = await res.json();
+            setContactCategories(data);
+          }
+        }
+
+        if (pathname.startsWith("/signs")) {
+          const res = await fetch(`${API_URL}/sidebar/sign-categories`, {
+            signal: controller.signal,
+          });
+          if (res.ok) {
+            const data = await res.json();
+            setSignCategories(data);
+          }
+        }
+
+        if (pathname.startsWith("/excel-expert")) {
+          const res = await fetch(`${API_URL}/sidebar/excel-chapters`, {
+            signal: controller.signal,
+          });
+          if (res.ok) {
+            const data = await res.json();
+            setExcelChapters(data);
+          }
+        }
+
+        if (pathname.startsWith("/software")) {
+          const res = await fetch(`${API_URL}/sidebar/software-platforms`, {
+            signal: controller.signal,
+          });
+          if (res.ok) {
+            const data = await res.json();
+            setSoftwarePlatforms(Array.isArray(data) ? data : []);
+          }
+        }
+      } catch (error: any) {
+        if (error.name !== "AbortError") {
+          console.error("Sidebar fetch error:", error);
+        }
+      }
+    };
+
+    fetchData();
+
+    return () => controller.abort();
+  }, [pathname, API_URL]);
+
+  const collapsed = isCollapsed;
+
+  // Tooltip handlers
   const handleMouseEnter = (e: React.MouseEvent<HTMLElement>, label: string) => {
     if (!collapsed) return;
     const rect = e.currentTarget.getBoundingClientRect();
@@ -184,10 +297,7 @@ export default function Sidebar() {
         >
           {!collapsed && (
             <>
-              <Link
-                href="/"
-                className="flex items-center gap-2 text-xl font-semibold"
-              >
+              <Link href="/" className="flex items-center gap-2 text-xl font-semibold">
                 <BrandIcon className="h-6 w-6 shrink-0" />
                 <span className="truncate">Totthobox</span>
               </Link>
@@ -212,7 +322,6 @@ export default function Sidebar() {
               <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-200 group-hover:opacity-0 group-hover:pointer-events-none">
                 <BrandIcon className="h-6 w-6" />
               </div>
-
               <div className="absolute inset-0 flex items-center justify-center text-zinc-500 opacity-0 transition-opacity duration-200 group-hover:opacity-100 dark:text-zinc-200">
                 <PanelLeft className="h-5 w-5" />
               </div>
@@ -233,7 +342,8 @@ export default function Sidebar() {
           onScroll={handleMouseLeave}
         >
           <div className="space-y-6">
-            {/* Calendar & Holidays */}
+
+            {/* ===================== CALENDAR ===================== */}
             {pathname.startsWith("/bangla") && (
               <div className="space-y-1">
                 {!collapsed && (
@@ -262,7 +372,7 @@ export default function Sidebar() {
               </div>
             )}
 
-            {/* Converter */}
+            {/* ===================== CONVERTER ===================== */}
             {pathname.startsWith("/converter") && (
               <div className="space-y-1">
                 {!collapsed && (
@@ -282,7 +392,7 @@ export default function Sidebar() {
                 <SidebarItem
                   href="/converter/adarshalipi"
                   icon={TfiExchangeVertical}
-                  label="Adorsholipi Conveter"
+                  label="Adorsholipi Converter"
                   isActive={pathname === "/converter/adarshalipi"}
                   collapsed={collapsed}
                   onHover={handleMouseEnter}
@@ -309,7 +419,7 @@ export default function Sidebar() {
                 <SidebarItem
                   href="/converter/media"
                   icon={GrMultimedia}
-                  label="Media COnveter(Audio/Video)"
+                  label="Media Converter (Audio/Video)"
                   isActive={pathname === "/converter/media"}
                   collapsed={collapsed}
                   onHover={handleMouseEnter}
@@ -318,7 +428,7 @@ export default function Sidebar() {
                 <SidebarItem
                   href="/converter/file-data"
                   icon={FaFileImport}
-                  label="Deta File Converter (CSV/JSON/XML)"
+                  label="Data File Converter (CSV/JSON/XML)"
                   isActive={pathname === "/converter/file-data"}
                   collapsed={collapsed}
                   onHover={handleMouseEnter}
@@ -334,11 +444,11 @@ export default function Sidebar() {
                   onLeave={handleMouseLeave}
                 />
 
-                {/* Collapsible Section for Measurement Converters */}
+                {/* Collapsible Extra Converters */}
                 <button
                   type="button"
                   onClick={() => setIsExtraConvertersOpen(!isExtraConvertersOpen)}
-                  onMouseEnter={(e) => collapsed && handleMouseEnter(e, "পরিমাপ কনভার্টার")}
+                  onMouseEnter={(e) => collapsed && handleMouseEnter(e, "অন্যান্য কনভার্টার")}
                   onMouseLeave={handleMouseLeave}
                   className={cn(
                     "group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 text-left",
@@ -359,105 +469,29 @@ export default function Sidebar() {
                   )}
                 </button>
 
-                {/* Collapsible Content */}
                 {isExtraConvertersOpen && (
-                  <div className={cn("mt-1 space-y-1 overflow-hidden transition-all", !collapsed && "pl-4 border-l border-zinc-200 ml-4 dark:border-zinc-700")}>
-                    <SidebarItem
-                      href="/converter/length"
-                      icon={FaRulerCombined}
-                      label="দৈর্ঘ্য কনভার্টার"
-                      isActive={pathname === "/converter/length"}
-                      collapsed={collapsed}
-                      onHover={handleMouseEnter}
-                      onLeave={handleMouseLeave}
-                    />
-                    <SidebarItem
-                      href="/converter/weight"
-                      icon={FaWeightHanging}
-                      label="ওজন কনভার্টার"
-                      isActive={pathname === "/converter/weight"}
-                      collapsed={collapsed}
-                      onHover={handleMouseEnter}
-                      onLeave={handleMouseLeave}
-                    />
-                    <SidebarItem
-                      href="/converter/volume"
-                      icon={FaFlask}
-                      label="পরিমাণ কনভার্টার"
-                      isActive={pathname === "/converter/volume"}
-                      collapsed={collapsed}
-                      onHover={handleMouseEnter}
-                      onLeave={handleMouseLeave}
-                    />
-                    <SidebarItem
-                      href="/converter/land"
-                      icon={FaMap}
-                      label="জমি কনভার্টার"
-                      isActive={pathname === "/converter/land"}
-                      collapsed={collapsed}
-                      onHover={handleMouseEnter}
-                      onLeave={handleMouseLeave}
-                    />
-                    <SidebarItem
-                      href="/converter/time"
-                      icon={FaRegClock}
-                      label="সময় কনভার্টার"
-                      isActive={pathname === "/converter/time"}
-                      collapsed={collapsed}
-                      onHover={handleMouseEnter}
-                      onLeave={handleMouseLeave}
-                    />
-                    <SidebarItem
-                      href="/converter/area"
-                      icon={FaVectorSquare}
-                      label="এলাকা কনভার্টার"
-                      isActive={pathname === "/converter/area"}
-                      collapsed={collapsed}
-                      onHover={handleMouseEnter}
-                      onLeave={handleMouseLeave}
-                    />
-                    <SidebarItem
-                      href="/converter/temperature"
-                      icon={FaTemperatureHigh}
-                      label="তাপমাত্রা কনভার্টার"
-                      isActive={pathname === "/converter/temperature"}
-                      collapsed={collapsed}
-                      onHover={handleMouseEnter}
-                      onLeave={handleMouseLeave}
-                    />
-                    <SidebarItem
-                      href="/converter/speed"
-                      icon={FaTachometerAlt}
-                      label="গতিবেগ কনভার্টার"
-                      isActive={pathname === "/converter/speed"}
-                      collapsed={collapsed}
-                      onHover={handleMouseEnter}
-                      onLeave={handleMouseLeave}
-                    />
-                    <SidebarItem
-                      href="/converter/data"
-                      icon={FaDatabase}
-                      label="ডেটা স্টোরেজ কনভার্টার"
-                      isActive={pathname === "/converter/data"}
-                      collapsed={collapsed}
-                      onHover={handleMouseEnter}
-                      onLeave={handleMouseLeave}
-                    />
-                    <SidebarItem
-                      href="/converter/energy"
-                      icon={FaBolt}
-                      label="শক্তি/পাওয়ার কনভার্টার"
-                      isActive={pathname === "/converter/energy"}
-                      collapsed={collapsed}
-                      onHover={handleMouseEnter}
-                      onLeave={handleMouseLeave}
-                    />
+                  <div
+                    className={cn(
+                      "mt-1 space-y-1 overflow-hidden transition-all",
+                      !collapsed && "pl-4 border-l border-zinc-200 ml-4 dark:border-zinc-700"
+                    )}
+                  >
+                    <SidebarItem href="/converter/length" icon={FaRulerCombined} label="দৈর্ঘ্য কনভার্টার" isActive={pathname === "/converter/length"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
+                    <SidebarItem href="/converter/weight" icon={FaWeightHanging} label="ওজন কনভার্টার" isActive={pathname === "/converter/weight"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
+                    <SidebarItem href="/converter/volume" icon={FaFlask} label="পরিমাণ কনভার্টার" isActive={pathname === "/converter/volume"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
+                    <SidebarItem href="/converter/land" icon={FaMap} label="জমি কনভার্টার" isActive={pathname === "/converter/land"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
+                    <SidebarItem href="/converter/time" icon={FaRegClock} label="সময় কনভার্টার" isActive={pathname === "/converter/time"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
+                    <SidebarItem href="/converter/area" icon={FaVectorSquare} label="এলাকা কনভার্টার" isActive={pathname === "/converter/area"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
+                    <SidebarItem href="/converter/temperature" icon={FaTemperatureHigh} label="তাপমাত্রা কনভার্টার" isActive={pathname === "/converter/temperature"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
+                    <SidebarItem href="/converter/speed" icon={FaTachometerAlt} label="গতিবেগ কনভার্টার" isActive={pathname === "/converter/speed"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
+                    <SidebarItem href="/converter/data" icon={FaDatabase} label="ডেটা স্টোরেজ কনভার্টার" isActive={pathname === "/converter/data"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
+                    <SidebarItem href="/converter/energy" icon={FaBolt} label="শক্তি/পাওয়ার কনভার্টার" isActive={pathname === "/converter/energy"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
                   </div>
                 )}
               </div>
             )}
 
-            {/* Bangladesh */}
+            {/* ===================== BANGLADESH ===================== */}
             {pathname.startsWith("/bangladesh") && (
               <div className="space-y-1">
                 {!collapsed && (
@@ -495,74 +529,260 @@ export default function Sidebar() {
               </div>
             )}
 
-            {/* Calendar & Holidays */}
+            {/* ===================== TOOLS ===================== */}
             {pathname.startsWith("/tools") && (
               <div className="space-y-1">
                 {!collapsed && (
                   <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
-                    ক্যালেন্ডার ও ছুটির তালিকা
+                    বিভিন্ন টুলস
+                  </h3>
+                )}
+                <SidebarItem href="/tools/image-resizer" icon={RiImageEditFill} label="Image Resizer" isActive={pathname === "/tools/image-resizer"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
+                <SidebarItem href="/tools/age-calculator" icon={FaCalendar} label="Age Calculator" isActive={pathname === "/tools/age-calculator"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
+                <SidebarItem href="/tools/word-and-character-counter" icon={Paperclip} label="Word & Character Counter" isActive={pathname === "/tools/word-and-character-counter"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
+                <SidebarItem href="/tools/zodiac-calculator" icon={FaCalendarMinus} label="Zodiac (রাশি) Calculator" isActive={pathname === "/tools/zodiac-calculator"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
+                <SidebarItem href="/tools/percentage-calculator" icon={FaBolt} label="Percentage (%) Calculator" isActive={pathname === "/tools/percentage-calculator"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
+                <SidebarItem href="/tools/qrcode-generator" icon={FaDatabase} label="QR Code Generator" isActive={pathname === "/tools/qrcode-generator"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
+              </div>
+            )}
+
+            {/* ===================== SOFTWARE (Dynamic) ===================== */}
+            {/* ===================== SOFTWARE (Dynamic) ===================== */}
+{pathname.startsWith("/software") && (
+  <div className="space-y-1">
+    {!collapsed && (
+      <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+        সফটওয়্যার
+      </h3>
+    )}
+
+    {/* সব সফটওয়্যার */}
+<SidebarItem
+  href="/software/all"
+  icon={Presentation}
+  label="সব সফটওয়্যার"
+  isActive={pathname === "/software/all"}
+  collapsed={collapsed}
+  onHover={handleMouseEnter}
+  onLeave={handleMouseLeave}
+/>
+
+{/* Dynamic Platforms */}
+{softwarePlatforms.map((platform) => (
+  <SidebarItem
+    key={platform}
+    href={`/software/all/${encodeURIComponent(platform)}`}
+    icon={SquareActivity}
+    label={platform}
+    isActive={pathname === `/software/all/${platform}`}
+    collapsed={collapsed}
+    onHover={handleMouseEnter}
+    onLeave={handleMouseLeave}
+  />
+))}
+  </div>
+)}
+
+            {/* ===================== NEWS (Dynamic) ===================== */}
+            {pathname.startsWith("/news") && (
+              <div className="space-y-1">
+                {!collapsed && (
+                  <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                    সংবাদ আর্কাইভ
                   </h3>
                 )}
                 <SidebarItem
-                  href="/tools/image-resizer"
-                  icon={FaCalendar}
-                  label="Image Resizer"
-                  isActive={pathname === "/tools/image-resizer"}
+                  href="/news/headlines"
+                  icon={Newspaper}
+                  label="সব খবর"
+                  isActive={pathname === "/news/headlines"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+
+                {/* বাংলা সোর্স */}
+                {newsSources.bn && newsSources.bn.length > 0 && (
+                  <>
+                    {!collapsed && (
+                      <div className="mt-4 mb-2 px-3 text-xs font-bold text-zinc-400 uppercase tracking-widest">
+                        বাংলা সংবাদ মাধ্যম
+                      </div>
+                    )}
+                    {newsSources.bn.map((source: any) => (
+                      <SidebarItem
+                        key={source.source_key}
+                        href={`/news/source/${source.source_key}`}
+                        icon={Newspaper}
+                        label={source.source_name}
+                        isActive={pathname.includes(source.source_key)}
+                        collapsed={collapsed}
+                        onHover={handleMouseEnter}
+                        onLeave={handleMouseLeave}
+                        badge={source.total}
+                      />
+                    ))}
+                  </>
+                )}
+
+                {/* English Sources */}
+                {newsSources.en && newsSources.en.length > 0 && (
+                  <>
+                    {!collapsed && (
+                      <div className="mt-4 mb-2 px-3 text-xs font-bold text-zinc-400 uppercase tracking-widest">
+                        English Media
+                      </div>
+                    )}
+                    {newsSources.en.map((source: any) => (
+                      <SidebarItem
+                        key={source.source_key}
+                        href={`/news/source/${source.source_key}`}
+                        icon={Newspaper}
+                        label={source.source_name}
+                        isActive={pathname.includes(source.source_key)}
+                        collapsed={collapsed}
+                        onHover={handleMouseEnter}
+                        onLeave={handleMouseLeave}
+                        badge={source.total}
+                      />
+                    ))}
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* ===================== BUYSELL (Dynamic) ===================== */}
+            {pathname.startsWith("/buysell") && (
+              <div className="space-y-1">
+                {!collapsed && (
+                  <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                    ক্রয়/বিক্রয়
+                  </h3>
+                )}
+                <SidebarItem
+                  href="/buysell/all"
+                  icon={ShoppingCart}
+                  label="সব ক্যাটাগরি"
+                  isActive={pathname === "/buysell/all"}
                   collapsed={collapsed}
                   onHover={handleMouseEnter}
                   onLeave={handleMouseLeave}
                 />
                 <SidebarItem
-                  href="/tools/age-calculator"
-                  icon={FaCalendarMinus}
-                  label="Age Calculator"
-                  isActive={pathname === "/tools/age-calculator"}
+                  href="/buysell/post-ad"
+                  icon={Plus}
+                  label="পোস্ট যোগ করুন"
+                  isActive={pathname === "/buysell/post-ad"}
                   collapsed={collapsed}
                   onHover={handleMouseEnter}
                   onLeave={handleMouseLeave}
                 />
+                {buysellCategories.map((cat) => (
+                  <SidebarItem
+                    key={cat.slug || cat.id}
+                    href={`/buysell/category/${cat.slug}`}
+                    icon={ShoppingCart}
+                    label={cat.name}
+                    isActive={pathname.includes(cat.slug)}
+                    collapsed={collapsed}
+                    onHover={handleMouseEnter}
+                    onLeave={handleMouseLeave}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* ===================== CONTACT (Dynamic) ===================== */}
+            {/* ===================== CONTACT (Dynamic) ===================== */}
+{pathname.startsWith("/contact") && (
+  <div className="space-y-1">
+    {!collapsed && (
+      <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+        জরুরী নাম্বার
+      </h3>
+    )}
+    {contactCategories.map((cat) => (
+      <SidebarItem
+        key={cat.slug || cat.id}
+        href={`/contact/${cat.slug}`}
+        icon={Paperclip} // বা dynamic icon
+        label={cat.name}
+        isActive={pathname === `/contact/${cat.slug}`}
+        collapsed={collapsed}
+        onHover={handleMouseEnter}
+        onLeave={handleMouseLeave}
+      />
+    ))}
+  </div>
+)}
+
+            {/* ===================== SIGNS (Dynamic) ===================== */}
+            {pathname.startsWith("/signs") && (
+              <div className="space-y-1">
+                {!collapsed && (
+                  <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                    বিভিন্ন সংকেত
+                  </h3>
+                )}
                 <SidebarItem
-                  href="/tools/word-and-character-counter"
-                  icon={FaCalendarMinus}
-                  label="Word & Character Counter"
-                  isActive={pathname === "/tools/word-and-character-counter"}
+                  href="/signs/all"
+                  icon={Paperclip}
+                  label="সব সংকেত"
+                  isActive={pathname === "/signs/all"}
                   collapsed={collapsed}
                   onHover={handleMouseEnter}
                   onLeave={handleMouseLeave}
                 />
-                 <SidebarItem
-                  href="/tools/zodiac-calculator"
-                  icon={FaCalendarMinus}
-                  label="Zodiac(রাশি) Calculator"
-                  isActive={pathname === "/tools/zodiac-calculator"}
-                  collapsed={collapsed}
-                  onHover={handleMouseEnter}
-                  onLeave={handleMouseLeave}
-                />
-                 <SidebarItem
-                  href="/tools/percentage-calculator"
-                  icon={FaCalendarMinus}
-                  label="Percentage(%) Calculator"
-                  isActive={pathname === "/tools/percentage-calculator"}
-                  collapsed={collapsed}
-                  onHover={handleMouseEnter}
-                  onLeave={handleMouseLeave}
-                />
-                 <SidebarItem
-                  href="/tools/qrcode-generator"
-                  icon={FaCalendarMinus}
-                  label="QR Code Generator"
-                  isActive={pathname === "/tools/qrcode-generator"}
-                  collapsed={collapsed}
-                  onHover={handleMouseEnter}
-                  onLeave={handleMouseLeave}
-                />
+                {signCategories.map((cat) => (
+                  <SidebarItem
+                    key={cat.slug || cat.id}
+                    href={`/signs/${cat.slug}`}
+                    icon={Paperclip}
+                    label={cat.name}
+                    isActive={pathname.includes(cat.slug)}
+                    collapsed={collapsed}
+                    onHover={handleMouseEnter}
+                    onLeave={handleMouseLeave}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* ===================== EXCEL (Dynamic) ===================== */}
+            {pathname.startsWith("/excel-expert") && (
+              <div className="space-y-1">
+                {!collapsed && (
+                  <h3 className="mb-2 px-3 text-lg font-bold text-green-600 border-b pb-2">
+                    Excel টিউটোরিয়াল
+                  </h3>
+                )}
+                {Object.entries(excelChapters).map(([chapterName, lessons]) => (
+                  <div key={chapterName}>
+                    {!collapsed && (
+                      <div className="px-3 py-2 mt-4 text-xs font-bold text-zinc-400 uppercase tracking-widest">
+                        {chapterName}
+                      </div>
+                    )}
+                    {lessons.map((lesson: any) => (
+                      <SidebarItem
+                        key={lesson.slug || lesson.id}
+                        href={`/excel-expert/${lesson.slug}`}
+                        icon={Paperclip}
+                        label={lesson.title}
+                        isActive={pathname.includes(lesson.slug)}
+                        collapsed={collapsed}
+                        onHover={handleMouseEnter}
+                        onLeave={handleMouseLeave}
+                      />
+                    ))}
+                  </div>
+                ))}
               </div>
             )}
           </div>
         </div>
 
-        {/* Footer Settings Item */}
+        {/* Footer */}
         <div className="border-t border-zinc-200 p-3 dark:border-zinc-800">
           <SidebarItem
             onClick={openSettingsModal}
@@ -572,6 +792,7 @@ export default function Sidebar() {
             onHover={handleMouseEnter}
             onLeave={handleMouseLeave}
           />
+          <SidebarProfileMenu collapsed={collapsed} />
         </div>
       </aside>
     </>

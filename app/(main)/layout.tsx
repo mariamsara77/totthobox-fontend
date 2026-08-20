@@ -84,9 +84,6 @@ export default function RootLayout({
             </ThemeProvider>
           </SettingsModalProvider>
         </SidebarProvider>
-
-        {/* ক্লিন এবং রিইউজেবল গুগল ট্রান্সলেট কম্পোনেন্ট */}
-        {/* <GoogleTranslate /> */}
       </body>
     </html>
   );
