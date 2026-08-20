@@ -176,17 +176,19 @@ export default function IntroductionShowClient({ intro }: Props) {
       </section>
 
       {/* ✅ Like / Dislike / Share — এখানেই বসবে */}
-      <InteractiveActions
-        resource="intro-bd"
-        itemId={intro.id}
-        initialData={{
-          reactions,
-          title: intro.title,
-          slug: intro.slug,
-        }}
-        sharePath="/bangladesh/introduction"
-      />
-
+<InteractiveActions
+  introId={intro.id}
+  initialData={{
+    reactions: intro.reactions || {
+      like_count: 0,
+      dislike_count: 0,
+      user_has_liked: false,
+      user_has_disliked: false,
+    },
+    title: intro.title,
+    slug: intro.slug,
+  }}
+/>
       {/* Back */}
       <Link
         href="/bangladesh/introduction"

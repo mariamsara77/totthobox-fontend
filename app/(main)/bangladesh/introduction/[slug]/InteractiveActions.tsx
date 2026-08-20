@@ -1,134 +1,153 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ThumbsUp, ThumbsDown, Share2 } from "lucide-react";
-
-const API_BASE = (process.env.NEXT_PUBLIC_API_BASE_URL || "https://totthobox.com").replace(/\/$/, "");
-
-type Reactions = {
-  like_count: number;
-  dislike_count: number;
-  user_has_liked: boolean;
-  user_has_disliked: boolean;
-};
+import { getAuthHeaders, isLoggedIn } from "@/lib/auth";
 
 type Props = {
-  /** API endpoint base, e.g. "intro-bd" or "holidays" */
-  resource: "intro-bd" | "holidays";
-  itemId: number;
+  introId: number;
   initialData: {
-    reactions: Reactions;
+    reactions: {
+      like_count: number;
+      dislike_count: number;
+      user_has_liked: boolean;
+      user_has_disliked: boolean;
+    };
     title: string;
     slug: string;
   };
-  /** Optional share URL path prefix */
-  sharePath?: string; // e.g. "/bangladesh/introduction"
 };
 
-export default function InteractiveActions({
-  resource,
-  itemId,
-  initialData,
-  sharePath = "",
-}: Props) {
-  const [reactions, setReactions] = useState<Reactions>(initialData.reactions);
+export default function InteractiveActions({ introId, initialData }: Props) {
+  const [reactions, setReactions] = useState(initialData.reactions);
   const [loading, setLoading] = useState(false);
+  const [statusLoading, setStatusLoading] = useState(true);
+
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://totthobox.com";
+
+  // পেজ লোডে ইউজারের আসল reaction status
+  useEffect(() => {
+    async function fetchUserReaction() {
+      if (!isLoggedIn()) {
+        setStatusLoading(false);
+        return;
+      }
+
+      try {
+        const res = await fetch(
+          `${API_BASE}/api/intro-bd/${introId}/reaction-status`,
+          {
+            headers: getAuthHeaders(),
+          }
+        );
+
+        if (res.ok) {
+          const data = await res.json();
+          setReactions((prev) => ({
+            ...prev,
+            user_has_liked: data.has_like ?? data.user_has_liked ?? false,
+            user_has_disliked: data.has_dislike ?? data.user_has_disliked ?? false,
+          }));
+        }
+      } catch (error) {
+        console.error("Failed to fetch reaction status", error);
+      } finally {
+        setStatusLoading(false);
+      }
+    }
+
+    fetchUserReaction();
+  }, [introId, API_BASE]);
 
   const handleReact = async (type: "like" | "dislike") => {
-    if (loading) return;
-    setLoading(true);
+    if (!isLoggedIn()) {
+      alert("রিয়্যাকশন দিতে লগইন করতে হবে");
+      window.location.href = "/login";
+      return;
+    }
 
+    setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/api/${resource}/${itemId}/react`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({ type }),
-        credentials: "include",
-      });
+      const res = await fetch(
+        `${API_BASE}/api/intro-bd/${introId}/react`,
+        {
+          method: "POST",
+          headers: {
+            ...getAuthHeaders(),
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({ type }),
+        }
+      );
 
       if (res.status === 401) {
-        alert("রিয়্যাকশন করার জন্য লগইন করতে হবে।");
+        alert("সেশন শেষ হয়ে গেছে। আবার লগইন করুন।");
+        localStorage.removeItem("auth_token");
+        window.location.href = "/login";
         return;
       }
 
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        console.error("React failed:", res.status, err);
-        alert("রিয়্যাকশন ব্যর্থ হয়েছে। আবার চেষ্টা করুন।");
-        return;
+      const json = await res.json();
+
+      if (json.success || json.like_count !== undefined) {
+        setReactions({
+          like_count: json.like_count ?? json.reactions?.like_count ?? 0,
+          dislike_count: json.dislike_count ?? json.reactions?.dislike_count ?? 0,
+          user_has_liked: json.has_like ?? json.reactions?.user_has_liked ?? false,
+          user_has_disliked: json.has_dislike ?? json.reactions?.user_has_disliked ?? false,
+        });
+      } else {
+        alert(json.message || "রিয়্যাকশন দিতে সমস্যা হয়েছে");
       }
-
-      const data = await res.json();
-
-      // Holiday + IntroBd উভয় response shape সাপোর্ট
-      setReactions({
-        like_count: data.like_count ?? data.reactions?.like_count ?? 0,
-        dislike_count: data.dislike_count ?? data.reactions?.dislike_count ?? 0,
-        user_has_liked:
-          data.has_like ?? data.reactions?.user_has_liked ?? false,
-        user_has_disliked:
-          data.has_dislike ?? data.reactions?.user_has_disliked ?? false,
-      });
-    } catch (error) {
-      console.error("Network error:", error);
-      alert(
-        "সার্ভারে সংযোগ করা যাচ্ছে না। CORS বা API URL চেক করুন।"
-      );
+    } catch (err) {
+      console.error(err);
+      alert("কিছু সমস্যা হয়েছে");
     } finally {
       setLoading(false);
     }
   };
 
   const handleShare = async () => {
-    const url =
-      typeof window !== "undefined"
-        ? window.location.href
-        : `${sharePath}/${initialData.slug}`;
+    const url = `${window.location.origin}/bangladesh/introduction/${initialData.slug}`;
 
     if (navigator.share) {
-      try {
-        await navigator.share({
-          title: initialData.title,
-          url,
-        });
-      } catch {
-        // user cancelled
-      }
+      await navigator.share({
+        title: initialData.title,
+        url,
+      });
     } else {
       await navigator.clipboard.writeText(url);
-      alert("লিংক কপি হয়েছে!");
+      alert("লিংক কপি করা হয়েছে!");
     }
   };
 
   return (
-    <div className="flex items-center justify-between gap-4 pt-4 border-t border-zinc-200 dark:border-zinc-800">
-      <div className="flex gap-2">
+    <div className="flex items-center justify-between gap-4">
+      <div className="flex gap-3">
         <button
-          type="button"
           onClick={() => handleReact("like")}
-          disabled={loading}
-          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium border border-zinc-400/25 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800 disabled:opacity-50 ${
-            reactions.user_has_liked
-              ? "text-blue-600 border-blue-300 dark:border-blue-700"
-              : "text-zinc-600 dark:text-zinc-400"
-          }`}
+          disabled={loading || statusLoading}
+          className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors
+            ${
+              reactions.user_has_liked
+                ? "bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
+                : "bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+            }`}
         >
           <ThumbsUp className="w-4 h-4" />
           {reactions.like_count}
         </button>
 
         <button
-          type="button"
           onClick={() => handleReact("dislike")}
-          disabled={loading}
-          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium border border-zinc-400/25 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800 disabled:opacity-50 ${
-            reactions.user_has_disliked
-              ? "text-red-600 border-red-300 dark:border-red-700"
-              : "text-zinc-600 dark:text-zinc-400"
-          }`}
+          disabled={loading || statusLoading}
+          className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors
+            ${
+              reactions.user_has_disliked
+                ? "bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400"
+                : "bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+            }`}
         >
           <ThumbsDown className="w-4 h-4" />
           {reactions.dislike_count}
@@ -136,9 +155,8 @@ export default function InteractiveActions({
       </div>
 
       <button
-        type="button"
         onClick={handleShare}
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium border border-zinc-400/25 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+        className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
       >
         <Share2 className="w-4 h-4" />
         শেয়ার

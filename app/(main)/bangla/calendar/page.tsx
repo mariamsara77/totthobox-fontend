@@ -64,6 +64,7 @@ const getHijriDate = (date: Date): string => {
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function AdvancedBanglaCalendar() {
+  const [isMounted, setIsMounted] = useState(false);
   const [todayDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [viewDate, setViewDate] = useState(new Date());
@@ -72,6 +73,11 @@ export default function AdvancedBanglaCalendar() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   const touchStartX = useRef<number | null>(null);
+
+  // Mount Status Update for SSR Bypass
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // --- Bangla Date Logic ---
   const getBanglaDate = (inputDate: Date): BanglaDate => {
@@ -141,14 +147,14 @@ export default function AdvancedBanglaCalendar() {
 
   const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://totthobox.com";
   const { data: apiResponse } = useSWR(
-    `${apiUrl}/api/holidays-calendar?year=${viewDate.getFullYear()}`,
+    isMounted ? `${apiUrl}/api/holidays-calendar?year=${viewDate.getFullYear()}` : null,
     fetcher,
     { revalidateOnFocus: false }
   );
 
   const allHolidays = useMemo(() => {
     const dbHolidays: HolidaysMap = {};
-    if (apiResponse?.success && apiResponse?.data) {
+    if (apiResponse?.success && Array.isArray(apiResponse?.data)) {
       apiResponse.data.forEach((h: any) => {
         dbHolidays[h.date] = { title: h.title, color: h.color || "amber" };
       });
@@ -156,7 +162,7 @@ export default function AdvancedBanglaCalendar() {
     return { ...fixedHolidays, ...dbHolidays };
   }, [apiResponse, fixedHolidays]);
 
-  // --- Current Month Holidays (সঠিক জায়গায়) ---
+  // --- Current Month Holidays ---
   const currentMonthHolidays = useMemo(() => {
     const month = viewDate.getMonth() + 1;
     const year = viewDate.getFullYear();
@@ -180,6 +186,7 @@ export default function AdvancedBanglaCalendar() {
 
   // --- Keyboard Navigation ---
   useEffect(() => {
+    if (!isMounted) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "ArrowRight") setSelectedDate((prev) => addDays(prev, 1));
       else if (e.key === "ArrowLeft") setSelectedDate((prev) => subDays(prev, 1));
@@ -189,7 +196,7 @@ export default function AdvancedBanglaCalendar() {
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [isMounted]);
 
   // Sync viewDate
   useEffect(() => {
@@ -199,7 +206,7 @@ export default function AdvancedBanglaCalendar() {
     ) {
       setViewDate(selectedDate);
     }
-  }, [selectedDate]);
+  }, [selectedDate, viewDate]);
 
   // --- Calendar Grid ---
   const calendarDays = useMemo(() => {
@@ -259,27 +266,39 @@ export default function AdvancedBanglaCalendar() {
   };
 
   const slideVariants: Variants = {
-  enter: (direction: number) => ({
-    x: direction > 0 ? 80 : -80,
-    opacity: 0,
-  }),
-  center: {
-    x: 0,
-    opacity: 1,
-    transition: { 
-      duration: 0.28, 
-      ease: [0.25, 0.1, 0.25, 1] as const 
+    enter: (direction: number) => ({
+      x: direction > 0 ? 80 : -80,
+      opacity: 0,
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.28,
+        ease: [0.25, 0.1, 0.25, 1] as const,
+      },
     },
-  },
-  exit: (direction: number) => ({
-    x: direction < 0 ? 80 : -80,
-    opacity: 0,
-    transition: { 
-      duration: 0.28, 
-      ease: [0.25, 0.1, 0.25, 1] as const 
-    },
-  }),
-};
+    exit: (direction: number) => ({
+      x: direction < 0 ? 80 : -80,
+      opacity: 0,
+      transition: {
+        duration: 0.28,
+        ease: [0.25, 0.1, 0.25, 1] as const,
+      },
+    }),
+  };
+
+  // SSR / Prerender এর সময় রেন্ডার ব্লক রাখার জন্য Skeleton Loading State
+  if (!isMounted) {
+    return (
+      <div className="max-w-xl mx-auto p-4 space-y-6 animate-pulse">
+        <div className="h-10 bg-zinc-200 dark:bg-zinc-800 rounded-xl w-3/4"></div>
+        <div className="h-28 bg-zinc-200 dark:bg-zinc-800 rounded-2xl"></div>
+        <div className="h-12 bg-zinc-200 dark:bg-zinc-800 rounded-2xl"></div>
+        <div className="h-64 bg-zinc-200 dark:bg-zinc-800 rounded-2xl"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-xl mx-auto space-y-6 select-none relative p-4 pb-12">
@@ -334,7 +353,6 @@ export default function AdvancedBanglaCalendar() {
           </div>
         )}
       </section>
-      
 
       {/* Month / Year Controls */}
       <section className="flex items-center justify-between rounded-2xl bg-zinc-400/10 px-2 py-1.5 shadow-sm">
@@ -346,74 +364,73 @@ export default function AdvancedBanglaCalendar() {
         </button>
 
         <div className="flex items-center gap-2">
-  {/* Month Dropdown */}
-  <div className="relative">
-    <select
-      value={viewDate.getMonth()}
-      onChange={(e) => {
-        setDirection(0);
-        setViewDate(
-          new Date(viewDate.getFullYear(), parseInt(e.target.value), 1)
-        );
-      }}
-      className="appearance-none bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 
-                 text-zinc-800 dark:text-zinc-200 font-semibold text-sm
-                 rounded-xl pl-4 pr-9 py-2 cursor-pointer
-                 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent
-                 hover:border-emerald-400 dark:hover:border-emerald-500 transition-all shadow-sm"
-    >
-      {Array.from({ length: 12 }).map((_, i) => (
-        <option key={i} value={i} className="text-zinc-900 dark:text-zinc-100">
-          {format(new Date(2000, i, 1), "MMMM")}
-        </option>
-      ))}
-    </select>
-    {/* Custom Arrow */}
-    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5">
-      <ChevronDown className="w-4 h-4 text-zinc-500" />
-    </div>
-  </div>
+          {/* Month Dropdown */}
+          <div className="relative">
+            <select
+              value={viewDate.getMonth()}
+              onChange={(e) => {
+                setDirection(0);
+                setViewDate(
+                  new Date(viewDate.getFullYear(), parseInt(e.target.value), 1)
+                );
+              }}
+              className="appearance-none bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 
+                         text-zinc-800 dark:text-zinc-200 font-semibold text-sm
+                         rounded-xl pl-4 pr-9 py-2 cursor-pointer
+                         focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent
+                         hover:border-emerald-400 dark:hover:border-emerald-500 transition-all shadow-sm"
+            >
+              {Array.from({ length: 12 }).map((_, i) => (
+                <option key={i} value={i} className="text-zinc-900 dark:text-zinc-100">
+                  {format(new Date(2000, i, 1), "MMMM")}
+                </option>
+              ))}
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5">
+              <ChevronDown className="w-4 h-4 text-zinc-500" />
+            </div>
+          </div>
 
-  {/* Year Dropdown */}
-  <div className="relative">
-    <select
-      value={viewDate.getFullYear()}
-      onChange={(e) => {
-        setDirection(0);
-        setViewDate(
-          new Date(parseInt(e.target.value), viewDate.getMonth(), 1)
-        );
-      }}
-      className="appearance-none bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 
-                 text-zinc-800 dark:text-zinc-200 font-semibold text-sm
-                 rounded-xl pl-4 pr-9 py-2 cursor-pointer
-                 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent
-                 hover:border-emerald-400 dark:hover:border-emerald-500 transition-all shadow-sm"
-    >
-      {Array.from({ length: 121 }).map((_, i) => {
-        const y = new Date().getFullYear() - 100 + i;
-        return (
-          <option key={y} value={y} className="text-zinc-900 dark:text-zinc-100">
-            {y}
-          </option>
-        );
-      })}
-    </select>
-    {/* Custom Arrow */}
-    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5">
-      <ChevronDown className="w-4 h-4 text-zinc-500" />
-    </div>
-  </div>
-</div>
-<button
-      onClick={() => {
-        setSelectedDate(new Date());
-        setViewDate(new Date());
-      }}
-      className="text-xs px-3 py-1.5 rounded-xl bg-zinc-400/10 text-emerald-700 dark:text-emerald-300 font-medium hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition-colors"
-    >
-    Today
-    </button>
+          {/* Year Dropdown */}
+          <div className="relative">
+            <select
+              value={viewDate.getFullYear()}
+              onChange={(e) => {
+                setDirection(0);
+                setViewDate(
+                  new Date(parseInt(e.target.value), viewDate.getMonth(), 1)
+                );
+              }}
+              className="appearance-none bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 
+                         text-zinc-800 dark:text-zinc-200 font-semibold text-sm
+                         rounded-xl pl-4 pr-9 py-2 cursor-pointer
+                         focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent
+                         hover:border-emerald-400 dark:hover:border-emerald-500 transition-all shadow-sm"
+            >
+              {Array.from({ length: 121 }).map((_, i) => {
+                const y = new Date().getFullYear() - 100 + i;
+                return (
+                  <option key={y} value={y} className="text-zinc-900 dark:text-zinc-100">
+                    {y}
+                  </option>
+                );
+              })}
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5">
+              <ChevronDown className="w-4 h-4 text-zinc-500" />
+            </div>
+          </div>
+        </div>
+
+        <button
+          onClick={() => {
+            setSelectedDate(new Date());
+            setViewDate(new Date());
+          }}
+          className="text-xs px-3 py-1.5 rounded-xl bg-zinc-400/10 text-emerald-700 dark:text-emerald-300 font-medium hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition-colors"
+        >
+          Today
+        </button>
 
         <button
           onClick={() => navigateMonth(1)}
@@ -422,10 +439,6 @@ export default function AdvancedBanglaCalendar() {
           <ChevronRight className="w-5 h-5" />
         </button>
       </section>
-
-      {/* ══════════════════════════════════════
-    Date Filter / Picker
-══════════════════════════════════════ */}
 
       {/* Calendar Grid */}
       <section
@@ -505,7 +518,7 @@ export default function AdvancedBanglaCalendar() {
                   </div>
 
                   {holiday && !isSelected && (
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-[140px] px-2.5 py-1.5 bg-zinc-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-lg">
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-35 px-2.5 py-1.5 bg-zinc-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-lg">
                       {holiday.title}
                     </div>
                   )}
@@ -515,7 +528,9 @@ export default function AdvancedBanglaCalendar() {
           </motion.div>
         </AnimatePresence>
       </section>
-<hr className="border border-zinc-400/25"/>
+
+      <hr className="border border-zinc-400/25" />
+
       {/* Modal */}
       <AnimatePresence>
         {showModal && (
@@ -576,9 +591,7 @@ export default function AdvancedBanglaCalendar() {
         )}
       </AnimatePresence>
 
-      {/* ══════════════════════════════════════
-          This Month's Official Holidays
-      ══════════════════════════════════════ */}
+      {/* Official Holidays List */}
       {currentMonthHolidays.length > 0 && (
         <section className="mt-2 space-y-3">
           <h2 className="flex items-center gap-2 text-lg font-bold text-zinc-900 dark:text-zinc-100">
@@ -607,9 +620,7 @@ export default function AdvancedBanglaCalendar() {
         </section>
       )}
 
-      {/* ══════════════════════════════════════
-          Informative Content
-      ══════════════════════════════════════ */}
+      {/* Info Section */}
       <section className="rounded-2xl border border-zinc-400/25 p-5 space-y-4 bg-zinc-400/10">
         <h2 className="flex items-center gap-2 text-lg font-bold text-zinc-900 dark:text-zinc-100">
           <Info className="w-5 h-5 text-emerald-600" />
@@ -618,7 +629,7 @@ export default function AdvancedBanglaCalendar() {
 
         <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-[15px]">
           বাংলা ক্যালেন্ডার বা বঙ্গাব্দ বাংলাদেশ ও পশ্চিমবঙ্গে ব্যবহৃত একটি সৌর
-          বর্ষপঞ্জি। বাংলা সনের নতুন বছর শুরু হয় সাধারণত ১৪ এপ্রিল (পহেলা বৈশাখ)
+          বর্ষপঞ্জি। বাংলা সনের নতুন বছর শুরু হয় সাধারণত ১৪ এপ্রিল (পহেলা বৈশাখ)
           থেকে। বর্তমানে চলছে{" "}
           <strong className="text-emerald-600">
             {bnNum(getBanglaDate(new Date()).year)} বঙ্গাব্দ
@@ -629,7 +640,7 @@ export default function AdvancedBanglaCalendar() {
         <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-[15px]">
           এই পেজে আপনি সহজেই <strong>আজকের বাংলা তারিখ</strong>, ইংরেজি তারিখের
           সাথে তুলনা, মাসভিত্তিক ক্যালেন্ডার এবং সরকারি ছুটির তালিকা দেখতে পারবেন।
-          তারিখ সিলেক্ট করে যেকোনো দিনের বাংলা তারিখ জানা যায়।
+          তারিখ সিলেক্ট করে যেকোনো দিনের বাংলা তারিখ জানা যায়।
         </p>
 
         <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-[15px]">
@@ -638,12 +649,10 @@ export default function AdvancedBanglaCalendar() {
         </p>
       </section>
 
-      {/* ══════════════════════════════════════
-          FAQ Section
-      ══════════════════════════════════════ */}
+      {/* FAQ Section */}
       <section className="space-y-3">
         <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
-          প্রায়শই জিজ্ঞাসিত প্রশ্ন (FAQ)
+          প্রায়শই জিজ্ঞাসিত প্রশ্ন (FAQ)
         </h2>
 
         <div className="space-y-2">
@@ -662,20 +671,20 @@ export default function AdvancedBanglaCalendar() {
               ),
             },
             {
-              q: "বাংলা সন কীভাবে হিসাব করা হয়?",
-              a: "বাংলা সন সাধারণত ১৪ এপ্রিল থেকে শুরু হয়। ইংরেজি বছর থেকে ৫৯৩ বা ৫৯৪ বিয়োগ করে বাংলা সন পাওয়া যায়। এপ্রিলের ১৪ তারিখের আগে হলে ৫৯৪ এবং পরে হলে ৫৯৩ বিয়োগ করা হয়।",
+              q: "বাংলা সন কীভাবে হিসাব করা হয়?",
+              a: "বাংলা সন সাধারণত ১৪ এপ্রিল থেকে শুরু হয়। ইংরেজি বছর থেকে ৫৯৩ বা ৫৯৪ বিয়োগ করে বাংলা সন পাওয়া যায়। এপ্রিলের ১৪ তারিখের আগে হলে ৫৯৪ এবং পরে হলে ৫৯৩ বিয়োগ করা হয়।",
             },
             {
-              q: "সরকারি ছুটির তালিকা কোথায় পাব?",
-              a: "এই পেজেই চলতি মাসের সকল সরকারি ছুটি দেখানো হয়। নির্দিষ্ট তারিখ সিলেক্ট করলে সেই দিনের ছুটির নামও দেখা যাবে। শহীদ দিবস, স্বাধীনতা দিবস, পহেলা বৈশাখ, বিজয় দিবসসহ প্রধান ছুটিগুলো হাইলাইট করা আছে।",
+              q: "সরকারি ছুটির তালিকা কোথায় পাব?",
+              a: "এই পেজেই চলতি মাসের সকল সরকারি ছুটি দেখানো হয়। নির্দিষ্ট তারিখ সিলেক্ট করলে সেই দিনের ছুটির নামও দেখা যাবে। শহীদ দিবস, স্বাধীনতা দিবস, পহেলা বৈশাখ, বিজয় দিবসসহ প্রধান ছুটিগুলো হাইলাইট করা আছে।",
             },
             {
-              q: "বাংলা মাস কয়টি ও কী কী?",
+              q: "বাংলা মাস কয়টি ও কী কী?",
               a: "বাংলা সনে মোট ১২টি মাস আছে। সেগুলো হলো: বৈশাখ, জ্যৈষ্ঠ, আষাঢ়, শ্রাবণ, ভাদ্র, আশ্বিন, কার্তিক, অগ্রহায়ণ, পৌষ, মাঘ, ফাল্গুন এবং চৈত্র।",
             },
             {
               q: "এই ক্যালেন্ডার কি মোবাইলে কাজ করে?",
-              a: "হ্যাঁ, এই বাংলা ক্যালেন্ডার সম্পূর্ণ মোবাইল-ফ্রেন্ডলি। স্মার্টফোন, ট্যাবলেট ও কম্পিউটারে একইভাবে ব্যবহার করা যায়।",
+              a: "হ্যাঁ, এই বাংলা ক্যালেন্ডার সম্পূর্ণ মোবাইল-ফ্রেন্ডলি। স্মার্টফোন, ট্যাবলেট ও কম্পিউটারে একইভাবে ব্যবহার করা যায়।",
             },
           ].map((item, idx) => (
             <div
@@ -714,9 +723,8 @@ export default function AdvancedBanglaCalendar() {
         </div>
       </section>
 
-      {/* Extra note */}
       <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed text-center">
-        এই পেজটি নিয়মিত আপডেট করা হয় যাতে আপনি সঠিক{" "}
+        এই পেজটি নিয়মিত আপডেট করা হয় যাতে আপনি সঠিক{" "}
         <strong>আজকের বাংলা তারিখ</strong>, বাংলা ক্যালেন্ডার এবং সরকারি ছুটির
         তথ্য পান। যেকোনো তারিখ সিলেক্ট করে বাংলা ও ইংরেজি তারিখ একসাথে দেখুন।
       </p>

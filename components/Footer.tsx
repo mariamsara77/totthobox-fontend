@@ -75,7 +75,7 @@ export default function Footer() {
 
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold py-0.2 px-2 rounded-full transition-colors"
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold py-0.5 px-2 rounded-full transition-colors"
           >
             <RxSwitch className="w-4 h-4" /> কুকি সেটিংস
           </button>
