@@ -174,28 +174,9 @@ export default function Sidebar() {
 
     const fetchData = async () => {
       try {
-        if (pathname.startsWith("/news")) {
-          const res = await fetch(`${API_URL}/sidebar/news-sources`, {
-            signal: controller.signal,
-          });
-          if (res.ok) {
-            const data = await res.json();
-            setNewsSources(data);
-          }
-        }
-
-        if (pathname.startsWith("/buysell")) {
-          const res = await fetch(`${API_URL}/sidebar/buysell-categories`, {
-            signal: controller.signal,
-          });
-          if (res.ok) {
-            const data = await res.json();
-            setBuysellCategories(data);
-          }
-        }
 
         if (pathname.startsWith("/contact")) {
-          const res = await fetch(`${API_URL}/sidebar/contact-categories`, {
+          const res = await fetch(`${API_URL}/api/sidebar/contact-categories`, {
             signal: controller.signal,
           });
           if (res.ok) {
@@ -205,7 +186,7 @@ export default function Sidebar() {
         }
 
         if (pathname.startsWith("/signs")) {
-          const res = await fetch(`${API_URL}/sidebar/sign-categories`, {
+          const res = await fetch(`${API_URL}/api/sidebar/sign-categories`, {
             signal: controller.signal,
           });
           if (res.ok) {
@@ -215,7 +196,7 @@ export default function Sidebar() {
         }
 
         if (pathname.startsWith("/excel-expert")) {
-          const res = await fetch(`${API_URL}/sidebar/excel-chapters`, {
+          const res = await fetch(`${API_URL}/api/sidebar/excel-chapters`, {
             signal: controller.signal,
           });
           if (res.ok) {
@@ -225,7 +206,7 @@ export default function Sidebar() {
         }
 
         if (pathname.startsWith("/software")) {
-          const res = await fetch(`${API_URL}/sidebar/software-platforms`, {
+          const res = await fetch(`${API_URL}/api/sidebar/software-platforms`, {
             signal: controller.signal,
           });
           if (res.ok) {
@@ -548,6 +529,55 @@ export default function Sidebar() {
               </div>
             )}
 
+
+              {/* ===================== CALENDAR ===================== */}
+            {pathname.startsWith("/international/") && (
+              <div className="space-y-1">
+                {!collapsed && (
+                  <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                    আন্তর্জাতিক
+                  </h3>
+                )}
+                <SidebarItem
+                  href="/international/all-country"
+                  icon={FaCalendar}
+                  label="বিশ্বকোষ"
+                  isActive={pathname === "/international/all-country"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+              </div>
+            )}
+              {/* ===================== CALENDAR ===================== */}
+            {pathname.startsWith("/islam") && (
+              <div className="space-y-1">
+                {!collapsed && (
+                  <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                    ইসলাম
+                  </h3>
+                )}
+                <SidebarItem
+                  href="/islam/basic"
+                  icon={FaCalendar}
+                  label="ইসলামের মৌলিক জ্ঞান"
+                  isActive={pathname === "/islam/basic"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SidebarItem
+                  href="/islam/dowan"
+                  icon={FaCalendar}
+                  label="দোয়া"
+                  isActive={pathname === "/islam/dowan"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+              </div>
+            )}
+
             {/* ===================== TOOLS ===================== */}
             {pathname.startsWith("/tools") && (
               <div className="space-y-1">
@@ -562,6 +592,7 @@ export default function Sidebar() {
                 <SidebarItem href="/tools/zodiac-calculator" icon={FaCalendarMinus} label="Zodiac (রাশি) Calculator" isActive={pathname === "/tools/zodiac-calculator"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
                 <SidebarItem href="/tools/percentage-calculator" icon={FaBolt} label="Percentage (%) Calculator" isActive={pathname === "/tools/percentage-calculator"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
                 <SidebarItem href="/tools/qrcode-generator" icon={FaDatabase} label="QR Code Generator" isActive={pathname === "/tools/qrcode-generator"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
+                <SidebarItem href="/tools/writing-practice" icon={FaDatabase} label="Child Writing Practice" isActive={pathname === "/tools/writing-practice"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
               </div>
             )}
 

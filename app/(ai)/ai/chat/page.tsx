@@ -1,0 +1,60 @@
+import type { Metadata } from "next";
+import ChatPanel from "@/components/ai/ChatPanel";
+import "highlight.js/styles/github.css";
+
+export const metadata: Metadata = {
+  title: "Totthobox AI: আপনার বুদ্ধিমত্তাসম্পন্ন এআই অ্যাসিস্ট্যান্ট",
+  description:
+    "Totthobox AI-এর মাধ্যমে যেকোনো তথ্যের তাৎক্ষণিক সমাধান, ডেটা অ্যানালাইসিস এবং কাস্টমাইজড লার্নিং অভিজ্ঞতা উপভোগ করুন।",
+  keywords: [
+    "Totthobox AI",
+    "কৃত্রিম বুদ্ধিমত্তা",
+    "এআই টিউটর",
+    "AI Agent Bangladesh",
+    "বাংলা এআই",
+  ],
+};
+
+export default function AiChatPage() {
+  return (
+    <>
+      <style>{`
+        @keyframes aiBlockIn {
+          from { opacity: 0; transform: translateY(4px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes aiPopIn {
+          from { opacity: 0; transform: translateY(6px) scale(0.98); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .ai-response-new > * {
+          opacity: 0;
+          animation: aiBlockIn 0.3s ease forwards;
+        }
+        .ai-response-new > *:nth-child(1) { animation-delay: 0ms; }
+        .ai-response-new > *:nth-child(2) { animation-delay: 60ms; }
+        .ai-response-new > *:nth-child(3) { animation-delay: 120ms; }
+        .ai-response-new > *:nth-child(4) { animation-delay: 180ms; }
+        .ai-response-new > *:nth-child(n + 5) { animation-delay: 240ms; }
+        .ai-msg-pop {
+          animation: aiPopIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        .totthobox-scrollbar::-webkit-scrollbar { width: 6px; }
+        .totthobox-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(0, 0, 0, 0.12);
+          border-radius: 999px;
+        }
+        .dark .totthobox-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.12);
+        }
+        .ai-prose pre code.hljs {
+          padding: 0.9rem 1.1rem !important;
+          font-size: 0.79rem !important;
+          line-height: 1.65 !important;
+          border-radius: 0 !important;
+        }
+      `}</style>
+      <ChatPanel uuid={null} />
+    </>
+  );
+}

@@ -28,3 +28,15 @@ export function getAuthHeaders(): HeadersInit {
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 }
+
+
+// lib/auth.ts
+import apiFetch from "./api";
+
+export async function login(email: string, password: string): Promise<string> {
+  const data = await apiFetch<{ token: string }>("/login", {
+    method: "POST",
+    body: JSON.stringify({ email, password }),
+  });
+  return data.token; // localStorage বা httpOnly cookie-তে রাখো
+}

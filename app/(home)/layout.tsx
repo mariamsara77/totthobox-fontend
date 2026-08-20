@@ -63,6 +63,7 @@ export default function HomeLayout({
         <link rel="dns-prefetch" href="https://translate.googleapis.com" />
       </head>
       <body
+      suppressHydrationWarning
         className="min-h-full bg-white dark:bg-zinc-800 text-slate-900 transition-colors duration-200 selection:bg-emerald-500 selection:text-white dark:text-slate-50"
       >
         <SettingsModalProvider>

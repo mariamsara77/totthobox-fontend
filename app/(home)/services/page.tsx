@@ -61,7 +61,7 @@ const services = [
     details: 'দর্শনিয় স্থান, গুণীজন ও অন্যান্য তথ্য।',
   },
   {
-    href: '/international',
+    href: '/international/all-country',
     icon: Globe,
     label: 'বিশ্বকোষ',
     details: 'পতাকা, রাজধানী ও মুদ্রার তথ্য।',

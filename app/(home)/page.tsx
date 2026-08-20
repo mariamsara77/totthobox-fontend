@@ -53,31 +53,25 @@ const services = [
     details: "দর্শনীয় স্থান, গুণীজন ও তথ্য।",
   },
   {
-    href: "/international",
+    href: "/international/all-country",
     icon: Globe,
     label: "বিশ্বকোষ",
     details: "পতাকা, রাজধানী ও মুদ্রার তথ্য।",
   },
   {
-    href: "/islamic",
+    href: "/islam/basic",
     icon: BookOpen,
     label: "ইসলামিক",
     details: "নামাজ, কালেমা ও দোয়া।",
   },
   {
-    href: "/child-education",
-    icon: GraduationCap,
-    label: "শিশুশিক্ষা",
-    details: "বর্ণমালা ও মৌলিক শিক্ষা।",
-  },
-  {
-    href: "/signs",
+    href: "/signs/all",
     icon: ShieldAlert,
     label: "সংকেত",
     details: "স্বাস্থ্য ও ট্রাফিক সংকেত।",
   },
   {
-    href: "/ai-chat",
+    href: "/ai/chat",
     icon: Sparkles,
     label: "Totthobox AI",
     details: "চ্যাটবট সহায়তা ও তথ্য সেবা।",
@@ -123,7 +117,7 @@ export default function HomePage() {
 
         {/* Dynamic Services Cards */}
         <section aria-label="সকল সেবা">
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {services.map((service, index) => {
             const Icon = service.icon;
             return (
