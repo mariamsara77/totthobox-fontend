@@ -37,6 +37,8 @@ import {
   Flag,
   Map as LucideMap,
   BookOpen,
+  BuildingIcon,
+  Users,
   X,
   PanelLeftClose,
   PanelLeft,
@@ -337,7 +339,7 @@ export default function Sidebar() {
 
         {/* Navigation */}
         <div
-          className="custom-scrollbar flex-1 overflow-y-auto p-3"
+          className="custom-scrollbar flex-1 overflow-y-auto p-2"
           onScroll={handleMouseLeave}
         >
           <div className="space-y-6">
@@ -525,6 +527,24 @@ export default function Sidebar() {
                   onHover={handleMouseEnter}
                   onLeave={handleMouseLeave}
                 />
+                <SidebarItem
+                  href="/bangladesh/establishment"
+                  icon={BuildingIcon}
+                  label="স্থাপনা"
+                  isActive={pathname === "/bangladesh/establishment"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SidebarItem
+                  href="/bangladesh/public-figure"
+                  icon={Users}
+                  label="পাবলিক ফিগার"
+                  isActive={pathname === "/bangladesh/public-figure"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
               </div>
             )}
 
@@ -581,115 +601,6 @@ export default function Sidebar() {
 ))}
   </div>
 )}
-
-            {/* ===================== NEWS (Dynamic) ===================== */}
-            {pathname.startsWith("/news") && (
-              <div className="space-y-1">
-                {!collapsed && (
-                  <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
-                    সংবাদ আর্কাইভ
-                  </h3>
-                )}
-                <SidebarItem
-                  href="/news/headlines"
-                  icon={Newspaper}
-                  label="সব খবর"
-                  isActive={pathname === "/news/headlines"}
-                  collapsed={collapsed}
-                  onHover={handleMouseEnter}
-                  onLeave={handleMouseLeave}
-                />
-
-                {/* বাংলা সোর্স */}
-                {newsSources.bn && newsSources.bn.length > 0 && (
-                  <>
-                    {!collapsed && (
-                      <div className="mt-4 mb-2 px-3 text-xs font-bold text-zinc-400 uppercase tracking-widest">
-                        বাংলা সংবাদ মাধ্যম
-                      </div>
-                    )}
-                    {newsSources.bn.map((source: any) => (
-                      <SidebarItem
-                        key={source.source_key}
-                        href={`/news/source/${source.source_key}`}
-                        icon={Newspaper}
-                        label={source.source_name}
-                        isActive={pathname.includes(source.source_key)}
-                        collapsed={collapsed}
-                        onHover={handleMouseEnter}
-                        onLeave={handleMouseLeave}
-                        badge={source.total}
-                      />
-                    ))}
-                  </>
-                )}
-
-                {/* English Sources */}
-                {newsSources.en && newsSources.en.length > 0 && (
-                  <>
-                    {!collapsed && (
-                      <div className="mt-4 mb-2 px-3 text-xs font-bold text-zinc-400 uppercase tracking-widest">
-                        English Media
-                      </div>
-                    )}
-                    {newsSources.en.map((source: any) => (
-                      <SidebarItem
-                        key={source.source_key}
-                        href={`/news/source/${source.source_key}`}
-                        icon={Newspaper}
-                        label={source.source_name}
-                        isActive={pathname.includes(source.source_key)}
-                        collapsed={collapsed}
-                        onHover={handleMouseEnter}
-                        onLeave={handleMouseLeave}
-                        badge={source.total}
-                      />
-                    ))}
-                  </>
-                )}
-              </div>
-            )}
-
-            {/* ===================== BUYSELL (Dynamic) ===================== */}
-            {pathname.startsWith("/buysell") && (
-              <div className="space-y-1">
-                {!collapsed && (
-                  <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
-                    ক্রয়/বিক্রয়
-                  </h3>
-                )}
-                <SidebarItem
-                  href="/buysell/all"
-                  icon={ShoppingCart}
-                  label="সব ক্যাটাগরি"
-                  isActive={pathname === "/buysell/all"}
-                  collapsed={collapsed}
-                  onHover={handleMouseEnter}
-                  onLeave={handleMouseLeave}
-                />
-                <SidebarItem
-                  href="/buysell/post-ad"
-                  icon={Plus}
-                  label="পোস্ট যোগ করুন"
-                  isActive={pathname === "/buysell/post-ad"}
-                  collapsed={collapsed}
-                  onHover={handleMouseEnter}
-                  onLeave={handleMouseLeave}
-                />
-                {buysellCategories.map((cat) => (
-                  <SidebarItem
-                    key={cat.slug || cat.id}
-                    href={`/buysell/category/${cat.slug}`}
-                    icon={ShoppingCart}
-                    label={cat.name}
-                    isActive={pathname.includes(cat.slug)}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                ))}
-              </div>
-            )}
 
             {/* ===================== CONTACT (Dynamic) ===================== */}
             {/* ===================== CONTACT (Dynamic) ===================== */}
@@ -782,17 +693,22 @@ export default function Sidebar() {
         </div>
 
         {/* Footer */}
-        <div className="border-t border-zinc-200 p-3 dark:border-zinc-800">
-          <SidebarItem
-            onClick={openSettingsModal}
-            icon={Settings}
-            label="সেটিংস"
-            collapsed={collapsed}
-            onHover={handleMouseEnter}
-            onLeave={handleMouseLeave}
-          />
-          <SidebarProfileMenu collapsed={collapsed} />
-        </div>
+        {/* Footer */}
+<div className="border-t border-zinc-200 p-2 dark:border-zinc-800">
+  <SidebarItem
+    onClick={openSettingsModal}
+    icon={Settings}
+    label="সেটিংস"
+    collapsed={collapsed}
+    onHover={handleMouseEnter}
+    onLeave={handleMouseLeave}
+  />
+  <SidebarProfileMenu
+    collapsed={collapsed}
+    onHover={handleMouseEnter}
+    onLeave={handleMouseLeave}
+  />
+</div>
       </aside>
     </>
   );

@@ -176,8 +176,8 @@ export default function IntroductionClient() {
       {/* Grouped List */}
       <section className="space-y-10">
         {isLoading ? (
-          <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
+         <div className="space-y-4">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
               <div key={i} className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 animate-pulse">
                 <div className="flex gap-4">
                   <div className="w-16 h-16 rounded-xl bg-zinc-200 dark:bg-zinc-700" />

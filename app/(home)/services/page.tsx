@@ -143,7 +143,7 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      <hr className="border-zinc-200 dark:border-zinc-800 opacity-50 my-12" />
+      <hr className="border-zinc-200 dark:border-zinc-700 opacity-50 my-12" />
 
       {/* Content Section (AdSense thin-content fix) */}
       <article className="space-y-6">

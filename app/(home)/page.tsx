@@ -123,38 +123,36 @@ export default function HomePage() {
 
         {/* Dynamic Services Cards */}
         <section aria-label="সকল সেবা">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-6">
-            {services.map((service, index) => {
-              const IconComponent = service.icon;
-              return (
-                <Link
-                  key={index}
-                  href={service.href}
-                  className="group relative flex flex-col items-center justify-between h-full p-5 text-center bg-white dark:bg-zinc-900/60 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 hover:border-emerald-500 dark:hover:border-emerald-500/50 hover:shadow-xl hover:shadow-emerald-500/5 transition-all duration-300"
-                >
-                  <div className="p-3.5 mb-3 rounded-2xl bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300 transform group-hover:scale-110">
-                    <IconComponent className="w-7 h-7 sm:w-8 sm:h-8" />
-                  </div>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+          {services.map((service, index) => {
+            const Icon = service.icon;
+            return (
+              <Link
+                key={index}
+                href={service.href}
+                className="relative flex flex-col items-center h-full p-4 text-center transition-all duration-200 border border-transparent group rounded-3xl bg-zinc-50 dark:bg-white/5 hover:border-zinc-300 dark:hover:border-zinc-600/50 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50"
+              >
+                <div className="mb-3 transition-transform duration-200 transform group-hover:scale-110 text-zinc-900 dark:text-white">
+                  <Icon className="w-12 h-12 stroke-[1.5]" />
+                </div>
 
-                  <div className="space-y-1">
-                    <h3 className="font-bold text-sm sm:text-base text-zinc-900 dark:text-zinc-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                      {service.label}
-                    </h3>
+                <h3 className="text-lg font-medium text-zinc-900 dark:text-white transition-colors group-hover:font-bold">
+                  {service.label}
+                </h3>
 
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2 leading-relaxed">
-                      {service.details}
-                    </p>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
+                <span className="mt-2 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
+                  {service.details}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
         </section>
 
-        <hr className="border-zinc-200 dark:border-zinc-800 my-12" />
+        <hr className="border-zinc-200 dark:border-zinc-700 my-12" />
 
         {/* Content Section (SEO & AdSense Optimized) */}
-        <article className="bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 sm:p-8 space-y-6">
+        <article className="space-y-6">
           <h2 className="text-xl sm:text-2xl text-emerald-600 dark:text-emerald-400 font-bold">
             তথ্যবক্স (Totthobox) — আপনার দৈনন্দিন ডিজিটাল সহায়ক
           </h2>

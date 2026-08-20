@@ -58,17 +58,19 @@ export default function HomeLayout({
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} ${notoBengali.variable} h-full antialiased`}
     >
+      <head>
+        <link rel="preconnect" href="https://translate.googleapis.com" />
+        <link rel="dns-prefetch" href="https://translate.googleapis.com" />
+      </head>
       <body
-        suppressHydrationWarning
         className="min-h-full bg-white dark:bg-zinc-800 text-slate-900 transition-colors duration-200 selection:bg-emerald-500 selection:text-white dark:text-slate-50"
       >
         <SettingsModalProvider>
           <SidebarProvider>
             <ThemeProvider>
               <div className="flex min-h-screen">
-                {/* Main content area */}
                 <div className="flex min-h-screen flex-1 flex-col">
-                  <div className="sticky top-0">
+                  <div className="sticky top-0 z-50">
                     <NavbarHeader />
                   </div>
                   <main className="flex-1 w-full">{children}</main>
@@ -81,7 +83,6 @@ export default function HomeLayout({
           </SidebarProvider>
         </SettingsModalProvider>
 
-        {/* ক্লিন এবং রিইউজেবল গুগল ট্রান্সলেট কম্পোনেন্ট */}
         <GoogleTranslate />
       </body>
     </html>

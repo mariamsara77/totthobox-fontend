@@ -3,9 +3,17 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import useSWRInfinite from "swr/infinite";
-import { Map, Search, X, ArrowRight, MapPin, Loader2 } from "lucide-react";
+import {
+  Building2,
+  Search,
+  X,
+  ArrowRight,
+  MapPin,
+  Loader2,
+} from "lucide-react";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://totthobox.com";
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://totthobox.com";
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 type Item = {
@@ -19,7 +27,7 @@ type Item = {
   district?: string;
 };
 
-export default function TourismClient() {
+export default function EstablishmentClient() {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [type, setType] = useState("");
@@ -38,7 +46,7 @@ export default function TourismClient() {
   }, [search]);
 
   useEffect(() => {
-    fetch(`${API_BASE}/api/tourism-bd/filters`)
+    fetch(`${API_BASE}/api/establishment-bd/filters`)
       .then((r) => r.json())
       .then((j) => {
         setDivisions(j.divisions || []);
@@ -54,7 +62,9 @@ export default function TourismClient() {
       setDistricts([]);
       return;
     }
-    fetch(`${API_BASE}/api/tourism-bd/districts?division_id=${divisionId}`)
+    fetch(
+      `${API_BASE}/api/establishment-bd/districts?division_id=${divisionId}`
+    )
       .then((r) => r.json())
       .then((j) => setDistricts(j.data || []));
   }, [divisionId]);
@@ -65,7 +75,9 @@ export default function TourismClient() {
       setThanas([]);
       return;
     }
-    fetch(`${API_BASE}/api/tourism-bd/thanas?district_id=${districtId}`)
+    fetch(
+      `${API_BASE}/api/establishment-bd/thanas?district_id=${districtId}`
+    )
       .then((r) => r.json())
       .then((j) => setThanas(j.data || []));
   }, [districtId]);
@@ -80,13 +92,14 @@ export default function TourismClient() {
     if (divisionId) p.set("division_id", divisionId);
     if (districtId) p.set("district_id", districtId);
     if (thanaId) p.set("thana_id", thanaId);
-    return `${API_BASE}/api/tourism-bd?${p.toString()}`;
+    return `${API_BASE}/api/establishment-bd?${p.toString()}`;
   };
 
-  const { data, size, setSize, isValidating, error } = useSWRInfinite(getKey, fetcher, {
-    revalidateFirstPage: false,
-    revalidateOnFocus: false,
-  });
+  const { data, size, setSize, isValidating, error } = useSWRInfinite(
+    getKey,
+    fetcher,
+    { revalidateFirstPage: false, revalidateOnFocus: false }
+  );
 
   const items: Item[] = data ? data.flatMap((p) => p.data || []) : [];
   const hasMore = data?.[data.length - 1]?.meta?.has_more ?? false;
@@ -99,27 +112,19 @@ export default function TourismClient() {
 
   const hasFilters = !!(search || type || divisionId || districtId || thanaId);
 
-  const resetFilters = () => {
-    setSearch("");
-    setType("");
-    setDivisionId("");
-    setDistrictId("");
-    setThanaId("");
-  };
-
   return (
     <div className="max-w-2xl mx-auto space-y-6 p-4 sm:p-6">
       <header>
         <h1 className="text-2xl font-bold flex items-center gap-2 text-zinc-900 dark:text-zinc-100">
-          <Map className="w-6 h-6 text-amber-600" />
-          বাংলাদেশের পর্যটন কেন্দ্র
+          <Building2 className="w-6 h-6 text-amber-600" />
+          বাংলাদেশের স্থাপনাসমূহ
         </h1>
         <p className="text-sm text-zinc-500 mt-1">
-          সকল জেলার দর্শনীয় স্থান, ভ্রমণ গাইড ও পর্যটন তথ্য
+          সকল জেলার গুরুত্বপূর্ণ সরকারি ও বেসরকারি প্রতিষ্ঠান, অফিস ও স্থাপনার
+          সম্পূর্ণ তালিকা
         </p>
       </header>
 
-      {/* Search + filters */}
       <div className="space-y-3">
         <div className="flex gap-3">
           <div className="relative flex-1">
@@ -133,7 +138,14 @@ export default function TourismClient() {
           </div>
           {hasFilters && (
             <button
-              onClick={resetFilters}
+              type="button"
+              onClick={() => {
+                setSearch("");
+                setType("");
+                setDivisionId("");
+                setDistrictId("");
+                setThanaId("");
+              }}
               className="p-2.5 rounded-xl border border-zinc-400/25"
             >
               <X className="w-5 h-5" />
@@ -154,7 +166,6 @@ export default function TourismClient() {
               </option>
             ))}
           </select>
-
           <select
             value={divisionId}
             onChange={(e) => setDivisionId(e.target.value)}
@@ -167,7 +178,6 @@ export default function TourismClient() {
               </option>
             ))}
           </select>
-
           <select
             value={districtId}
             onChange={(e) => setDistrictId(e.target.value)}
@@ -181,7 +191,6 @@ export default function TourismClient() {
               </option>
             ))}
           </select>
-
           <select
             value={thanaId}
             onChange={(e) => setThanaId(e.target.value)}
@@ -199,7 +208,7 @@ export default function TourismClient() {
       </div>
 
       {hasFilters && !isLoading && (
-        <p className="text-xs text-zinc-500">{total}টি ফলাফল পাওয়া গেছে</p>
+        <p className="text-xs text-zinc-500">{total}টি ফলাফল</p>
       )}
 
       <section className="space-y-4">
@@ -219,28 +228,32 @@ export default function TourismClient() {
           </div>
         ) : items.length === 0 ? (
           <div className="text-center py-16 text-zinc-500">
-            <p className="text-lg font-medium">কোনো স্থান পাওয়া যায়নি</p>
+            কোনো স্থাপনা পাওয়া যায়নি
           </div>
         ) : (
           items.map((item) => (
             <Link
               key={item.id}
-              href={`/bangladesh/tourism/${item.slug}`}
+              href={`/bangladesh/establishment/${item.slug}`}
               className="block rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30 transition"
             >
               <div className="flex gap-4 items-start">
-                <div className="shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-zinc-200 dark:bg-zinc-800">
+                <div className="w-16 h-16 rounded-xl overflow-hidden bg-zinc-200 dark:bg-zinc-800 shrink-0">
                   {item.image_url ? (
-                    <img src={item.image_url} alt={item.title} className="w-full h-full object-cover" />
+                    <img
+                      src={item.image_url}
+                      alt={item.title}
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <Map className="w-7 h-7 text-zinc-400" />
+                      <Building2 className="w-7 h-7 text-zinc-400" />
                     </div>
                   )}
                 </div>
                 <div className="flex-1 min-w-0 space-y-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 line-clamp-1">
+                    <h2 className="text-lg font-semibold line-clamp-1">
                       {item.title}
                     </h2>
                     {item.type_label && (
@@ -273,6 +286,7 @@ export default function TourismClient() {
       {hasMore && (
         <div className="flex justify-center py-6">
           <button
+            type="button"
             onClick={() => setSize(size + 1)}
             disabled={isValidating}
             className="px-5 py-2.5 rounded-xl border border-zinc-400/25 text-sm disabled:opacity-50"
@@ -281,17 +295,6 @@ export default function TourismClient() {
           </button>
         </div>
       )}
-
-      {/* About SEO block — Livewire-এর মতো সংক্ষেপে */}
-      <section className="space-y-3 pt-6 border-t border-zinc-400/25 text-sm text-zinc-600 dark:text-zinc-400">
-        <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
-          বাংলাদেশের পর্যটন কেন্দ্র সম্পর্কে
-        </h2>
-        <p>
-          এই পেজে বাংলাদেশের সকল জেলার দর্শনীয় স্থান, ঐতিহাসিক নিদর্শন ও প্রাকৃতিক সৌন্দর্যের
-          তালিকা দেওয়া আছে। জেলা বা ধরন অনুসারে ফিল্টার করে প্রয়োজনীয় স্থান খুঁজে নিন।
-        </p>
-      </section>
     </div>
   );
 }
