@@ -195,9 +195,9 @@ export default function MediaConverter() {
       command.push(outputName);
       await ffmpeg.exec(command);
 
-      const data = await ffmpeg.readFile(outputName);
-      const blob = new Blob([data], { type: getMimeType(targetFormat) });
-      const url = URL.createObjectURL(blob);
+const data = await ffmpeg.readFile(outputName);
+const blob = new Blob([data as unknown as BlobPart], { type: getMimeType(targetFormat) });
+const url = URL.createObjectURL(blob);
 
       setDownloadUrl(url);
       setStatus("completed");

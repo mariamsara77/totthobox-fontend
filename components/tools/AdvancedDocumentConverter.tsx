@@ -105,7 +105,7 @@ export default function AdvancedDocumentConverter() {
       pages.forEach((p) => merged.addPage(p));
     }
     const pdfBytes = await merged.save();
-    return new Blob([pdfBytes], { type: "application/pdf" });
+   return new Blob([pdfBytes.buffer as ArrayBuffer], { type: "application/pdf" });
   };
 
   const splitPDF = async () => {
@@ -136,7 +136,7 @@ export default function AdvancedDocumentConverter() {
       }
     }
     const pdfBytes = await newDoc.save();
-    return new Blob([pdfBytes], { type: "application/pdf" });
+    return new Blob([pdfBytes.buffer as ArrayBuffer], { type: "application/pdf" });
   };
 
   // ===== PDF → Images (Dynamic import - এরর ফিক্স) =====
@@ -152,7 +152,7 @@ export default function AdvancedDocumentConverter() {
       import.meta.url
     ).toString();
 
-    pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+   pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
     const bytes = await files[0].file.arrayBuffer();
     const pdf = await pdfjs.getDocument({ data: bytes }).promise;
@@ -204,7 +204,7 @@ export default function AdvancedDocumentConverter() {
       });
     }
     const pdfBytes = await pdf.save();
-    return new Blob([pdfBytes], { type: "application/pdf" });
+   return new Blob([pdfBytes.buffer as ArrayBuffer], { type: "application/pdf" });
   };
 
   const rotatePDF = async () => {
@@ -214,7 +214,7 @@ export default function AdvancedDocumentConverter() {
     const pages = pdf.getPages();
     pages.forEach((p) => p.setRotation(degrees(rotateAngle)));
     const pdfBytes = await pdf.save();
-    return new Blob([pdfBytes], { type: "application/pdf" });
+   return new Blob([pdfBytes.buffer as ArrayBuffer], { type: "application/pdf" });
   };
 
   const docxToHtml = async () => {

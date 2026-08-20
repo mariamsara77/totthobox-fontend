@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect, useRef } from "react";
+import { Variants } from "framer-motion";
 import { 
   format, addMonths, subMonths, startOfMonth, endOfMonth, getDay, 
   isSameDay, parseISO, addDays, subDays 
@@ -186,11 +187,22 @@ export default function AdvancedBanglaCalendar() {
   };
 
   // --- Animation Variants ---
-  const slideVariants = {
-    enter: (direction: number) => ({ x: direction > 0 ? 100 : -100, opacity: 0 }),
-    center: { x: 0, opacity: 1, transition: { duration: 0.3, ease: "easeInOut" } },
-    exit: (direction: number) => ({ x: direction < 0 ? 100 : -100, opacity: 0, transition: { duration: 0.3, ease: "easeInOut" } })
-  };
+const slideVariants: Variants = {
+  enter: (direction: number) => ({ 
+    x: direction > 0 ? 100 : -100, 
+    opacity: 0 
+  }),
+  center: { 
+    x: 0, 
+    opacity: 1, 
+    transition: { duration: 0.3, ease: "easeInOut" } 
+  },
+  exit: (direction: number) => ({ 
+    x: direction < 0 ? 100 : -100, 
+    opacity: 0, 
+    transition: { duration: 0.3, ease: "easeInOut" } 
+  })
+};
 
   return (
     <div className="max-w-md mx-auto space-y-4 select-none relative">
