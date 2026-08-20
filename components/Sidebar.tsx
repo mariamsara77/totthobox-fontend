@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import BrandIcon from "@/components/BrandIcon";
 import SidebarProfileMenu from "./SidebarProfileMenu";
 
@@ -140,7 +140,6 @@ function SidebarItem({
 export default function Sidebar() {
   const { openSettingsModal } = useSettingsModal();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const { isOpen, setIsOpen, isCollapsed, toggleCollapsed } = useSidebar();
 
   // Tooltip
