@@ -30,6 +30,17 @@ export default function Head() {
       <meta name="mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+      {/* Vapid Key */}
+      <meta name="vapid-public-key" content={process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || 'BBXFXNIJfoxxN-BC24pweOIBTZIHEmR9_XbbRyuqGyncTQnzKmhm65R4HGaZPYrdoLfkimilv3U4he7CK0_paBU'} />
+
+
+      {/* Google AdSense Script */}
+      <script
+        async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9522604367420521"
+        crossOrigin="anonymous"
+      ></script>
     </>
   );
 }
