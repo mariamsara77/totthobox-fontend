@@ -18,11 +18,10 @@ export default function AiChatShell({
   const uuid =
     parts[0] === "ai" && parts[1] === "chat" && parts[2] ? parts[2] : null;
 
-  // মোবাইল এবং ডেস্কটপ উভয়ের জন্য একটিমাত্র State
   const [isOpen, setIsOpen] = useState(false);
   const [isGuest, setIsGuest] = useState(true);
 
-  // ডেস্কটপে ডিফল্টভাবে সাইডবার ওপেন রাখার জন্য
+  // ডেস্কটপে ডিফল্টভাবে সাইডবার ওপেন রাখা
   useEffect(() => {
     if (window.innerWidth >= 768) {
       setIsOpen(true);
@@ -37,15 +36,25 @@ export default function AiChatShell({
   }, []);
 
   return (
-    <div className="flex h-[100dvh] w-full overflow-hidden bg-white dark:bg-zinc-950">
-      {/* Animated Sidebar (Mobile & Desktop) */}
+    <div className="flex h-[100dvh] w-full overflow-hidden bg-white dark:bg-zinc-950 relative">
+      {/* Sidebar Area */}
+      {/* 
+        মোবাইলে এটি 'fixed' থাকবে এবং স্ক্রিনের বামে হাইড হবে (-translate-x-full)।
+        ডেস্কটপে এটি 'static' ফ্লেক্স আইটেম হিসেবে থাকবে।
+      */}
       <aside
-        className={`shrink-0 transition-all duration-300 ease-in-out h-full overflow-hidden ${
-          isOpen ? "w-[280px]" : "w-0"
-        }`}
+        className={`
+          fixed inset-y-0 left-0 z-30 h-full overflow-hidden transition-all duration-300 ease-in-out
+          md:static md:shrink-0
+          ${
+            isOpen
+              ? "translate-x-0 w-[280px]"
+              : "-translate-x-full w-[280px] md:translate-x-0 md:w-0"
+          }
+        `}
       >
+        {/* ইনার কন্টেইনারের সাইজ ফিক্সড, তাই সাইডবারের ভেতরের কন্টেন্ট কখনো ভাঙবে না */}
         <div className="w-[280px] h-full flex flex-col border-r border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900">
-          {/* Mobile Sidebar Header (Optional: For better UX) */}
           <div className="md:hidden flex items-center justify-between px-3 py-2.5 border-b border-zinc-200 dark:border-zinc-800 shrink-0">
             <span className="text-sm font-medium">চ্যাট হিস্ট্রি</span>
             <button
@@ -56,13 +65,11 @@ export default function AiChatShell({
             </button>
           </div>
 
-          {/* Sidebar Content */}
           <div className="flex-1 overflow-hidden">
             <ChatSidebar
               currentUuid={uuid}
               isGuest={isGuest}
               onNavigate={() => {
-                // মোবাইলে কোনো লিঙ্কে ক্লিক করলে সাইডবার হাইড হয়ে যাবে
                 if (window.innerWidth < 768) setIsOpen(false);
               }}
             />
@@ -72,15 +79,22 @@ export default function AiChatShell({
 
       {/* Main Content Area */}
       {/* 
-        Magic happens here: 
-        Mobile: 'w-full shrink-0' - এটি কন্টেন্টকে ছোট হতে দেয় না, ফলে সাইডবার ওপেন হলে এটি ডানদিকে সরে যায়।
-        Desktop: 'md:w-auto md:shrink' - ডেস্কটপে এটি ফ্লেক্সিবল থাকে, ফলে সাইডবার ওপেন হলে নিজে থেকেই সাইজ এডজাস্ট করে নেয়।
+        মোবাইলে এটি 'absolute' এবং ফুল স্ক্রিন (w-full)। সাইডবার ওপেন হলে এটি ২৮০ পিক্সেল ডানদিকে সরে যাবে (translate-x-[280px])। 
+        ফলে ভেতরের কোনো টেক্সট বা লেআউট সংকুচিত হবে না, স্ক্রিনের ডানদিকের কিছুটা অংশ ডিসপ্লের বাইরে চলে যাবে।
+        ডেস্কটপে এটি সাধারণ 'flex-1' কন্টেইনার হিসেবে কাজ করবে।
       */}
-      <div className="flex-1 w-full shrink-0 md:w-auto md:shrink h-full flex flex-col transition-all duration-300 relative">
-        {/* Mobile Overlay - যখন সাইডবার ওপেন থাকে তখন মেইন কন্টেন্টটি ক্লিক করে বন্ধ করার জন্য */}
+      <main
+        className={`
+          absolute inset-y-0 left-0 z-20 w-full h-full flex flex-col bg-white dark:bg-zinc-950
+          transition-transform duration-300 ease-in-out
+          md:relative md:flex-1
+          ${isOpen ? "translate-x-[280px] md:translate-x-0" : "translate-x-0"}
+        `}
+      >
+        {/* Mobile Overlay - যখন সাইডবার ওপেন থাকে, মেইন কন্টেন্টের ওপর ক্লিক করলে বন্ধ হওয়ার জন্য */}
         {isOpen && (
           <div
-            className="absolute inset-0 z-40 bg-black/10 dark:bg-black/40 backdrop-blur-[1px] md:hidden"
+            className="absolute inset-0 z-40 bg-black/10 dark:bg-black/40 backdrop-blur-[1px] md:hidden cursor-pointer"
             onClick={() => setIsOpen(false)}
           />
         )}
@@ -98,9 +112,9 @@ export default function AiChatShell({
           </span>
         </div>
 
-        {/* Chat Component rendering area */}
+        {/* Chat Content */}
         <div className="flex-1 overflow-hidden relative">{children}</div>
-      </div>
+      </main>
     </div>
   );
 }
