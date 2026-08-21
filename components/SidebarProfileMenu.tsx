@@ -30,7 +30,7 @@ export default function SidebarProfileMenu({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://totthobox.com';
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://admin.totthobox.com';
 
   useEffect(() => {
     const fetchUserData = async () => {

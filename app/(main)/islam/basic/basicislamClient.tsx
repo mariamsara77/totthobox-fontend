@@ -45,38 +45,58 @@ export default function BasicIslamClient() {
   const [creators, setCreators] = useState<Creator[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showCreators, setShowCreators] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://totthobox.com';
-        if (!baseUrl) {
-          console.error("NEXT_PUBLIC_API_BASE_URL is not defined");
-          setLoading(false);
-          return;
-        }
+      setError(null);
 
-        const url = `${baseUrl}/api/islam/basic?search=${encodeURIComponent(search)}`;
+      try {
+        // ✅ Prefer environment variable, fallback to production API
+        const baseUrl =
+          process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+
+        const url = `${baseUrl}/api/islam/basic${
+          search ? `?search=${encodeURIComponent(search)}` : ""
+        }`;
+
+        console.log("Fetching:", url); // Debug on Vercel → check browser console
+
         const res = await fetch(url, {
-          headers: { Accept: "application/json" },
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          // Important for some hosting setups
+          cache: "no-store",
         });
+
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+        }
 
         const contentType = res.headers.get("content-type");
         if (!contentType?.includes("application/json")) {
           const text = await res.text();
-          console.error("Non-JSON response:", text.slice(0, 300));
-          throw new Error("API returned non-JSON");
+          console.error("Non-JSON response:", text.slice(0, 500));
+          throw new Error("API returned non-JSON response");
         }
 
         const json = await res.json();
+
         if (json.success) {
-          setItems(json.data.items || []);
-          setCreators(json.data.creators || []);
+          setItems(json.data?.items || []);
+          setCreators(json.data?.creators || []);
+        } else {
+          throw new Error(json.message || "API returned success: false");
         }
-      } catch (e) {
+      } catch (e: any) {
         console.error("Fetch error:", e);
+        setError(e.message || "ডেটা লোড করতে সমস্যা হয়েছে");
+        setItems([]);
+        setCreators([]);
       } finally {
         setLoading(false);
       }
@@ -109,7 +129,7 @@ export default function BasicIslamClient() {
           </button>
 
           {showCreators && (
-            <div className="absolute right-0 top-full mt-2 w-80 max-h-112 overflow-y-auto rounded-2xl border border-zinc-200 dark:border-zinc-700 bg-zinc-400/10 shadow-xl z-50 p-4 space-y-4">
+            <div className="absolute right-0 top-full mt-2 w-80 max-h-112 overflow-y-auto rounded-2xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-xl z-50 p-4 space-y-4">
               <div className="space-y-1">
                 <h2 className="font-semibold text-zinc-800 dark:text-zinc-200">
                   তথ্য প্রদানকারীগণ ({creators.length})
@@ -128,7 +148,7 @@ export default function BasicIslamClient() {
                   creators.map((creator) => (
                     <div
                       key={creator.id}
-                      className="p-2.5 rounded-xl bg-zinc-400/10 space-y-2"
+                      className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 space-y-2"
                     >
                       <div className="flex items-start gap-3">
                         <div className="relative shrink-0">
@@ -194,7 +214,7 @@ export default function BasicIslamClient() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="বিষয় খুঁজুন (যেমন: নামাজ, যাকাত)..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-400/10 border-0 focus:ring-2 focus:ring-emerald-500 outline-none"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border-0 focus:ring-2 focus:ring-emerald-500 outline-none"
             aria-label="বিষয় খুঁজুন"
           />
         </div>
@@ -215,6 +235,20 @@ export default function BasicIslamClient() {
         </p>
       )}
 
+      {/* Error Message */}
+      {error && (
+        <div className="rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 text-sm text-red-700 dark:text-red-300">
+          <p className="font-medium">ডেটা লোড করতে সমস্যা হয়েছে</p>
+          <p className="mt-1 text-xs opacity-80">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-2 text-xs underline"
+          >
+            আবার চেষ্টা করুন
+          </button>
+        </div>
+      )}
+
       {/* Content List */}
       <section className="space-y-4" aria-labelledby="content-list-heading">
         <h2 id="content-list-heading" className="sr-only">
@@ -228,17 +262,17 @@ export default function BasicIslamClient() {
               className="rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 animate-pulse"
             >
               <div className="flex gap-4">
-                <div className="w-12 h-12 rounded-full bg-zinc-400/10 shrink-0" />
+                <div className="w-12 h-12 rounded-full bg-zinc-200 dark:bg-zinc-700 shrink-0" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-4 w-16 bg-zinc-400/10 rounded" />
-                  <div className="h-5 w-3/4 bg-zinc-400/10 rounded" />
-                  <div className="h-4 w-full bg-zinc-400/10 rounded" />
-                  <div className="h-4 w-2/3 bg-zinc-400/10 rounded" />
+                  <div className="h-4 w-16 bg-zinc-200 dark:bg-zinc-700 rounded" />
+                  <div className="h-5 w-3/4 bg-zinc-200 dark:bg-zinc-700 rounded" />
+                  <div className="h-4 w-full bg-zinc-200 dark:bg-zinc-700 rounded" />
+                  <div className="h-4 w-2/3 bg-zinc-200 dark:bg-zinc-700 rounded" />
                 </div>
               </div>
             </div>
           ))
-        ) : items.length === 0 ? (
+        ) : items.length === 0 && !error ? (
           <div className="text-center py-16 text-zinc-500">
             <BookOpen className="w-12 h-12 mx-auto mb-3 opacity-40" />
             <p>কোনো ইসলামিক তথ্য পাওয়া যায়নি।</p>
@@ -313,7 +347,10 @@ export default function BasicIslamClient() {
       </section>
 
       {/* About Section */}
-      <section aria-labelledby="about-islam" className="space-y-4 pt-6 border-t border-zinc-200 dark:border-zinc-800">
+      <section
+        aria-labelledby="about-islam"
+        className="space-y-4 pt-6 border-t border-zinc-200 dark:border-zinc-800"
+      >
         <h2 id="about-islam" className="text-lg font-bold flex items-center gap-2">
           <Info className="w-5 h-5 text-emerald-600" />
           ইচ্ছাকৃত তথ্য ও মূলভিত্তি
@@ -361,11 +398,13 @@ export default function BasicIslamClient() {
           ].map((faq, i) => (
             <details
               key={i}
-              className="group rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-400/10 overflow-hidden"
+              className="group rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/30 overflow-hidden"
             >
-              <summary className="flex items-center justify-between cursor-pointer px-4 py-3 font-medium text-zinc-800 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 list-none">
+              <summary className="flex items-center justify-between cursor-pointer px-4 py-3 font-medium text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 list-none">
                 <span>{faq.q}</span>
-                <span className="text-zinc-400 group-open:rotate-180 transition-transform">▼</span>
+                <span className="text-zinc-400 group-open:rotate-180 transition-transform">
+                  ▼
+                </span>
               </summary>
               <div className="px-4 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
                 {faq.a}

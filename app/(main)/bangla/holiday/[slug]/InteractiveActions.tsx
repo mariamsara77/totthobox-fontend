@@ -34,7 +34,7 @@ useEffect(() => {
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL || "https://totthobox.com"}/api/holidays/${holidayId}/reaction-status`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com"}/api/holidays/${holidayId}/reaction-status`,
         {
           headers: getAuthHeaders(),
         }
@@ -68,7 +68,7 @@ useEffect(() => {
   setLoading(true);
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL || "https://totthobox.com"}/api/holidays/${holidayId}/react`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com"}/api/holidays/${holidayId}/react`,
       {
         method: "POST",
         headers: {

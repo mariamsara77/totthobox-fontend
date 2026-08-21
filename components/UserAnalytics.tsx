@@ -9,7 +9,7 @@ export default function UserAnalytics() {
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://totthobox.com';
+        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://admin.totthobox.com';
         const res = await fetch(`${baseUrl}/api/analytics/user-count`, {
           cache: 'no-store',
         });

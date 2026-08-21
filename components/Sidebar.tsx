@@ -157,7 +157,7 @@ export default function Sidebar() {
   const [softwarePlatforms, setSoftwarePlatforms] = useState<string[]>([]);
 
   // API Base URL
-  const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://totthobox.com";
+  const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
   // Mobile scroll lock
   useEffect(() => {

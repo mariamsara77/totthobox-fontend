@@ -23,7 +23,7 @@ export default function ProfileMenu() {
   const router = useRouter();
 
   // এক জায়গায় baseUrl
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://totthobox.com';
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://admin.totthobox.com';
 
   useEffect(() => {
     const fetchUserData = async () => {

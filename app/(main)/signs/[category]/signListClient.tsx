@@ -56,7 +56,7 @@ export default function SignListClient({
     const fetchData = async () => {
       setLoading(true);
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://totthobox.com';
+        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://admin.totthobox.com';
         if (!baseUrl) return;
 
         const url = `${baseUrl}/api/signs/${categorySlug}?search=${encodeURIComponent(search)}`;

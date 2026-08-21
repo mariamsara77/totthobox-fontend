@@ -8,7 +8,6 @@ import { SidebarProvider } from "@/context/SidebarContext";
 import { SettingsModalProvider } from "@/context/SettingsModalContext";
 import SettingsModalWrapper from "@/components/SettingsModalWrapper";
 import GoogleTranslate from "@/components/GoogleTranslate";
-import Head from "@/components/partials/Head";
 import TagManager from "@/components/partials/TagManager";
 
 const geistSans = Geist({
@@ -59,11 +58,7 @@ export default function HomeLayout({
       lang="bn"
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} ${notoBengali.variable} h-full antialiased`}
-    >
-        <head>
-             <Head/>
-            </head>
-     
+    >     
       <body
       suppressHydrationWarning
         className="min-h-full bg-white dark:bg-zinc-800 text-slate-900 transition-colors duration-200 selection:bg-emerald-500 selection:text-white dark:text-slate-50"

@@ -5,7 +5,6 @@ import { ThemeProvider } from "../providers";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Sidebar from "@/components/Sidebar";
-import Head from "@/components/partials/Head";
 import TagManager from "@/components/partials/TagManager";
 import { SidebarProvider } from "@/context/SidebarContext";
 import { SettingsModalProvider } from "@/context/SettingsModalContext";
@@ -61,9 +60,6 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} ${notoBengali.variable} h-full antialiased`}
     >
-      <head>
-       <Head/>
-      </head>
       <body
         suppressHydrationWarning
         className="min-h-full bg-white dark:bg-zinc-800 text-slate-900 transition-colors duration-200 selection:bg-emerald-500 selection:text-white dark:text-slate-50"

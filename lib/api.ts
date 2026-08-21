@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "https://totthobox.com",
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com",
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -10,7 +10,7 @@ const api = axios.create({
 
 
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL; // e.g. https://totthobox.com
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL; // e.g. https://admin.totthobox.com
 
 async function apiFetch<T>(
   path: string,

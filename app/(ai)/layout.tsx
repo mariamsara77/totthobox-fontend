@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Noto_Sans_Bengali } from "next/font/google";
 import "../globals.css";
-import { ThemeProvider } from "../providers"; // আপনার path
-import Head from "@/components/partials/Head";
+import { ThemeProvider } from "../providers";
 import TagManager from "@/components/partials/TagManager";
 
 const geistSans = Geist({
@@ -43,10 +42,6 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} ${notoBengali.variable} h-full antialiased`}
     >
-       <head>
-                   <Head/>
-                  </head>
-           
       <body
         suppressHydrationWarning
         className="min-h-full bg-white dark:bg-zinc-800 text-slate-900 dark:text-slate-50"
