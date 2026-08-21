@@ -56,7 +56,7 @@ export default function SignListClient({
     const fetchData = async () => {
       setLoading(true);
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://totthobox.com';
         if (!baseUrl) return;
 
         const url = `${baseUrl}/api/signs/${categorySlug}?search=${encodeURIComponent(search)}`;
@@ -107,7 +107,7 @@ export default function SignListClient({
           </button>
 
           {showCreators && (
-            <div className="absolute right-0 top-full mt-2 w-80 max-h-[28rem] overflow-y-auto rounded-2xl border bg-white dark:bg-zinc-900 shadow-xl z-50 p-4 space-y-4">
+            <div className="absolute right-0 top-full mt-2 w-80 max-h-112 overflow-y-auto rounded-2xl border bg-white dark:bg-zinc-900 shadow-xl z-50 p-4 space-y-4">
               <div>
                 <h2 className="font-semibold">তথ্য প্রদানকারীগণ ({creators.length})</h2>
                 <p className="text-xs text-zinc-500">এই কন্টেন্ট তৈরিতে যারা অবদান রেখেছেন</p>

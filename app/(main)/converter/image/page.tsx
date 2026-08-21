@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     description: "Convert JPG, PNG, WebP, AVIF, SVG & more instantly in your browser. Private & free.",
   },
   alternates: {
-    canonical: "https://yourdomain.com/image-converter", // ← change to your real domain
+    canonical: "https://totthobox.com/image-converter", // ← change to your real domain
   },
 };
 
