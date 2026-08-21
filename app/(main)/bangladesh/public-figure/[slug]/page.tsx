@@ -4,7 +4,7 @@ import PersonShowClient from "./PersonShowClient";
 type Props = { params: Promise<{ slug: string }> };
 
 async function getPerson(slug: string) {
-  const base = process.env.NEXT_PUBLIC_API_BASE_URL || "https://totthobox.com";
+  const base = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
   const res = await fetch(`${base}/api/people/${slug}`, { cache: "no-store" });
   if (!res.ok) return null;
   const json = await res.json();

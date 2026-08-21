@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Download } from "lucide-react";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://totthobox.com";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
 export default function DownloadButton({
   appId,

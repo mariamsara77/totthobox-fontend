@@ -24,7 +24,7 @@ type Props = {
 export default function InteractiveActions({ introId, initialData }: Props) {
   const router = useRouter();
   const API_BASE =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "https://totthobox.com";
+    process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
   const [reactions, setReactions] = useState<Reactions>({
     like_count: initialData.reactions?.like_count ?? 0,

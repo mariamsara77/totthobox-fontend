@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import InteractiveActions from "./InteractiveActions";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://totthobox.com";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 type Intro = {

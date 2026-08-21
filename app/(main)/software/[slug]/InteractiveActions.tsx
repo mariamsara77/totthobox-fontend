@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { ThumbsUp, ThumbsDown, Share2 } from "lucide-react";
 import { getAuthHeaders, isLoggedIn } from "@/lib/auth";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://totthobox.com";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
 export default function InteractiveActions({
   appId,

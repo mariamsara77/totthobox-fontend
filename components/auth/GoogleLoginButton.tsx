@@ -2,7 +2,7 @@
 
 export default function GoogleLoginButton() {
   const handleGoogleLogin = () => {
-    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://totthobox.com";
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
     
     window.location.href = `${baseUrl}/auth/google/redirect`;
   };

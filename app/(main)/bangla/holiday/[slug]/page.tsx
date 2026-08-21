@@ -12,7 +12,7 @@ import {
 import InteractiveActions from "./InteractiveActions";
 import CreatorsTooltip from "./CreatorsTooltip";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://totthobox.com";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
 async function getHolidayData(slug: string) {
   try {

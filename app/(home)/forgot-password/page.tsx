@@ -9,7 +9,7 @@ import clsx from "clsx";
 import { Mail, ArrowLeft, CheckCircle2 } from "lucide-react";
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "https://totthobox.com",
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com",
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",

@@ -6,7 +6,7 @@ type Props = {
 };
 
 async function getTourism(slug: string) {
-  const base = process.env.NEXT_PUBLIC_API_BASE_URL || "https://totthobox.com";
+  const base = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
   const res = await fetch(`${base}/api/tourism-bd/${slug}`, {
     cache: "no-store",
   });

@@ -4,7 +4,7 @@ import HistoryShowClient from "./HistoryShowClient";
 type Props = { params: Promise<{ slug: string }> };
 
 async function getHistory(slug: string) {
-  const base = process.env.NEXT_PUBLIC_API_BASE_URL || "https://totthobox.com";
+  const base = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
   const res = await fetch(`${base}/api/history-bd/${slug}`, {
     cache: "no-store",
   });

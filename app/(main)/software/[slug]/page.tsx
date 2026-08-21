@@ -14,7 +14,7 @@ import InteractiveActions from "./InteractiveActions";
 import CreatorsTooltip from "./CreatorsTooltip";
 import DownloadButton from "./DownloadButton";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://totthobox.com";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
 async function getAppData(slug: string) {
   try {

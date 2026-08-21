@@ -44,7 +44,7 @@ export default function LoginPage() {
     try {
       // আপনার .env সেটআপ অনুযায়ী Base URL
       const baseUrl =
-        process.env.NEXT_PUBLIC_API_BASE_URL || "https://totthobox.com";
+        process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
       const response = await fetch(`${baseUrl}/api/login`, {
         method: "POST",

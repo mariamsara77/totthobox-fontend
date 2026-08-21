@@ -6,7 +6,7 @@ type Props = {
 };
 
 async function getIntro(slug: string) {
-  const base = process.env.NEXT_PUBLIC_API_BASE_URL || "https://totthobox.com";
+  const base = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
   const res = await fetch(`${base}/api/intro-bd/${slug}`, {
     next: { revalidate: 3600 },
   });

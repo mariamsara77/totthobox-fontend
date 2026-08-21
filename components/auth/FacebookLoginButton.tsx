@@ -2,7 +2,7 @@
 
 export default function FacebookLoginButton() {
   const handleFacebookLogin = () => {
-    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://totthobox.com";
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
     window.location.href = `${baseUrl}/auth/facebook/redirect`;
   };
 

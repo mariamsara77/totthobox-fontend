@@ -139,7 +139,7 @@ export default function AdvancedBanglaCalendar() {
     []
   );
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://totthobox.com";
+  const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
   const { data: apiResponse } = useSWR(
     `${apiUrl}/api/holidays-calendar?year=${viewDate.getFullYear()}`,
     fetcher,

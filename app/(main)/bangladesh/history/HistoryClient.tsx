@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 
 const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "https://totthobox.com";
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 type Item = {
