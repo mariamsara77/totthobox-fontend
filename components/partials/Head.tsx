@@ -30,27 +30,6 @@ export default function Head() {
       <meta name="mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-
-      {/* Vapid Key */}
-      <meta name="vapid-public-key" content={process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || ''} />
-
-      {/* থিম কালার */}
-      <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
-      <meta name="theme-color" content="#18181b" media="(prefers-color-scheme: dark)" />
-
-      {/* পারফরম্যান্স ও ফন্ট প্রিলোড */}
-      <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
-      <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
-
-         <link rel="preconnect" href="https://translate.googleapis.com" />
-        <link rel="dns-prefetch" href="https://translate.googleapis.com" />
-
-      {/* Google AdSense Script */}
-      <script
-        async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9522604367420521"
-        crossOrigin="anonymous"
-      ></script>
     </>
   );
 }
