@@ -95,7 +95,7 @@ export default function AdvancedBanglaCalendar() {
     '12-25': { title: 'বড়দিন', color: 'purple' },
   }), []);
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://totthobox.com';
+  const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://totthobox.com';
   const { data: apiResponse } = useSWR(
     `${apiUrl}/api/holidays?year=${viewDate.getFullYear()}`,
     fetcher,

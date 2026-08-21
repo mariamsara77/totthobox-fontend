@@ -7,7 +7,7 @@ type Props = {
 };
 
 async function getItem(category: string, sign: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
   if (!baseUrl) return null;
 
   try {

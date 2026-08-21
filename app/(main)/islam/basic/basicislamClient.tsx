@@ -51,9 +51,9 @@ export default function BasicIslamClient() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
         if (!baseUrl) {
-          console.error("NEXT_PUBLIC_API_URL is not defined");
+          console.error("NEXT_PUBLIC_API_BASE_URL is not defined");
           setLoading(false);
           return;
         }

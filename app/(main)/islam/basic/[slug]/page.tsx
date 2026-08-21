@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import BasicIslamShowClient from "./basicislamShowClient";
 
 async function getItem(slug: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
   if (!baseUrl) return null;
 
   try {

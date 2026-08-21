@@ -10,7 +10,7 @@ const api = axios.create({
 
 
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL; // e.g. https://totthobox.com
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL; // e.g. https://totthobox.com
 
 async function apiFetch<T>(
   path: string,

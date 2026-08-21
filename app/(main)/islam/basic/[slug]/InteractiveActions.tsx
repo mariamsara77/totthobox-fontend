@@ -30,7 +30,7 @@ export default function InteractiveActions({
     setMessage(null);
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
       if (!baseUrl) {
         setMessage("API URL কনফিগার করা নেই");
         return;
