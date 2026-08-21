@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Noto_Sans_Bengali } from "next/font/google";
 import "../globals.css";
 import { ThemeProvider } from "../providers";
 import TagManager from "@/components/partials/TagManager";
+import AiChatShell from "@/components/ai/AiChatShell";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,16 +27,12 @@ const notoBengali = Noto_Sans_Bengali({
 export const metadata: Metadata = {
   metadataBase: new URL("https://totthobox.com"),
   title: {
-    default: "Totthobox",
-    template: "%s | Totthobox",
+    default: "Totthobox AI",
+    template: "%s | Totthobox AI",
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AiLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="bn"
@@ -46,8 +43,10 @@ export default function RootLayout({
         suppressHydrationWarning
         className="min-h-full bg-white dark:bg-zinc-800 text-slate-900 dark:text-slate-50"
       >
-           <TagManager/>
-        <ThemeProvider>{children}</ThemeProvider>
+        <TagManager />
+        <ThemeProvider>
+          <AiChatShell>{children}</AiChatShell>
+        </ThemeProvider>
       </body>
     </html>
   );
