@@ -31,7 +31,7 @@ export default function InteractiveActions({
     setLoading(true);
     setMessage(null);
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
       if (!baseUrl) {
         setMessage("API URL কনফিগার করা নেই");
         return;

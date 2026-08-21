@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Plus, Trash2 } from "lucide-react";
 
-const API = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
 export default function ChatSidebar({
   currentUuid,

@@ -13,7 +13,7 @@ export type ChatMessage = {
   created_at?: string;
 };
 
-const API = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
 export default function ChatPanel({ uuid: initialUuid }: { uuid: string | null }) {
   const router = useRouter();
