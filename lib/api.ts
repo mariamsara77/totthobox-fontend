@@ -1,41 +1,36 @@
-import axios from "axios";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
-const api = axios.create({
-  baseURL:  process.env.NEXT_PUBLIC_API_BASE_URL || 'https://admin.totthobox.com',
-  headers: {
+export async function apiFetch(endpoint: string, options: RequestInit = {}) {
+  // auth_token এবং token দুটিই চেক করা হচ্ছে
+  const token =
+    typeof window !== "undefined"
+      ? localStorage.getItem("auth_token") || localStorage.getItem("token")
+      : null;
+
+  const defaultHeaders: HeadersInit = {
+    "Accept": "application/json",
     "Content-Type": "application/json",
-    Accept: "application/json",
-  },
-});
-
-
-
-const BASE_URL =  process.env.NEXT_PUBLIC_API_BASE_URL || 'https://admin.totthobox.com';
-
-async function apiFetch<T>(
-  path: string,
-  options: RequestInit = {},
-  token?: string
-): Promise<T> {
-  const headers: HeadersInit = {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    ...options.headers,
+    ...(token ? { "Authorization": `Bearer ${token}` } : {}),
   };
 
-  const res = await fetch(`${BASE_URL}/api${path}`, {
+  const config: RequestInit = {
     ...options,
-    headers,
-  });
+    credentials: "include",
+    headers: {
+      ...defaultHeaders,
+      ...options.headers,
+    },
+  };
 
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw { status: res.status, ...err };
+  const response = await fetch(`${API_BASE}${endpoint}`, config);
+
+  if (response.status === 401 && typeof window !== "undefined") {
+    localStorage.removeItem("auth_token");
+    localStorage.removeItem("token");
   }
 
-  return res.json();
+  return response;
 }
 
+// 🛠️ TypeScript এরর TS2613 ফিক্স করার জন্য default export যোগ করা হলো
 export default apiFetch;
-

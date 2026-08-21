@@ -4,6 +4,7 @@ import "../globals.css";
 import { ThemeProvider } from "../providers";
 import TagManager from "@/components/partials/TagManager";
 import AiChatShell from "@/components/ai/AiChatShell";
+import { AuthProvider } from "@/context/AuthContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,7 +46,9 @@ export default function AiLayout({ children }: { children: React.ReactNode }) {
       >
         <TagManager />
         <ThemeProvider>
-          <AiChatShell>{children}</AiChatShell>
+          <AuthProvider>
+            <AiChatShell>{children}</AiChatShell>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

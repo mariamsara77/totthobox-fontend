@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import ChatInput from "./ChatInput";
 import MessageList from "./MessageList";
+import { useAuth } from "@/context/AuthContext";
 
 export type ChatMessage = {
   id: string | number;
@@ -22,10 +23,19 @@ export default function ChatPanel({
   uuid: string | null;
 }) {
   const router = useRouter();
+
+  // Auth Check from AuthContext (টোকেন বের করে নিচ্ছি)
+  // যদি আপনার useAuth-এ token না থাকে, তবে localStorage থেকে নেওয়া হবে।
+  const {
+    isLoggedIn,
+    loading: authLoading,
+    token: contextToken,
+  } = useAuth() as any;
+  const isGuest = !isLoggedIn;
+
   const [uuid, setUuid] = useState<string | null>(initialUuid);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [title, setTitle] = useState("নতুন চ্যাট");
-  const [isGuest, setIsGuest] = useState(true);
   const [guestRemaining, setGuestRemaining] = useState(20);
   const [isTyping, setIsTyping] = useState(false);
   const [sending, setSending] = useState(false);
@@ -34,55 +44,94 @@ export default function ChatPanel({
     null,
   );
 
-  // Auth check
+  // 🛠️ ফিক্স ১: সব API Request-এর জন্য Authorization Header তৈরি করার ফাংশন
+  const getHeaders = useCallback(
+    (isPost = false) => {
+      // AuthContext বা localStorage থেকে টোকেন নেওয়া হচ্ছে
+      const token =
+        contextToken ||
+        (typeof window !== "undefined" ? localStorage.getItem("token") : "");
+
+      const headers: Record<string, string> = {
+        Accept: "application/json",
+      };
+
+      if (isPost) {
+        headers["Content-Type"] = "application/json";
+      }
+
+      // টোকেন থাকলে সেটি Bearer হিসেবে পাঠানো হবে
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
+      return headers;
+    },
+    [contextToken],
+  );
+
+  // ১. URL/Props থেকে initialUuid পরিবর্তন হলে uuid স্টেট আপডেট করা
   useEffect(() => {
-    fetch(`${API}/api/user`, { credentials: "include" })
-      .then((r) => {
-        setIsGuest(!r.ok);
-        if (!r.ok) loadGuestUsage();
-      })
-      .catch(() => {
-        setIsGuest(true);
-        loadGuestUsage();
-      });
-  }, []);
+    setUuid(initialUuid);
+  }, [initialUuid]);
 
   const loadGuestUsage = async () => {
     try {
       const res = await fetch(`${API}/api/ai/guest-usage`, {
         credentials: "include",
+        headers: getHeaders(), // 👈 টোকেন পাঠানো হচ্ছে
       });
       const json = await res.json();
       if (json.success) setGuestRemaining(json.data.remaining);
     } catch {}
   };
 
-  // Load session
   useEffect(() => {
-    if (!uuid || isGuest) {
-      if (!uuid) setMessages([]);
+    if (isGuest && !authLoading) {
+      loadGuestUsage();
+    }
+  }, [isGuest, authLoading, getHeaders]);
+
+  // ২. Session Load Effect (Fixes Old Chat Fetching)
+  useEffect(() => {
+    if (authLoading) return;
+
+    if (!uuid) {
+      setMessages([]);
+      setTitle("নতুন চ্যাট");
       return;
     }
+
+    if (isGuest) return;
+
+    let isMounted = true;
+
     (async () => {
       try {
         const res = await fetch(`${API}/api/ai/sessions/${uuid}`, {
           credentials: "include",
-          headers: { Accept: "application/json" },
+          headers: getHeaders(), // 🛠️ ফিক্স ২: এখানেই টোকেন না যাওয়ার কারণে ডেটা আসত না
         });
+
         if (res.status === 410) {
           router.replace("/ai/chat");
           return;
         }
+
         const json = await res.json();
-        if (json.success) {
+        if (json.success && isMounted) {
           setMessages(json.data.messages);
           setTitle(json.data.session.title);
         }
       } catch (e) {
-        console.error(e);
+        console.error("Session load error:", e);
       }
     })();
-  }, [uuid, isGuest, router]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [uuid, isGuest, authLoading, router, getHeaders]);
 
   const ask = useCallback(
     async (
@@ -123,10 +172,7 @@ export default function ChatPanel({
         const res = await fetch(`${API}/api/ai/ask`, {
           method: "POST",
           credentials: "include",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
+          headers: getHeaders(true), // 👈 POST রিকোয়েস্টেও টোকেন পাঠানো হচ্ছে
           body: JSON.stringify({
             question: content,
             image: imageBase64 || undefined,
@@ -168,7 +214,7 @@ export default function ChatPanel({
         setSending(false);
       }
     },
-    [sending, isGuest, guestRemaining, messages, uuid, router],
+    [sending, isGuest, guestRemaining, messages, uuid, router, getHeaders],
   );
 
   const regenerateLast = useCallback(async () => {
@@ -201,10 +247,7 @@ export default function ChatPanel({
       const res = await fetch(`${API}/api/ai/regenerate`, {
         method: "POST",
         credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
+        headers: getHeaders(true), // 👈 এখানেও টোকেন যোগ করা হলো
         body: JSON.stringify({ uuid }),
       });
       const json = await res.json();
@@ -220,7 +263,7 @@ export default function ChatPanel({
       setIsTyping(false);
       setSending(false);
     }
-  }, [sending, isGuest, messages, uuid, ask]);
+  }, [sending, isGuest, messages, uuid, ask, getHeaders]);
 
   const editAndRegenerate = useCallback(
     async (messageId: number, newContent: string) => {
@@ -233,10 +276,7 @@ export default function ChatPanel({
         const res = await fetch(`${API}/api/ai/edit-regenerate`, {
           method: "POST",
           credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
+          headers: getHeaders(true), // 👈 এখানেও টোকেন যোগ করা হলো
           body: JSON.stringify({
             uuid,
             message_id: messageId,
@@ -261,40 +301,13 @@ export default function ChatPanel({
         setSending(false);
       }
     },
-    [isGuest, uuid, sending],
+    [isGuest, uuid, sending, getHeaders],
   );
 
   const inputDisabled = isTyping || sending || (isGuest && guestRemaining <= 0);
 
   return (
     <div className="flex-1 flex flex-col min-h-0 h-full">
-      {/* Desktop Header */}
-      <div className="hidden md:flex items-center justify-between h-11 px-4 shrink-0 border-b border-zinc-100 dark:border-zinc-800/50">
-        <h1 className="text-sm font-medium truncate text-zinc-700 dark:text-zinc-200 flex items-center gap-2">
-          {isGuest ? (
-            <>
-              <span className="text-emerald-600">✦</span> তথ্যবক্স এআই
-            </>
-          ) : (
-            title
-          )}
-        </h1>
-
-        {isGuest && (
-          <div className="flex items-center gap-3 text-xs text-zinc-500">
-            <span className="tabular-nums">{guestRemaining} বার বাকি</span>
-            <button
-              onClick={() =>
-                window.dispatchEvent(new CustomEvent("open-auth-modal"))
-              }
-              className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium transition"
-            >
-              লগইন করুন
-            </button>
-          </div>
-        )}
-      </div>
-
       {/* Messages + Input */}
       <div className="flex-1 flex flex-col min-h-0 max-w-3xl mx-auto w-full px-3 sm:px-4">
         <MessageList
@@ -302,7 +315,6 @@ export default function ChatPanel({
           isTyping={isTyping}
           error={error}
           newMessageId={newMessageId}
-          isGuest={isGuest}
           onRegenerate={regenerateLast}
           onEditRegenerate={editAndRegenerate}
           onRetry={regenerateLast}
@@ -314,7 +326,7 @@ export default function ChatPanel({
           guestRemaining={guestRemaining}
           onSend={ask}
           onLogin={() =>
-            window.dispatchEvent(new CustomEvent("open-auth-modal"))
+            window.dispatchEvent(new CustomEvent("session-created"))
           }
         />
       </div>

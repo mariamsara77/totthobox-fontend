@@ -1,182 +1,157 @@
 "use client";
 
-import { useRef, useState, useCallback } from "react";
-import { ImagePlus, Send, X } from "lucide-react";
+import { useState, useRef, ChangeEvent, KeyboardEvent } from "react";
+import { Send, Image as ImageIcon, X, LogIn } from "lucide-react";
 
-type Props = {
-  disabled: boolean;
-  isGuest: boolean;
-  guestRemaining: number;
-  onSend: (q: string, b64?: string | null, mime?: string | null) => void;
-  onLogin: () => void;
+type ChatInputProps = {
+  disabled?: boolean;
+  isGuest?: boolean;
+  guestRemaining?: number;
+  onSend: (
+    question: string,
+    imageBase64?: string | null,
+    imageMime?: string | null,
+  ) => Promise<void>;
+  onLogin?: () => void;
 };
 
 export default function ChatInput({
   disabled,
   isGuest,
-  guestRemaining,
+  guestRemaining = 0,
   onSend,
   onLogin,
-}: Props) {
-  const [question, setQuestion] = useState("");
-  const [preview, setPreview] = useState<string | null>(null);
-  const [b64, setB64] = useState<string | null>(null);
-  const [mime, setMime] = useState<string | null>(null);
-  const [dragging, setDragging] = useState(false);
-  const fileRef = useRef<HTMLInputElement>(null);
-  const taRef = useRef<HTMLTextAreaElement>(null);
+}: ChatInputProps) {
+  const [text, setText] = useState("");
+  const [imageBase64, setImageBase64] = useState<string | null>(null);
+  const [imageMime, setImageMime] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const loadFile = (file: File) => {
-    if (!file.type.startsWith("image/")) return;
-    if (file.size > 8 * 1024 * 1024) return;
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert("ছবি সর্বোচ্চ ৫MB হতে পারবে।");
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = () => {
-      const dataUrl = reader.result as string;
-      const [header, data] = dataUrl.split(",");
-      const m = header.match(/data:(.*?);/);
-      setPreview(dataUrl);
-      setB64(data);
-      setMime(m?.[1] || "image/jpeg");
+      const result = reader.result as string;
+      const base64Data = result.split(",")[1];
+      setImageBase64(base64Data);
+      setImageMime(file.type);
+      setImagePreview(result);
     };
     reader.readAsDataURL(file);
   };
 
-  const handlePaste = useCallback((e: React.ClipboardEvent) => {
-    const items = e.clipboardData?.items;
-    if (!items) return;
-    for (const item of items) {
-      if (item.type.startsWith("image/")) {
-        e.preventDefault();
-        const f = item.getAsFile();
-        if (f) loadFile(f);
-        break;
-      }
-    }
-  }, []);
+  const removeImage = () => {
+    setImageBase64(null);
+    setImageMime(null);
+    setImagePreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
 
-  const submit = () => {
-    if (disabled) return;
-    if (!question.trim() && !b64) return;
-    onSend(question, b64, mime);
-    setQuestion("");
-    setPreview(null);
-    setB64(null);
-    setMime(null);
-    if (taRef.current) taRef.current.style.height = "auto";
+  const handleSubmit = async () => {
+    if ((!text.trim() && !imageBase64) || disabled) return;
+
+    const currentText = text;
+    const currentImg = imageBase64;
+    const currentMime = imageMime;
+
+    setText("");
+    removeImage();
+
+    await onSend(currentText, currentImg, currentMime);
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
   };
 
   return (
-    <div className="shrink-0 pt-2 pb-2" onPaste={handlePaste}>
+    <div className="border-t border-gray-800 pt-3 pb-4">
+      {/* গেস্ট নোটিফিকেশন বার */}
       {isGuest && (
-        <div className="mb-3 p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900">
-          <div className="flex justify-between text-xs text-zinc-500 mb-1.5">
-            <span>ফ্রি লিমিট বাকি</span>
-            <span>
-              {guestRemaining} / 20
-            </span>
-          </div>
-          <div className="h-1.5 rounded-full bg-zinc-200 dark:bg-zinc-700 overflow-hidden">
-            <div
-              className="h-full bg-emerald-500 transition-all"
-              style={{ width: `${(guestRemaining / 20) * 100}%` }}
-            />
-          </div>
-          {guestRemaining <= 0 && (
-            <p className="mt-2 text-xs text-red-500">
-              লিমিট শেষ।{" "}
-              <button onClick={onLogin} className="underline font-medium">
-                লগইন করুন
-              </button>
-            </p>
+        <div className="flex items-center justify-between text-xs text-amber-400 bg-amber-950/30 border border-amber-800/40 px-3 py-2 rounded-lg mb-2">
+          <span>
+            বিনা মূল্যে বাকি আছে: <strong>{guestRemaining}</strong> টি উত্তর
+          </span>
+          {onLogin && (
+            <button
+              type="button"
+              onClick={onLogin}
+              className="flex items-center gap-1 font-medium hover:underline text-amber-300"
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              লগইন করুন
+            </button>
           )}
         </div>
       )}
 
-      <div
-        className={`relative rounded-3xl shadow-md bg-zinc-50 dark:bg-zinc-800 transition ${
-          dragging ? "ring-2 ring-emerald-500/50" : ""
-        }`}
-        onDragOver={(e) => {
-          e.preventDefault();
-          setDragging(true);
-        }}
-        onDragLeave={() => setDragging(false)}
-        onDrop={(e) => {
-          e.preventDefault();
-          setDragging(false);
-          const f = e.dataTransfer.files?.[0];
-          if (f) loadFile(f);
-        }}
-      >
-        {preview && (
-          <div className="px-4 pt-3">
-            <div className="relative inline-block">
-              <img src={preview} alt="" className="h-20 rounded-xl object-cover border" />
-              <button
-                type="button"
-                onClick={() => {
-                  setPreview(null);
-                  setB64(null);
-                  setMime(null);
-                }}
-                className="absolute -top-2 -right-2 bg-zinc-800 text-white rounded-full p-0.5"
-              >
-                <X className="w-3 h-3" />
-              </button>
-            </div>
-          </div>
-        )}
-
-        <textarea
-          ref={taRef}
-          value={question}
-          disabled={disabled}
-          onChange={(e) => {
-            setQuestion(e.target.value);
-            e.target.style.height = "auto";
-            e.target.style.height = Math.min(e.target.scrollHeight, 208) + "px";
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              submit();
-            }
-          }}
-          placeholder="একটি বার্তা টাইপ করুন... (Shift+Enter এ নতুন লাইন)"
-          rows={1}
-          className="w-full bg-transparent px-4 py-3 text-sm resize-none outline-none disabled:opacity-60 max-h-52"
-        />
-
-        <div className="flex justify-between items-center px-2 pb-2">
-          <label className="cursor-pointer flex items-center gap-1.5 text-zinc-400 hover:text-zinc-600 px-2 py-1.5 rounded-xl text-xs">
-            <ImagePlus className="w-4 h-4" />
-            <span className="hidden sm:inline">ছবি</span>
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/jpeg,image/png,image/gif,image/webp"
-              className="hidden"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) loadFile(f);
-              }}
-            />
-          </label>
-
+      {/* ইমেজ প্রিভিউ */}
+      {imagePreview && (
+        <div className="relative inline-block mb-2">
+          <img
+            src={imagePreview}
+            alt="Upload preview"
+            className="w-16 h-16 object-cover rounded-lg border border-gray-700"
+          />
           <button
             type="button"
-            disabled={disabled || (!question.trim() && !b64)}
-            onClick={submit}
-            className="p-2 rounded-xl bg-emerald-600 text-white disabled:opacity-40 disabled:bg-zinc-300"
+            onClick={removeImage}
+            className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-0.5 hover:bg-red-700"
           >
-            <Send className="w-4 h-4" />
+            <X className="w-3.5 h-3.5" />
           </button>
         </div>
-      </div>
+      )}
 
-      <p className="mt-1.5 text-center text-xs text-zinc-400">
-        তথ্যবক্স এআই ভুল করতে পারে — গুরুত্বপূর্ণ তথ্য যাচাই করুন
-      </p>
+      {/* ইনপুট বক্স */}
+      <div className="flex items-end gap-2 bg-zinc-400/10 rounded-4xl  p-2">
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleImageChange}
+          accept="image/*"
+          className="hidden"
+        />
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={disabled}
+          className="p-2 text-gray-400 hover:text-white disabled:opacity-50 transition"
+          title="ছবি যুক্ত করুন"
+        >
+          <ImageIcon className="w-5 h-5" />
+        </button>
+
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="কিছু লিখুন..."
+          disabled={disabled}
+          rows={1}
+          className="flex-1 bg-transparent text-gray-100 placeholder-gray-500 text-sm focus:outline-none resize-none max-h-32 min-h-20 py-2"
+        />
+
+        <button
+          type="button"
+          onClick={handleSubmit}
+          disabled={disabled || (!text.trim() && !imageBase64)}
+          className="p-2 m-1 bg-blue-600 text-white rounded-lg hover:bg-blue-500 disabled:opacity-50 transition"
+        >
+          <Send className="w-4 h-4" />
+        </button>
+      </div>
     </div>
   );
 }

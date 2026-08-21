@@ -9,7 +9,8 @@ import TagManager from "@/components/partials/TagManager";
 import { SidebarProvider } from "@/context/SidebarContext";
 import { SettingsModalProvider } from "@/context/SettingsModalContext";
 import SettingsModalWrapper from "@/components/SettingsModalWrapper";
-import GoogleTranslate from "@/components/GoogleTranslate"; // <-- ইমপোর্ট করা হলো
+import GoogleTranslate from "@/components/GoogleTranslate";
+import { AuthProvider } from "@/context/AuthContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -64,25 +65,27 @@ export default function RootLayout({
         suppressHydrationWarning
         className="min-h-full bg-white dark:bg-zinc-800 text-slate-900 transition-colors duration-200 selection:bg-emerald-500 selection:text-white dark:text-slate-50"
       >
-        <TagManager/>
+        <TagManager />
         <SidebarProvider>
           <SettingsModalProvider>
             <ThemeProvider>
-              <div className="flex min-h-screen">
-                {/* Sidebar */}
-                <Sidebar />
+              <AuthProvider>
+                <div className="flex min-h-screen">
+                  {/* Sidebar */}
+                  <Sidebar />
 
-                {/* Main content area */}
-                <div className="flex min-h-screen flex-1 flex-col">
-                  <div className="md:hidden">
-                    <Navbar />
+                  {/* Main content area */}
+                  <div className="flex min-h-screen flex-1 flex-col">
+                    <div className="md:hidden sticky top-0">
+                      <Navbar />
+                    </div>
+
+                    <main className="flex-1 w-full">{children}</main>
+                    <Footer />
                   </div>
-
-                  <main className="flex-1 w-full">{children}</main>
-                  <Footer />
                 </div>
-              </div>
-              <SettingsModalWrapper />
+                <SettingsModalWrapper />
+              </AuthProvider>
             </ThemeProvider>
           </SettingsModalProvider>
         </SidebarProvider>

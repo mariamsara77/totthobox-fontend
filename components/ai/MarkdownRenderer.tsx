@@ -16,20 +16,29 @@ export default function MarkdownRenderer({ content, animate = false }: Props) {
 
   useEffect(() => {
     if (!rootRef.current) return;
-    // code copy buttons
-    rootRef.current.querySelectorAll("pre").forEach((pre) => {
+
+    // Code copy buttons logic
+    const preElements = rootRef.current.querySelectorAll("pre");
+
+    preElements.forEach((pre) => {
+      // যদি আগে থেকেই র‍্যাপ করা থাকে, তবে স্কিপ করুন
       if (pre.parentElement?.classList.contains("code-block-wrapper")) return;
+
       const code = pre.querySelector("code");
       if (!code) return;
 
+      // ক্লাসনম থেকে ল্যাঙ্গুয়েজ বের করা
       const lang =
         [...code.classList]
           .find((c) => c.startsWith("language-"))
           ?.replace("language-", "") || "code";
 
+      // র‍্যাপার তৈরি
       const wrapper = document.createElement("div");
-      wrapper.className = "code-block-wrapper not-prose my-3 rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-700";
+      wrapper.className =
+        "code-block-wrapper not-prose my-3 rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-700";
 
+      // টুলবার তৈরি
       const toolbar = document.createElement("div");
       toolbar.className =
         "code-toolbar flex items-center justify-between px-3 py-1.5 bg-zinc-900 text-zinc-400 text-xs";
@@ -37,21 +46,29 @@ export default function MarkdownRenderer({ content, animate = false }: Props) {
         <span class="uppercase tracking-wider opacity-60">${lang}</span>
         <button type="button" class="code-copy-btn hover:text-white transition px-2 py-0.5 rounded">কপি</button>
       `;
-      const btn = toolbar.querySelector("button")!;
-      btn.addEventListener("click", () => {
-        navigator.clipboard.writeText(code.textContent || "").then(() => {
-          btn.textContent = "কপি হয়েছে ✓";
-          btn.classList.add("text-emerald-400");
-          setTimeout(() => {
-            btn.textContent = "কপি";
-            btn.classList.remove("text-emerald-400");
-          }, 2000);
-        });
-      });
 
-      pre.parentNode?.insertBefore(wrapper, pre);
-      wrapper.appendChild(toolbar);
-      wrapper.appendChild(pre);
+      // কপি বাটন ইভেন্ট লিসেনার
+      const btn = toolbar.querySelector("button");
+      if (btn) {
+        btn.addEventListener("click", () => {
+          // textContent ব্যবহার করলে highlight এর span গুলো বাদ দিয়ে শুধু টেক্সট কপি হবে
+          navigator.clipboard.writeText(code.textContent || "").then(() => {
+            btn.textContent = "কপি হয়েছে ✓";
+            btn.classList.add("text-emerald-400");
+            setTimeout(() => {
+              btn.textContent = "কপি";
+              btn.classList.remove("text-emerald-400");
+            }, 2000);
+          });
+        });
+      }
+
+      // DOM-এ নতুন এলিমেন্টগুলো যুক্ত করা
+      if (pre.parentNode) {
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(toolbar);
+        wrapper.appendChild(pre);
+      }
     });
   }, [content]);
 
@@ -62,7 +79,10 @@ export default function MarkdownRenderer({ content, animate = false }: Props) {
         prose-a:text-emerald-600 prose-pre:bg-zinc-900 prose-pre:p-0
         ${animate ? "ai-response-new" : ""}`}
     >
-      <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        rehypePlugins={[rehypeHighlight]}
+      >
         {content}
       </ReactMarkdown>
     </div>

@@ -10,7 +10,7 @@ export default function Navbar() {
   const { setIsOpen, isCollapsed, toggleCollapsed } = useSidebar();
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-zinc-200/80 bg-white/80 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-900/80">
+    <header className="z-60 w-full border-b border-zinc-400/10 backdrop-blur-xl">
       <div className="flex h-16 items-center justify-between px-4 sm:px-6">
         <div className="flex items-center gap-3">
           {/* Mobile menu button */}
@@ -32,10 +32,7 @@ export default function Navbar() {
             </button>
           )}
 
-          <Link
-            href="/"
-            className="text-xl font-bold"
-          >
+          <Link href="/" className="text-xl font-bold">
             <BrandIcon className="w-8 h-8" />
           </Link>
         </div>

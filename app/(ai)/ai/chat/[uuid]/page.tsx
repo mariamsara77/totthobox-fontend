@@ -11,5 +11,7 @@ export default async function AiChatSessionPage({
   params: Promise<{ uuid: string }>;
 }) {
   const { uuid } = await params;
-  return <ChatPanel uuid={uuid} />;
+
+  // key={uuid} দেওয়ার ফলে সাইডবার নেভিগেশনে কম্পোনেন্ট ১০০% নতুন করে লোড হবে
+  return <ChatPanel key={uuid} uuid={uuid} />;
 }

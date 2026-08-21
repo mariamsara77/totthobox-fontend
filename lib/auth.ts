@@ -1,42 +1,87 @@
 // lib/auth.ts
 
-const TOKEN_KEY = "auth_token";
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  slug: string;
+  avatar_url: string | null;
+}
 
-export function getToken(): string | null {
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+
+export const getToken = (): string | null => {
   if (typeof window === "undefined") return null;
-  return localStorage.getItem(TOKEN_KEY);
-}
+  return localStorage.getItem("auth_token");
+};
 
-export function setToken(token: string) {
-  localStorage.setItem(TOKEN_KEY, token);
-}
+export const setToken = (token: string) => {
+  localStorage.setItem("auth_token", token);
+};
 
-export function removeToken() {
-  localStorage.removeItem(TOKEN_KEY);
-}
+export const removeToken = () => {
+  localStorage.removeItem("auth_token");
+};
 
-export function isLoggedIn(): boolean {
+export const isAuthenticated = (): boolean => {
   return !!getToken();
-}
+};
 
-// API কলের জন্য ready-made headers
-export function getAuthHeaders(): HeadersInit {
+// 🛠️ যোগ করা হলো: InteractiveActions.tsx এর জন্য
+export const isLoggedIn = (): boolean => {
+  return isAuthenticated();
+};
+
+// 🛠️ যোগ করা হলো: Auth Header পাওয়ার জেনেরিক ফাংশন
+export const getAuthHeaders = (isPost = false): Record<string, string> => {
   const token = getToken();
-  return {
-    "Content-Type": "application/json",
+  const headers: Record<string, string> = {
     Accept: "application/json",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
-}
 
+  if (isPost) {
+    headers["Content-Type"] = "application/json";
+  }
 
-// lib/auth.ts
-import apiFetch from "./api";
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
 
-export async function login(email: string, password: string): Promise<string> {
-  const data = await apiFetch<{ token: string }>("/login", {
-    method: "POST",
-    body: JSON.stringify({ email, password }),
-  });
-  return data.token; // localStorage বা httpOnly cookie-তে রাখো
-}
+  return headers;
+};
+
+export const fetchCurrentUser = async (): Promise<User | null> => {
+  const token = getToken();
+  if (!token) return null;
+
+  try {
+    const res = await fetch(`${API_BASE}/api/user`, {
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+
+    if (!res.ok) {
+      removeToken();
+      return null;
+    }
+
+    return await res.json();
+  } catch (error) {
+    removeToken();
+    return null;
+  }
+};
+
+export const logoutRequest = async () => {
+  const token = getToken();
+  if (!token) return;
+
+  try {
+    await fetch(`${API_BASE}/api/logout`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+    });
+  } catch (e) {
+    // ignore
+  }
+};
