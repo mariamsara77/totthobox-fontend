@@ -1,42 +1,22 @@
-// lib/auth.ts
-
-const TOKEN_KEY = "auth_token";
-
-export function getToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem(TOKEN_KEY);
-}
-
-export function setToken(token: string) {
-  localStorage.setItem(TOKEN_KEY, token);
-}
-
-export function removeToken() {
-  localStorage.removeItem(TOKEN_KEY);
-}
-
-export function isLoggedIn(): boolean {
-  return !!getToken();
-}
-
-// API কলের জন্য ready-made headers
-export function getAuthHeaders(): HeadersInit {
-  const token = getToken();
-  return {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  };
-}
-
-
-// lib/auth.ts
 import apiFetch from "./api";
+import axios from "./axios";
 
-export async function login(email: string, password: string): Promise<string> {
-  const data = await apiFetch<{ token: string }>("/login", {
+// লগইন করার আগে Sanctum এর CSRF কুকি সেট করতে হয়
+export async function login(email: string, password: string): Promise<any> {
+  // ১. CSRF Cookie ইনিশিয়ালাইজ করা
+  await axios.get("/sanctum/csrf-cookie", { 
+    baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com" 
+  });
+
+  // ২. লগইন রিকোয়েস্ট পাঠানো
+  const data = await apiFetch<any>("/login", {
     method: "POST",
     body: JSON.stringify({ email, password }),
   });
-  return data.token; // localStorage বা httpOnly cookie-তে রাখো
+  
+  return data;
+}
+
+export async function logout(): Promise<void> {
+  await apiFetch("/logout", { method: "POST" });
 }
