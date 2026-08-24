@@ -80,12 +80,12 @@ const services = [
 
 export default function HomePage() {
   return (
-    <div className="max-w-7xl mx-auto space-y-4 p-4 min-h-screen text-gray-800 dark:text-gray-100 font-sans">
+    <div className="max-w-7xl mx-auto space-y-4 p-4 min-h-screen">
       
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="max-w-4xl mx-auto text-center space-y-2 relative z-10">
-          <span className="inline-block px-3.5 py-1 bg-emerald-500/30 border border-emerald-400/30 rounded-full text-xs font-semibold tracking-wide text-emerald-600 dark:text-emerald-100 uppercase">
+          <span className="inline-block px-3.5 py-1 bg-zinc-9000/30 border border-emerald-400/30 rounded-full text-xs  tracking-wide border-zinc-400/25 uppercase">
             ডিজিটাল তথ্য সেবা পোর্টাল
           </span>
 
@@ -93,7 +93,7 @@ export default function HomePage() {
             প্রয়োজনীয় সব তথ্য ও সেবা এক জায়গায়
           </h1>
 
-          <p className="text-emerald-600 dark:text-emerald-100 text-base max-w-2xl mx-auto">
+          <p className="border-zinc-400/25 text-base max-w-2xl mx-auto">
             আপনার দৈনন্দিন প্রয়োজনীয় তথ্য, টুলস ও ডিজিটাল সেবা — সম্পূর্ণ বিনামূল্যে ও নির্ভরযোগ্যভাবে।
           </p>
 
@@ -103,13 +103,13 @@ export default function HomePage() {
       </section>
 
       {/* Main Services Grid */}
-      <main className="space-y-6">
-        <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800">
+      <main className="space-y-4">
+        <div className="flex items-center justify-between border-b border-zinc-400/25">
           <div>
-            <h2 className="text-2xl font-bold text-zinc-900 dark:text-white">
+            <h2 className="text-2xl font-bold ">
               মূল সেবাসমূহ
             </h2>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+            <p className="text-xs  mt-1">
               নিচের তালিকা থেকে আপনার কাঙ্ক্ষিত সেবাটি নির্বাচন করুন
             </p>
           </div>
@@ -124,17 +124,17 @@ export default function HomePage() {
               <Link
                 key={index}
                 href={service.href}
-                className="relative flex flex-col items-center h-full p-4 text-center transition-all duration-200 border border-transparent group rounded-3xl bg-zinc-50 dark:bg-white/5 hover:border-zinc-300 dark:hover:border-zinc-600/50 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50"
+                className="relative flex flex-col items-center h-full p-4 text-center transition-all duration-200 group rounded-3xl bg-zinc-400/10 hover:bg-zinc-400/25"
               >
-                <div className="mb-3 transition-transform duration-200 transform group-hover:scale-110 text-zinc-900 dark:text-white">
+                <div className="mb-4 transition-transform duration-200 transform group-hover:scale-110 ">
                   <Icon className="w-12 h-12 stroke-[1.5]" />
                 </div>
 
-                <h3 className="text-lg font-medium text-zinc-900 dark:text-white transition-colors group-hover:font-bold">
+                <h3 className="text-lg    group-hover:font-bold">
                   {service.label}
                 </h3>
 
-                <span className="mt-2 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
+                <span className="mt-2 text-xs leading-relaxed ">
                   {service.details}
                 </span>
               </Link>
@@ -143,25 +143,25 @@ export default function HomePage() {
         </div>
         </section>
 
-        <hr className="border-zinc-200 dark:border-zinc-700 my-12" />
+        <hr className="border-zinc-400/25 dark:border-zinc-700 my-12" />
 
         {/* Content Section (SEO & AdSense Optimized) */}
-        <article className="space-y-6">
-          <h2 className="text-xl sm:text-2xl text-emerald-600 dark:text-emerald-400 font-bold">
+        <article className="space-y-4">
+          <h2 className="text-xl sm:text-2xl font-bold">
             তথ্যবক্স (Totthobox) — আপনার দৈনন্দিন ডিজিটাল সহায়ক
           </h2>
 
-          <div className="space-y-6 text-zinc-600 dark:text-zinc-300 text-sm sm:text-base leading-relaxed">
+          <div className="space-y-4 text-sm sm:text-base leading-relaxed">
            <p>
   বর্তমানে সঠিক তথ্য দ্রুত পাওয়া অত্যন্ত জরুরি।{" "}
-  <strong className="text-zinc-900 dark:text-white">Totthobox</strong>{" "}
+  <strong className="">Totthobox</strong>{" "}
   বাংলাদেশের ব্যবহারকারীদের জন্য তৈরি একটি সমন্বিত ডিজিটাল সার্ভিস
   পোর্টাল। এখানে দৈনন্দিন জীবনের প্রয়োজনীয় তথ্য, টুলস এবং
   শিক্ষামূলক কনটেন্ট এক প্ল্যাটফর্মে রাখা হয়েছে।
 </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-              <div className="space-y-3">
-                <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold ">
                   কী কী সেবা পাবেন
                 </h3>
                 <ul className="list-disc list-inside space-y-2 text-xs sm:text-sm">
@@ -188,8 +188,8 @@ export default function HomePage() {
                 </ul>
               </div>
 
-              <div className="space-y-3">
-                <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold ">
                   কেন Totthobox ব্যবহার করবেন
                 </h3>
                 <p className="text-xs sm:text-sm leading-relaxed">

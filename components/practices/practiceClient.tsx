@@ -54,7 +54,7 @@ export default function WrittingPracticeClient() {
       <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">লেখা প্র্যাকটিস</h1>
-          <p className="hidden sm:block text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="hidden sm:block text-sm ">
             উন্নত ড্রয়িং এবং রাইটিং টুল
           </p>
         </div>
@@ -62,7 +62,7 @@ export default function WrittingPracticeClient() {
         <div className="flex items-center gap-1">
           <button
             onClick={() => setShowHelp(true)}
-            className="size-9 flex items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
+            className="size-9 flex items-center justify-center rounded-lg text-zinc-400 hover:bg-zinc-900 hover:bg-zinc-800 transition"
             title="Help"
           >
             <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -72,7 +72,7 @@ export default function WrittingPracticeClient() {
 
           <button
             onClick={() => canvasRef.current?.toggleFullscreen()}
-            className="size-9 flex items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
+            className="size-9 flex items-center justify-center rounded-lg text-zinc-400 hover:bg-zinc-900 hover:bg-zinc-800 transition"
             title="Fullscreen"
           >
             <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>

@@ -35,13 +35,7 @@ export default function InteractiveActions({
     setMessage(null);
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
-      if (!baseUrl) {
-        setMessage("API URL কনফিগার করা নেই");
-        return;
-      }
-
-      const res = await fetch(`${baseUrl}/api/islam/dowan/${itemId}/react`, {
+      const res = await fetch(`/api/backend/islam/dowan/${itemId}/react`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -78,7 +72,7 @@ export default function InteractiveActions({
       setMessage(
         e.message?.includes("Failed to fetch")
           ? "সার্ভারে সংযোগ করা যাচ্ছে না। CORS চেক করুন।"
-          : "রিয়্যাকশন ব্যর্থ হয়েছে।"
+          : "রিয়্যাকশন ব্যর্থ হয়েছে।",
       );
     } finally {
       setLoading(false);
@@ -111,16 +105,16 @@ export default function InteractiveActions({
   };
 
   return (
-    <div className="space-y-3 pt-4 border-t border-zinc-200 dark:border-zinc-700">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <div className="space-y-4 pt-4 border-t border-zinc-400/25 dark:border-zinc-700">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex gap-2">
           <button
             onClick={() => react("like")}
             disabled={loading}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition disabled:opacity-50 ${
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition disabled:opacity-50 ${
               liked
                 ? "text-blue-600 bg-blue-50 dark:bg-blue-900/30"
-                : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                : " hover:bg-zinc-900 hover:bg-zinc-800"
             }`}
           >
             <ThumbsUp className="w-4 h-4" />
@@ -129,10 +123,10 @@ export default function InteractiveActions({
           <button
             onClick={() => react("dislike")}
             disabled={loading}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition disabled:opacity-50 ${
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition disabled:opacity-50 ${
               disliked
                 ? "text-red-600 bg-red-50 dark:bg-red-900/30"
-                : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                : " hover:bg-zinc-900 hover:bg-zinc-800"
             }`}
           >
             <ThumbsDown className="w-4 h-4" />
@@ -143,10 +137,8 @@ export default function InteractiveActions({
         <div className="flex gap-2">
           <button
             onClick={copyText}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition ${
-              copied
-                ? "text-emerald-600"
-                : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition ${
+              copied ? "text-zinc-300" : " hover:bg-zinc-900 hover:bg-zinc-800"
             }`}
           >
             {copied ? (
@@ -161,7 +153,7 @@ export default function InteractiveActions({
           </button>
           <button
             onClick={share}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm  hover:bg-zinc-900 hover:bg-zinc-800"
           >
             <Share2 className="w-4 h-4" /> শেয়ার
           </button>
@@ -175,7 +167,7 @@ export default function InteractiveActions({
             message.includes("ব্যর্থ") ||
             message.includes("সংযোগ")
               ? "bg-red-50 text-red-600 dark:bg-red-900/20"
-              : "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20"
+              : "bg-zinc-900 text-zinc-200 dark:bg-emerald-900/20"
           }`}
         >
           {message}

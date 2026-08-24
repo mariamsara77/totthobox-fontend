@@ -286,7 +286,7 @@ export default function PercentageCalculator() {
   const examples = EXAMPLES[tab] || [];
 
   const extraColor = {
-    emerald: "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300",
+    emerald: "bg-zinc-400/10 ",
     rose: "bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300",
     violet: "bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300",
   };
@@ -296,13 +296,13 @@ export default function PercentageCalculator() {
       <div className="space-y-8">
         {/* Header */}
         <div className="text-center space-y-2 mb-8">
-          <span className="inline-block px-3 py-1 text-xs font-medium rounded-full bg-lime-100 dark:bg-lime-900/40 text-lime-700 dark:text-lime-300 mb-2">
+          <span className="inline-block px-3 py-1 text-xs  rounded-full bg-lime-100 dark:bg-lime-900/40 text-lime-700 dark:text-lime-300 mb-2">
             বিনামূল্যে · রেজিস্ট্রেশন লাগবে না
           </span>
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
+          <h1 className="text-3xl   tracking-tight text-zinc-50 dark:text-white">
             পার্সেন্টেজ ক্যালকুলেটর
           </h1>
-          <p className="text-base text-zinc-500 dark:text-zinc-400 max-w-xl mx-auto">
+          <p className="text-base  max-w-xl mx-auto">
             যেকোনো শতকরা হিসাব এক জায়গায়। সংখ্যা লিখুন — সাথে সাথে সূত্র ও সহজ বাংলা ব্যাখ্যাসহ উত্তর পাবেন।
           </p>
         </div>
@@ -314,10 +314,10 @@ export default function PercentageCalculator() {
               <button
                 key={t.id}
                 onClick={() => changeTab(t.id)}
-                className={`px-3 py-2 text-xs sm:text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${
+                className={`px-3 py-2 text-xs sm:text-sm  rounded-lg whitespace-nowrap  ${
                   tab === t.id
                     ? "bg-indigo-500 text-white"
-                    : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                    : "bg-zinc-400/10  hover:bg-zinc-800 hover:bg-zinc-700"
                 }`}
               >
                 {t.label}
@@ -327,11 +327,11 @@ export default function PercentageCalculator() {
         </div>
 
         {/* Input Card */}
-        <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-5 space-y-4">
+        <div className="rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900/50 p-4 space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {fields.map((f) => (
-              <div key={f.key} className="flex flex-col gap-1.5">
-                <label className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">{f.label}</label>
+              <div key={f.key} className="flex flex-col gap-2">
+                <label className="text-sm  ">{f.label}</label>
                 <input
                   type="number"
                   step="any"
@@ -342,7 +342,7 @@ export default function PercentageCalculator() {
                     else setPercent(e.target.value);
                   }}
                   placeholder={f.placeholder}
-                  className="w-full p-3 rounded-lg bg-zinc-100 dark:bg-zinc-800 border-none outline-none"
+                  className="w-full p-2 rounded-lg bg-zinc-400/10 border-none outline-none"
                 />
               </div>
             ))}
@@ -351,7 +351,7 @@ export default function PercentageCalculator() {
           <div className="flex flex-wrap items-center gap-2 pt-1">
             <button
               onClick={resetAll}
-              className="px-3 py-1.5 text-sm rounded-lg text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              className="px-3 py-1.5 text-sm rounded-lg text-zinc-400 hover:text-zinc-200 dark:hover:text-zinc-300 hover:bg-zinc-900 hover:bg-zinc-800"
             >
               মুছে ফেলুন
             </button>
@@ -359,7 +359,7 @@ export default function PercentageCalculator() {
               <button
                 key={ex.label}
                 onClick={() => fillExample(ex)}
-                className="px-3 py-1.5 text-xs rounded-lg bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-600 dark:text-zinc-300"
+                className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700 "
               >
                 {ex.label}
               </button>
@@ -369,20 +369,20 @@ export default function PercentageCalculator() {
 
         {/* Result */}
         {result ? (
-          <div className="rounded-2xl border border-emerald-500/30 dark:border-emerald-500/20 bg-white dark:bg-zinc-900/50 p-5 space-y-4">
+          <div className="rounded-2xl border border-emerald-500/30 dark:border-emerald-500/20 bg-zinc-950 bg-zinc-900/50 p-4 space-y-4">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <span className="inline-block px-2.5 py-0.5 text-xs font-medium rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">
+                <span className="inline-block px-2.5 py-0.5 text-xs  rounded-full bg-zinc-400/10 ">
                   {result.badge}
                 </span>
-                <div className="mt-2 text-3xl sm:text-4xl font-bold tracking-tight tabular-nums text-zinc-900 dark:text-white">
+                <div className="mt-2 text-3xl  font-bold tracking-tight tabular-nums text-zinc-50 dark:text-white">
                   {result.value}
-                  <span className="text-emerald-500 text-2xl">{result.suffix}</span>
+                  <span className="text-zinc-300 text-2xl">{result.suffix}</span>
                 </div>
               </div>
               <button
                 onClick={copyResult}
-                className="px-3 py-1.5 text-sm rounded-lg bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 shrink-0"
+                className="px-3 py-1.5 text-sm rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700 shrink-0"
               >
                 {copied ? "কপি হয়েছে!" : "কপি"}
               </button>
@@ -390,29 +390,29 @@ export default function PercentageCalculator() {
 
             {result.extra && (
               <span
-                className={`inline-block px-2.5 py-1 text-xs font-medium rounded-full ${extraColor[result.extra.color] || extraColor.emerald}`}
+                className={`inline-block px-2.5 py-1 text-xs  rounded-full ${extraColor[result.extra.color] || extraColor.emerald}`}
               >
                 {result.extra.title}: {result.extra.value}
               </span>
             )}
 
-            <div className="border-t border-zinc-200 dark:border-zinc-800 pt-4 space-y-3 text-sm">
-              <div className="flex gap-3 sm:gap-4">
-                <span className="text-zinc-500 dark:text-zinc-400 shrink-0 w-14">সূত্র</span>
-                <code className="font-mono text-zinc-700 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded text-xs sm:text-sm break-all">
+            <div className="border-t border-zinc-400/25 pt-4 space-y-4 text-sm">
+              <div className="flex gap-4 sm:gap-4">
+                <span className=" shrink-0 w-14">সূত্র</span>
+                <code className="font-mono  bg-zinc-400/10 px-2 py-0.5 rounded text-xs sm:text-sm break-all">
                   {result.formula}
                 </code>
               </div>
-              <div className="flex gap-3 sm:gap-4">
-                <span className="text-zinc-500 dark:text-zinc-400 shrink-0 w-14">ব্যাখ্যা</span>
-                <span className="text-zinc-700 dark:text-zinc-300 leading-relaxed">{result.explanation}</span>
+              <div className="flex gap-4 sm:gap-4">
+                <span className=" shrink-0 w-14">ব্যাখ্যা</span>
+                <span className=" leading-relaxed">{result.explanation}</span>
               </div>
             </div>
           </div>
         ) : (
-          <div className="rounded-2xl border border-dashed border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900/30 py-12 text-center">
+          <div className="rounded-2xl border border-dashed border-zinc-700 dark:border-zinc-700 /30 py-12 text-center">
             <svg
-              className="mx-auto w-8 h-8 text-zinc-400 mb-3"
+              className="mx-auto w-8 h-8 text-zinc-400 mb-4"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -424,18 +424,18 @@ export default function PercentageCalculator() {
                 d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
               />
             </svg>
-            <p className="text-zinc-500 dark:text-zinc-400 text-sm">উপরে সংখ্যা লিখুন — ফলাফল এখানে দেখাবে</p>
+            <p className=" text-sm">উপরে সংখ্যা লিখুন — ফলাফল এখানে দেখাবে</p>
           </div>
         )}
 
         {/* History */}
         {history.length > 0 && (
           <div>
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">সাম্প্রতিক হিসাব</h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm  ">সাম্প্রতিক হিসাব</h3>
               <button
                 onClick={clearHistory}
-                className="text-xs text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                className="text-xs text-zinc-400 hover:text-zinc-200 dark:hover:text-zinc-300"
               >
                 সব মুছে ফেলুন
               </button>
@@ -444,7 +444,7 @@ export default function PercentageCalculator() {
               {history.map((h, i) => (
                 <span
                   key={i}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300"
+                  className="inline-flex items-center gap-2 px-2.5 py-1 text-xs rounded-full bg-zinc-400/10 "
                 >
                   {h.label}
                   <span className="opacity-50">{h.time}</span>
@@ -455,9 +455,9 @@ export default function PercentageCalculator() {
         )}
 
         {/* SEO Content */}
-        <div className="mt-16 pt-10 border-t border-zinc-200 dark:border-zinc-800 space-y-8 text-sm text-zinc-600 dark:text-zinc-400">
+        <div className="mt-16 pt-10 border-t border-zinc-400/25 space-y-8 text-sm ">
           <div>
-            <h3 className="text-lg font-bold text-zinc-800 dark:text-zinc-200 mb-3">কীভাবে ব্যবহার করবেন?</h3>
+            <h3 className="text-lg font-bold text-zinc-50 text-zinc-200 mb-4">কীভাবে ব্যবহার করবেন?</h3>
             <p className="leading-relaxed">
               উপরের ট্যাব থেকে আপনার প্রয়োজনীয় হিসাব বেছে নিন। ঘরে সংখ্যা লিখুন — সাথে সাথে সূত্র ও সহজ বাংলা
               ব্যাখ্যাসহ উত্তর দেখাবে। কোনো বাটন চাপতে হবে না, রেজিস্ট্রেশনও লাগবে না। ফলাফল এক ক্লিকে কপি করে নিতে
@@ -466,7 +466,7 @@ export default function PercentageCalculator() {
           </div>
 
           <div>
-            <h3 className="text-lg font-bold text-zinc-800 dark:text-zinc-200 mb-3">
+            <h3 className="text-lg font-bold text-zinc-50 text-zinc-200 mb-4">
               ৯টি হিসাবের ধরন (সহজ ভাষায়)
             </h3>
             <ul className="list-disc list-inside space-y-1.5 ml-1">
@@ -501,7 +501,7 @@ export default function PercentageCalculator() {
           </div>
 
           <div>
-            <h3 className="text-lg font-bold text-zinc-800 dark:text-zinc-200 mb-3">বাস্তব জীবনের উদাহরণ</h3>
+            <h3 className="text-lg font-bold text-zinc-50 text-zinc-200 mb-4">বাস্তব জীবনের উদাহরণ</h3>
             <ul className="list-disc list-inside space-y-1.5 ml-1">
               <li>
                 <strong>শপিং:</strong> ২৫০০ টাকার পণ্যে ৩০% ছাড় → আপনি কত টাকা দেবেন?
@@ -525,7 +525,7 @@ export default function PercentageCalculator() {
           </div>
 
           <div>
-            <h3 className="text-lg font-bold text-zinc-800 dark:text-zinc-200 mb-3">মূল সূত্রগুলো মনে রাখুন</h3>
+            <h3 className="text-lg font-bold text-zinc-50 text-zinc-200 mb-4">মূল সূত্রগুলো মনে রাখুন</h3>
             <ul className="list-disc list-inside space-y-1 ml-1 font-mono text-xs sm:text-sm">
               <li>কোনো সংখ্যার % = (শতকরা ÷ ১০০) × মূল সংখ্যা</li>
               <li>কত শতাংশ = (ছোট সংখ্যা ÷ বড় সংখ্যা) × ১০০</li>
@@ -538,25 +538,25 @@ export default function PercentageCalculator() {
           </div>
 
           <div>
-            <h3 className="text-lg font-bold text-zinc-800 dark:text-zinc-200 mb-3">সচরাচর জিজ্ঞাসা (FAQ)</h3>
+            <h3 className="text-lg font-bold text-zinc-50 text-zinc-200 mb-4">সচরাচর জিজ্ঞাসা (FAQ)</h3>
             <div className="space-y-4">
               <div>
-                <strong className="text-zinc-800 dark:text-zinc-200">
+                <strong className="text-zinc-50 text-zinc-200">
                   পার্সেন্টেজ আর পারসেন্টেজ পয়েন্টের পার্থক্য কী?
                 </strong>
-                <p className="mt-1 text-zinc-500 dark:text-zinc-400">
+                <p className="mt-1 ">
                   ১০% থেকে ১৫% হলে পারসেন্টেজ পয়েন্ট বেড়েছে ৫, কিন্তু আপেক্ষিক বৃদ্ধি ৫০%।
                 </p>
               </div>
               <div>
-                <strong className="text-zinc-800 dark:text-zinc-200">মূল সংখ্যা বের করা কখন লাগে?</strong>
-                <p className="mt-1 text-zinc-500 dark:text-zinc-400">
+                <strong className="text-zinc-50 text-zinc-200">মূল সংখ্যা বের করা কখন লাগে?</strong>
+                <p className="mt-1 ">
                   যখন আপনি জানেন “৪০ টাকা হলো ২০%”, তখন মূল সংখ্যা বের করতে এই টুল ব্যবহার করুন।
                 </p>
               </div>
               <div>
-                <strong className="text-zinc-800 dark:text-zinc-200">মার্জিন আর মার্কআপ কি একই?</strong>
-                <p className="mt-1 text-zinc-500 dark:text-zinc-400">
+                <strong className="text-zinc-50 text-zinc-200">মার্জিন আর মার্কআপ কি একই?</strong>
+                <p className="mt-1 ">
                   না। মার্জিন = মুনাফা ÷ বিক্রির দাম, মার্কআপ = মুনাফা ÷ কেনার দাম। এই ক্যালকুলেটরে কেনার দামের উপর
                   ভিত্তি করে (মার্কআপ স্টাইল) দেখানো হয়।
                 </p>

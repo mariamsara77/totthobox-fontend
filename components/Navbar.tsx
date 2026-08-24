@@ -10,13 +10,13 @@ export default function Navbar() {
   const { setIsOpen, isCollapsed, toggleCollapsed } = useSidebar();
 
   return (
-    <header className="z-60 w-full border-b border-zinc-400/10 backdrop-blur-xl">
+    <header className="z-60 w-full border-b border-zinc-400/25 backdrop-blur-xl">
       <div className="flex h-16 items-center justify-between px-4 sm:px-6">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           {/* Mobile menu button */}
           <button
             onClick={() => setIsOpen(true)}
-            className="rounded-lg p-2 text-zinc-600 hover:bg-zinc-100 md:hidden dark:text-zinc-300 dark:hover:bg-zinc-800"
+            className="rounded-lg p-2 hover:opacity-50 md:hidden"
           >
             <Menu className="h-6 w-6" />
           </button>
@@ -25,7 +25,7 @@ export default function Navbar() {
           {isCollapsed && (
             <button
               onClick={toggleCollapsed}
-              className="hidden rounded-lg p-2 text-zinc-500 hover:bg-zinc-100 md:flex dark:hover:bg-zinc-800"
+              className="hidden rounded-lg p-2  hover:opacity-50 md:flex"
               title="Expand sidebar"
             >
               <PanelLeft className="h-5 w-5" />

@@ -72,7 +72,7 @@ export default function MediaGallery({ media }: MediaGalleryProps) {
           return (
             <div
               key={index}
-              className={`relative group cursor-pointer overflow-hidden bg-zinc-100 dark:bg-zinc-900 border border-black/5 dark:border-white/5 ${
+              className={`relative group cursor-pointer overflow-hidden  border border-black/5 dark:border-white/5 ${
                 isFirstLarge ? 'row-span-2' : ''
               }`}
               onClick={() => openLightbox(index)}
@@ -87,7 +87,7 @@ export default function MediaGallery({ media }: MediaGalleryProps) {
               />
 
               {isLastOverlay && (
-                <div className="absolute inset-0 flex items-center justify-center bg-zinc-800/60 backdrop-blur-[2px] text-white font-bold transition-colors group-hover:bg-zinc-900/70">
+                <div className="absolute inset-0 flex items-center justify-center bg-zinc-800/60 backdrop-blur-[2px] text-white font-bold  group-hover:bg-zinc-900/70">
                   <span className="text-lg">+ {toBengaliNumber(count - 3)} টি</span>
                 </div>
               )}

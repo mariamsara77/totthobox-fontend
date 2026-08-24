@@ -446,7 +446,7 @@ const DrawingCanvas = forwardRef<DrawingCanvasHandle, Props>(function DrawingCan
   return (
     <div
       ref={containerRef}
-      className="relative border rounded-xl overflow-hidden bg-white dark:bg-zinc-900 shadow-sm"
+      className="relative border rounded-xl overflow-hidden bg-zinc-950 bg-zinc-900 "
     >
       <canvas
         ref={canvasRef}
@@ -461,7 +461,7 @@ const DrawingCanvas = forwardRef<DrawingCanvasHandle, Props>(function DrawingCan
       {/* Guide text overlay */}
       {guideText && (
         <div
-          className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-[0.12] text-zinc-500 z-10 select-none"
+          className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-[0.12] text-zinc-400 z-10 select-none"
           style={{
             fontSize: `min(35vw, 280px)`,
             fontFamily: "'Noto Serif Bengali', 'Noto Sans Bengali', serif",

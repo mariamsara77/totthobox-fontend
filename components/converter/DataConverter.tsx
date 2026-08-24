@@ -85,7 +85,7 @@ export default function DataConverter() {
       const dropped = e.dataTransfer.files[0];
       if (dropped) handleFile(dropped);
     },
-    [handleFile]
+    [handleFile],
   );
 
   const setSourceManually = (fmt: Format) => {
@@ -123,8 +123,8 @@ export default function DataConverter() {
       if (sourceFormat === "json") {
         data = JSON.parse(rawInput);
       } else if (sourceFormat === "yaml") {
-  data = yamlLoad(rawInput);
-} else if (sourceFormat === "xml") {
+        data = yamlLoad(rawInput);
+      } else if (sourceFormat === "xml") {
         const parser = new XMLParser({
           ignoreAttributes: false,
           attributeNamePrefix: "@_",
@@ -140,8 +140,8 @@ export default function DataConverter() {
       if (targetFormat === "json") {
         output = JSON.stringify(data, null, 2);
       } else if (targetFormat === "yaml") {
-  output = yamlDump(data, { indent: 2, lineWidth: -1 });
-} else if (targetFormat === "xml") {
+        output = yamlDump(data, { indent: 2, lineWidth: -1 });
+      } else if (targetFormat === "xml") {
         const builder = new XMLBuilder({
           ignoreAttributes: false,
           attributeNamePrefix: "@_",
@@ -160,9 +160,13 @@ export default function DataConverter() {
         .replace(/[:.]/g, "-")
         .slice(0, 19);
       setResultContent(output);
-      setResultFilename(`totthobox_data_converter_${timestamp}.${targetFormat}`);
+      setResultFilename(
+        `totthobox_data_converter_${timestamp}.${targetFormat}`,
+      );
     } catch (err: any) {
-      setErrorMessage(err?.message || "Conversion failed. Please check your data.");
+      setErrorMessage(
+        err?.message || "Conversion failed. Please check your data.",
+      );
     } finally {
       setIsConverting(false);
     }
@@ -178,7 +182,9 @@ export default function DataConverter() {
 
   const downloadResult = () => {
     if (!resultContent || !resultFilename) return;
-    const blob = new Blob([resultContent], { type: "text/plain;charset=utf-8" });
+    const blob = new Blob([resultContent], {
+      type: "text/plain;charset=utf-8",
+    });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -189,322 +195,311 @@ export default function DataConverter() {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <header className="text-center space-y-3">
-        <div className="inline-flex items-center gap-2 rounded-full bg-zinc-100 dark:bg-zinc-800 px-3 py-1 text-xs font-medium text-zinc-600 dark:text-zinc-300">
-          <Sparkles className="h-3.5 w-3.5" />
-          Instant Transformer
-        </div>
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-          Data Format Converter
-        </h1>
-        <p className="text-zinc-500 dark:text-zinc-400 max-w-xl mx-auto">
-          JSON ⇄ XML ⇄ YAML ⇄ CSV — Upload a file or paste raw data
-        </p>
-      </header>
+  {/* Header */}
+  <header className="text-center space-y-4">
+    <span className="inline-flex items-center gap-2 rounded-full bg-zinc-400/10 p-2 text-sm">
+      <Sparkles className="size-4" />
+      Instant Transformer
+    </span>
+    <h1 className="text-2xl font-bold tracking-tight">
+      Data Format Converter
+    </h1>
+    <p>
+      JSON ⇄ XML ⇄ YAML ⇄ CSV — Upload a file or paste raw data
+    </p>
+  </header>
 
-      {/* Converter Card */}
-      <section className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-6 shadow-sm space-y-6">
-        {/* 1. File Upload */}
-        <div>
-          <label className="text-xs font-semibold uppercase text-zinc-500 dark:text-zinc-400 mb-2 block">
-            1. File Upload (Optional)
-          </label>
+  {/* Converter Card */}
+  <section className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 space-y-4">
+    {/* 1. File Upload */}
+    <div>
+      <label className="text-sm uppercase tracking-wider mb-2 block">
+        1. File Upload (Optional)
+      </label>
 
-          {!file ? (
-            <div
-              onDragOver={(e) => {
-                e.preventDefault();
-                setIsDragging(true);
-              }}
-              onDragLeave={() => setIsDragging(false)}
-              onDrop={onDrop}
-              onClick={() => fileInputRef.current?.click()}
-              className={cn(
-                "flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-8 cursor-pointer transition-all",
-                isDragging
-                  ? "border-blue-500 bg-blue-50 dark:bg-blue-950/30"
-                  : "border-zinc-300 dark:border-zinc-700 hover:border-zinc-400 dark:hover:border-zinc-600 hover:bg-zinc-50 dark:hover:bg-zinc-800/40"
-              )}
-            >
-              <Upload className="h-7 w-7 text-zinc-400" />
-              <div className="text-center">
-                <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                  Drag & drop or click to upload
-                </p>
-                <p className="text-xs text-zinc-500 mt-1">
-                  JSON, XML, YAML, CSV · Max 5 MB
-                </p>
-              </div>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".json,.xml,.yaml,.yml,.csv,.txt"
-                className="hidden"
-                onChange={(e) =>
-                  e.target.files?.[0] && handleFile(e.target.files[0])
-                }
-              />
-            </div>
-          ) : (
-            <div className="flex items-center justify-between rounded-xl bg-zinc-50 dark:bg-zinc-800/60 p-3.5">
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="rounded-lg bg-white dark:bg-zinc-900 p-2 shadow-sm">
-                  <FileJson className="h-5 w-5 text-indigo-500" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100 truncate">
-                    {file.name}
-                  </p>
-                  <p className="text-xs text-zinc-500">
-                    {(file.size / 1024).toFixed(1)} KB
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={clearAll}
-                className="p-2 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-700 transition"
-              >
-                <X className="h-4 w-4 text-zinc-500" />
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* 2. Source Format */}
-        <div>
-          <label className="text-xs font-semibold uppercase text-zinc-500 dark:text-zinc-400 mb-2 block">
-            2. Source Format
-          </label>
-          <div className="grid grid-cols-4 gap-2">
-            {FORMATS.map((fmt) => (
-              <button
-                key={fmt}
-                onClick={() => setSourceManually(fmt)}
-                className={cn(
-                  "rounded-lg py-2 text-xs font-mono font-semibold uppercase transition-all",
-                  sourceFormat === fmt
-                    ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 shadow-sm"
-                    : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
-                )}
-              >
-                {fmt}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* 3. Source Data */}
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <label className="text-xs font-semibold uppercase text-zinc-500 dark:text-zinc-400">
-              3. Source Data
-            </label>
-            {sourceFormat && (
-              <span className="inline-flex items-center rounded-md bg-indigo-100 dark:bg-indigo-900/40 px-2 py-0.5 text-xs font-mono font-semibold uppercase text-indigo-700 dark:text-indigo-300">
-                {sourceFormat}
-              </span>
-            )}
-          </div>
-          <textarea
-            value={rawInput}
-            onChange={(e) => {
-              setRawInput(e.target.value);
-              setResultContent(null);
-              setErrorMessage(null);
-            }}
-            rows={9}
-            placeholder={`{"example": "paste your raw data here..."}`}
-            className="w-full font-mono text-xs sm:text-sm leading-relaxed rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950/50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-zinc-400 dark:focus:ring-zinc-600 resize-y"
-          />
-        </div>
-
-        {/* Target Format */}
-        <AnimatePresence>
-          {sourceFormat && targetOptions.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="overflow-hidden"
-            >
-              <div className="rounded-xl border border-zinc-100 bg-zinc-50/80 dark:border-zinc-800/60 dark:bg-zinc-800/40 p-4 space-y-2">
-                <div className="text-xs font-semibold text-zinc-600 dark:text-zinc-300">
-                  Convert to (Target Format):
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {targetOptions.map((opt) => (
-                    <button
-                      key={opt}
-                      onClick={() => setTargetFormat(opt)}
-                      className={cn(
-                        "rounded-lg px-3.5 py-1.5 text-xs font-mono font-semibold uppercase transition-all",
-                        targetFormat === opt
-                          ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 shadow-sm"
-                          : "bg-white text-zinc-600 hover:bg-zinc-100 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-700 border border-zinc-200 dark:border-zinc-700"
-                      )}
-                    >
-                      {opt}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Convert Button */}
-        <button
-          onClick={convert}
-          disabled={!rawInput.trim() || !sourceFormat || !targetFormat || isConverting}
+      {!file ? (
+        <div
+          onDragOver={(e) => {
+            e.preventDefault();
+            setIsDragging(true);
+          }}
+          onDragLeave={() => setIsDragging(false)}
+          onDrop={onDrop}
+          onClick={() => fileInputRef.current?.click()}
           className={cn(
-            "w-full flex items-center justify-center gap-2 rounded-xl py-3.5 font-semibold text-white transition-all",
-            !rawInput.trim() || !sourceFormat || !targetFormat || isConverting
-              ? "bg-zinc-300 dark:bg-zinc-700 cursor-not-allowed"
-              : "bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white shadow-lg shadow-zinc-900/20"
+            "relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-zinc-400/25 bg-zinc-400/10 hover:bg-zinc-400/25 p-4 text-center cursor-pointer",
+            isDragging && "bg-zinc-400/25",
           )}
         >
-          {isConverting ? (
-            <>
-              <Loader2 className="h-5 w-5 animate-spin" />
-              Converting Data...
-            </>
-          ) : (
-            <>
-              <Sparkles className="h-4 w-4" />
-              Convert to {targetFormat ? targetFormat.toUpperCase() : "Target"}
-            </>
-          )}
-        </button>
-
-        {/* Error */}
-        {errorMessage && (
-          <div className="flex items-start gap-2 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 p-3.5 text-sm text-red-700 dark:text-red-300">
-            <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
-            {errorMessage}
+          <div className="mb-5 flex size-12 items-center justify-center rounded-2xl bg-zinc-400/10">
+            <Upload className="size-6" />
           </div>
-        )}
-
-        {/* Result */}
-        <AnimatePresence>
-          {resultContent && (
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 12 }}
-              className="pt-4 border-t border-zinc-200 dark:border-zinc-800 space-y-3"
-            >
-              <div className="flex items-center justify-between">
-                <h3 className="text-xs font-semibold uppercase text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4" />
-                  Result ({targetFormat?.toUpperCase()})
-                </h3>
-
-                <button
-                  onClick={copyResult}
-                  className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800 transition"
-                >
-                  {copied ? (
-                    <>
-                      <Check className="h-3.5 w-3.5 text-emerald-500" />
-                      Copied!
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="h-3.5 w-3.5" />
-                      Copy
-                    </>
-                  )}
-                </button>
-              </div>
-
-              <textarea
-                readOnly
-                value={resultContent}
-                rows={9}
-                className="w-full font-mono text-xs sm:text-sm leading-relaxed rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-950/60 px-4 py-3 resize-y"
-              />
-
-              <button
-                onClick={downloadResult}
-                className="w-full flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 text-sm font-medium transition"
-              >
-                <Download className="h-4 w-4" />
-                Download {targetFormat?.toUpperCase()} File
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </section>
-
-    <section className="rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 p-5 space-y-3" aria-labelledby="about-converter">
-        <h2 id="about-converter" className="text-lg font-bold text-zinc-800 dark:text-zinc-200">
-            ফ্রি অনলাইন ডাটা ফরম্যাট কনভার্টার
-        </h2>
-        <div className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-300 space-y-3">
-            <p>
-                <strong>JSON, XML, YAML এবং CSV</strong> ফরম্যাটগুলোর মধ্যে সহজেই ডাটা রূপান্তর করুন।
-                ফাইল আপলোড করতে পারেন অথবা সরাসরি রো টেক্সট পেস্ট করে কনভার্ট করতে পারেন।
-            </p>
-            <p>
-                ডেভেলপারদের জন্য দ্রুত ও সহজ টুল। সর্বোচ্চ ৫ MB ফাইল বা ২ লাখ ক্যারেক্টার পর্যন্ত টেক্সট সাপোর্ট করে।
-            </p>
+          <div className="opacity-50">
+            <p>Drag & drop or click to upload</p>
+            <p>JSON, XML, YAML, CSV · Max 5 MB</p>
+          </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".json,.xml,.yaml,.yml,.csv,.txt"
+            className="hidden"
+            onChange={(e) =>
+              e.target.files?.[0] && handleFile(e.target.files[0])
+            }
+          />
         </div>
-    </section>
-
-    <section className="space-y-3" aria-labelledby="faq-heading">
-        <h2 id="faq-heading" className="text-lg font-bold text-zinc-800 dark:text-zinc-200">
-            প্রায়শই জিজ্ঞাসিত প্রশ্ন
-        </h2>
-
-        <div className="space-y-2">
-            <details className="group rounded-xl border border-zinc-400/25 bg-white dark:bg-zinc-900 overflow-hidden">
-                <summary
-                    className="flex items-center justify-between cursor-pointer px-4 py-3 font-medium text-zinc-800 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
-                    <span>এই ডাটা কনভার্টার কি ফ্রি?</span>
-                   
-                </summary>
-                <div className="px-4 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                    হ্যাঁ। টুলটি সম্পূর্ণ ফ্রি। কোনো রেজিস্ট্রেশন বা পেমেন্ট লাগে না।
-                </div>
-            </details>
-
-            <details className="group rounded-xl border border-zinc-400/25 bg-white dark:bg-zinc-900 overflow-hidden">
-                <summary
-                    className="flex items-center justify-between cursor-pointer px-4 py-3 font-medium text-zinc-800 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
-                    <span>কোন কোন ফরম্যাট সাপোর্টেড?</span>
-                    
-                </summary>
-                <div className="px-4 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                    JSON, XML, YAML এবং CSV — এই চারটি ফরম্যাটের মধ্যে যেকোনো দিকে কনভার্ট করা যায়।
-                </div>
-            </details>
-
-            <details className="group rounded-xl border border-zinc-400/25 bg-white dark:bg-zinc-900 overflow-hidden">
-                <summary
-                    className="flex items-center justify-between cursor-pointer px-4 py-3 font-medium text-zinc-800 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
-                    <span>ফাইল না দিয়ে শুধু টেক্সট পেস্ট করে কি কনভার্ট করা যায়?</span>
-                    
-                </summary>
-                <div className="px-4 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                    হ্যাঁ। ফাইল আপলোড ঐচ্ছিক। সোর্স ফরম্যাট সিলেক্ট করে টেক্সটএরিয়াতে ডাটা পেস্ট করেই কনভার্ট করতে
-                    পারবেন।
-                </div>
-            </details>
-
-            <details className="group rounded-xl border border-zinc-400/25 bg-white dark:bg-zinc-900 overflow-hidden">
-                <summary
-                    className="flex items-center justify-between cursor-pointer px-4 py-3 font-medium text-zinc-800 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
-                    <span>সর্বোচ্চ কত বড় ডাটা সাপোর্ট করে?</span>
-                   
-                </summary>
-                <div className="px-4 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                    ফাইল আপলোডে সর্বোচ্চ ৫ MB এবং টেক্সট পেস্টে সর্বোচ্চ প্রায় ২ লাখ ক্যারেক্টার পর্যন্ত সাপোর্ট করে।
-                </div>
-            </details>
+      ) : (
+        <div className="flex items-center justify-between rounded-xl bg-zinc-400/10 p-4">
+          <div className="flex items-center gap-4 min-w-0">
+            <div className="rounded-lg bg-zinc-400/10 p-2">
+              <FileJson className="size-5" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm truncate">{file.name}</p>
+              <p className="text-sm opacity-50">
+                {(file.size / 1024).toFixed(1)} KB
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={clearAll}
+            className="p-1.5 hover:bg-zinc-400/25 rounded-lg"
+          >
+            <X className="size-4" />
+          </button>
         </div>
-    </section>
+      )}
     </div>
+
+    {/* 2. Source Format */}
+    <div>
+      <label className="text-sm uppercase tracking-wider mb-2 block">
+        2. Source Format
+      </label>
+      <div className="grid grid-cols-4 gap-2">
+        {FORMATS.map((fmt) => (
+          <button
+            key={fmt}
+            onClick={() => setSourceManually(fmt)}
+            className={cn(
+              "py-1.5 rounded-lg text-sm uppercase transition",
+              sourceFormat === fmt
+                ? "bg-zinc-700 text-white"
+                : "bg-zinc-400/10 hover:bg-zinc-400/25",
+            )}
+          >
+            {fmt}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    {/* 3. Source Data */}
+    <div>
+      <div className="flex items-center justify-between mb-2">
+        <label className="text-sm uppercase tracking-wider">
+          3. Source Data
+        </label>
+        {sourceFormat && (
+          <span className="inline-flex items-center rounded-lg bg-zinc-400/10 px-2.5 py-1 text-sm uppercase">
+            {sourceFormat}
+          </span>
+        )}
+      </div>
+      <textarea
+        value={rawInput}
+        onChange={(e) => {
+          setRawInput(e.target.value);
+          setResultContent(null);
+          setErrorMessage(null);
+        }}
+        rows={9}
+        placeholder={`{"example": "paste your raw data here..."}`}
+        className="w-full rounded-lg bg-zinc-400/10 p-2 outline-none"
+      />
+    </div>
+
+    {/* Target Format */}
+    <AnimatePresence>
+      {sourceFormat && targetOptions.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+          className="overflow-hidden"
+        >
+          <div className="rounded-xl border border-zinc-400/25 p-4 space-y-2">
+            <div className="text-sm uppercase tracking-wider">
+              Convert to (Target Format):
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {targetOptions.map((opt) => (
+                <button
+                  key={opt}
+                  onClick={() => setTargetFormat(opt)}
+                  className={cn(
+                    "px-2.5 py-1 rounded-lg text-sm uppercase transition",
+                    targetFormat === opt
+                      ? "bg-zinc-700 text-white"
+                      : "bg-zinc-400/10 hover:bg-zinc-400/25",
+                  )}
+                >
+                  {opt}
+                </button>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+
+    {/* Convert Button */}
+    <button
+      onClick={convert}
+      disabled={
+        !rawInput.trim() || !sourceFormat || !targetFormat || isConverting
+      }
+      className="w-full flex items-center justify-center gap-2 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/25 py-2 transition"
+    >
+      {isConverting ? (
+        <>
+          <Loader2 className="size-5 animate-spin" />
+          Converting Data...
+        </>
+      ) : (
+        <>
+          <Sparkles className="size-4" />
+          Convert to {targetFormat ? targetFormat.toUpperCase() : "Target"}
+        </>
+      )}
+    </button>
+
+    {/* Error */}
+    {errorMessage && (
+      <div className="rounded-xl dark:bg-zinc-400/40 p-4 flex items-start gap-4">
+        <AlertCircle className="size-5 shrink-0" />
+        {errorMessage}
+      </div>
+    )}
+
+    {/* Result */}
+    <AnimatePresence>
+      {resultContent && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 12 }}
+          className="pt-4 space-y-4"
+        >
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm uppercase tracking-wider flex items-center gap-2">
+              <CheckCircle2 className="size-4" />
+              Result ({targetFormat?.toUpperCase()})
+            </h3>
+
+            <button
+              onClick={copyResult}
+              className="inline-flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-sm hover:bg-zinc-400/25 transition"
+            >
+              {copied ? (
+                <>
+                  <Check className="size-4" />
+                  Copied!
+                </>
+              ) : (
+                <>
+                  <Copy className="size-4" />
+                  Copy
+                </>
+              )}
+            </button>
+          </div>
+
+          <textarea
+            readOnly
+            value={resultContent}
+            rows={9}
+            className="w-full rounded-lg bg-zinc-400/10 p-2 outline-none"
+          />
+
+          <button
+            onClick={downloadResult}
+            className="w-full flex items-center justify-center gap-2 rounded-xl bg-zinc-400/25 hover:bg-zinc-400/50 p-2 transition"
+          >
+            <Download className="size-4" />
+            Download {targetFormat?.toUpperCase()} File
+          </button>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  </section>
+
+  <section className="rounded-2xl /40 p-4 space-y-4">
+    <h2 className="text-xl">
+      ফ্রি অনলাইন ডাটা ফরম্যাট কনভার্টার
+    </h2>
+    <div className="leading-relaxed">
+      <p>
+        <strong>JSON, XML, YAML এবং CSV</strong> ফরম্যাটগুলোর মধ্যে সহজেই
+        ডাটা রূপান্তর করুন। ফাইল আপলোড করতে পারেন অথবা সরাসরি রো টেক্সট
+        পেস্ট করে কনভার্ট করতে পারেন।
+      </p>
+      <p>
+        ডেভেলপারদের জন্য দ্রুত ও সহজ টুল। সর্বোচ্চ ৫ MB ফাইল বা ২ লাখ
+        ক্যারেক্টার পর্যন্ত টেক্সট সাপোর্ট করে।
+      </p>
+    </div>
+  </section>
+
+  <section className="space-y-4">
+    <h2 className="text-xl">
+      প্রায়শই জিজ্ঞাসিত প্রশ্ন
+    </h2>
+
+    <div className="space-y-2">
+      <details className="group rounded-xl border border-zinc-400/25 overflow-hidden">
+        <summary className="flex items-center justify-between cursor-pointer px-4 py-2 hover:bg-zinc-400/10 transition">
+          <span>এই ডাটা কনভার্টার কি ফ্রি?</span>
+        </summary>
+        <div className="px-4 pb-4 text-sm leading-relaxed">
+          হ্যাঁ। টুলটি সম্পূর্ণ ফ্রি। কোনো রেজিস্ট্রেশন বা পেমেন্ট লাগে না।
+        </div>
+      </details>
+
+      <details className="group rounded-xl border border-zinc-400/25 overflow-hidden">
+        <summary className="flex items-center justify-between cursor-pointer px-4 py-2 hover:bg-zinc-400/10 transition">
+          <span>কোন কোন ফরম্যাট সাপোর্টেড?</span>
+        </summary>
+        <div className="px-4 pb-4 text-sm leading-relaxed">
+          JSON, XML, YAML এবং CSV — এই চারটি ফরম্যাটের মধ্যে যেকোনো দিকে
+          কনভার্ট করা যায়।
+        </div>
+      </details>
+
+      <details className="group rounded-xl border border-zinc-400/25 overflow-hidden">
+        <summary className="flex items-center justify-between cursor-pointer px-4 py-2 hover:bg-zinc-400/10 transition">
+          <span>
+            ফাইল না দিয়ে শুধু টেক্সট পেস্ট করে কি কনভার্ট করা যায়?
+          </span>
+        </summary>
+        <div className="px-4 pb-4 text-sm leading-relaxed">
+          হ্যাঁ। ফাইল আপলোড ঐচ্ছিক। সোর্স ফরম্যাট সিলেক্ট করে টেক্সটএরিয়াতে
+          ডাটা পেস্ট করেই কনভার্ট করতে পারবেন।
+        </div>
+      </details>
+
+      <details className="group rounded-xl border border-zinc-400/25 overflow-hidden">
+        <summary className="flex items-center justify-between cursor-pointer px-4 py-2 hover:bg-zinc-400/10 transition">
+          <span>সর্বোচ্চ কত বড় ডাটা সাপোর্ট করে?</span>
+        </summary>
+        <div className="px-4 pb-4 text-sm leading-relaxed">
+          ফাইল আপলোডে সর্বোচ্চ ৫ MB এবং টেক্সট পেস্টে সর্বোচ্চ প্রায় ২ লাখ
+          ক্যারেক্টার পর্যন্ত সাপোর্ট করে।
+        </div>
+      </details>
+    </div>
+  </section>
+</div>
   );
 }
 
@@ -593,16 +588,16 @@ function FaqItem({
 }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden">
+    <div className="rounded-xl border border-zinc-400/25 dark:border-zinc-700 overflow-hidden">
       <button
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between px-4 py-3.5 text-left font-medium text-zinc-800 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition"
+        className="flex w-full items-center justify-between px-4 py-3.5 text-left  text-zinc-50 text-zinc-200 hover:bg-zinc-900 hover:bg-zinc-800/50 transition"
       >
         <span>{question}</span>
         <ChevronDown
           className={cn(
             "h-4 w-4 text-zinc-400 transition-transform",
-            open && "rotate-180"
+            open && "rotate-180",
           )}
         />
       </button>
@@ -614,9 +609,7 @@ function FaqItem({
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <div className="px-4 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              {children}
-            </div>
+            <div className="px-4 pb-4 text-sm  leading-relaxed">{children}</div>
           </motion.div>
         )}
       </AnimatePresence>

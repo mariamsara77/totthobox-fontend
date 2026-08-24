@@ -31,8 +31,8 @@ export function Sidebar() {
   }, [pdfDoc, numPages]);
 
   return (
-    <div className="w-44 border-r border-zinc-200 dark:border-zinc-800 overflow-y-auto bg-white dark:bg-zinc-950 p-3 space-y-3">
-      <p className="text-xs font-medium text-zinc-500 px-1">
+    <div className="w-44 border-r border-zinc-400/25 overflow-y-auto bg-zinc-950 dark:bg-zinc-950 p-2 space-y-4">
+      <p className="text-xs  text-zinc-400 px-1">
         Pages ({numPages})
       </p>
       {thumbnails.map((src, idx) => (
@@ -43,11 +43,11 @@ export function Sidebar() {
             "w-full rounded-lg overflow-hidden border-2 transition",
             currentPage === idx + 1
               ? "border-indigo-500"
-              : "border-transparent hover:border-zinc-300 dark:hover:border-zinc-700"
+              : "border-transparent hover:border-zinc-700 dark:hover:border-zinc-700"
           )}
         >
           <img src={src} alt={`Page ${idx + 1}`} className="w-full" />
-          <p className="text-[10px] text-center py-1 text-zinc-500">
+          <p className="text-[10px] text-center py-1 text-zinc-400">
             {idx + 1}
             {pages[idx]?.rotation ? ` • ${pages[idx].rotation}°` : ""}
           </p>

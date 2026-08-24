@@ -36,15 +36,15 @@ export default function MarkdownRenderer({ content, animate = false }: Props) {
       // র‍্যাপার তৈরি
       const wrapper = document.createElement("div");
       wrapper.className =
-        "code-block-wrapper not-prose my-3 rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-700";
+        "code-block-wrapper not-prose my-3 rounded-lg overflow-hidden border border-zinc-400/25 dark:border-zinc-700";
 
       // টুলবার তৈরি
       const toolbar = document.createElement("div");
       toolbar.className =
-        "code-toolbar flex items-center justify-between px-3 py-1.5 bg-zinc-900 text-zinc-400 text-xs";
+        "code-toolbar flex items-center justify-between p-2 text-xs";
       toolbar.innerHTML = `
         <span class="uppercase tracking-wider opacity-60">${lang}</span>
-        <button type="button" class="code-copy-btn hover:text-white transition px-2 py-0.5 rounded">কপি</button>
+        <button type="button" class="code-copy-btn transition p-2 rounded">কপি</button>
       `;
 
       // কপি বাটন ইভেন্ট লিসেনার
@@ -54,10 +54,10 @@ export default function MarkdownRenderer({ content, animate = false }: Props) {
           // textContent ব্যবহার করলে highlight এর span গুলো বাদ দিয়ে শুধু টেক্সট কপি হবে
           navigator.clipboard.writeText(code.textContent || "").then(() => {
             btn.textContent = "কপি হয়েছে ✓";
-            btn.classList.add("text-emerald-400");
+            btn.classList.add("");
             setTimeout(() => {
               btn.textContent = "কপি";
-              btn.classList.remove("text-emerald-400");
+              btn.classList.remove("");
             }, 2000);
           });
         });
@@ -76,7 +76,7 @@ export default function MarkdownRenderer({ content, animate = false }: Props) {
     <div
       ref={rootRef}
       className={`ai-prose prose prose-sm dark:prose-invert max-w-none
-        prose-a:text-emerald-600 prose-pre:bg-zinc-900 prose-pre:p-0
+        prose-a: prose-pre:bg-zinc-900 prose-pre:p-0
         ${animate ? "ai-response-new" : ""}`}
     >
       <ReactMarkdown

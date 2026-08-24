@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { X, Settings, Bell, Shield, User } from "lucide-react";
+import { X, Settings } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
-import GoogleTranslateScript from "@/components/GoogleTranslateScript";
-import LanguageSelect from "./LanguageSelect";
+import LanguageSelect from "./LanguageSelect"; // আপনার কম্পোনেন্ট
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -14,7 +13,6 @@ interface SettingsModalProps {
 export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
 
-  // ESC কি চাপলে মোডাল বন্ধ করা এবং ব্যাকগ্রাউন্ড স্ক্রল লক করা
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -34,44 +32,43 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   if (!isOpen) return null;
 
   return (
-    // ব্যাকড্রপ ও আউটসাইড ক্লিক কভার
+    // স্ট্যান্ডার্ড ব্লার এবং ব্যাকড্রপ কালার
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/25 animate-in fade-in duration-800"
+      className="fixed inset-0 z-100 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity duration-300"
       onClick={onClose}
     >
-      {/* মোডাল বক্স (stopPropagation ব্যবহার করা হয়েছে যাতে ভেতরের ক্লিকে মোডাল বন্ধ না হয়) */}
       <div
         ref={modalRef}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md p-6 bg-white dark:bg-zinc-700 rounded-2xl borde border-zinc-400/25 animate-in zoom-in-95 duration-500 m-4"
+        className="w-full max-w-md p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl transform transition-transform"
       >
-        {/* মোডাল হেডার */}
-        <div className="flex items-center justify-between pb-4 border-b border-zinc-400/25">
-          <div className="flex items-center gap-2 text-slate-800 dark:text-slate-100 font-semibold text-lg">
-            <Settings className="w-5 h-5" />
+        {/* Header */}
+        <div className="flex items-center justify-between pb-4 border-b border-zinc-100 dark:border-zinc-800">
+          <div className="flex items-center gap-2 text-lg font-medium">
+            <Settings className="w-5 h-5 text-zinc-600 dark:text-zinc-400" />
             <span>সেটিংস</span>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-zinc-400/25 transition-colors"
+            className="p-1.5 rounded-lg text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* সেটিংস অপশনসমূহ */}
-        <div className="py-4 space-y-2">
-         <ThemeToggle />
-         <LanguageSelect />
+        {/* Content */}
+        <div className="py-5 space-y-4">
+          <ThemeToggle />
+          <LanguageSelect />
         </div>
 
-        {/* মোডাল ফুটার */}
-        <div className="pt-4 border-t border-zinc-400/25 flex justify-end">
+        {/* Footer */}
+        <div className="pt-4 border-t border-zinc-100 dark:border-zinc-800 flex justify-end">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium rounded-xl bg-zinc-400/10 text-slate-700 dark:text-slate-200 hover:bg-zinc-400/25 transition-colors"
+            className="px-4 py-2 text-sm font-medium bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 rounded-xl transition-colors"
           >
             বন্ধ করুন
           </button>

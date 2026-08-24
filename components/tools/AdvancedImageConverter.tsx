@@ -149,7 +149,7 @@ export default function AdvancedImageConverter() {
     const { width: bBoxWidth, height: bBoxHeight } = rotateSize(
       image.width,
       image.height,
-      rotation
+      rotation,
     );
 
     canvas.width = bBoxWidth;
@@ -181,7 +181,7 @@ export default function AdvancedImageConverter() {
       0,
       0,
       croppedAreaPixels.width,
-      croppedAreaPixels.height
+      croppedAreaPixels.height,
     );
 
     // Final resize if needed
@@ -296,8 +296,12 @@ export default function AdvancedImageConverter() {
   function rotateSize(width: number, height: number, rotation: number) {
     const rotRad = (rotation * Math.PI) / 180;
     return {
-      width: Math.abs(Math.cos(rotRad) * width) + Math.abs(Math.sin(rotRad) * height),
-      height: Math.abs(Math.sin(rotRad) * width) + Math.abs(Math.cos(rotRad) * height),
+      width:
+        Math.abs(Math.cos(rotRad) * width) +
+        Math.abs(Math.sin(rotRad) * height),
+      height:
+        Math.abs(Math.sin(rotRad) * width) +
+        Math.abs(Math.cos(rotRad) * height),
     };
   }
 
@@ -391,16 +395,17 @@ export default function AdvancedImageConverter() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <header className="text-center space-y-3">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 dark:bg-blue-950/50 px-3 py-1 text-xs font-medium text-blue-700 dark:text-blue-300">
-          <ImageIcon className="size-3.5" />
+      <header className="text-center space-y-4">
+        <span className="inline-flex items-center gap-2 rounded-full bg-zinc-400/10 p-2 text-sm">
+          <ImageIcon className="size-4" />
           Advanced Image Editor & Converter
         </span>
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+        <h1 className="text-2xl font-bold tracking-tight">
           Professional Image Converter
         </h1>
-        <p className="text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
-          Crop · Rotate · Flip · Resize · Filters · Convert — সব কিছু রিয়েল-টাইমে, সম্পূর্ণ ব্রাউজারে। কোনো আপলোড নেই।
+        <p>
+          Crop · Rotate · Flip · Resize · Filters · Convert — সব কিছু
+          রিয়েল-টাইমে, সম্পূর্ণ ব্রাউজারে। কোনো আপলোড নেই।
         </p>
       </header>
 
@@ -409,29 +414,35 @@ export default function AdvancedImageConverter() {
         <div
           onDragOver={(e) => e.preventDefault()}
           onDrop={onDrop}
-          className="relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-zinc-300 dark:border-zinc-700 p-12 sm:p-16 text-center hover:border-blue-400 dark:hover:border-blue-600 transition-colors bg-zinc-50/50 dark:bg-zinc-900/30"
+          className="relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-zinc-400/25 bg-zinc-400/10 hover:bg-zinc-400/25 p-4 text-center "
         >
-          <div className="mb-5 flex size-16 items-center justify-center rounded-2xl bg-blue-100 dark:bg-blue-950/60">
-            <Upload className="size-7 text-blue-600" />
+          <div className="mb-5 flex size-12 items-center justify-center rounded-2xl bg-zinc-400/10">
+            <Upload className="size-6" />
           </div>
-          <p className="text-base font-medium text-zinc-800 dark:text-zinc-200">
+          <div  className="opacity-50">
+          <p>
             ইমেজ এখানে ড্র্যাগ & ড্রপ করো
           </p>
-          <p className="mt-1 text-sm text-zinc-500">অথবা ক্লিক করে বেছে নাও</p>
+          <p>অথবা ক্লিক করে বেছে নাও</p>
+          </div>
           <input
             ref={fileInputRef}
             type="file"
             accept="image/*"
             className="hidden"
-            onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
+            onChange={(e) =>
+              e.target.files?.[0] && handleFile(e.target.files[0])
+            }
           />
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="mt-6 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-blue-500 transition shadow-sm"
+            className="mt-6 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/25 px-4 py-2"
           >
             ফাইল বেছে নাও
           </button>
-          <p className="mt-3 text-xs text-zinc-400">Max 25 MB · PNG JPG WebP AVIF BMP ICO SVG GIF</p>
+          <p className="opacity-50">
+            Max 25 MB · PNG JPG WebP AVIF BMP ICO SVG GIF
+          </p>
         </div>
       )}
 
@@ -440,7 +451,7 @@ export default function AdvancedImageConverter() {
         <div className="grid lg:grid-cols-[1fr_340px] gap-6">
           {/* Live Preview Area */}
           <div className="space-y-4">
-            <div className="relative h-[420px] sm:h-[520px] rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800">
+            <div className="relative h-100 rounded-2xl overflow-hidden border border-zinc-400/25">
               <Cropper
                 image={imageSrc}
                 crop={crop}
@@ -464,43 +475,69 @@ export default function AdvancedImageConverter() {
 
             {/* Quick Actions */}
             <div className="flex flex-wrap items-center gap-2">
-              <button onClick={() => setRotation((r) => r - 90)} className="btn-icon" title="Rotate Left">
+              <button
+                onClick={() => setRotation((r) => r - 90)}
+                className="btn-icon"
+                title="Rotate Left"
+              >
                 <RotateCcw className="size-4" />
               </button>
-              <button onClick={() => setRotation((r) => r + 90)} className="btn-icon" title="Rotate Right">
+              <button
+                onClick={() => setRotation((r) => r + 90)}
+                className="btn-icon"
+                title="Rotate Right"
+              >
                 <RotateCw className="size-4" />
               </button>
-              <button onClick={() => setFlipH((f) => !f)} className={`btn-icon ${flipH ? "bg-blue-600 text-white" : ""}`} title="Flip Horizontal">
+              <button
+                onClick={() => setFlipH((f) => !f)}
+                className={`btn-icon ${flipH ? "bg-zinc-700 text-white" : ""}`}
+                title="Flip Horizontal"
+              >
                 <FlipHorizontal className="size-4" />
               </button>
-              <button onClick={() => setFlipV((f) => !f)} className={`btn-icon ${flipV ? "bg-blue-600 text-white" : ""}`} title="Flip Vertical">
+              <button
+                onClick={() => setFlipV((f) => !f)}
+                className={`btn-icon ${flipV ? "bg-zinc-700 text-white" : ""}`}
+                title="Flip Vertical"
+              >
                 <FlipVertical className="size-4" />
               </button>
-              <div className="h-6 w-px bg-zinc-300 dark:bg-zinc-700 mx-1" />
-              <button onClick={() => setZoom((z) => Math.max(1, z - 0.1))} className="btn-icon">
+              <div className="h-6 w-px bg-zinc-800 mx-1" />
+              <button
+                onClick={() => setZoom((z) => Math.max(1, z - 0.1))}
+                className="btn-icon"
+              >
                 <ZoomOut className="size-4" />
               </button>
-              <span className="text-xs text-zinc-500 w-12 text-center">{Math.round(zoom * 100)}%</span>
-              <button onClick={() => setZoom((z) => Math.min(3, z + 0.1))} className="btn-icon">
+              <span className="text-sm  w-12 text-center">
+                {Math.round(zoom * 100)}%
+              </span>
+              <button
+                onClick={() => setZoom((z) => Math.min(3, z + 0.1))}
+                className="btn-icon"
+              >
                 <ZoomIn className="size-4" />
               </button>
             </div>
           </div>
 
           {/* Controls Panel */}
-          <div className="space-y-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-5">
+          <div className="space-y-5 rounded-2xl  bg-zinc-400/10 p-4">
             {/* Aspect Ratio */}
             <div>
-              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Aspect Ratio</label>
-              <div className="mt-2 flex flex-wrap gap-1.5">
+              <label className="text-sm  uppercase tracking-wider">
+                Aspect Ratio
+              </label>
+              <div className="mt-2 flex flex-wrap gap-2">
                 {ASPECT_RATIOS.map((ar) => (
                   <button
                     key={ar.label}
                     onClick={() => setAspect(ar.value)}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-medium transition ${
+                    className={`px-2.5 py-1 rounded-lg text-sm  transition ${
                       aspect === ar.value
-                        ? "bg-blue-600 text-white"
-                        : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200"
+                        ? "bg-zinc-700 text-white"
+                        : "bg-zinc-400/10  hover:bg-zinc-800"
                     }`}
                   >
                     {ar.label}
@@ -510,59 +547,91 @@ export default function AdvancedImageConverter() {
             </div>
 
             {/* Filters */}
-            <div className="space-y-3">
-              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider flex items-center gap-1.5">
-                <Sun className="size-3.5" /> Filters
+            <div className="space-y-4">
+              <label className="text-sm   uppercase tracking-wider flex items-center gap-2">
+                <Sun className="size-4" /> Filters
               </label>
-              <FilterSlider label="Brightness" value={brightness} min={50} max={150} onChange={setBrightness} />
-              <FilterSlider label="Contrast" value={contrast} min={50} max={150} onChange={setContrast} />
-              <FilterSlider label="Saturation" value={saturation} min={0} max={200} onChange={setSaturation} />
-              <FilterSlider label="Blur" value={blur} min={0} max={10} step={0.5} onChange={setBlur} />
+              <FilterSlider
+                label="Brightness"
+                value={brightness}
+                min={50}
+                max={150}
+                onChange={setBrightness}
+              />
+              <FilterSlider
+                label="Contrast"
+                value={contrast}
+                min={50}
+                max={150}
+                onChange={setContrast}
+              />
+              <FilterSlider
+                label="Saturation"
+                value={saturation}
+                min={0}
+                max={200}
+                onChange={setSaturation}
+              />
+              <FilterSlider
+                label="Blur"
+                value={blur}
+                min={0}
+                max={10}
+                step={0.5}
+                onChange={setBlur}
+              />
             </div>
 
             {/* Resize */}
             <div>
-              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider flex items-center gap-1.5">
-                <Maximize2 className="size-3.5" /> Resize
+              <label className="text-sm   uppercase tracking-wider flex items-center gap-2">
+                <Maximize2 className="size-4" /> Resize
               </label>
               <div className="mt-2 grid grid-cols-2 gap-2">
                 <div>
-                  <span className="text-[11px] text-zinc-400">Width</span>
+                  <span className="text-[11px] ">Width</span>
                   <input
                     type="number"
                     value={resizeWidth}
                     onChange={(e) => onWidthChange(Number(e.target.value))}
-                    className="w-full mt-0.5 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-transparent px-2.5 py-1.5 text-sm"
+                    className="w-full rounded-lg bg-zinc-400/10 p-2 outline-none"
                   />
                 </div>
                 <div>
-                  <span className="text-[11px] text-zinc-400">Height</span>
+                  <span className="text-[11px] ">Height</span>
                   <input
                     type="number"
                     value={resizeHeight}
                     onChange={(e) => onHeightChange(Number(e.target.value))}
-                    className="w-full mt-0.5 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-transparent px-2.5 py-1.5 text-sm"
+                    className="w-full rounded-lg bg-zinc-400/10 px-2.5 py-1.5  outline-none"
                   />
                 </div>
               </div>
-              <label className="mt-2 flex items-center gap-2 text-xs text-zinc-500">
-                <input type="checkbox" checked={keepAspect} onChange={(e) => setKeepAspect(e.target.checked)} className="rounded" />
+              <label className="mt-2 flex items-center gap-2 text-sm ">
+                <input
+                  type="checkbox"
+                  checked={keepAspect}
+                  onChange={(e) => setKeepAspect(e.target.checked)}
+                  className="rounded"
+                />
                 Keep aspect ratio
               </label>
             </div>
 
             {/* Format + Quality */}
             <div>
-              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Output Format</label>
-              <div className="mt-2 grid grid-cols-4 gap-1.5">
+              <label className="text-sm   uppercase tracking-wider">
+                Output Format
+              </label>
+              <div className="mt-2 grid grid-cols-4 gap-2">
                 {FORMATS.map((f) => (
                   <button
                     key={f}
                     onClick={() => setTargetFormat(f)}
-                    className={`py-1.5 rounded-lg text-xs font-semibold uppercase transition ${
+                    className={`py-1.5 rounded-lg text-sm  uppercase transition ${
                       targetFormat === f
-                        ? "bg-blue-600 text-white"
-                        : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300"
+                        ? "bg-zinc-700 text-white"
+                        : "bg-zinc-400/10 "
                     }`}
                   >
                     {f}
@@ -573,9 +642,11 @@ export default function AdvancedImageConverter() {
 
             {["jpg", "webp", "avif"].includes(targetFormat) && (
               <div>
-                <div className="flex justify-between text-xs mb-1">
-                  <span className="text-zinc-500">Quality</span>
-                  <span className="font-medium">{Math.round(quality * 100)}%</span>
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="">Quality</span>
+                  <span className="">
+                    {Math.round(quality * 100)}%
+                  </span>
                 </div>
                 <input
                   type="range"
@@ -584,20 +655,23 @@ export default function AdvancedImageConverter() {
                   step={0.05}
                   value={quality}
                   onChange={(e) => setQuality(Number(e.target.value))}
-                  className="w-full accent-blue-600"
+                  className="w-full"
                 />
               </div>
             )}
 
             <button
               onClick={convert}
-              className="w-full flex items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 transition shadow-sm"
+              className="w-full flex items-center justify-center gap-2 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/25  py-2 transition"
             >
               <Crop className="size-4" />
               Convert Now
             </button>
 
-            <button onClick={resetAll} className="w-full text-sm text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 py-1">
+            <button
+              onClick={resetAll}
+              className="w-full hover:bg-zinc-400/25 rounded-xl p-2"
+            >
               অন্য ইমেজ বেছে নাও
             </button>
           </div>
@@ -606,53 +680,67 @@ export default function AdvancedImageConverter() {
 
       {/* ========== CONVERTING ========== */}
       {step === "converting" && (
-        <div className="flex flex-col items-center justify-center py-20 rounded-2xl border border-zinc-200 dark:border-zinc-800">
-          <div className="relative size-16 mb-5">
-            <div className="absolute inset-0 rounded-full border-4 border-zinc-200 dark:border-zinc-700 border-t-blue-600 animate-spin" />
+        <div className="flex flex-col items-center justify-center py-20 rounded-2xl ">
+          <div className="relative size-12 mb-5">
+            <div className="absolute inset-0 rounded-full border-4 border-zinc-400/25 animate-spin" />
           </div>
-          <p className="font-medium text-zinc-700 dark:text-zinc-300">Processing your image...</p>
-          <p className="text-xs text-zinc-400 mt-1">Applying crop, filters & converting</p>
+          <p className=" ">Processing your image...</p>
+          <p className="text-sm  mt-1">
+            Applying crop, filters & converting
+          </p>
         </div>
       )}
 
       {/* ========== DONE ========== */}
       {step === "done" && resultUrl && (
-        <div className="space-y-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
-          <div className="flex items-center gap-2 text-emerald-600">
+        <div className="space-y-4 rounded-2xl  p-6">
+          <div className="flex items-center gap-2">
             <CheckCircle2 className="size-5" />
-            <span className="font-medium">Conversion Complete!</span>
+            <span className="">Conversion Complete!</span>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-6">
+          <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <p className="text-xs font-medium text-zinc-400 mb-2">Original</p>
-              <img src={imageSrc!} alt="Original" className="w-full rounded-xl border object-contain max-h-64 bg-zinc-50 dark:bg-zinc-900" />
-              <p className="text-xs text-zinc-400 mt-1.5">{sourceFormat.toUpperCase()} · {originalSize}</p>
+              <p className="text-sm   mb-2">Original</p>
+              <img
+                src={imageSrc!}
+                alt="Original"
+                className="w-full rounded-xl border border-zinc-400/25 object-contain max-h-64 "
+              />
+              <p className="text-sm  mt-1.5">
+                {sourceFormat.toUpperCase()} · {originalSize}
+              </p>
             </div>
             <div>
-              <p className="text-xs font-medium text-zinc-400 mb-2">Result</p>
-              <img src={resultUrl} alt="Converted" className="w-full rounded-xl border border-emerald-200 dark:border-emerald-900 object-contain max-h-64 bg-emerald-50/30 dark:bg-emerald-950/20" />
-              <p className="text-xs text-zinc-400 mt-1.5">{targetFormat.toUpperCase()} · {resultSize}</p>
+              <p className="text-sm   mb-2">Result</p>
+              <img
+                src={resultUrl}
+                alt="Converted"
+                className="w-full rounded-xl border border-zinc-400/25 object-contain max-h-60 bg-zinc-400/10"
+              />
+              <p className="text-sm  mt-1.5">
+                {targetFormat.toUpperCase()} · {resultSize}
+              </p>
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row gap-4">
             <button
               onClick={download}
-              className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 transition"
+              className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-zinc-400/25 hover:bg-zinc-400/50  p-2 transition"
             >
               <Download className="size-4" />
               Download .{targetFormat}
             </button>
             <button
               onClick={() => setStep("editing")}
-              className="flex-1 rounded-xl border border-zinc-300 dark:border-zinc-700 py-3 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-900 transition"
+              className="flex-1 rounded-xl  py-2 text-sm  hover:bg-zinc-400/50  transition"
             >
               আরো এডিট করো
             </button>
             <button
               onClick={resetAll}
-              className="flex-1 rounded-xl border border-zinc-300 dark:border-zinc-700 py-3 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-900 transition"
+              className="flex-1 rounded-xl  py-2 text-sm  hover:bg-zinc-400/50  transition"
             >
               নতুন ইমেজ
             </button>
@@ -661,23 +749,28 @@ export default function AdvancedImageConverter() {
       )}
 
       {error && (
-        <div className="rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 p-4 flex items-start gap-3 text-sm text-red-700 dark:text-red-300">
+        <div className="rounded-xl dark:bg-zinc-400/40 p-4 flex items-start gap-4">
           <X className="size-5 shrink-0" />
           {error}
         </div>
       )}
 
       {/* SEO Content */}
-      <section className="rounded-2xl bg-zinc-50 dark:bg-zinc-900/40 p-6 space-y-3">
-        <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
+      <section className="rounded-2xl /40 p-4 space-y-4">
+        <h2 className="text-xl">
           ফ্রি অ্যাডভান্সড ইমেজ কনভার্টার ও এডিটর
         </h2>
-        <div className="text-sm text-zinc-600 dark:text-zinc-300 space-y-2 leading-relaxed">
+        <div className="leading-relaxed">
           <p>
-            <strong>Crop, Rotate, Flip, Resize, Brightness, Contrast, Saturation</strong> সহ সব এডিটিং ফিচার এক জায়গায়। তারপর PNG, JPG, WebP, AVIF, BMP, ICO বা SVG তে কনভার্ট করুন — সম্পূর্ণ ব্রাউজারে, কোনো আপলোড ছাড়াই।
+            <strong>
+              Crop, Rotate, Flip, Resize, Brightness, Contrast, Saturation
+            </strong>{" "}
+            সহ সব এডিটিং ফিচার এক জায়গায়। তারপর PNG, JPG, WebP, AVIF, BMP, ICO
+            বা SVG তে কনভার্ট করুন — সম্পূর্ণ ব্রাউজারে, কোনো আপলোড ছাড়াই।
           </p>
           <p>
-            রিয়েল-টাইম প্রিভিউ দেখে দেখে এডিট করুন। সর্বোচ্চ ২৫ MB পর্যন্ত ফাইল সাপোর্ট করে। মোবাইল ও ডেস্কটপ দুটোতেই পারফেক্ট কাজ করে।
+            রিয়েল-টাইম প্রিভিউ দেখে দেখে এডিট করুন। সর্বোচ্চ ২৫ MB পর্যন্ত ফাইল
+            সাপোর্ট করে। মোবাইল ও ডেস্কটপ দুটোতেই পারফেক্ট কাজ করে।
           </p>
         </div>
       </section>
@@ -703,9 +796,12 @@ function FilterSlider({
 }) {
   return (
     <div>
-      <div className="flex justify-between text-xs mb-1">
-        <span className="text-zinc-500">{label}</span>
-        <span className="font-medium text-zinc-700 dark:text-zinc-300">{value}{label === "Blur" ? "px" : "%"}</span>
+      <div className="flex justify-between text-sm mb-1">
+        <span className="">{label}</span>
+        <span className=" ">
+          {value}
+          {label === "Blur" ? "px" : "%"}
+        </span>
       </div>
       <input
         type="range"

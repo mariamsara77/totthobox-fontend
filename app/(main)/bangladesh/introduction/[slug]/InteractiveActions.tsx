@@ -23,9 +23,6 @@ type Props = {
 
 export default function InteractiveActions({ introId, initialData }: Props) {
   const router = useRouter();
-  const API_BASE =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
-
   const [reactions, setReactions] = useState<Reactions>({
     like_count: initialData.reactions?.like_count ?? 0,
     dislike_count: initialData.reactions?.dislike_count ?? 0,
@@ -47,13 +44,13 @@ export default function InteractiveActions({ introId, initialData }: Props) {
 
       try {
         const res = await fetch(
-          `${API_BASE}/api/intro-bd/${introId}/reaction-status`,
+              `/api/backend/intro-bd/${introId}/reaction-status`,
           {
             headers: {
               ...getAuthHeaders(),
               Accept: "application/json",
             },
-          }
+          },
         );
 
         if (res.ok && !cancelled) {
@@ -80,7 +77,7 @@ export default function InteractiveActions({ introId, initialData }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [introId, API_BASE]);
+  }, [introId]);
 
   // initialData বদলালে (router.refresh এর পর) state আপডেট
   useEffect(() => {
@@ -103,22 +100,18 @@ export default function InteractiveActions({ introId, initialData }: Props) {
     setLoading(true);
 
     try {
-      const res = await fetch(
-        `${API_BASE}/api/intro-bd/${introId}/react`,
-        {
-          method: "POST",
-          headers: {
-            ...getAuthHeaders(),
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify({ type }),
-        }
-      );
+      const res = await fetch(`/api/backend/intro-bd/${introId}/react`, {
+        method: "POST",
+        headers: {
+          ...getAuthHeaders(),
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ type }),
+      });
 
       if (res.status === 401) {
         alert("সেশন শেষ হয়ে গেছে। আবার লগইন করুন।");
-        localStorage.removeItem("auth_token");
         window.location.href = "/login";
         return;
       }
@@ -133,8 +126,7 @@ export default function InteractiveActions({ introId, initialData }: Props) {
 
       setReactions({
         like_count: json.like_count ?? json.reactions?.like_count ?? 0,
-        dislike_count:
-          json.dislike_count ?? json.reactions?.dislike_count ?? 0,
+        dislike_count: json.dislike_count ?? json.reactions?.dislike_count ?? 0,
         user_has_liked:
           json.has_like ?? json.reactions?.user_has_liked ?? false,
         user_has_disliked:
@@ -171,15 +163,15 @@ export default function InteractiveActions({ introId, initialData }: Props) {
 
   return (
     <div className="flex items-center justify-between gap-4">
-      <div className="flex gap-3">
+      <div className="flex gap-4">
         <button
           type="button"
           onClick={() => handleReact("like")}
           disabled={loading || statusLoading}
-          className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 ${
+          className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm   disabled:opacity-50 ${
             reactions.user_has_liked
               ? "bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
-              : "bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+              : "bg-zinc-400/10  hover:bg-zinc-800 hover:bg-zinc-700"
           }`}
         >
           <ThumbsUp className="w-4 h-4" />
@@ -190,10 +182,10 @@ export default function InteractiveActions({ introId, initialData }: Props) {
           type="button"
           onClick={() => handleReact("dislike")}
           disabled={loading || statusLoading}
-          className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 ${
+          className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm   disabled:opacity-50 ${
             reactions.user_has_disliked
               ? "bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400"
-              : "bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+              : "bg-zinc-400/10  hover:bg-zinc-800 hover:bg-zinc-700"
           }`}
         >
           <ThumbsDown className="w-4 h-4" />
@@ -204,7 +196,7 @@ export default function InteractiveActions({ introId, initialData }: Props) {
       <button
         type="button"
         onClick={handleShare}
-        className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+        className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm  bg-zinc-400/10  hover:bg-zinc-800 hover:bg-zinc-700 "
       >
         <Share2 className="w-4 h-4" />
         শেয়ার

@@ -4,8 +4,6 @@ import { useState, useEffect } from "react";
 import { ThumbsUp, ThumbsDown, Share2 } from "lucide-react";
 import { getAuthHeaders, isLoggedIn } from "@/lib/auth";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
-
 export default function InteractiveActions({
   appId,
   initialData,
@@ -37,7 +35,7 @@ export default function InteractiveActions({
       }
 
       try {
-        const res = await fetch(`${API_BASE}/api/apps/${appId}/reaction-status`, {
+        const res = await fetch(`/api/backend/apps/${appId}/reaction-status`, {
           headers: getAuthHeaders(),
         });
 
@@ -64,7 +62,7 @@ export default function InteractiveActions({
     }
 
     try {
-      const res = await fetch(`${API_BASE}/api/apps/${appId}/react`, {
+      const res = await fetch(`/api/backend/apps/${appId}/react`, {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify({ type }),
@@ -72,7 +70,6 @@ export default function InteractiveActions({
 
       if (res.status === 401) {
         alert("সেশন শেষ হয়ে গেছে। আবার লগইন করুন।");
-        localStorage.removeItem("auth_token");
         window.location.href = "/login";
         return;
       }
@@ -102,14 +99,14 @@ export default function InteractiveActions({
 
   return (
     <div className="flex items-center justify-between">
-      <div className="flex gap-3">
+      <div className="flex gap-4">
         <button
           onClick={() => react("like")}
           disabled={loadingStatus}
-          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm   ${
             liked
               ? "bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
-              : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
+              : "bg-zinc-900 text-zinc-300 bg-zinc-800 text-zinc-400"
           }`}
         >
           <ThumbsUp className="w-4 h-4" />
@@ -119,10 +116,10 @@ export default function InteractiveActions({
         <button
           onClick={() => react("dislike")}
           disabled={loadingStatus}
-          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm   ${
             disliked
               ? "bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400"
-              : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
+              : "bg-zinc-900 text-zinc-300 bg-zinc-800 text-zinc-400"
           }`}
         >
           <ThumbsDown className="w-4 h-4" />
@@ -132,7 +129,7 @@ export default function InteractiveActions({
 
       <button
         onClick={share}
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
+        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm  bg-zinc-900 text-zinc-300 bg-zinc-800 text-zinc-400"
       >
         <Share2 className="w-4 h-4" />
         শেয়ার

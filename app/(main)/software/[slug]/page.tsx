@@ -14,7 +14,8 @@ import InteractiveActions from "./InteractiveActions";
 import CreatorsTooltip from "./CreatorsTooltip";
 import DownloadButton from "./DownloadButton";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
 async function getAppData(slug: string) {
   try {
@@ -85,27 +86,27 @@ export default async function AppShowPage({
   const { app, creators } = data;
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6 p-4 sm:p-6">
+    <div className="max-w-2xl mx-auto space-y-4 p-4 sm:p-6">
       {/* Breadcrumb */}
       <nav
         aria-label="Breadcrumb"
-        className="flex items-center gap-2 text-sm text-zinc-500"
+        className="flex items-center gap-2 text-sm text-zinc-400"
       >
         <Link
           href="/"
-          className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+          className="hover:text-zinc-50 hover:text-zinc-50 "
         >
           <Home className="w-4 h-4" />
         </Link>
         <span>/</span>
         <Link
           href="/software"
-          className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+          className="hover:text-zinc-50 hover:text-zinc-50 "
         >
           All Free Softwar
         </Link>
         <span>/</span>
-        <span className="text-zinc-900 dark:text-zinc-100 font-medium truncate max-w-[180px] sm:max-w-xs">
+        <span className="text-zinc-50 text-zinc-100  truncate max-w-[180px] sm:max-w-xs">
           {app.name} {app.version ? `v${app.version}` : ""}
         </span>
       </nav>
@@ -116,28 +117,28 @@ export default async function AppShowPage({
           <div className="flex-1 space-y-2">
             <div className="flex flex-wrap gap-2">
               {app.platform && (
-                <span className="inline-flex items-center rounded-md bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 text-xs font-medium text-zinc-600 dark:text-zinc-300">
+                <span className="inline-flex items-center rounded-md bg-zinc-400/10 px-2.5 py-1 text-xs  ">
                   {app.platform}
                 </span>
               )}
               {app.version && (
-                <span className="inline-flex items-center rounded-md bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 text-xs font-medium text-zinc-600 dark:text-zinc-300">
+                <span className="inline-flex items-center rounded-md bg-zinc-400/10 px-2.5 py-1 text-xs  ">
                   v{app.version}
                 </span>
               )}
             </div>
 
-            <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+            <h1 className="text-3xl font-bold tracking-tight text-zinc-50 text-zinc-100">
               {app.name}
             </h1>
 
             <div className="flex items-center gap-2 flex-wrap">
-              <div className="inline-flex items-center gap-1.5 rounded-md bg-green-50 dark:bg-green-900/20 px-2.5 py-1 text-xs font-medium text-green-700 dark:text-green-400">
+              <div className="inline-flex items-center gap-2 rounded-md bg-green-50 dark:bg-green-900/20 px-2.5 py-1 text-xs  text-green-700 dark:text-green-400">
                 <Download className="w-3.5 h-3.5" />
                 {app.download_count ?? 0}+ Downloads
               </div>
 
-              <div className="inline-flex items-center gap-1.5 rounded-md bg-zinc-50 dark:bg-zinc-800/50 px-2.5 py-1 text-xs font-medium text-zinc-600 dark:text-zinc-400">
+              <div className="inline-flex items-center gap-2 rounded-md bg-zinc-400/10/50 px-2.5 py-1 text-xs  ">
                 <Eye className="w-3.5 h-3.5" />
                 {app.views_count ?? 0}
               </div>
@@ -156,7 +157,7 @@ export default async function AppShowPage({
       {/* App Icon */}
       <div className="flex justify-center">
         {app.icon_url ? (
-          <div className="relative w-28 h-28 rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-700 shadow-sm">
+          <div className="relative w-28 h-28 rounded-2xl overflow-hidden border border-zinc-400/25 dark:border-zinc-700 ">
             <Image
               src={app.icon_url}
               alt={app.name}
@@ -167,35 +168,31 @@ export default async function AppShowPage({
             />
           </div>
         ) : (
-          <div className="w-28 h-28 rounded-2xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center border border-zinc-200 dark:border-zinc-700">
+          <div className="w-28 h-28 rounded-2xl bg-zinc-400/10 flex items-center justify-center border border-zinc-400/25 dark:border-zinc-700">
             <Puzzle className="w-12 h-12 text-zinc-400" />
           </div>
         )}
       </div>
 
       {/* Download Button */}
-      <DownloadButton
-        appId={app.id}
-        name={app.name}
-        platform={app.platform}
-      />
+      <DownloadButton appId={app.id} name={app.name} platform={app.platform} />
 
       {/* Description / How to */}
-      <section aria-labelledby="how-to-heading" className="space-y-3">
+      <section aria-labelledby="how-to-heading" className="space-y-4">
         <h2
           id="how-to-heading"
-          className="text-lg font-bold text-zinc-800 dark:text-zinc-200"
+          className="text-lg font-bold text-zinc-50 text-zinc-200"
         >
           How to download and install {app.name}
         </h2>
 
         {app.description ? (
           <div
-            className="text-base text-zinc-700 dark:text-zinc-300 prose dark:prose-invert max-w-none prose-p:leading-relaxed"
+            className="text-base  prose dark:prose-invert max-w-none prose-p:leading-relaxed"
             dangerouslySetInnerHTML={{ __html: app.description }}
           />
         ) : (
-          <p className="text-sm text-zinc-500">
+          <p className="text-sm text-zinc-400">
             এই অ্যাপের বিস্তারিত নির্দেশনা এখনো যোগ করা হয়নি।
           </p>
         )}
@@ -203,8 +200,8 @@ export default async function AppShowPage({
 
       {/* Archive Password */}
       {app.download_password && (
-        <section className="bg-blue-50 dark:bg-blue-900/20 p-5 rounded-2xl border border-blue-200 dark:border-blue-800 flex items-center gap-4">
-          <div className="bg-blue-500 p-2.5 rounded-xl text-white shrink-0">
+        <section className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-2xl border border-blue-200 dark:border-blue-800 flex items-center gap-4">
+          <div className="bg-blue-500 p-2 rounded-xl text-white shrink-0">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="w-5 h-5"
@@ -219,12 +216,10 @@ export default async function AppShowPage({
             </svg>
           </div>
           <div>
-            <h2 className="font-bold text-zinc-800 dark:text-zinc-200">
+            <h2 className="font-bold text-zinc-50 text-zinc-200">
               Archive Password
             </h2>
-            <p className="font-mono text-xl text-zinc-700 dark:text-zinc-300 mt-0.5">
-              {app.download_password}
-            </p>
+            <p className="font-mono text-xl  mt-0.5">{app.download_password}</p>
           </div>
         </section>
       )}
@@ -248,7 +243,7 @@ export default async function AppShowPage({
       <div>
         <Link
           href="/software"
-          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm  text-zinc-300 hover:bg-zinc-900 text-zinc-300 hover:bg-zinc-800 rounded-lg "
         >
           <ArrowLeft className="w-4 h-4" />
           Digital Resource Library তে ফিরে যান
@@ -256,11 +251,11 @@ export default async function AppShowPage({
       </div>
 
       {/* About Section */}
-      <section className="rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 p-5 space-y-3">
-        <h2 className="text-lg font-bold text-zinc-800 dark:text-zinc-200">
+      <section className="rounded-2xl bg-zinc-400/10/40 p-4 space-y-4">
+        <h2 className="text-lg font-bold text-zinc-50 text-zinc-200">
           {app.name} ফ্রি ডাউনলোড সম্পর্কে
         </h2>
-        <div className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-300 space-y-3">
+        <div className="text-sm leading-relaxed  space-y-4">
           <p>
             <strong>{app.name}</strong>
             {app.version ? ` (Version ${app.version})` : ""}{" "}
@@ -276,50 +271,51 @@ export default async function AppShowPage({
       </section>
 
       {/* FAQ */}
-      <section className="space-y-3 pt-2">
-        <h2 className="text-lg font-bold text-zinc-800 dark:text-zinc-200">
+      <section className="space-y-4 pt-2">
+        <h2 className="text-lg font-bold text-zinc-50 text-zinc-200">
           প্রায়শাই জিজ্ঞাসিত প্রশ্ন
         </h2>
 
         <div className="space-y-2">
-          <details className="group rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-400/10 overflow-hidden">
-            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5 font-medium text-zinc-800 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition list-none">
+          <details className="group rounded-xl border border-zinc-400/25 bg-zinc-800/80 overflow-hidden">
+            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5  text-zinc-50 text-zinc-200 hover:bg-zinc-900 hover:bg-zinc-800/50 transition list-none">
               <span>{app.name} কি ফ্রি?</span>
               <ChevronDown className="w-4 h-4 text-zinc-400 group-open:rotate-180 transition shrink-0" />
             </summary>
-            <div className="px-4 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-400/25 pt-3">
+            <div className="px-4 pb-4 text-sm  leading-relaxed border-t border-zinc-400/25 pt-3">
               হ্যাঁ। Totthobox থেকে {app.name} সম্পূর্ণ ফ্রি ডাউনলোড করা যায়।
             </div>
           </details>
 
-          <details className="group rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-400/10 overflow-hidden">
-            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5 font-medium text-zinc-800 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition list-none">
+          <details className="group rounded-xl border border-zinc-400/25 bg-zinc-800/80 overflow-hidden">
+            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5  text-zinc-50 text-zinc-200 hover:bg-zinc-900 hover:bg-zinc-800/50 transition list-none">
               <span>ডাউনলোড নিরাপদ কি?</span>
               <ChevronDown className="w-4 h-4 text-zinc-400 group-open:rotate-180 transition shrink-0" />
             </summary>
-            <div className="px-4 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-400/25 pt-3">
+            <div className="px-4 pb-4 text-sm  leading-relaxed border-t border-zinc-400/25 pt-3">
               হ্যাঁ। ফাইলটি ভেরিফাইড এবং ম্যালওয়্যার-ফ্রি হিসেবে চিহ্নিত। তবে
-              ডাউনলোডের পর নিজের অ্যান্টিভাইরাস দিয়ে স্ক্যান করার পরামর্শ দেওয়া হয়।
+              ডাউনলোডের পর নিজের অ্যান্টিভাইরাস দিয়ে স্ক্যান করার পরামর্শ দেওয়া
+              হয়।
             </div>
           </details>
 
-          <details className="group rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-400/10 overflow-hidden">
-            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5 font-medium text-zinc-800 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition list-none">
+          <details className="group rounded-xl border border-zinc-400/25 bg-zinc-800/80 overflow-hidden">
+            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5  text-zinc-50 text-zinc-200 hover:bg-zinc-900 hover:bg-zinc-800/50 transition list-none">
               <span>কোন প্ল্যাটফর্মের জন্য?</span>
               <ChevronDown className="w-4 h-4 text-zinc-400 group-open:rotate-180 transition shrink-0" />
             </summary>
-            <div className="px-4 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-400/25 pt-3">
+            <div className="px-4 pb-4 text-sm  leading-relaxed border-t border-zinc-400/25 pt-3">
               এই ভার্সনটি{" "}
               <strong>{app.platform || "একাধিক প্ল্যাটফর্ম"}</strong> এর জন্য।
             </div>
           </details>
 
-          <details className="group rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-400/10 overflow-hidden">
-            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5 font-medium text-zinc-800 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition list-none">
+          <details className="group rounded-xl border border-zinc-400/25 bg-zinc-800/80 overflow-hidden">
+            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5  text-zinc-50 text-zinc-200 hover:bg-zinc-900 hover:bg-zinc-800/50 transition list-none">
               <span>কীভাবে ইনস্টল করব?</span>
               <ChevronDown className="w-4 h-4 text-zinc-400 group-open:rotate-180 transition shrink-0" />
             </summary>
-            <div className="px-4 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-400/25 pt-3">
+            <div className="px-4 pb-4 text-sm  leading-relaxed border-t border-zinc-400/25 pt-3">
               উপরের “How to download and install” সেকশনে বিস্তারিত নির্দেশনা
               দেওয়া আছে। ডাউনলোড করে ফাইলটি রান/এক্সট্রাক্ট করুন এবং নির্দেশনা
               অনুসরণ করুন।

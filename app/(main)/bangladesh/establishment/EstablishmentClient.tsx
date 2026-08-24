@@ -35,9 +35,13 @@ export default function EstablishmentClient() {
   const [districtId, setDistrictId] = useState("");
   const [thanaId, setThanaId] = useState("");
 
-  const [divisions, setDivisions] = useState<{ id: number; name: string }[]>([]);
+  const [divisions, setDivisions] = useState<{ id: number; name: string }[]>(
+    [],
+  );
   const [types, setTypes] = useState<{ value: string; label: string }[]>([]);
-  const [districts, setDistricts] = useState<{ id: number; name: string }[]>([]);
+  const [districts, setDistricts] = useState<{ id: number; name: string }[]>(
+    [],
+  );
   const [thanas, setThanas] = useState<{ id: number; name: string }[]>([]);
 
   useEffect(() => {
@@ -63,7 +67,7 @@ export default function EstablishmentClient() {
       return;
     }
     fetch(
-      `${API_BASE}/api/establishment-bd/districts?division_id=${divisionId}`
+      `${API_BASE}/api/establishment-bd/districts?division_id=${divisionId}`,
     )
       .then((r) => r.json())
       .then((j) => setDistricts(j.data || []));
@@ -75,9 +79,7 @@ export default function EstablishmentClient() {
       setThanas([]);
       return;
     }
-    fetch(
-      `${API_BASE}/api/establishment-bd/thanas?district_id=${districtId}`
-    )
+    fetch(`${API_BASE}/api/establishment-bd/thanas?district_id=${districtId}`)
       .then((r) => r.json())
       .then((j) => setThanas(j.data || []));
   }, [districtId]);
@@ -98,7 +100,7 @@ export default function EstablishmentClient() {
   const { data, size, setSize, isValidating, error } = useSWRInfinite(
     getKey,
     fetcher,
-    { revalidateFirstPage: false, revalidateOnFocus: false }
+    { revalidateFirstPage: false, revalidateOnFocus: false },
   );
 
   const items: Item[] = data ? data.flatMap((p) => p.data || []) : [];
@@ -113,27 +115,27 @@ export default function EstablishmentClient() {
   const hasFilters = !!(search || type || divisionId || districtId || thanaId);
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6 p-4 sm:p-6">
+    <div className="max-w-2xl mx-auto space-y-4 p-4 sm:p-6">
       <header>
-        <h1 className="text-2xl font-bold flex items-center gap-2 text-zinc-900 dark:text-zinc-100">
+        <h1 className="text-2xl font-bold flex items-center gap-2 text-zinc-50 text-zinc-100">
           <Building2 className="w-6 h-6 text-amber-600" />
           বাংলাদেশের স্থাপনাসমূহ
         </h1>
-        <p className="text-sm text-zinc-500 mt-1">
+        <p className="text-sm text-zinc-400 mt-1">
           সকল জেলার গুরুত্বপূর্ণ সরকারি ও বেসরকারি প্রতিষ্ঠান, অফিস ও স্থাপনার
           সম্পূর্ণ তালিকা
         </p>
       </header>
 
-      <div className="space-y-3">
-        <div className="flex gap-3">
+      <div className="space-y-4">
+        <div className="flex gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="নামে বা বিবরণে খুঁজুন..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-400/25 bg-zinc-400/10 text-sm"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-400/25 bg-zinc-800/80 text-sm"
             />
           </div>
           {hasFilters && (
@@ -157,7 +159,7 @@ export default function EstablishmentClient() {
           <select
             value={type}
             onChange={(e) => setType(e.target.value)}
-            className="min-w-40 rounded-lg border border-zinc-400/25 bg-zinc-100 dark:bg-zinc-800 text-sm px-3 py-2"
+            className="min-w-40 rounded-lg border border-zinc-400/25 bg-zinc-400/10 text-sm px-3 py-2"
           >
             <option value="">সকল ধরন</option>
             {types.map((t) => (
@@ -169,7 +171,7 @@ export default function EstablishmentClient() {
           <select
             value={divisionId}
             onChange={(e) => setDivisionId(e.target.value)}
-            className="min-w-32 rounded-lg border border-zinc-400/25 bg-zinc-100 dark:bg-zinc-800 text-sm px-3 py-2"
+            className="min-w-32 rounded-lg border border-zinc-400/25 bg-zinc-400/10 text-sm px-3 py-2"
           >
             <option value="">সকল বিভাগ</option>
             {divisions.map((d) => (
@@ -182,7 +184,7 @@ export default function EstablishmentClient() {
             value={districtId}
             onChange={(e) => setDistrictId(e.target.value)}
             disabled={!divisionId}
-            className="min-w-32 rounded-lg border border-zinc-400/25 bg-zinc-100 dark:bg-zinc-800 text-sm px-3 py-2 disabled:opacity-50"
+            className="min-w-32 rounded-lg border border-zinc-400/25 bg-zinc-400/10 text-sm px-3 py-2 disabled:opacity-50"
           >
             <option value="">সকল জেলা</option>
             {districts.map((d) => (
@@ -195,7 +197,7 @@ export default function EstablishmentClient() {
             value={thanaId}
             onChange={(e) => setThanaId(e.target.value)}
             disabled={!districtId}
-            className="min-w-32 rounded-lg border border-zinc-400/25 bg-zinc-100 dark:bg-zinc-800 text-sm px-3 py-2 disabled:opacity-50"
+            className="min-w-32 rounded-lg border border-zinc-400/25 bg-zinc-400/10 text-sm px-3 py-2 disabled:opacity-50"
           >
             <option value="">সকল থানা</option>
             {thanas.map((t) => (
@@ -208,26 +210,29 @@ export default function EstablishmentClient() {
       </div>
 
       {hasFilters && !isLoading && (
-        <p className="text-xs text-zinc-500">{total}টি ফলাফল</p>
+        <p className="text-xs text-zinc-400">{total}টি ফলাফল</p>
       )}
 
       <section className="space-y-4">
         {isLoading ? (
           <div className="space-y-4">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 animate-pulse">
+              <div
+                key={i}
+                className="rounded-2xl border border-zinc-400/25 bg-zinc-800/80 p-4 animate-pulse"
+              >
                 <div className="flex gap-4">
-                  <div className="w-16 h-16 rounded-xl bg-zinc-200 dark:bg-zinc-700" />
+                  <div className="w-16 h-16 rounded-xl bg-zinc-400/10" />
                   <div className="flex-1 space-y-2">
-                    <div className="h-5 w-3/4 rounded bg-zinc-200 dark:bg-zinc-700" />
-                    <div className="h-3 w-full rounded bg-zinc-200 dark:bg-zinc-700" />
+                    <div className="h-5 w-3/4 rounded bg-zinc-400/10" />
+                    <div className="h-3 w-full rounded bg-zinc-400/10" />
                   </div>
                 </div>
               </div>
             ))}
           </div>
         ) : items.length === 0 ? (
-          <div className="text-center py-16 text-zinc-500">
+          <div className="text-center py-16 text-zinc-400">
             কোনো স্থাপনা পাওয়া যায়নি
           </div>
         ) : (
@@ -235,10 +240,10 @@ export default function EstablishmentClient() {
             <Link
               key={item.id}
               href={`/bangladesh/establishment/${item.slug}`}
-              className="block rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30 transition"
+              className="rounded-2xl border border-zinc-400/25 p-4"
             >
               <div className="flex gap-4 items-start">
-                <div className="w-16 h-16 rounded-xl overflow-hidden bg-zinc-200 dark:bg-zinc-800 shrink-0">
+                <div className="rounded-2xl border border-zinc-400/25 p-4">
                   {item.image_url ? (
                     <img
                       src={item.image_url}
@@ -253,28 +258,28 @@ export default function EstablishmentClient() {
                 </div>
                 <div className="flex-1 min-w-0 space-y-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="text-lg font-semibold line-clamp-1">
+                    <h2 className="text-lg  line-clamp-1">
                       {item.title}
                     </h2>
                     {item.type_label && (
-                      <span className="text-xs px-2 py-0.5 rounded border border-zinc-400/30 text-zinc-500">
+                      <span className="text-xs px-2 py-0.5 rounded border border-zinc-400/30 text-zinc-400">
                         {item.type_label}
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-zinc-500 flex items-center gap-1">
+                  <p className="text-xs text-zinc-400 flex items-center gap-1">
                     <MapPin className="w-3 h-3" />
                     {item.thana || "..."} • {item.district || "..."}
                   </p>
                   {item.description && (
-                    <p className="text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2">
+                    <p className="text-sm  line-clamp-2">
                       {item.description.replace(/<[^>]+>/g, "")}
                     </p>
                   )}
                 </div>
               </div>
               <div className="mt-3 pt-3 border-t border-zinc-400/25">
-                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-600">
+                <span className="inline-flex items-center gap-2 text-xs  text-amber-600">
                   বিস্তারিত পড়ুন <ArrowRight className="w-3.5 h-3.5" />
                 </span>
               </div>

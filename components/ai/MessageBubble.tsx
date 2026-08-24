@@ -53,8 +53,8 @@ export default function MessageBubble({
     >
       {!isUser && (
         <div className="flex items-start pt-3 pr-2 shrink-0">
-          <div className="p-1.5 rounded-lg bg-emerald-500/10">
-            <Sparkles className="w-3.5 h-3.5 text-emerald-500" />
+          <div className="p-1.5 rounded-lg bg-zinc-9000/10">
+            <Sparkles className="w-3.5 h-3.5 text-zinc-300" />
           </div>
         </div>
       )}
@@ -68,7 +68,7 @@ export default function MessageBubble({
               setNewContent(msg.content);
               setEditing(true);
             }}
-            className="absolute -left-8 top-3 p-1 text-zinc-400 opacity-0 group-hover:opacity-100 rounded-md hover:bg-zinc-700 transition-colors"
+            className="absolute -left-8 top-3 p-1  opacity-0 group-hover:opacity-100 rounded-md hover:bg-zinc-700 "
             title="সম্পাদনা"
           >
             <Pencil className="w-3.5 h-3.5" />
@@ -76,10 +76,10 @@ export default function MessageBubble({
         )}
 
         <div
-          className={`mb-3 ${
+          className={`mb-4 ${
             isUser
-              ? "bg-zinc-400/10 text-zinc-200 px-4 py-2.5 rounded-2xl rounded-tr-md shadow-sm"
-              : "py-1 text-zinc-300"
+              ? "bg-zinc-400/10 px-4 py-2.5 rounded-2xl rounded-tr-md "
+              : "py-1"
           }`}
         >
           {!editing ? (
@@ -104,7 +104,7 @@ export default function MessageBubble({
                       <button
                         type="button"
                         onClick={() => setCollapsed(false)}
-                        className="shrink-0 p-0.5 rounded-full text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700 transition-colors"
+                        className="shrink-0 p-0.5 rounded-full  hover:bg-zinc-400/25 "
                       >
                         <ChevronDown className="w-3.5 h-3.5" />
                       </button>
@@ -116,7 +116,7 @@ export default function MessageBubble({
                           <button
                             type="button"
                             onClick={() => setCollapsed(true)}
-                            className="p-0.5 rounded-full text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700 transition-colors"
+                            className="p-0.5 rounded-full  hover:bg-zinc-400/25 "
                           >
                             <ChevronUp className="w-3.5 h-3.5" />
                           </button>
@@ -136,12 +136,12 @@ export default function MessageBubble({
                     <button
                       type="button"
                       onClick={copy}
-                      className="flex items-center gap-1.5 px-2 py-1 text-xs text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/50 rounded-lg transition-colors"
+                      className="flex items-center gap-2 px-2 py-1 text-xs  hover:bg-zinc-400/25/50 rounded-lg "
                     >
                       {copied ? (
-                        <Check className="w-3 h-3 text-emerald-500" />
+                        <Check className="wx-4 py-2" />
                       ) : (
-                        <Clipboard className="w-3 h-3" />
+                        <Clipboard className="wx-4 py-2" />
                       )}
                       <span>{copied ? "কপি হয়েছে" : "কপি"}</span>
                     </button>
@@ -149,9 +149,9 @@ export default function MessageBubble({
                       <button
                         type="button"
                         onClick={onRegenerate}
-                        className="flex items-center gap-1.5 px-2 py-1 text-xs text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/50 rounded-lg transition-colors"
+                        className="flex items-center gap-2 px-2 py-1 text-xs  hover:bg-zinc-400/25/50 rounded-lg "
                       >
-                        <RotateCcw className="w-3 h-3" />
+                        <RotateCcw className="wx-4 py-2" />
                         পুনরায় তৈরি
                       </button>
                     )}
@@ -165,7 +165,7 @@ export default function MessageBubble({
                 value={newContent}
                 onChange={(e) => setNewContent(e.target.value)}
                 rows={3}
-                className="w-full text-sm text-zinc-200 rounded-lg border border-zinc-600 bg-zinc-400/10 px-3 py-2 outline-none focus:ring-2 focus:ring-emerald-500 placeholder-zinc-500"
+                className="w-full text-sm bg-zinc-400/10 rounded-lg p-2 outline-none resize-none"
                 onKeyDown={(e) => {
                   if (e.key === "Escape") setEditing(false);
                   if (e.key === "Enter" && e.ctrlKey) {
@@ -178,12 +178,12 @@ export default function MessageBubble({
                 }}
               />
               <div className="flex justify-between items-center">
-                <p className="text-xs text-zinc-500">Ctrl+Enter এ পাঠান</p>
+                <p className="text-xs ">Ctrl+Enter এ পাঠান</p>
                 <div className="flex gap-2">
                   <button
                     type="button"
                     onClick={() => setEditing(false)}
-                    className="text-xs px-2 py-1 rounded-lg text-zinc-300 hover:bg-zinc-700 transition-colors"
+                    className="text-xs px-2 py-1 rounded-lg"
                   >
                     বাতিল
                   </button>
@@ -195,7 +195,7 @@ export default function MessageBubble({
                         setEditing(false);
                       }
                     }}
-                    className="text-xs px-2 py-1 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition-colors"
+                    className="text-xs px-2 py-1 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 "
                   >
                     আপডেট ও পাঠান
                   </button>

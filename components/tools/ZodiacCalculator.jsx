@@ -282,7 +282,7 @@ export default function ZodiacCalculator() {
   }, [person1Dob, person2Dob]);
 
   const statusColor = {
-    excellent: "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800",
+    excellent: " bg-zinc-900 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800",
     good: "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800",
     average: "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800",
     medium: "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800",
@@ -294,32 +294,32 @@ export default function ZodiacCalculator() {
       <div className="space-y-8">
         {/* Header */}
         <div className="text-center space-y-2 mb-8">
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
+          <h1 className="text-3xl   tracking-tight text-zinc-50 dark:text-white">
             স্মার্ট রাশিফল ক্যালকুলেটর
           </h1>
-          <h2 className="text-lg text-zinc-600 dark:text-zinc-400">
+          <h2 className="text-lg ">
             জন্মতারিখ দিয়ে আপনার সঠিক রাশি এবং দুইজনের রাশির মিল নিখুঁতভাবে হিসেব করুন
           </h2>
         </div>
 
         {/* Tabs */}
-        <div className="flex rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700">
+        <div className="flex rounded-xl overflow-hidden border border-zinc-400/25 dark:border-zinc-700">
           <button
             onClick={() => setTab("single")}
-            className={`flex-1 py-3 text-sm font-semibold transition-colors ${
+            className={`flex-1 py-2 text-sm   ${
               tab === "single"
                 ? "bg-indigo-500 text-white"
-                : "bg-zinc-50 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700"
+                : "bg-zinc-400/10  hover:bg-zinc-900 hover:bg-zinc-700"
             }`}
           >
             একক রাশি
           </button>
           <button
             onClick={() => setTab("compatibility")}
-            className={`flex-1 py-3 text-sm font-semibold transition-colors ${
+            className={`flex-1 py-2 text-sm   ${
               tab === "compatibility"
                 ? "bg-indigo-500 text-white"
-                : "bg-zinc-50 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700"
+                : "bg-zinc-400/10  hover:bg-zinc-900 hover:bg-zinc-700"
             }`}
           >
             রাশির মিল
@@ -328,10 +328,10 @@ export default function ZodiacCalculator() {
 
         {/* ========== SINGLE ========== */}
         {tab === "single" && (
-          <div className="space-y-6">
-            <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-5 space-y-4">
-              <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+          <div className="space-y-4">
+            <div className="rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900/50 p-4 space-y-4">
+              <div className="flex flex-col gap-2">
+                <label className="text-sm  ">
                   আপনার জন্মতারিখ দিন
                 </label>
                 <input
@@ -339,12 +339,12 @@ export default function ZodiacCalculator() {
                   value={dob}
                   max={todayISO()}
                   onChange={(e) => setDob(e.target.value)}
-                  className="w-full p-3 rounded-lg bg-zinc-100 dark:bg-zinc-800 border-none outline-none"
+                  className="w-full p-2 rounded-lg bg-zinc-400/10 border-none outline-none"
                 />
               </div>
               <button
                 onClick={() => setDob("")}
-                className="text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                className="text-sm text-zinc-400 hover:text-zinc-200 dark:hover:text-zinc-300"
               >
                 রিসেট করুন
               </button>
@@ -353,50 +353,50 @@ export default function ZodiacCalculator() {
             {singleZodiac && (
               <>
                 {singleZodiac.error ? (
-                  <div className="rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/40 px-4 py-3 text-center text-rose-600 dark:text-rose-400 font-medium">
+                  <div className="rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/40 px-4 py-2 text-center text-rose-600 dark:text-rose-400 ">
                     {singleZodiac.error}
                   </div>
                 ) : (
-                  <div className="p-5 sm:p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl space-y-6 border border-zinc-200 dark:border-zinc-800">
+                  <div className="p-4 sm:p-6  rounded-2xl space-y-4 border border-zinc-400/25">
                     {/* Main Display */}
                     <div className="text-center">
-                      <p className="uppercase tracking-wider text-xs text-zinc-500 dark:text-zinc-400">
+                      <p className="uppercase tracking-wider text-xs ">
                         আপনার রাশিফল
                       </p>
                       <div className="mt-4 mb-2 text-7xl">{singleZodiac.emoji}</div>
-                      <h3 className="text-3xl sm:text-4xl font-extrabold text-indigo-600 dark:text-indigo-400">
+                      <h3 className="text-3xl   text-indigo-600 dark:text-indigo-400">
                         {singleZodiac.name}
                       </h3>
-                      <p className="text-lg font-medium text-zinc-500 dark:text-zinc-400 mt-1">
+                      <p className="text-lg   mt-1">
                         {singleZodiac.en}
                       </p>
-                      <p className="mt-3 text-sm text-zinc-500 dark:text-zinc-400">
+                      <p className="mt-3 text-sm ">
                         জন্মতারিখ: {singleZodiac.formattedDate}
                       </p>
                     </div>
 
                     {/* Stats */}
-                    <div className="grid grid-cols-2 gap-3 pt-4 border-t border-zinc-200 dark:border-zinc-800">
-                      <div className="p-3 bg-white dark:bg-zinc-800 rounded-xl shadow-sm text-center">
-                        <div className="text-xs text-zinc-500">উপাদান (Element)</div>
-                        <div className="text-base sm:text-lg font-bold mt-1 text-emerald-600 dark:text-emerald-400">
+                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-zinc-400/25">
+                      <div className="p-3 bg-zinc-950 bg-zinc-800 rounded-xl  text-center">
+                        <div className="text-xs text-zinc-400">উপাদান (Element)</div>
+                        <div className="text-base sm:text-lg font-bold mt-1 ">
                           {singleZodiac.element}
                         </div>
                       </div>
-                      <div className="p-3 bg-white dark:bg-zinc-800 rounded-xl shadow-sm text-center">
-                        <div className="text-xs text-zinc-500">অধিপতি গ্রহ</div>
+                      <div className="p-3 bg-zinc-950 bg-zinc-800 rounded-xl  text-center">
+                        <div className="text-xs text-zinc-400">অধিপতি গ্রহ</div>
                         <div className="text-base sm:text-lg font-bold mt-1 text-blue-600 dark:text-blue-400">
                           {singleZodiac.planet}
                         </div>
                       </div>
-                      <div className="p-3 bg-white dark:bg-zinc-800 rounded-xl shadow-sm text-center">
-                        <div className="text-xs text-zinc-500">শুভ রং</div>
+                      <div className="p-3 bg-zinc-950 bg-zinc-800 rounded-xl  text-center">
+                        <div className="text-xs text-zinc-400">শুভ রং</div>
                         <div className="text-sm font-bold mt-1 text-pink-600 dark:text-pink-400">
                           {singleZodiac.color}
                         </div>
                       </div>
-                      <div className="p-3 bg-white dark:bg-zinc-800 rounded-xl shadow-sm text-center">
-                        <div className="text-xs text-zinc-500">শুভ সংখ্যা</div>
+                      <div className="p-3 bg-zinc-950 bg-zinc-800 rounded-xl  text-center">
+                        <div className="text-xs text-zinc-400">শুভ সংখ্যা</div>
                         <div className="text-base sm:text-lg font-bold mt-1 text-purple-600 dark:text-purple-400">
                           {singleZodiac.number}
                         </div>
@@ -405,10 +405,10 @@ export default function ZodiacCalculator() {
 
                     {/* Trait */}
                     <div className="p-4 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-center">
-                      <div className="text-sm font-medium text-indigo-800 dark:text-indigo-300 mb-2">
+                      <div className="text-sm  text-indigo-800 dark:text-indigo-300 mb-2">
                         ব্যক্তিত্ব ও বৈশিষ্ট্য
                       </div>
-                      <div className="text-base font-medium text-indigo-700 dark:text-indigo-400 leading-relaxed">
+                      <div className="text-base  text-indigo-700 dark:text-indigo-400 leading-relaxed">
                         &ldquo;{singleZodiac.trait}&rdquo;
                       </div>
                     </div>
@@ -421,11 +421,11 @@ export default function ZodiacCalculator() {
 
         {/* ========== COMPATIBILITY ========== */}
         {tab === "compatibility" && (
-          <div className="space-y-6">
-            <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-5 space-y-4">
+          <div className="space-y-4">
+            <div className="rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900/50 p-4 space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm  ">
                     প্রথম ব্যক্তির জন্মতারিখ
                   </label>
                   <input
@@ -433,11 +433,11 @@ export default function ZodiacCalculator() {
                     value={person1Dob}
                     max={todayISO()}
                     onChange={(e) => setPerson1Dob(e.target.value)}
-                    className="w-full p-3 rounded-lg bg-zinc-100 dark:bg-zinc-800 border-none outline-none"
+                    className="w-full p-2 rounded-lg bg-zinc-400/10 border-none outline-none"
                   />
                 </div>
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm  ">
                     দ্বিতীয় ব্যক্তির জন্মতারিখ
                   </label>
                   <input
@@ -445,7 +445,7 @@ export default function ZodiacCalculator() {
                     value={person2Dob}
                     max={todayISO()}
                     onChange={(e) => setPerson2Dob(e.target.value)}
-                    className="w-full p-3 rounded-lg bg-zinc-100 dark:bg-zinc-800 border-none outline-none"
+                    className="w-full p-2 rounded-lg bg-zinc-400/10 border-none outline-none"
                   />
                 </div>
               </div>
@@ -454,40 +454,40 @@ export default function ZodiacCalculator() {
                   setPerson1Dob("");
                   setPerson2Dob("");
                 }}
-                className="text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                className="text-sm text-zinc-400 hover:text-zinc-200 dark:hover:text-zinc-300"
               >
                 রিসেট করুন
               </button>
             </div>
 
             {compatibility && (
-              <div className="p-5 sm:p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl space-y-6 border border-zinc-200 dark:border-zinc-800">
+              <div className="p-4 sm:p-6  rounded-2xl space-y-4 border border-zinc-400/25">
                 {/* Two signs */}
                 <div className="grid grid-cols-2 gap-4 text-center">
-                  <div className="p-4 bg-white dark:bg-zinc-800 rounded-xl">
+                  <div className="p-4 bg-zinc-950 bg-zinc-800 rounded-xl">
                     <div className="text-4xl mb-2">{compatibility.p1.emoji}</div>
                     <div className="font-bold text-indigo-600 dark:text-indigo-400">
                       {compatibility.p1.name}
                     </div>
-                    <div className="text-xs text-zinc-500">{compatibility.p1.en}</div>
+                    <div className="text-xs text-zinc-400">{compatibility.p1.en}</div>
                     <div className="text-xs text-zinc-400 mt-1">{compatibility.p1.element}</div>
                   </div>
-                  <div className="p-4 bg-white dark:bg-zinc-800 rounded-xl">
+                  <div className="p-4 bg-zinc-950 bg-zinc-800 rounded-xl">
                     <div className="text-4xl mb-2">{compatibility.p2.emoji}</div>
                     <div className="font-bold text-indigo-600 dark:text-indigo-400">
                       {compatibility.p2.name}
                     </div>
-                    <div className="text-xs text-zinc-500">{compatibility.p2.en}</div>
+                    <div className="text-xs text-zinc-400">{compatibility.p2.en}</div>
                     <div className="text-xs text-zinc-400 mt-1">{compatibility.p2.element}</div>
                   </div>
                 </div>
 
                 {/* Score */}
                 <div
-                  className={`p-5 rounded-xl border text-center ${statusColor[compatibility.status]}`}
+                  className={`p-4 rounded-xl border text-center ${statusColor[compatibility.status]}`}
                 >
-                  <div className="text-sm font-medium mb-1">মিল স্কোর</div>
-                  <div className="text-4xl font-extrabold">{compatibility.score}%</div>
+                  <div className="text-sm  mb-1">মিল স্কোর</div>
+                  <div className="text-4xl ">{compatibility.score}%</div>
                   <p className="mt-3 text-sm leading-relaxed">{compatibility.message}</p>
                 </div>
               </div>
@@ -496,9 +496,9 @@ export default function ZodiacCalculator() {
         )}
 
         {/* SEO / Instructions */}
-        <div className="mt-16 pt-10 border-t border-zinc-200 dark:border-zinc-800 space-y-6 text-sm text-zinc-600 dark:text-zinc-400">
+        <div className="mt-16 pt-10 border-t border-zinc-400/25 space-y-4 text-sm ">
           <div>
-            <h3 className="text-lg font-bold text-zinc-800 dark:text-zinc-200 mb-3 flex items-center gap-2">
+            <h3 className="text-lg font-bold text-zinc-50 text-zinc-200 mb-4 flex items-center gap-2">
               <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
@@ -516,7 +516,7 @@ export default function ZodiacCalculator() {
           </div>
 
           <div>
-            <h3 className="text-base font-bold text-zinc-800 dark:text-zinc-200 mb-2">
+            <h3 className="text-base font-bold text-zinc-50 text-zinc-200 mb-2">
               একক রাশি হিসেবের সুবিধা
             </h3>
             <ul className="list-disc list-inside space-y-1.5 ml-1">
@@ -528,7 +528,7 @@ export default function ZodiacCalculator() {
           </div>
 
           <div>
-            <h3 className="text-base font-bold text-zinc-800 dark:text-zinc-200 mb-2">
+            <h3 className="text-base font-bold text-zinc-50 text-zinc-200 mb-2">
               রাশির মিল বা জোটক বিচার (Zodiac Compatibility)
             </h3>
             <p className="leading-relaxed">
@@ -540,7 +540,7 @@ export default function ZodiacCalculator() {
           </div>
 
           <div>
-            <h3 className="text-base font-bold text-zinc-800 dark:text-zinc-200 mb-2">
+            <h3 className="text-base font-bold text-zinc-50 text-zinc-200 mb-2">
               কেন এই টুলটি ব্যবহার করবেন?
             </h3>
             <p className="leading-relaxed">

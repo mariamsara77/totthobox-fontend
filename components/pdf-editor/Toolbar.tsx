@@ -1,6 +1,5 @@
 "use client";
 
-
 import {
   MousePointer2,
   Type,
@@ -80,7 +79,7 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
   };
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2.5 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950">
+    <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2.5 border-b border-zinc-400/25 bg-zinc-950 dark:bg-zinc-950">
       {/* Left: Tools */}
       <div className="flex items-center gap-1">
         {tools.map((t) => (
@@ -92,7 +91,7 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
               "p-2 rounded-lg transition",
               tool === t.id
                 ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300"
-                : "hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400"
+                : "hover:bg-zinc-900 hover:bg-zinc-800 ",
             )}
           >
             <t.icon className="size-5" />
@@ -105,7 +104,7 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
         <button
           onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
           disabled={currentPage <= 1}
-          className="p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-40"
+          className="p-1.5 rounded-lg hover:bg-zinc-900 hover:bg-zinc-800 disabled:opacity-40"
         >
           <ChevronLeft className="size-5" />
         </button>
@@ -115,23 +114,25 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
         <button
           onClick={() => setCurrentPage(Math.min(numPages, currentPage + 1))}
           disabled={currentPage >= numPages}
-          className="p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-40"
+          className="p-1.5 rounded-lg hover:bg-zinc-900 hover:bg-zinc-800 disabled:opacity-40"
         >
           <ChevronRight className="size-5" />
         </button>
 
-        <div className="w-px h-5 bg-zinc-200 dark:bg-zinc-700 mx-1" />
+        <div className="w-px h-5 bg-zinc-400/10 mx-1" />
 
         <button
           onClick={() => setScale(Math.max(0.5, +(scale - 0.15).toFixed(2)))}
-          className="p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800"
+          className="p-1.5 rounded-lg hover:bg-zinc-900 hover:bg-zinc-800"
         >
           <ZoomOut className="size-5" />
         </button>
-        <span className="text-sm w-12 text-center">{Math.round(scale * 100)}%</span>
+        <span className="text-sm w-12 text-center">
+          {Math.round(scale * 100)}%
+        </span>
         <button
           onClick={() => setScale(Math.min(2.5, +(scale + 0.15).toFixed(2)))}
-          className="p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800"
+          className="p-1.5 rounded-lg hover:bg-zinc-900 hover:bg-zinc-800"
         >
           <ZoomIn className="size-5" />
         </button>
@@ -141,12 +142,14 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
       <div className="flex items-center gap-2">
         {/* ===== Property Panel ===== */}
         {selectedAnn && (
-          <div className="flex items-center gap-3 px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
+          <div className="flex items-center gap-4 px-3 py-1.5 rounded-lg bg-zinc-400/10 border border-zinc-400/25 dark:border-zinc-700">
             {/* Font Size */}
             {selectedAnn.type === "text" && (
               <>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-xs text-zinc-500 whitespace-nowrap">Size</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-zinc-400 whitespace-nowrap">
+                    Size
+                  </span>
                   <input
                     type="range"
                     min={12}
@@ -159,17 +162,17 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
                     }
                     className="w-20 h-1.5 accent-indigo-600"
                   />
-                  <span className="text-xs font-semibold w-6 text-center">
+                  <span className="text-xs  w-6 text-center">
                     {selectedAnn.fontSize || 18}
                   </span>
                 </div>
-                <div className="w-px h-4 bg-zinc-300 dark:bg-zinc-600" />
+                <div className="w-px h-4 bg-zinc-700 dark:bg-zinc-600" />
               </>
             )}
 
             {/* Color */}
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs text-zinc-500">Color</span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-zinc-400">Color</span>
               <input
                 type="color"
                 value={
@@ -179,16 +182,16 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
                 onChange={(e) =>
                   updateAnnotation(selectedId!, { color: e.target.value })
                 }
-                className="size-6 rounded cursor-pointer border border-zinc-300 dark:border-zinc-600"
+                className="size-6 rounded cursor-pointer border border-zinc-700 dark:border-zinc-600"
               />
             </div>
 
             {/* Opacity for highlight */}
             {selectedAnn.type === "highlight" && (
               <>
-                <div className="w-px h-4 bg-zinc-300 dark:bg-zinc-600" />
-                <div className="flex items-center gap-1.5">
-                  <span className="text-xs text-zinc-500">Opacity</span>
+                <div className="w-px h-4 bg-zinc-700 dark:bg-zinc-600" />
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-zinc-400">Opacity</span>
                   <input
                     type="range"
                     min={0.2}
@@ -213,7 +216,7 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
           onClick={undo}
           disabled={past.length === 0}
           title="Undo"
-          className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-40"
+          className="p-2 rounded-lg hover:bg-zinc-900 hover:bg-zinc-800 disabled:opacity-40"
         >
           <Undo2 className="size-5" />
         </button>
@@ -221,17 +224,17 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
           onClick={redo}
           disabled={future.length === 0}
           title="Redo"
-          className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-40"
+          className="p-2 rounded-lg hover:bg-zinc-900 hover:bg-zinc-800 disabled:opacity-40"
         >
           <Redo2 className="size-5" />
         </button>
 
-        <div className="w-px h-5 bg-zinc-200 dark:bg-zinc-700 mx-1" />
+        <div className="w-px h-5 bg-zinc-400/10 mx-1" />
 
         <button
           onClick={() => rotatePage(currentPage - 1)}
           title="Rotate Page"
-          className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800"
+          className="p-2 rounded-lg hover:bg-zinc-900 hover:bg-zinc-800"
         >
           <RotateCw className="size-5" />
         </button>
@@ -249,16 +252,16 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
         <button
           onClick={() => clearPageAnnotations(currentPage - 1)}
           title="Clear all annotations on this page"
-          className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800"
+          className="p-2 rounded-lg hover:bg-zinc-900 hover:bg-zinc-800"
         >
-          <Trash2 className="size-5 text-zinc-500" />
+          <Trash2 className="size-5 text-zinc-400" />
         </button>
 
         {onNewFile && (
           <button
             onClick={onNewFile}
             title="Open another PDF"
-            className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            className="p-2 rounded-lg hover:bg-zinc-900 hover:bg-zinc-800"
           >
             <Upload className="size-5" />
           </button>
@@ -266,7 +269,7 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
 
         <button
           onClick={handleDownload}
-          className="ml-1 flex items-center gap-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-2 text-sm font-medium transition"
+          className="ml-1 flex items-center gap-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-2 text-sm  transition"
         >
           <Download className="size-4" />
           Download

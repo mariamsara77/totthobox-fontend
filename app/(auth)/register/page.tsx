@@ -4,14 +4,22 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
-import { Eye, EyeOff, CheckCircle2, XCircle, Mail, ExternalLink } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  CheckCircle2,
+  XCircle,
+  Mail,
+  ExternalLink,
+} from "lucide-react";
 import Link from "next/link";
 import clsx from "clsx";
 import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
 import FacebookLoginButton from "@/components/auth/FacebookLoginButton";
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com",
+  baseURL:
+    process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com",
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -40,7 +48,8 @@ export default function RegisterPage() {
   const isNameValid = name.length >= 3 && name.length <= 50;
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const isPasswordValid = password.length >= 8;
-  const isConfirmValid = passwordConfirmation === password && passwordConfirmation.length > 0;
+  const isConfirmValid =
+    passwordConfirmation === password && passwordConfirmation.length > 0;
 
   const getEmailDashboardUrl = () => {
     const domain = email.split("@")[1]?.toLowerCase();
@@ -66,12 +75,12 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-    const res = await api.post("/api/auth/register/send-otp", {
-  name,
-  email,
-  password,
-  password_confirmation: passwordConfirmation,
-});
+      const res = await api.post("/api/auth/register/send-otp", {
+        name,
+        email,
+        password,
+        password_confirmation: passwordConfirmation,
+      });
 
       toast.success(res.data.message);
       setStep("otp");
@@ -98,9 +107,9 @@ export default function RegisterPage() {
 
     try {
       const res = await api.post("/api/auth/register/verify", {
-  email,
-  otp,
-});
+        email,
+        otp,
+      });
 
       // Token save
       localStorage.setItem("token", res.data.token);
@@ -124,43 +133,44 @@ export default function RegisterPage() {
       }
 
       document.cookie = `${cookieName}=${encodeURIComponent(
-        JSON.stringify(userIds)
+        JSON.stringify(userIds),
       )}; path=/; max-age=${60 * 60 * 24 * 365 * 5}`; // 5 years
 
       toast.success(res.data.message);
       router.push("/"); // home page
     } catch (err: any) {
-  console.error("API Error:", err.response?.data || err.message); // কনসোলে দেখবে
+      console.error("API Error:", err.response?.data || err.message); // কনসোলে দেখবে
 
-  if (err.response?.status === 422) {
-    const validationErrors = err.response.data.errors || {};
-    const mapped: Record<string, string> = {};
-    Object.keys(validationErrors).forEach((key) => {
-      mapped[key] = validationErrors[key][0];
-    });
-    setErrors(mapped);
-  } else {
-    const message = err.response?.data?.message || err.message || "কিছু একটা ভুল হয়েছে";
-    toast.error(message);
-  }
-} finally {
+      if (err.response?.status === 422) {
+        const validationErrors = err.response.data.errors || {};
+        const mapped: Record<string, string> = {};
+        Object.keys(validationErrors).forEach((key) => {
+          mapped[key] = validationErrors[key][0];
+        });
+        setErrors(mapped);
+      } else {
+        const message =
+          err.response?.data?.message || err.message || "কিছু একটা ভুল হয়েছে";
+        toast.error(message);
+      }
+    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="space-y-4">
       <Toaster position="top-center" />
-      
-      <div className="w-full max-w-md">
-        <div className="">
-          
+
+    
           {/* Header */}
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">
-              {step === "form" ? "নতুন অ্যাকাউন্ট তৈরি করুন" : "ইমেইল ভেরিফাই করুন"}
+            <h1 className="text-2xl">
+              {step === "form"
+                ? "নতুন অ্যাকাউন্ট তৈরি করুন"
+                : "ইমেইল ভেরিফাই করুন"}
             </h1>
-            <p className="text-sm text-zinc-500 mt-2">
+            <p className="text-sm opacity-50">
               {step === "form"
                 ? "আপনার তথ্য দিয়ে রেজিস্ট্রেশন সম্পন্ন করুন"
                 : "আপনার ইমেইলে পাঠানো ৪ ডিজিটের কোডটি দিন"}
@@ -180,14 +190,16 @@ export default function RegisterPage() {
                     "w-full rounded-full py-3.5 px-6 border bg-zinc-400/10 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition",
                     errors.name
                       ? "border-red-500 bg-red-50 dark:bg-red-950/30"
-                      : "border-transparent"
+                      : "border-transparent",
                   )}
                 />
                 {name && isNameValid && !errors.name && (
                   <CheckCircle2 className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-green-500" />
                 )}
                 {errors.name && (
-                  <p className="text-red-600 text-xs mt-1.5 pl-4">{errors.name}</p>
+                  <p className="text-red-600 text-xs mt-1.5 pl-4">
+                    {errors.name}
+                  </p>
                 )}
               </div>
 
@@ -202,14 +214,16 @@ export default function RegisterPage() {
                     "w-full rounded-full py-3.5 px-6 border bg-zinc-400/10 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition",
                     errors.email
                       ? "border-red-500 bg-red-50 dark:bg-red-950/30"
-                      : "border-transparent"
+                      : "border-transparent",
                   )}
                 />
                 {email && isEmailValid && !errors.email && (
                   <CheckCircle2 className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-green-500" />
                 )}
                 {errors.email && (
-                  <p className="text-red-600 text-xs mt-1.5 pl-4">{errors.email}</p>
+                  <p className="text-red-600 text-xs mt-1.5 pl-4">
+                    {errors.email}
+                  </p>
                 )}
               </div>
 
@@ -224,7 +238,7 @@ export default function RegisterPage() {
                     "w-full rounded-full py-3.5 px-6 border bg-zinc-400/10 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition pr-20",
                     errors.password
                       ? "border-red-500 bg-red-50 dark:bg-red-950/30"
-                      : "border-transparent"
+                      : "border-transparent",
                   )}
                 />
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3">
@@ -240,7 +254,9 @@ export default function RegisterPage() {
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-red-600 text-xs mt-1.5 pl-4">{errors.password}</p>
+                  <p className="text-red-600 text-xs mt-1.5 pl-4">
+                    {errors.password}
+                  </p>
                 )}
               </div>
 
@@ -255,17 +271,16 @@ export default function RegisterPage() {
                     "w-full rounded-full py-3.5 px-6 border bg-zinc-400/10 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition pr-20",
                     errors.password_confirmation
                       ? "border-red-500 bg-red-50 dark:bg-red-950/30"
-                      : "border-transparent"
+                      : "border-transparent",
                   )}
                 />
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3">
-                  {passwordConfirmation && (
-                    isConfirmValid ? (
+                  {passwordConfirmation &&
+                    (isConfirmValid ? (
                       <CheckCircle2 className="w-5 h-5 text-green-500" />
                     ) : (
                       <XCircle className="w-5 h-5 text-red-400" />
-                    )
-                  )}
+                    ))}
                   <button
                     type="button"
                     onClick={() => setShowConfirm(!showConfirm)}
@@ -350,29 +365,32 @@ export default function RegisterPage() {
 
           {step === "form" && (
             <>
-             <div className="my-8 flex items-center justify-center">
-  <hr className="grow border-zinc-400/25" />
-  <span className="mx-4 text-sm text-zinc-600 dark:text-zinc-400">অথবা</span>
-  <hr className="grow border-zinc-400/25" />
-</div>
+              <div className="my-4 flex items-center justify-center">
+                <hr className="grow border-zinc-400/25" />
+                <span className="mx-4 text-sm text-zinc-600 dark:text-zinc-400">
+                  অথবা
+                </span>
+                <hr className="grow border-zinc-400/25" />
+              </div>
 
               {/* Social Login Placeholders */}
               <div className="space-y-3">
-                  {/* Social Logins */}
-                         <GoogleLoginButton />
-                         <FacebookLoginButton />
+                {/* Social Logins */}
+                <GoogleLoginButton />
+                <FacebookLoginButton />
               </div>
 
               <p className="text-center text-sm text-zinc-600 dark:text-zinc-400 mt-8">
                 অ্যাকাউন্ট আছে?{" "}
-                <Link href="/login" className="font-bold text-blue-600 hover:underline">
+                <Link
+                  href="/login"
+                  className="font-bold text-blue-600 hover:underline"
+                >
                   লগ ইন করুন
                 </Link>
               </p>
             </>
           )}
         </div>
-      </div>
-    </div>
   );
 }

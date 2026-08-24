@@ -3,20 +3,22 @@
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect } from "react";
 
-// ১. মূল লজিকটি একটি আলাদা কম্পোনেন্টে নিয়ে আসুন
+// ✅ Separate handler component
 function CallbackHandler() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
     const token = searchParams.get("token");
-    // আপনার লগইন বা টোকেন হ্যান্ডেল করার বাকি লজিক...
-    console.log("Token:", token);
+    if (token) {
+      // এখানে আপনার লগইন বা টোকেন হ্যান্ডেল করার লজিক বসান
+      console.log("Token:", token);
+    }
   }, [searchParams]);
 
   return <div>লগইন ভেরিফাই করা হচ্ছে...</div>;
 }
 
-// ২. মূল ডিফল্ট পেজ কম্পোনেন্টে <Suspense> দিয়ে র‍্যাপ করুন
+// ✅ Main page component with Suspense
 export default function AuthCallbackPage() {
   return (
     <Suspense fallback={<div>লোডিং...</div>}>
@@ -24,3 +26,6 @@ export default function AuthCallbackPage() {
     </Suspense>
   );
 }
+
+// ✅ Prevent Next.js from prerendering this page at build time
+export const dynamic = "force-dynamic";

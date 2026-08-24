@@ -180,45 +180,45 @@ export default function AgeCalculator() {
       <div className="space-y-8">
         {/* Header */}
         <div className="text-center space-y-2 mb-8">
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
+          <h1 className="text-3xl   tracking-tight ">
             স্মার্ট এজ ক্যালকুলেটর
           </h1>
-          <h2 className="text-lg text-zinc-600 dark:text-zinc-400">
+          <h2 className="text-lg ">
             সঠিক বয়স, পরবর্তী জন্মদিন এবং দুইজনের বয়সের পার্থক্য নিখুঁতভাবে হিসেব করুন
           </h2>
         </div>
 
-        {/* Tabs */}
-        <div className="flex rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700">
-          <button
-            onClick={() => setTab("single")}
-            className={`flex-1 py-3 text-sm font-semibold transition-colors ${
-              tab === "single"
-                ? "bg-indigo-500 text-white"
-                : "bg-zinc-50 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700"
-            }`}
-          >
-            একক বয়স হিসেব
-          </button>
-          <button
-            onClick={() => setTab("difference")}
-            className={`flex-1 py-3 text-sm font-semibold transition-colors ${
-              tab === "difference"
-                ? "bg-indigo-500 text-white"
-                : "bg-zinc-50 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700"
-            }`}
-          >
-            বয়সের পার্থক্য
-          </button>
-        </div>
+       {/* Tabs */}
+<div className="flex border-b border-zinc-400/25 justify-left">
+  <button
+    onClick={() => setTab("single")}
+    className={`flex-1 py-2 text-center  font-medium transition-all border-b-2 ${
+      tab === "single"
+        ? "border-black dark:border-white"
+        : "border-transparent"
+    }`}
+  >
+    একক বয়স হিসেব
+  </button>
+  <button
+    onClick={() => setTab("difference")}
+    className={`flex-1 py-2 text-center  font-medium transition-all border-b-2 ${
+      tab === "difference"
+        ? "border-black dark:border-white"
+        : "border-transparent"
+    }`}
+  >
+    বয়সের পার্থক্য
+  </button>
+</div>
 
         {/* ========== SINGLE TAB ========== */}
         {tab === "single" && (
-          <div className="space-y-6">
-            <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-5 space-y-4">
+          <div className="space-y-4">
+            <div className="rounded-2xl p-4 bg-zinc-400/10 space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+                <div className="flex flex-col gap-2">
+                  <label className="opacity-50">
                     জন্মতারিখ
                   </label>
                   <input
@@ -226,24 +226,24 @@ export default function AgeCalculator() {
                     value={dob}
                     max={todayISO()}
                     onChange={(e) => setDob(e.target.value)}
-                    className="w-full p-3 rounded-lg bg-zinc-100 dark:bg-zinc-800 border-none outline-none"
+                    className="w-full p-2 rounded-lg bg-zinc-400/10 outline-none"
                   />
                 </div>
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+                <div className="flex flex-col gap-2">
+                  <label className="opacity-50">
                     কোন তারিখ পর্যন্ত হিসেব করবেন?
                   </label>
                   <input
                     type="date"
                     value={targetDate}
                     onChange={(e) => setTargetDate(e.target.value)}
-                    className="w-full p-3 rounded-lg bg-zinc-100 dark:bg-zinc-800 border-none outline-none"
+                    className="w-full p-2 rounded-lg bg-zinc-400/10 outline-none"
                   />
                 </div>
               </div>
               <button
                 onClick={resetSingle}
-                className="text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                className="bg-zinc-400/10 hover:bg-zinc-400/25 rounded-lg px-4 py-2"
               >
                 রিসেট করুন
               </button>
@@ -252,73 +252,73 @@ export default function AgeCalculator() {
             {singleAge && (
               <>
                 {singleAge.error ? (
-                  <div className="rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/40 px-4 py-3 text-center text-rose-600 dark:text-rose-400 font-medium">
+                  <div className="rounded-xl bg-zinc-400/10 p-4 text-center">
                     {singleAge.error}
                   </div>
                 ) : (
-                  <div className="p-5 sm:p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl space-y-6 border border-zinc-200 dark:border-zinc-800">
+                  <div className="p-4 rounded-2xl space-y-4 bg-zinc-400/10">
                     {/* Main Age */}
                     <div className="text-center">
-                      <p className="uppercase tracking-wider text-xs text-zinc-500 dark:text-zinc-400">
+                      <p className="uppercase tracking-wider  ">
                         {singleAge.isToday ? "আপনার বর্তমান বয়স" : "নির্দিষ্ট তারিখে আপনার বয়স"}
                       </p>
                       <div className="flex flex-wrap justify-center items-baseline gap-x-2 gap-y-1 mt-3">
-                        <span className="text-3xl sm:text-4xl font-extrabold text-indigo-600 dark:text-indigo-400">
+                        <span className="text-3xl font-bold">
                           {singleAge.years}
                         </span>
-                        <span className="text-base sm:text-lg font-medium text-zinc-600 dark:text-zinc-400">
+                        <span className="opacity-50">
                           বছর
                         </span>
-                        <span className="text-3xl sm:text-4xl font-extrabold text-indigo-600 dark:text-indigo-400">
+                        <span className="text-3xl font-bold">
                           {singleAge.months}
                         </span>
-                        <span className="text-base sm:text-lg font-medium text-zinc-600 dark:text-zinc-400">
+                        <span className="opacity-50">
                           মাস
                         </span>
-                        <span className="text-3xl sm:text-4xl font-extrabold text-indigo-600 dark:text-indigo-400">
+                        <span className="text-3xl font-bold">
                           {singleAge.days}
                         </span>
-                        <span className="text-base sm:text-lg font-medium text-zinc-600 dark:text-zinc-400">
+                        <span className="opacity-50">
                           দিন
                         </span>
                       </div>
-                      <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+                      <p className="mt-2  ">
                         {singleAge.birthDateFormatted} → {singleAge.targetDateFormatted}
                       </p>
                     </div>
 
                     {/* Stats Grid */}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-4 border-t border-zinc-200 dark:border-zinc-800">
-                      <div className="p-3 bg-white dark:bg-zinc-800 rounded-xl text-center shadow-sm">
-                        <div className="text-xs text-zinc-500">মোট দিন</div>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-4 border-t border-zinc-400/25">
+                      <div className="p-3 bg-zinc-400/10 rounded-xl text-center ">
+                        <div className=" text-zinc-400">মোট দিন</div>
                         <div className="text-base sm:text-lg font-bold mt-1">
                           {singleAge.totalDays.toLocaleString("en-IN")}
                         </div>
                       </div>
-                      <div className="p-3 bg-white dark:bg-zinc-800 rounded-xl text-center shadow-sm">
-                        <div className="text-xs text-zinc-500">মোট সপ্তাহ</div>
+                      <div className="p-3 bg-zinc-400/10 rounded-xl text-center ">
+                        <div className=" text-zinc-400">মোট সপ্তাহ</div>
                         <div className="text-base sm:text-lg font-bold mt-1">
                           {singleAge.totalWeeks.toLocaleString("en-IN")}
                         </div>
                       </div>
-                      <div className="p-3 bg-white dark:bg-zinc-800 rounded-xl text-center shadow-sm">
-                        <div className="text-xs text-zinc-500">মোট মাস</div>
+                      <div className="p-3 bg-zinc-400/10 rounded-xl text-center ">
+                        <div className=" text-zinc-400">মোট মাস</div>
                         <div className="text-base sm:text-lg font-bold mt-1">
                           {singleAge.totalMonths.toLocaleString("en-IN")}
                         </div>
                       </div>
-                      <div className="p-3 bg-white dark:bg-zinc-800 rounded-xl text-center shadow-sm">
-                        <div className="text-xs text-zinc-500">মোট ঘণ্টা</div>
+                      <div className="p-3 bg-zinc-400/10 rounded-xl text-center ">
+                        <div className=" text-zinc-400">মোট ঘণ্টা</div>
                         <div className="text-base sm:text-lg font-bold mt-1">
                           {singleAge.totalHours.toLocaleString("en-IN")}
                         </div>
                       </div>
-                      <div className="p-3 bg-white dark:bg-zinc-800 rounded-xl text-center shadow-sm">
-                        <div className="text-xs text-zinc-500">জন্মদিনের দিন</div>
+                      <div className="p-3 bg-zinc-400/10 rounded-xl text-center ">
+                        <div className=" text-zinc-400">জন্মদিনের দিন</div>
                         <div className="text-base sm:text-lg font-bold mt-1">{singleAge.dayOfWeek}</div>
                       </div>
-                      <div className="p-3 bg-white dark:bg-zinc-800 rounded-xl text-center shadow-sm">
-                        <div className="text-xs text-zinc-500">পূর্ববর্তী জন্মদিন</div>
+                      <div className="p-3 bg-zinc-400/10 rounded-xl text-center ">
+                        <div className=" text-zinc-400">পূর্ববর্তী জন্মদিন</div>
                         <div className="text-base sm:text-lg font-bold mt-1 text-amber-600 dark:text-amber-400">
                           {singleAge.prevBirthdayDays} দিন আগে
                         </div>
@@ -326,17 +326,17 @@ export default function AgeCalculator() {
                     </div>
 
                     {/* Next Birthday */}
-                    <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-center">
-                      <div className="text-sm font-medium text-emerald-800 dark:text-emerald-300">
+                    <div className="p-4 rounded-xl bg-zinc-400/10/80 border border-emerald-200 dark:border-emerald-800 text-center">
+                      <div className="  text-emerald-800 text-zinc-300">
                         পরবর্তী জন্মদিন
                       </div>
-                      <div className="mt-1 text-xl font-bold text-emerald-700 dark:text-emerald-400">
+                      <div className="mt-1 text-xl font-bold ">
                         {singleAge.nextBirthdayDays === 0
                           ? "আজই আপনার জন্মদিন! 🎉"
                           : `${singleAge.nextBirthdayDays} দিন পর`}
                       </div>
                       {singleAge.nextBirthdayDays > 0 && (
-                        <div className="text-sm text-emerald-600 dark:text-emerald-400 mt-0.5">
+                        <div className="  mt-0.5">
                           {singleAge.nextBirthdayDate}
                         </div>
                       )}
@@ -350,11 +350,11 @@ export default function AgeCalculator() {
 
         {/* ========== DIFFERENCE TAB ========== */}
         {tab === "difference" && (
-          <div className="space-y-6">
-            <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-5 space-y-4">
+          <div className="space-y-4">
+            <div className="rounded-2xl bg-zinc-400/10 p-4 space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+                <div className="flex flex-col gap-2">
+                  <label className="opacity-50">
                     প্রথম ব্যক্তির জন্মতারিখ
                   </label>
                   <input
@@ -362,11 +362,11 @@ export default function AgeCalculator() {
                     value={person1Dob}
                     max={todayISO()}
                     onChange={(e) => setPerson1Dob(e.target.value)}
-                    className="w-full p-3 rounded-lg bg-zinc-100 dark:bg-zinc-800 border-none outline-none"
+                    className="w-full p-2 rounded-lg bg-zinc-400/10 border-none outline-none"
                   />
                 </div>
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+                <div className="flex flex-col gap-2">
+                  <label className="opacity-50">
                     দ্বিতীয় ব্যক্তির জন্মতারিখ
                   </label>
                   <input
@@ -374,72 +374,72 @@ export default function AgeCalculator() {
                     value={person2Dob}
                     max={todayISO()}
                     onChange={(e) => setPerson2Dob(e.target.value)}
-                    className="w-full p-3 rounded-lg bg-zinc-100 dark:bg-zinc-800 border-none outline-none"
+                    className="w-full p-2 rounded-lg bg-zinc-400/10 border-none outline-none"
                   />
                 </div>
               </div>
               <button
                 onClick={resetDifference}
-                className="text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                className="bg-zinc-400/10 rounded-lg py-2 px-4 hover:bg-zinc-400/25"
               >
                 রিসেট করুন
               </button>
             </div>
 
             {ageDifference && (
-              <div className="p-5 bg-zinc-50 dark:bg-zinc-900 rounded-2xl text-center space-y-5 border border-zinc-200 dark:border-zinc-800">
+              <div className="p-4  rounded-2xl text-center space-y-5 bg-zinc-400/10">
                 {ageDifference.status === "same" ? (
-                  <div className="inline-flex px-4 py-2 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 font-semibold text-sm">
+                  <div className="inline-flex px-4 py-2 rounded-full bg-zinc-400/10   ">
                     {ageDifference.message}
                   </div>
                 ) : (
                   <>
-                    <div className="inline-flex px-4 py-2 rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 font-semibold text-sm">
+                    <div className="inline-flex px-4 py-2 rounded-full bg-zinc-400/10 text-xl fotn-bold">
                       {ageDifference.older} বড়
                     </div>
 
                     <div>
-                      <p className="uppercase tracking-wider text-xs text-zinc-500 dark:text-zinc-400">
+                      <p className="uppercase tracking-wider  ">
                         বয়সের পার্থক্য
                       </p>
                       <div className="flex flex-wrap justify-center items-baseline gap-x-2 gap-y-1 mt-2">
-                        <span className="text-2xl sm:text-3xl font-extrabold text-indigo-600 dark:text-indigo-400">
+                        <span className="text-2xl   ">
                           {ageDifference.years}
                         </span>
-                        <span className="text-sm font-medium text-zinc-600 dark:text-zinc-400">বছর</span>
-                        <span className="text-2xl sm:text-3xl font-extrabold text-indigo-600 dark:text-indigo-400">
+                        <span className="  ">বছর</span>
+                        <span className="text-2xl   ">
                           {ageDifference.months}
                         </span>
-                        <span className="text-sm font-medium text-zinc-600 dark:text-zinc-400">মাস</span>
-                        <span className="text-2xl sm:text-3xl font-extrabold text-indigo-600 dark:text-indigo-400">
+                        <span className="  ">মাস</span>
+                        <span className="text-2xl   ">
                           {ageDifference.days}
                         </span>
-                        <span className="text-sm font-medium text-zinc-600 dark:text-zinc-400">দিন</span>
+                        <span className="  ">দিন</span>
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-3 pt-2">
-                      <div className="p-2.5 bg-white dark:bg-zinc-800 rounded-xl text-center">
-                        <div className="text-xs text-zinc-500">মোট দিন</div>
+                    <div className="grid grid-cols-3 gap-4 pt-2">
+                      <div className="p-2.5 bg-zinc-400/10 rounded-xl text-center">
+                        <div className=" text-zinc-400">মোট দিন</div>
                         <div className="text-base font-bold mt-1">
                           {ageDifference.totalDays.toLocaleString("en-IN")}
                         </div>
                       </div>
-                      <div className="p-2.5 bg-white dark:bg-zinc-800 rounded-xl text-center">
-                        <div className="text-xs text-zinc-500">মোট সপ্তাহ</div>
+                      <div className="p-2.5 bg-zinc-400/10 rounded-xl text-center">
+                        <div className=" text-zinc-400">মোট সপ্তাহ</div>
                         <div className="text-base font-bold mt-1">
                           {ageDifference.totalWeeks.toLocaleString("en-IN")}
                         </div>
                       </div>
-                      <div className="p-2.5 bg-white dark:bg-zinc-800 rounded-xl text-center">
-                        <div className="text-xs text-zinc-500">মোট মাস</div>
+                      <div className="p-2.5 bg-zinc-400/10 rounded-xl text-center">
+                        <div className=" text-zinc-400">মোট মাস</div>
                         <div className="text-base font-bold mt-1">
                           {ageDifference.totalMonths.toLocaleString("en-IN")}
                         </div>
                       </div>
                     </div>
 
-                    <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                    <p className=" ">
                       {ageDifference.person1Formatted} ও {ageDifference.person2Formatted} এর মধ্যে
                     </p>
                   </>
@@ -450,9 +450,9 @@ export default function AgeCalculator() {
         )}
 
         {/* SEO / Instructions */}
-        <div className="mt-16 pt-10 border-t border-zinc-200 dark:border-zinc-800 space-y-6 text-sm text-zinc-600 dark:text-zinc-400">
+        <div className="mt-16 pt-10 border-t border-zinc-400/25 space-y-4  ">
           <div>
-            <h3 className="text-lg font-bold text-zinc-800 dark:text-zinc-200 mb-3 flex items-center gap-2">
+            <h3 className="text-lg font-bold text-zinc-50 text-zinc-200 mb-4 flex items-center gap-2">
               <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
@@ -470,7 +470,7 @@ export default function AgeCalculator() {
           </div>
 
           <div>
-            <h3 className="text-base font-bold text-zinc-800 dark:text-zinc-200 mb-2">
+            <h3 className="text-base font-bold text-zinc-50 text-zinc-200 mb-2">
               একক বয়স হিসেবের সুবিধা
             </h3>
             <ul className="list-disc list-inside space-y-1.5 ml-1">
@@ -484,7 +484,7 @@ export default function AgeCalculator() {
           </div>
 
           <div>
-            <h3 className="text-base font-bold text-zinc-800 dark:text-zinc-200 mb-2">
+            <h3 className="text-base font-bold text-zinc-50 text-zinc-200 mb-2">
               বয়সের পার্থক্য হিসেব
             </h3>
             <p className="leading-relaxed">
@@ -494,7 +494,7 @@ export default function AgeCalculator() {
           </div>
 
           <div>
-            <h3 className="text-base font-bold text-zinc-800 dark:text-zinc-200 mb-2">
+            <h3 className="text-base font-bold text-zinc-50 text-zinc-200 mb-2">
               কেন এই ক্যালকুলেটর ব্যবহার করবেন?
             </h3>
             <p className="leading-relaxed">

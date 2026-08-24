@@ -14,9 +14,6 @@ export type ChatMessage = {
   created_at?: string;
 };
 
-const API =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
-
 export default function ChatPanel({
   uuid: initialUuid,
 }: {
@@ -24,13 +21,7 @@ export default function ChatPanel({
 }) {
   const router = useRouter();
 
-  // Auth Check from AuthContext (টোকেন বের করে নিচ্ছি)
-  // যদি আপনার useAuth-এ token না থাকে, তবে localStorage থেকে নেওয়া হবে।
-  const {
-    isLoggedIn,
-    loading: authLoading,
-    token: contextToken,
-  } = useAuth() as any;
+  const { isLoggedIn, loading: authLoading } = useAuth();
   const isGuest = !isLoggedIn;
 
   const [uuid, setUuid] = useState<string | null>(initialUuid);
@@ -47,11 +38,6 @@ export default function ChatPanel({
   // 🛠️ ফিক্স ১: সব API Request-এর জন্য Authorization Header তৈরি করার ফাংশন
   const getHeaders = useCallback(
     (isPost = false) => {
-      // AuthContext বা localStorage থেকে টোকেন নেওয়া হচ্ছে
-      const token =
-        contextToken ||
-        (typeof window !== "undefined" ? localStorage.getItem("token") : "");
-
       const headers: Record<string, string> = {
         Accept: "application/json",
       };
@@ -60,14 +46,9 @@ export default function ChatPanel({
         headers["Content-Type"] = "application/json";
       }
 
-      // টোকেন থাকলে সেটি Bearer হিসেবে পাঠানো হবে
-      if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
-      }
-
       return headers;
     },
-    [contextToken],
+    [],
   );
 
   // ১. URL/Props থেকে initialUuid পরিবর্তন হলে uuid স্টেট আপডেট করা
@@ -77,9 +58,10 @@ export default function ChatPanel({
 
   const loadGuestUsage = async () => {
     try {
-      const res = await fetch(`${API}/api/ai/guest-usage`, {
+      const res = await fetch(`/api/backend/ai/guest-usage`, {
         credentials: "include",
         headers: getHeaders(), // 👈 টোকেন পাঠানো হচ্ছে
+        cache: "no-store",
       });
       const json = await res.json();
       if (json.success) setGuestRemaining(json.data.remaining);
@@ -108,10 +90,11 @@ export default function ChatPanel({
 
     (async () => {
       try {
-        const res = await fetch(`${API}/api/ai/sessions/${uuid}`, {
-          credentials: "include",
-          headers: getHeaders(), // 🛠️ ফিক্স ২: এখানেই টোকেন না যাওয়ার কারণে ডেটা আসত না
-        });
+       const res = await fetch(`/api/backend/ai/sessions/${uuid}`, {
+  credentials: "include",
+  headers: getHeaders(),
+  cache: "no-store",          // ← এটা যোগ করুন
+});
 
         if (res.status === 410) {
           router.replace("/ai/chat");
@@ -169,10 +152,11 @@ export default function ChatPanel({
           content: m.content,
         }));
 
-        const res = await fetch(`${API}/api/ai/ask`, {
+        const res = await fetch(`/api/backend/ai/ask`, {
           method: "POST",
           credentials: "include",
           headers: getHeaders(true), // 👈 POST রিকোয়েস্টেও টোকেন পাঠানো হচ্ছে
+          cache: "no-store",
           body: JSON.stringify({
             question: content,
             image: imageBase64 || undefined,
@@ -193,11 +177,14 @@ export default function ChatPanel({
 
         const { data } = json;
 
-        if (data.session?.is_new && data.session.uuid) {
-          setUuid(data.session.uuid);
-          setTitle(data.session.title);
-          router.replace(`/ai/chat/${data.session.uuid}`, { scroll: false });
-        }
+       if (data.session?.is_new && data.session.uuid) {
+  setUuid(data.session.uuid);
+  setTitle(data.session.title);
+  router.replace(`/ai/chat/${data.session.uuid}`, { scroll: false });
+  
+  // ✅ sidebar কে refresh করতে বলো
+  window.dispatchEvent(new CustomEvent("chat:session-created"));
+}
 
         setMessages((prev) => {
           const withoutTmp = prev.filter((m) => m.id !== tempUserId);
@@ -244,10 +231,11 @@ export default function ChatPanel({
     });
 
     try {
-      const res = await fetch(`${API}/api/ai/regenerate`, {
+      const res = await fetch(`/api/backend/ai/regenerate`, {
         method: "POST",
         credentials: "include",
         headers: getHeaders(true), // 👈 এখানেও টোকেন যোগ করা হলো
+        cache: "no-store",
         body: JSON.stringify({ uuid }),
       });
       const json = await res.json();
@@ -273,10 +261,11 @@ export default function ChatPanel({
       setError(null);
 
       try {
-        const res = await fetch(`${API}/api/ai/edit-regenerate`, {
+        const res = await fetch(`/api/backend/ai/edit-regenerate`, {
           method: "POST",
           credentials: "include",
           headers: getHeaders(true), // 👈 এখানেও টোকেন যোগ করা হলো
+          cache: "no-store",
           body: JSON.stringify({
             uuid,
             message_id: messageId,
@@ -309,7 +298,7 @@ export default function ChatPanel({
   return (
     <div className="flex-1 flex flex-col min-h-0 h-full">
       {/* Messages + Input */}
-      <div className="flex-1 flex flex-col min-h-0 max-w-3xl mx-auto w-full px-3 sm:px-4">
+      <div className="flex-1 flex flex-col min-h-0  max-w-2xl mx-auto w-full px-3 sm:px-4">
         <MessageList
           messages={messages}
           isTyping={isTyping}
@@ -326,7 +315,7 @@ export default function ChatPanel({
           guestRemaining={guestRemaining}
           onSend={ask}
           onLogin={() =>
-            window.dispatchEvent(new CustomEvent("session-created"))
+           window.dispatchEvent(new CustomEvent("chat:session-created"))
           }
         />
       </div>

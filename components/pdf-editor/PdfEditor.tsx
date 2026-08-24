@@ -48,10 +48,10 @@ export default function PdfEditor() {
 
   if (!file) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[75vh] rounded-2xl border-2 border-dashed border-zinc-300 dark:border-zinc-700 p-12">
-        <Upload className="size-14 text-zinc-400 mb-5" />
+      <div className="flex flex-col items-center justify-center min-h-[75vh] rounded-2xl border-2 border-dashed border-zinc-700 dark:border-zinc-700 p-12">
+        <Upload className="size-12 text-zinc-400 mb-5" />
         <h1 className="text-2xl font-bold mb-2">Advanced PDF Editor</h1>
-        <p className="text-zinc-500 mb-8 text-center max-w-md">
+        <p className="text-zinc-400 mb-8 text-center max-w-md">
           Text • Highlight • Draw • Signature • Rotate • Download — সব ফ্রি
         </p>
         <input
@@ -63,7 +63,7 @@ export default function PdfEditor() {
         />
         <button
           onClick={() => fileInputRef.current?.click()}
-          className="rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-3 font-semibold"
+          className="rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-2 "
         >
           PDF আপলোড করুন
         </button>
@@ -72,15 +72,15 @@ export default function PdfEditor() {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-80px)] rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden bg-zinc-50 dark:bg-zinc-950">
+    <div className="flex flex-col h-[calc(100vh-80px)] rounded-2xl border border-zinc-400/25 overflow-hidden bg-zinc-900 dark:bg-zinc-950">
       <Toolbar />
 
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
 
-        <div className="flex-1 overflow-auto p-6 flex justify-center items-start bg-zinc-100/70 dark:bg-zinc-900/40">
+        <div className="flex-1 overflow-auto p-4 flex justify-center items-start bg-zinc-900/70 bg-zinc-900/40">
           {isLoading ? (
-            <div className="flex items-center gap-3 text-zinc-500 mt-20">
+            <div className="flex items-center gap-4 text-zinc-400 mt-20">
               <Loader2 className="size-6 animate-spin" />
               লোড হচ্ছে...
             </div>

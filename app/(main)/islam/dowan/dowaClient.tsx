@@ -10,6 +10,7 @@ import {
   ArrowRight,
   Check,
   Info,
+  ChevronDown,
 } from "lucide-react";
 
 interface MediaItem {
@@ -52,7 +53,8 @@ export default function DowaClient() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+        const baseUrl =
+          process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
         if (!baseUrl) {
           console.error("NEXT_PUBLIC_API_BASE_URL is not defined");
           setLoading(false);
@@ -88,14 +90,14 @@ export default function DowaClient() {
   }, [search]);
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6 px-4 py-6">
+    <div className="max-w-2xl mx-auto space-y-4 px-4 py-6">
       {/* Header */}
-      <header className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-4">
+      <header className="flex items-center justify-between border-b border-zinc-400/25 pb-4">
         <div>
-          <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">
+          <h1 className="text-2xl font-bold text-zinc-50 dark:text-white">
             দোয়া সংগ্রহ
           </h1>
-          <p className="text-sm text-zinc-500 mt-1">
+          <p className="text-sm  mt-1">
             দৈনন্দিন জীবনের প্রয়োজনীয় দোয়া ও আমল
           </p>
         </div>
@@ -103,35 +105,35 @@ export default function DowaClient() {
         <div className="relative">
           <button
             onClick={() => setShowCreators(!showCreators)}
-            className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            className="p-2 rounded-lg hover:bg-zinc-400/10"
             aria-label="তথ্য প্রদানকারীগণ দেখুন"
           >
             <Users className="w-5 h-5" />
           </button>
 
           {showCreators && (
-            <div className="absolute right-0 top-full mt-2 w-80 max-h-[28rem] overflow-y-auto rounded-2xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-xl z-50 p-4 space-y-4">
+            <div className="absolute right-0 top-full mt-2 w-80 max-h-112 overflow-y-auto rounded-2xl border border-zinc-400/25 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 z-50 p-4 space-y-4">
               <div className="space-y-1">
-                <h2 className="font-semibold">
+                <h2 className="">
                   তথ্য প্রদানকারীগণ ({creators.length})
                 </h2>
-                <p className="text-xs text-zinc-500">
+                <p className="text-xs ">
                   এই কন্টেন্ট তৈরিতে যারা অবদান রেখেছেন
                 </p>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {creators.length === 0 ? (
-                  <p className="text-xs text-zinc-500 text-center py-4">
+                  <p className="text-xs  text-center py-4">
                     কোনো কন্ট্রিবিউটর পাওয়া যায়নি।
                   </p>
                 ) : (
                   creators.map((c) => (
                     <div
                       key={c.id}
-                      className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 space-y-2"
+                      className="p-2.5 rounded-xl bg-zinc-400/10/60 space-y-2"
                     >
-                      <div className="flex items-start gap-3">
+                      <div className="flex items-start gap-4">
                         {c.avatar_url ? (
                           <img
                             src={c.avatar_url}
@@ -139,29 +141,29 @@ export default function DowaClient() {
                             className="w-10 h-10 rounded-full object-cover"
                           />
                         ) : (
-                          <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-medium">
+                          <div className="w-10 h-10 rounded-full flex items-center justify-center">
                             {c.name.charAt(0)}
                           </div>
                         )}
                         <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-1.5">
-                            <span className="font-medium text-sm truncate">
+                          <div className="flex items-center gap-2">
+                            <span className=" text-sm truncate">
                               {c.name}
                             </span>
                             {c.email_verified && (
-                              <Check className="w-4 h-4 text-emerald-500 shrink-0" />
+                              <Check className="w-4 h-4 text-blue-600 shrink-0" />
                             )}
                           </div>
-                          <p className="text-xs text-zinc-500 truncate">
+                          <p className="text-xs  truncate">
                             {c.profession}
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-center justify-between text-xs text-zinc-500 pt-1 border-t border-zinc-200/50">
+                      <div className="flex items-center justify-between text-xs  pt-1 border-t border-zinc-400/25/50">
                         <span>একটিভ: {c.last_active_bn}</span>
                         <Link
                           href={`/users/${c.slug}`}
-                          className="text-emerald-600 hover:underline inline-flex items-center gap-0.5"
+                          className="inline-flex items-center gap-0.5 hover:underline hover:opacity-50"
                         >
                           প্রোফাইল <ArrowRight className="w-3 h-3" />
                         </Link>
@@ -170,7 +172,7 @@ export default function DowaClient() {
                   ))
                 )}
               </div>
-              <p className="text-xs text-zinc-400 text-center border-t pt-3">
+              <p className="text-xs  text-center border-t pt-3">
                 আমাদের সকল তথ্য ভেরিফাইড এবং যাচাইকৃত।
               </p>
             </div>
@@ -180,13 +182,13 @@ export default function DowaClient() {
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 " />
         <input
           type="search"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="দোয়া খুঁজুন (যেমন: ঘুমানোর দোয়া, খাবারের দোয়া)..."
-          className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border-0 focus:ring-2 focus:ring-emerald-500 outline-none"
+          className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-400/10 border-0 focus:ring-2 focus:ring-zinc-500 outline-none"
           aria-label="দোয়া খুঁজুন"
         />
         {search && (
@@ -195,7 +197,7 @@ export default function DowaClient() {
             className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5"
             aria-label="সার্চ মুছুন"
           >
-            <X className="w-4 h-4 text-zinc-400" />
+            <X className="w-4 h-4 " />
           </button>
         )}
       </div>
@@ -210,26 +212,28 @@ export default function DowaClient() {
           Array.from({ length: 5 }).map((_, i) => (
             <div
               key={i}
-              className="rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 animate-pulse"
+              className="rounded-2xl border bg-zinc-400/10 border-zinc-400/25 p-4 animate-pulse space-y-4"
             >
               <div className="flex gap-4">
-                <div className="w-12 h-12 rounded-full bg-zinc-200 dark:bg-zinc-700 shrink-0" />
+                <div className="w-12 h-12 rounded-full bg-zinc-400/10 shrink-0" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-4 w-16 bg-zinc-200 dark:bg-zinc-700 rounded" />
-                  <div className="h-5 w-3/4 bg-zinc-200 dark:bg-zinc-700 rounded" />
-                  <div className="h-4 w-full bg-zinc-200 dark:bg-zinc-700 rounded" />
+                  <div className="h-4 w-16 bg-zinc-400/10 rounded" />
+                  <div className="h-5 w-full bg-zinc-400/10 rounded" />
+                  <div className="h-4 w-full bg-zinc-400/10 rounded" />
                 </div>
               </div>
+                  <hr className="border border-zinc-400/25"/>
+                  <div className="h-4 w-2/8 bg-zinc-400/10 rounded" />
             </div>
           ))
         ) : items.length === 0 ? (
-          <div className="text-center py-16 text-zinc-500">
-            <BookOpen className="w-12 h-12 mx-auto mb-3 opacity-40" />
+          <div className="text-center py-16 ">
+            <BookOpen className="w-12 h-12 mx-auto mb-4 opacity-40" />
             <p>কোনো দোয়া পাওয়া যায়নি।</p>
             {search && (
               <button
                 onClick={() => setSearch("")}
-                className="mt-3 text-sm text-emerald-600 hover:underline"
+                className="mt-3 text-sm text-zinc-300 hover:underline"
               >
                 সার্চ মুছুন
               </button>
@@ -239,7 +243,7 @@ export default function DowaClient() {
           items.map((item) => (
             <article
               key={item.id}
-              className="rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 hover:shadow-md transition-shadow"
+              className="rounded-2xl border border-zinc-400/25 p-4"
             >
               <div className="flex gap-4 items-start">
                 <div className="shrink-0">
@@ -250,40 +254,38 @@ export default function DowaClient() {
                       className="w-12 h-12 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="w-12 h-12 rounded-full bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center">
-                      <BookOpen className="w-5 h-5 text-emerald-600" />
+                    <div className="w-12 h-12 rounded-full bg-zinc-400/10 flex items-center justify-center">
+                      <BookOpen className="w-5 h-5 text-zinc-300" />
                     </div>
                   )}
                 </div>
 
                 <div className="flex-1 min-w-0 space-y-1.5">
                   {item.type && (
-                    <span className="inline-block text-xs px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400">
+                    <span className="inline-block text-xs px-2 py-0.5 rounded-full bg-zinc-400/10 ">
                       {item.type_name || item.type}
                     </span>
                   )}
-                  <h3 className="font-semibold text-lg leading-snug">
+                  <h3 className=" text-lg leading-snug">
                     <Link
                       href={`/islam/dowan/${item.slug}`}
-                      className="hover:text-emerald-600 transition-colors"
+                      className="hover:text-zinc-300 "
                     >
                       {item.bangla_name}
                     </Link>
                   </h3>
                   {item.bangla_text && (
-                    <p className="text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2">
-                      {item.bangla_text}
-                    </p>
+                    <p className="text-sm  line-clamp-2">{item.bangla_text}</p>
                   )}
                 </div>
               </div>
 
-              <div className="mt-3 pt-3 border-t border-zinc-100 dark:border-zinc-800">
+              <div className="mt-3 pt-3 border-t border-zinc-100 border-zinc-400/25">
                 <Link
                   href={`/islam/dowan/${item.slug}`}
-                  className="inline-flex items-center gap-1 text-sm text-emerald-600 hover:underline"
+                  className="inline-flex items-center gap-2 text-sm hover:underline"
                 >
-                  বিস্তারিত পড়ুন <ArrowRight className="w-4 h-4" />
+                  বিস্তারিত পড়ুন <ArrowRight className="size-3" />
                 </Link>
               </div>
             </article>
@@ -294,22 +296,22 @@ export default function DowaClient() {
       {/* About */}
       <section
         aria-labelledby="about-dowa"
-        className="space-y-4 pt-6 border-t border-zinc-200 dark:border-zinc-800"
+        className="space-y-4 pt-6 border-t border-zinc-400/25"
       >
         <h2
           id="about-dowa"
-          className="text-lg font-bold flex items-center gap-2"
+          className="text-lg flex items-center gap-2"
         >
-          <Info className="w-5 h-5 text-emerald-600" />
+          <Info className="size-5" />
           দোয়া সংগ্রহ সম্পর্কে
         </h2>
-        <div className="space-y-3 text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">
+        <div className="leading-relaxed">
           <p>
             আমাদের প্ল্যাটফর্মে দৈনন্দিন জীবনের প্রয়োজনীয় দোয়া, জিকির ও আমলসমূহ
             সঠিক ও যাচাইকৃত উৎস থেকে সংগ্রহ করে সহজ বাংলায় উপস্থাপন করা হয়েছে।
             ঘুমানো, খাওয়া, সফর, বিপদ-আপদসহ বিভিন্ন পরিস্থিতির জন্য গুরুত্বপূর্ণ
-            দোয়া এক জায়গায় পাবেন। প্রতিটি দোয়ার সাথে আরবি, উচ্চারণ এবং বাংলা অর্থ
-            দেওয়া হয়েছে যাতে সহজে মুখস্থ ও বুঝে পড়া যায়।
+            দোয়া এক জায়গায় পাবেন। প্রতিটি দোয়ার সাথে আরবি, উচ্চারণ এবং বাংলা
+            অর্থ দেওয়া হয়েছে যাতে সহজে মুখস্থ ও বুঝে পড়া যায়।
           </p>
           <p>
             নতুন শিক্ষার্থী থেকে শুরু করে সাধারণ মানুষ সবাই এই সংগ্রহ থেকে উপকৃত
@@ -350,17 +352,15 @@ export default function DowaClient() {
           ].map((faq, i) => (
             <details
               key={i}
-              className="group rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 overflow-hidden"
+              className="group rounded-xl bg-zinc-400/10 overflow-hidden"
             >
-              <summary className="flex items-center justify-between cursor-pointer px-4 py-3 font-medium list-none hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
+              <summary className="flex items-center justify-between cursor-pointer group p-4 bg-zinc-400/10 hover:bg-zinc-400/25">
                 <span>{faq.q}</span>
-                <span className="text-zinc-400 group-open:rotate-180 transition-transform">
-                  ▼
-                </span>
+                 <ChevronDown
+                  className="size-4 group-open:rotate-180 transition-transform"
+                /> 
               </summary>
-              <div className="px-4 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                {faq.a}
-              </div>
+              <div className="p-4 leading-relaxed">{faq.a}</div>
             </details>
           ))}
         </div>

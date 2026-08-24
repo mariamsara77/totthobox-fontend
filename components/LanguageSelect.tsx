@@ -42,7 +42,7 @@ export default function LanguageSelect() {
 
   return (
     <div className="space-y-2 w-full">
-      <label className="flex items-center gap-2 text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+      <label className="flex items-center gap-2 text-xs   uppercase tracking-wider">
         <Languages className="w-4 h-4" />
         <span>ভাষা নির্বাচন</span>
       </label>
@@ -50,13 +50,13 @@ export default function LanguageSelect() {
       <select
         value={currentLang}
         onChange={(e) => handleLanguageChange(e.target.value)}
-        className="w-full p-4 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-400/10 text-zinc-800 dark:text-zinc-100 text-sm font-medium focus:outline-none transition-all cursor-pointer"
+        className="w-full p-4 rounded-xl border border-zinc-400/25 text-sm  focus:outline-none transition-all cursor-pointer"
       >
         {languages.map((lang) => (
           <option
             key={lang.code}
             value={lang.code}
-            className="bg-white dark:bg-zinc-700 text-zinc-800 dark:text-zinc-100 py-1"
+            className="dark:bg-zinc-900 bg-zinc-100 p-2"
           >
             {lang.label}
           </option>

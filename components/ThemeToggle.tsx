@@ -14,7 +14,7 @@ export default function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <div className="h-10 w-full rounded-xl bg-zinc-400/10 animate-pulse" />
+      <div className="h-10 w-full rounded-xl bg-zinc-100 dark:bg-zinc-800 animate-pulse" />
     );
   }
 
@@ -25,7 +25,7 @@ export default function ThemeToggle() {
   ];
 
   return (
-    <div className="flex w-full gap-2 items-center rounded-xl bg-zinc-400/10 p-1.5">
+    <div className="flex w-full gap-2 items-center rounded-xl p-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
       {themes.map(({ id, label, icon: Icon }) => {
         const isActive = theme === id;
         return (
@@ -33,10 +33,10 @@ export default function ThemeToggle() {
             key={id}
             type="button"
             onClick={() => setTheme(id)}
-            className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg p-3 text-xs font-medium transition-all duration-200 select-none ${
+            className={`flex flex-1 items-center justify-center gap-2 rounded-lg p-2 text-sm transition-all duration-200 ${
               isActive
-                ? "bg-zinc-400/10  shadow-sm font-semibold"
-                : "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200 hover:bg-zinc-200/50 dark:hover:bg-zinc-700/40"
+                ? "bg-white text-black dark:bg-zinc-800 dark:text-white shadow-sm"
+                : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-800/50"
             }`}
           >
             <Icon className="h-4 w-4 shrink-0" />

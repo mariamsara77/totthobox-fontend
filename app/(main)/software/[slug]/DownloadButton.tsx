@@ -41,7 +41,7 @@ export default function DownloadButton({
     <button
       onClick={handleDownload}
       disabled={loading}
-      className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-medium py-3.5 px-4 rounded-xl transition-colors"
+      className="w-full flex items-center justify-center gap-2 bg-zinc-700 hover:bg-zinc-600 disabled:opacity-60 text-white  py-3.5 px-4 rounded-xl "
     >
       <Download className="w-5 h-5" />
       {loading

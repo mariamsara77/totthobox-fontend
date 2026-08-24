@@ -52,7 +52,7 @@ export default async function IntroductionShowPage({ params }: Props) {
 
   if (!intro) {
     return (
-      <div className="max-w-2xl mx-auto p-6 text-center text-zinc-500">
+      <div className="max-w-2xl mx-auto p-4 text-center text-zinc-400">
         তথ্য পাওয়া যায়নি
       </div>
     );

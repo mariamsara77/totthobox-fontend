@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { Suspense } from "react";
 import SoftwareClient from "./SoftwareClient";
 
 export const metadata: Metadata = {
@@ -13,5 +14,9 @@ export const metadata: Metadata = {
 };
 
 export default function SoftwarePage() {
-  return <SoftwareClient platform="" />;
+  return (
+    <Suspense fallback={<div className="p-4 text-center">Loading...</div>}>
+      <SoftwareClient platform="" />
+    </Suspense>
+  );
 }

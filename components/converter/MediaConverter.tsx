@@ -82,10 +82,13 @@ export default function MediaConverter() {
       try {
         const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
         await ffmpeg.load({
-          coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
+          coreURL: await toBlobURL(
+            `${baseURL}/ffmpeg-core.js`,
+            "text/javascript",
+          ),
           wasmURL: await toBlobURL(
             `${baseURL}/ffmpeg-core.wasm`,
-            "application/wasm"
+            "application/wasm",
           ),
         });
         setLoaded(true);
@@ -181,7 +184,7 @@ export default function MediaConverter() {
             "-crf",
             "23",
             "-c:a",
-            "aac"
+            "aac",
           );
         } else if (targetFormat === "webm") {
           command.push("-c:v", "libvpx-vp9", "-b:v", "1M", "-c:a", "libopus");
@@ -195,9 +198,11 @@ export default function MediaConverter() {
       command.push(outputName);
       await ffmpeg.exec(command);
 
-const data = await ffmpeg.readFile(outputName);
-const blob = new Blob([data as unknown as BlobPart], { type: getMimeType(targetFormat) });
-const url = URL.createObjectURL(blob);
+      const data = await ffmpeg.readFile(outputName);
+      const blob = new Blob([data as unknown as BlobPart], {
+        type: getMimeType(targetFormat),
+      });
+      const url = URL.createObjectURL(blob);
 
       setDownloadUrl(url);
       setStatus("completed");
@@ -208,7 +213,7 @@ const url = URL.createObjectURL(blob);
     } catch (err: any) {
       console.error(err);
       setErrorMessage(
-        err?.message || "Conversion failed. Try a different format."
+        err?.message || "Conversion failed. Try a different format.",
       );
       setStatus("failed");
     }
@@ -234,292 +239,272 @@ const url = URL.createObjectURL(blob);
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <header className="text-center space-y-3">
-        <div className="inline-flex items-center gap-2 rounded-full bg-zinc-100 dark:bg-zinc-800 px-3 py-1 text-xs font-medium text-zinc-600 dark:text-zinc-300">
-          <Film className="h-3.5 w-3.5" />
-          Universal Media Converter
+  {/* Header */}
+  <header className="text-center space-y-4">
+    <span className="inline-flex items-center gap-2 rounded-full bg-zinc-400/10 p-2 text-sm">
+      <Film className="size-4" />
+      Universal Media Converter
+    </span>
+    <h1 className="text-2xl font-bold tracking-tight">
+      Video & Audio Converter
+    </h1>
+    <p>
+      MP4, MKV, AVI, MOV, WEBM, FLV, WMV, MP3, WAV, AAC, FLAC, OGG, M4A,
+      OPUS — 100% browser-based, no upload to server.
+    </p>
+  </header>
+
+  {/* Converter Card */}
+  <section className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 space-y-4">
+    {/* Loading engine */}
+    {!loaded && status !== "failed" && (
+      <div className="flex items-center justify-center gap-4 py-8">
+        <Loader2 className="size-5 animate-spin" />
+        <span>Loading converter engine...</span>
+      </div>
+    )}
+
+    {/* Dropzone */}
+    {loaded && !file && (
+      <div
+        onDragOver={(e) => {
+          e.preventDefault();
+          setIsDragging(true);
+        }}
+        onDragLeave={() => setIsDragging(false)}
+        onDrop={onDrop}
+        onClick={() => fileInputRef.current?.click()}
+        className={cn(
+          "relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-zinc-400/25 bg-zinc-400/10 hover:bg-zinc-400/25 p-4 text-center cursor-pointer",
+          isDragging && "bg-zinc-400/25",
+        )}
+      >
+        <div className="mb-5 flex size-12 items-center justify-center rounded-2xl bg-zinc-400/10">
+          <Upload className="size-6" />
         </div>
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-          Video & Audio Converter
-        </h1>
-        <p className="text-zinc-500 dark:text-zinc-400 max-w-xl mx-auto">
-          MP4, MKV, AVI, MOV, WEBM, FLV, WMV, MP3, WAV, AAC, FLAC, OGG, M4A,
-          OPUS — 100% browser-based, no upload to server.
-        </p>
-      </header>
+        <div className="opacity-50">
+          <p>Drag & drop or click to upload</p>
+          <p>Max 300 MB · Everything stays in your browser</p>
+        </div>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept={ALL_ACCEPT}
+          className="hidden"
+          onChange={(e) =>
+            e.target.files?.[0] && handleFile(e.target.files[0])
+          }
+        />
+      </div>
+    )}
 
-      {/* Converter Card */}
-      <section className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-400/10 p-6 shadow-sm space-y-6">
-        {/* Loading engine */}
-        {!loaded && status !== "failed" && (
-          <div className="flex items-center justify-center gap-3 py-8 text-zinc-500">
-            <Loader2 className="h-5 w-5 animate-spin" />
-            <span>Loading converter engine...</span>
-          </div>
-        )}
-
-        {/* Dropzone */}
-        {loaded && !file && (
-          <div
-            onDragOver={(e) => {
-              e.preventDefault();
-              setIsDragging(true);
-            }}
-            onDragLeave={() => setIsDragging(false)}
-            onDrop={onDrop}
-            onClick={() => fileInputRef.current?.click()}
-            className={cn(
-              "relative flex flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed p-10 cursor-pointer transition-all duration-200",
-              isDragging
-                ? "border-blue-500 bg-blue-50 dark:bg-blue-950/30"
-                : "border-zinc-300 dark:border-zinc-700 hover:border-zinc-400 dark:hover:border-zinc-600 hover:bg-zinc-50 dark:hover:bg-zinc-800/40"
-            )}
-          >
-            <div className="rounded-full bg-zinc-100 dark:bg-zinc-800 p-4">
-              <Upload className="h-8 w-8 text-zinc-500" />
-            </div>
-            <div className="text-center">
-              <p className="font-medium text-zinc-800 dark:text-zinc-200">
-                Drag & drop or click to upload
-              </p>
-              <p className="text-sm text-zinc-500 mt-1">
-                Max 300 MB · Everything stays in your browser
-              </p>
-            </div>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept={ALL_ACCEPT}
-              className="hidden"
-              onChange={(e) =>
-                e.target.files?.[0] && handleFile(e.target.files[0])
-              }
-            />
-          </div>
-        )}
-
-        {/* Selected file */}
-        {file && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex items-center justify-between rounded-xl bg-zinc-50 dark:bg-zinc-800/60 p-4"
-          >
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="rounded-lg bg-white dark:bg-zinc-900 p-2.5 shadow-sm">
-                {VIDEO_FORMATS.includes(sourceFormat) ? (
-                  <Film className="h-5 w-5 text-blue-500" />
-                ) : (
-                  <Music className="h-5 w-5 text-emerald-500" />
-                )}
-              </div>
-              <div className="min-w-0">
-                <p className="font-medium text-zinc-900 dark:text-zinc-100 truncate">
-                  {file.name}
-                </p>
-                <p className="text-xs text-zinc-500">
-                  {(file.size / (1024 * 1024)).toFixed(1)} MB ·{" "}
-                  {sourceFormat.toUpperCase()}
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={removeFile}
-              className="p-2 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-700 transition"
-            >
-              <X className="h-4 w-4 text-zinc-500" />
-            </button>
-          </motion.div>
-        )}
-
-        {/* Target format */}
-        <AnimatePresence>
-          {sourceFormat && targetOptions.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="space-y-3 overflow-hidden"
-            >
-              <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
-                <span className="inline-flex items-center rounded-md bg-blue-100 dark:bg-blue-900/40 px-2 py-0.5 text-xs font-semibold text-blue-700 dark:text-blue-300">
-                  {sourceFormat.toUpperCase()}
-                </span>
-                <span>→ Convert to</span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {targetOptions.map((opt) => (
-                  <button
-                    key={opt}
-                    onClick={() => setTargetFormat(opt)}
-                    disabled={status === "converting"}
-                    className={cn(
-                      "rounded-lg px-3.5 py-1.5 text-sm font-medium transition-all",
-                      targetFormat === opt
-                        ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 shadow-sm"
-                        : "bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
-                    )}
-                  >
-                    {opt.toUpperCase()}
-                  </button>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Convert button */}
-        {file && (
-          <button
-            onClick={convert}
-            disabled={
-              !targetFormat ||
-              status === "converting" ||
-              status === "loading" ||
-              !loaded
-            }
-            className={cn(
-              "w-full flex items-center justify-center gap-2 rounded-xl py-3.5 font-semibold text-white transition-all",
-              !targetFormat || status === "converting" || !loaded
-                ? "bg-zinc-300 dark:bg-zinc-700 cursor-not-allowed"
-                : "bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white shadow-lg shadow-zinc-900/20"
-            )}
-          >
-            {status === "converting" ? (
-              <>
-                <Loader2 className="h-5 w-5 animate-spin" />
-                Converting {progress}%
-              </>
+    {/* Selected file */}
+    {file && (
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex items-center justify-between rounded-xl bg-zinc-400/10 p-4"
+      >
+        <div className="flex items-center gap-4 min-w-0">
+          <div className="rounded-lg bg-zinc-400/10 p-2">
+            {VIDEO_FORMATS.includes(sourceFormat) ? (
+              <Film className="size-5" />
             ) : (
-              "Convert Now"
+              <Music className="size-5" />
             )}
-          </button>
-        )}
-
-        {/* Progress bar */}
-        {status === "converting" && (
-          <div className="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-2 overflow-hidden">
-            <div
-              className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-              style={{ width: `${progress}%` }}
-            />
           </div>
+          <div className="min-w-0">
+            <p className="text-sm truncate">{file.name}</p>
+            <p className="text-sm opacity-50">
+              {(file.size / (1024 * 1024)).toFixed(1)} MB ·{" "}
+              {sourceFormat.toUpperCase()}
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={removeFile}
+          className="p-1.5 hover:bg-zinc-400/25 rounded-lg"
+        >
+          <X className="size-4" />
+        </button>
+      </motion.div>
+    )}
+
+    {/* Target format */}
+    <AnimatePresence>
+      {sourceFormat && targetOptions.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+          className="space-y-4 overflow-hidden"
+        >
+          <div className="flex items-center gap-2 text-sm">
+            <span className="inline-flex items-center rounded-lg bg-zinc-400/10 px-2.5 py-1 text-sm">
+              {sourceFormat.toUpperCase()}
+            </span>
+            <span>→ Convert to</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {targetOptions.map((opt) => (
+              <button
+                key={opt}
+                onClick={() => setTargetFormat(opt)}
+                disabled={status === "converting"}
+                className={cn(
+                  "px-2.5 py-1 rounded-lg text-sm uppercase transition",
+                  targetFormat === opt
+                    ? "bg-zinc-700 text-white"
+                    : "bg-zinc-400/10 hover:bg-zinc-400/25",
+                )}
+              >
+                {opt.toUpperCase()}
+              </button>
+            ))}
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+
+    {/* Convert button */}
+    {file && (
+      <button
+        onClick={convert}
+        disabled={
+          !targetFormat ||
+          status === "converting" ||
+          status === "loading" ||
+          !loaded
+        }
+        className="w-full flex items-center justify-center gap-2 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/25 py-2 transition"
+      >
+        {status === "converting" ? (
+          <>
+            <Loader2 className="size-5 animate-spin" />
+            Converting {progress}%
+          </>
+        ) : (
+          "Convert Now"
         )}
+      </button>
+    )}
 
-        {/* Result */}
-        <AnimatePresence>
-          {(status === "completed" || status === "failed") && (
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 12 }}
-              className="rounded-xl border border-zinc-200 dark:border-zinc-700 p-4 space-y-3"
+    {/* Progress bar */}
+    {status === "converting" && (
+      <div className="w-full bg-zinc-400/10 rounded-full h-2 overflow-hidden">
+        <div
+          className="bg-zinc-700 h-2 rounded-full transition-all duration-300"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+    )}
+
+    {/* Result */}
+    <AnimatePresence>
+      {(status === "completed" || status === "failed") && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 12 }}
+          className="rounded-xl border border-zinc-400/25 p-4 space-y-4"
+        >
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm">
+              {sourceFormat.toUpperCase()} → {targetFormat.toUpperCase()}
+            </h3>
+            <StatusBadge status={status} />
+          </div>
+
+          {status === "completed" && downloadUrl && (
+            <button
+              onClick={download}
+              className="w-full flex items-center justify-center gap-2 rounded-xl bg-zinc-400/25 hover:bg-zinc-400/50 p-2 transition"
             >
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
-                  {sourceFormat.toUpperCase()} → {targetFormat.toUpperCase()}
-                </h3>
-                <StatusBadge status={status} />
-              </div>
-
-              {status === "completed" && downloadUrl && (
-                <button
-                  onClick={download}
-                  className="w-full flex items-center justify-center gap-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 font-medium transition"
-                >
-                  <Download className="h-4 w-4" />
-                  Download {targetFormat.toUpperCase()}
-                </button>
-              )}
-
-              {status === "failed" && (
-                <div className="flex items-start gap-2 rounded-lg bg-red-50 dark:bg-red-950/30 p-3 text-sm text-red-700 dark:text-red-300">
-                  <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
-                  {errorMessage || "Something went wrong. Please try again."}
-                </div>
-              )}
-            </motion.div>
+              <Download className="size-4" />
+              Download {targetFormat.toUpperCase()}
+            </button>
           )}
-        </AnimatePresence>
-      </section>
 
-      <section className="rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 p-5 space-y-3" aria-labelledby="about-converter">
-        <h2 id="about-converter" className="text-lg font-bold text-zinc-800 dark:text-zinc-200">
-            ফ্রি অনলাইন ভিডিও ও অডিও কনভার্টার
-        </h2>
-        <div className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-300 space-y-3">
-            <p>
-                <strong>MP4, MKV, AVI, MOV, WEBM, FLV, WMV</strong> সহ জনপ্রিয় ভিডিও ফরম্যাট এবং
-                <strong>MP3, WAV, AAC, FLAC, OGG, M4A, OPUS</strong> অডিও ফরম্যাটগুলোর মধ্যে সহজেই কনভার্ট করুন।
-                ফাইল আপলোড করলেই সোর্স ফরম্যাট অটো-ডিটেক্ট হবে।
-            </p>
-            <p>
-                কনভার্সন শেষ হলে ডাউনলোড বাটনে ক্লিক করে ফাইল নিন। সর্বোচ্চ ৩০০ MB পর্যন্ত ফাইল সাপোর্ট করে।
-                বড় ফাইল হলে প্রসেসিংয়ে একটু সময় লাগতে পারে।
-            </p>
-        </div>
-    </section>
+          {status === "failed" && (
+            <div className="rounded-xl dark:bg-zinc-400/40 p-4 flex items-start gap-4">
+              <AlertCircle className="size-5 shrink-0" />
+              {errorMessage || "Something went wrong. Please try again."}
+            </div>
+          )}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  </section>
 
-    <section className="space-y-3" aria-labelledby="faq-heading">
-        <h2 id="faq-heading" className="text-lg font-bold text-zinc-800 dark:text-zinc-200">
-            প্রায়শই জিজ্ঞাসিত প্রশ্ন
-        </h2>
-
-        <div className="space-y-2">
-            <details className="group rounded-xl border border-zinc-400/25 overflow-hidden">
-                <summary
-                    className="flex items-center justify-between cursor-pointer px-4 py-3 font-medium text-zinc-800 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
-                    <span>এই মিডিয়া কনভার্টার কি ফ্রি?</span>
-                    {/* <flux:icon.chevron-down variant="micro" className="text-zinc-400 group-open:rotate-180 transition"
-                        aria-hidden="true" /> */}
-                </summary>
-                <div className="px-4 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                    হ্যাঁ। টুলটি সম্পূর্ণ ফ্রি ব্যবহার করা যায়। কোনো রেজিস্ট্রেশন বা পেমেন্ট লাগে না।
-                </div>
-            </details>
-
-            <details className="group rounded-xl border border-zinc-400/25 overflow-hidden">
-                <summary
-                    className="flex items-center justify-between cursor-pointer px-4 py-3 font-medium text-zinc-800 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
-                    <span>কোন কোন ফরম্যাট সাপোর্টেড?</span>
-                    {/* <flux:icon.chevron-down variant="micro" className="text-zinc-400 group-open:rotate-180 transition"
-                        aria-hidden="true" /> */}
-                </summary>
-                <div className="px-4 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                    ভিডিও: MP4, MKV, AVI, MOV, WEBM, FLV, WMV।
-                    অডিও: MP3, WAV, AAC, FLAC, OGG, M4A, OPUS।
-                    সোর্স ফাইল অনুযায়ী সম্ভাব্য টার্গেট ফরম্যাট অটো দেখানো হয়।
-                </div>
-            </details>
-
-            <details className="group rounded-xl border border-zinc-400/25 overflow-hidden">
-                <summary
-                    className="flex items-center justify-between cursor-pointer px-4 py-3 font-medium text-zinc-800 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
-                    <span>সর্বোচ্চ ফাইল সাইজ কত?</span>
-                    {/* <flux:icon.chevron-down variant="micro" className="text-zinc-400 group-open:rotate-180 transition"
-                        aria-hidden="true" /> */}
-                </summary>
-                <div className="px-4 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                    সর্বোচ্চ ৩০০ MB (৩০৭২০০ KB) পর্যন্ত ফাইল আপলোড করা যায়। বড় ফাইল হলে কনভার্সনে বেশি সময় লাগতে পারে।
-                </div>
-            </details>
-
-            <details className="group rounded-xl border border-zinc-400/25 overflow-hidden">
-                <summary
-                    className="flex items-center justify-between cursor-pointer px-4 py-3 font-medium text-zinc-800 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
-                    <span>কনভার্সন কতক্ষণ লাগে?</span>
-                    {/* <flux:icon.chevron-down variant="micro" className="text-zinc-400 group-open:rotate-180 transition"
-                        aria-hidden="true" /> */}
-                </summary>
-                <div className="px-4 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                    ছোট ফাইলে কয়েক সেকেন্ড থেকে এক মিনিট। বড় ভিডিও/অডিওতে কয়েক মিনিট লাগতে পারে।
-                    স্ট্যাটাস অটো আপডেট হয় — পেজ ছেড়ে যাবেন না।
-                </div>
-            </details>
-        </div>
-    </section>
+  <section className="rounded-2xl /40 p-4 space-y-4">
+    <h2 className="text-xl">
+      ফ্রি অনলাইন ভিডিও ও অডিও কনভার্টার
+    </h2>
+    <div className="leading-relaxed">
+      <p>
+        <strong>MP4, MKV, AVI, MOV, WEBM, FLV, WMV</strong> সহ জনপ্রিয় ভিডিও
+        ফরম্যাট এবং
+        <strong>MP3, WAV, AAC, FLAC, OGG, M4A, OPUS</strong> অডিও
+        ফরম্যাটগুলোর মধ্যে সহজেই কনভার্ট করুন। ফাইল আপলোড করলেই সোর্স
+        ফরম্যাট অটো-ডিটেক্ট হবে।
+      </p>
+      <p>
+        কনভার্সন শেষ হলে ডাউনলোড বাটনে ক্লিক করে ফাইল নিন। সর্বোচ্চ ৩০০ MB
+        পর্যন্ত ফাইল সাপোর্ট করে। বড় ফাইল হলে প্রসেসিংয়ে একটু সময় লাগতে
+        পারে।
+      </p>
     </div>
+  </section>
+
+  <section className="space-y-4">
+    <h2 className="text-xl">
+      প্রায়শই জিজ্ঞাসিত প্রশ্ন
+    </h2>
+
+    <div className="space-y-2">
+      <details className="group rounded-xl border border-zinc-400/25 overflow-hidden">
+        <summary className="flex items-center justify-between cursor-pointer px-4 py-2 hover:bg-zinc-400/10 transition">
+          <span>এই মিডিয়া কনভার্টার কি ফ্রি?</span>
+        </summary>
+        <div className="px-4 pb-4 text-sm leading-relaxed">
+          হ্যাঁ। টুলটি সম্পূর্ণ ফ্রি ব্যবহার করা যায়। কোনো রেজিস্ট্রেশন বা
+          পেমেন্ট লাগে না।
+        </div>
+      </details>
+
+      <details className="group rounded-xl border border-zinc-400/25 overflow-hidden">
+        <summary className="flex items-center justify-between cursor-pointer px-4 py-2 hover:bg-zinc-400/10 transition">
+          <span>কোন কোন ফরম্যাট সাপোর্টেড?</span>
+        </summary>
+        <div className="px-4 pb-4 text-sm leading-relaxed">
+          ভিডিও: MP4, MKV, AVI, MOV, WEBM, FLV, WMV। অডিও: MP3, WAV, AAC,
+          FLAC, OGG, M4A, OPUS। সোর্স ফাইল অনুযায়ী সম্ভাব্য টার্গেট ফরম্যাট
+          অটো দেখানো হয়।
+        </div>
+      </details>
+
+      <details className="group rounded-xl border border-zinc-400/25 overflow-hidden">
+        <summary className="flex items-center justify-between cursor-pointer px-4 py-2 hover:bg-zinc-400/10 transition">
+          <span>সর্বোচ্চ ফাইল সাইজ কত?</span>
+        </summary>
+        <div className="px-4 pb-4 text-sm leading-relaxed">
+          সর্বোচ্চ ৩০০ MB (৩০৭২০০ KB) পর্যন্ত ফাইল আপলোড করা যায়। বড় ফাইল
+          হলে কনভার্সনে বেশি সময় লাগতে পারে।
+        </div>
+      </details>
+
+      <details className="group rounded-xl border border-zinc-400/25 overflow-hidden">
+        <summary className="flex items-center justify-between cursor-pointer px-4 py-2 hover:bg-zinc-400/10 transition">
+          <span>কনভার্সন কতক্ষণ লাগে?</span>
+        </summary>
+        <div className="px-4 pb-4 text-sm leading-relaxed">
+          ছোট ফাইলে কয়েক সেকেন্ড থেকে এক মিনিট। বড় ভিডিও/অডিওতে কয়েক মিনিট
+          লাগতে পারে। স্ট্যাটাস অটো আপডেট হয় — পেজ ছেড়ে যাবেন না।
+        </div>
+      </details>
+    </div>
+  </section>
+</div>
   );
 }
 
@@ -551,8 +536,7 @@ function StatusBadge({ status }: { status: ConversionStatus }) {
     },
     completed: {
       label: "Completed",
-      color:
-        "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300",
+      color: "bg-zinc-900 text-zinc-200 dark:bg-emerald-900/40 text-zinc-300",
     },
     failed: {
       label: "Failed",
@@ -561,13 +545,13 @@ function StatusBadge({ status }: { status: ConversionStatus }) {
   };
   const item = map[status] || {
     label: status,
-    color: "bg-zinc-100 text-zinc-600",
+    color: "bg-zinc-900 text-zinc-300",
   };
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
-        item.color
+        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs ",
+        item.color,
       )}
     >
       {status === "completed" && <CheckCircle2 className="h-3 w-3 mr-1" />}
@@ -585,16 +569,16 @@ function FaqItem({
 }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden">
+    <div className="rounded-xl border border-zinc-400/25 dark:border-zinc-700 overflow-hidden">
       <button
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between px-4 py-3.5 text-left font-medium text-zinc-800 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition"
+        className="flex w-full items-center justify-between px-4 py-3.5 text-left  hover:bg-zinc-900 hover:bg-zinc-800/50 transition"
       >
         <span>{question}</span>
         <ChevronDown
           className={cn(
             "h-4 w-4 text-zinc-400 transition-transform",
-            open && "rotate-180"
+            open && "rotate-180",
           )}
         />
       </button>
@@ -606,9 +590,7 @@ function FaqItem({
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <div className="px-4 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              {children}
-            </div>
+            <div className="px-4 pb-4 text-sm  leading-relaxed">{children}</div>
           </motion.div>
         )}
       </AnimatePresence>

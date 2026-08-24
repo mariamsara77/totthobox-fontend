@@ -403,25 +403,25 @@ export default function AdorshoLipiConverter() {
   };
 
   return (
-    <main className="max-w-2xl mx-auto p-4 space-y-6">
+    <main className="max-w-2xl mx-auto p-4 space-y-4">
       <header className="text-center space-y-2">
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight" lang="bn">
+        <h1 className="text-2xl tracking-tight" >
           আদর্শলিপি ⇄ ইউনিকোড কনভার্টার
         </h1>
-        <p className="text-base text-zinc-700 dark:text-zinc-400" lang="bn">
+        <p>
           রিয়েল-টাইম উভয়মুখী বাংলা লিপি রূপান্তর
         </p>
       </header>
 
       <section className="space-y-4">
         {/* AdorshoLipi */}
-        <article className="bg-zinc-400/10 rounded-xl p-5 space-y-4">
+        <article className="bg-zinc-400/10 rounded-xl p-4 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="flex items-center gap-2 font-medium" lang="bn">
-              <Printer className="size-4 text-orange-500" />
+            <h3 className="flex items-center gap-2 " >
+              <Printer className="size-4 " />
               আদর্শলিপি (ANSI)
             </h3>
-            <span className="text-xs font-medium bg-orange-100 text-orange-800 px-2.5 py-1 rounded-full">
+            <span className="  bg-zinc-400/10  px-2.5 py-1 rounded-full">
               Print Standard
             </span>
           </div>
@@ -431,13 +431,13 @@ export default function AdorshoLipiConverter() {
             onChange={(e) => handleAdorshoChange(e.target.value)}
             rows={6}
             placeholder="BcnÑ¢m¢f HM¡®e V¡Cf Ll¤e..."
-            className="w-full resize-none p-4 rounded-lg bg-zinc-400/10 adorsholipi-exp leading-relaxed focus:outline-none"
+            className="w-full resize-none p-4 rounded-lg bg-zinc-400/10 adorsholipi-exp outline-none leading-relaxed "
           />
 
           <div className="flex justify-end">
             <button
               onClick={() => copy(adorsho, 'a')}
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-zinc-400/10 rounded-lg hover:bg-zinc-700 transition"
+              className="inline-flex items-center gap-2 px-4 py-2   bg-zinc-400/10 rounded-lg hover:bg-zinc-700 transition"
             >
               <Clipboard className="size-4" />
               {copyTextA}
@@ -445,18 +445,18 @@ export default function AdorshoLipiConverter() {
           </div>
         </article>
 
-        <div className="flex justify-center text-zinc-500">
+        <div className="flex justify-center text-zinc-400">
           <ArrowUpDown className="size-5" />
         </div>
 
         {/* Unicode */}
-        <article className="bg-zinc-400/10 rounded-xl p-5 space-y-4">
+        <article className="bg-zinc-400/10 rounded-xl p-4 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="flex items-center gap-2 font-medium" lang="bn">
-              <Languages className="size-4 text-blue-500" />
+            <h3 className="flex items-center gap-2 " >
+              <Languages className="size-4 " />
               ইউনিকোড (Unicode)
             </h3>
-            <span className="text-xs font-medium bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full">
+            <span className="  bg-zinc-400/10  px-2.5 py-1 rounded-full">
               Web Standard
             </span>
           </div>
@@ -466,13 +466,13 @@ export default function AdorshoLipiConverter() {
             onChange={(e) => handleUnicodeChange(e.target.value)}
             rows={6}
             placeholder="এখানে ইউনিকোড বাংলা লিখুন..."
-            className="w-full resize-none p-4 rounded-lg bg-zinc-400/10 leading-relaxed focus:outline-none"
+            className="w-full resize-none p-4 rounded-lg bg-zinc-400/10 outline-none leading-relaxed "
           />
 
           <div className="flex justify-between items-center">
             <button
               onClick={clearAll}
-              className="inline-flex items-center rounded-xl gap-2 px-3 py-2 text-sm bg-zinc-400/10 hover:bg-zinc-400/25 transition"
+              className="inline-flex items-center rounded-xl gap-2 px-3 py-2  bg-zinc-400/10 hover:bg-zinc-700/25 transition"
             >
               <Trash2 className="size-4" />
               সব মুছুন
@@ -480,7 +480,7 @@ export default function AdorshoLipiConverter() {
 
             <button
               onClick={() => copy(unicode, 'u')}
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-zinc-800 text-white rounded-lg hover:bg-zinc-700 transition"
+              className="inline-flex items-center gap-2 px-4 py-2   bg-zinc-800 text-white rounded-lg hover:bg-zinc-700 transition"
             >
               <Clipboard className="size-4" />
               {copyTextU}
@@ -488,19 +488,19 @@ export default function AdorshoLipiConverter() {
           </div>
         </article>
       </section>
-<hr className='border-zinc-400/25'/>
+<hr className='border border-zinc-400/25 my-12'/>
       {/* About + FAQ same as before */}
       <section className="">
-        <h2 className="text-lg font-bold" lang="bn">
+        <h2 className="text-lg " >
           আদর্শলিপি ও ইউনিকোড কনভার্টার সম্পর্কে
         </h2>
-        <div className="text-sm leading-relaxed text-zinc-700 dark:text-zinc-400 space-y-3">
-          <p lang="bn">
+        <div className=" leading-relaxed space-y-4">
+          <p >
             <strong>আদর্শলিপি</strong> একটি ANSI ভিত্তিক বাংলা ফন্ট সিস্টেম যা দীর্ঘদিন ধরে প্রিন্টিং, অফিস ডকুমেন্ট
             এবং পুরনো সফটওয়্যারে ব্যবহৃত হয়ে আসছে। অন্যদিকে <strong>ইউনিকোড</strong> আধুনিক ওয়েব স্ট্যান্ডার্ড,
             যা সব ব্রাউজার ও ডিভাইসে সঠিকভাবে দেখায়।
           </p>
-          <p lang="bn">
+          <p >
             এই টুলটি <strong>উভয়মুখী রিয়েল-টাইম কনভার্সন</strong> সাপোর্ট করে। আপনি ইউনিকোড লিখলে স্বয়ংক্রিয়ভাবে
             আদর্শলিপিতে রূপান্তর হবে, আবার আদর্শলিপি লিখলে ইউনিকোডে চলে আসবে।
           </p>

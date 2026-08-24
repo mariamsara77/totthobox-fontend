@@ -87,17 +87,17 @@ function SidebarItem({
     <>
       <Icon
         className={cn(
-          "h-5 w-5 shrink-0 transition-colors duration-200",
+          "h-5 w-5 shrink-0",
           isActive
-            ? "text-black dark:text-white"
-            : "text-zinc-500 group-hover:text-zinc-700 dark:group-hover:text-zinc-200"
+            ? ""
+            : ""
         )}
       />
       {!collapsed && (
         <span className="truncate flex-1 text-left">{label}</span>
       )}
       {!collapsed && badge !== undefined && (
-        <span className="ml-auto rounded-full bg-zinc-200 px-2 py-0.5 text-xs dark:bg-zinc-700">
+        <span className="ml-auto rounded-full bg-zinc-800 px-2 py-0.5 text-xs text-zinc-200">
           {badge}
         </span>
       )}
@@ -105,10 +105,10 @@ function SidebarItem({
   );
 
   const className = cn(
-    "group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 text-left",
+    "group flex w-full items-center gap-4 rounded-lg p-2 text-sm",
     isActive
-      ? "bg-zinc-400/10 text-black dark:text-white"
-      : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800",
+      ? "bg-zinc-400/25"
+      : "hover:bg-zinc-400/25", 
     collapsed && "justify-center px-2"
   );
 
@@ -252,7 +252,7 @@ export default function Sidebar() {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed top-0 left-0 z-50 flex h-screen flex-col border-r border-zinc-200 bg-white transition-all duration-300 ease-in-out dark:border-zinc-800 dark:bg-zinc-900",
+          "fixed top-0 left-0 z-50 flex h-screen flex-col bg-zinc-100 dark:bg-zinc-900 transition-all duration-300 ease-in-out",
           isOpen ? "translate-x-0" : "-translate-x-full",
           "md:sticky md:top-0 md:translate-x-0",
           collapsed ? "md:w-16" : "md:w-64",
@@ -263,7 +263,7 @@ export default function Sidebar() {
         {/* Global Tooltip */}
         {collapsed && tooltip && (
           <div
-            className="fixed left-18 z-60 -translate-y-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1.5 text-xs font-medium text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-900"
+            className="fixed left-18 z-60 -translate-y-1/2 whitespace-nowrap rounded-xl bg-black dark:bg-white p-2 text-xs text-white dark:text-black"
             style={{ top: tooltip.top }}
           >
             {tooltip.label}
@@ -279,14 +279,14 @@ export default function Sidebar() {
         >
           {!collapsed && (
             <>
-              <Link href="/" className="flex items-center gap-2 text-xl font-semibold">
+              <Link href="/" className="flex items-center gap-2 text-xl ">
                 <BrandIcon className="h-6 w-6 shrink-0" />
                 <span className="truncate">Totthobox</span>
               </Link>
 
               <button
                 onClick={toggleCollapsed}
-                className="hidden rounded-lg p-2 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-800 md:flex dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+                className="hidden rounded-lg p-2 md:flex hover:bg-zinc-400/25"
                 title="Collapse sidebar"
               >
                 <PanelLeftClose className="h-5 w-5" />
@@ -296,7 +296,7 @@ export default function Sidebar() {
 
           {collapsed && (
             <div
-              className="group relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              className="group relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg  hover:bg-zinc-400/25"
               onMouseEnter={(e) => handleMouseEnter(e, "Expand Sidebar")}
               onMouseLeave={handleMouseLeave}
               onClick={toggleCollapsed}
@@ -304,7 +304,7 @@ export default function Sidebar() {
               <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-200 group-hover:opacity-0 group-hover:pointer-events-none">
                 <BrandIcon className="h-6 w-6" />
               </div>
-              <div className="absolute inset-0 flex items-center justify-center text-zinc-500 opacity-0 transition-opacity duration-200 group-hover:opacity-100 dark:text-zinc-200">
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                 <PanelLeft className="h-5 w-5" />
               </div>
             </div>
@@ -312,7 +312,7 @@ export default function Sidebar() {
 
           <button
             onClick={() => setIsOpen(false)}
-            className="rounded-lg p-2 text-zinc-500 hover:bg-rose-50 hover:text-rose-500 md:hidden"
+            className="rounded-lg p-2 text-zinc-400 hover:bg-rose-50 hover:text-rose-500 md:hidden"
           >
             <X className="h-5 w-5" />
           </button>
@@ -320,16 +320,16 @@ export default function Sidebar() {
 
         {/* Navigation */}
         <div
-          className="custom-scrollbar flex-1 overflow-y-auto p-2"
+          className="flex-1 overflow-y-auto p-2"
           onScroll={handleMouseLeave}
         >
-          <div className="space-y-6">
+          <div className="space-y-4">
 
             {/* ===================== CALENDAR ===================== */}
             {pathname.startsWith("/bangla/") && (
               <div className="space-y-1">
                 {!collapsed && (
-                  <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                  <h3 className="mb-2 px-3 text-xs  uppercase tracking-wider text-zinc-400">
                     ক্যালেন্ডার ও ছুটির তালিকা
                   </h3>
                 )}
@@ -358,7 +358,7 @@ export default function Sidebar() {
             {pathname.startsWith("/converter") && (
               <div className="space-y-1">
                 {!collapsed && (
-                  <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                  <h3 className="mb-2 px-3 text-xs  uppercase tracking-wider text-zinc-400">
                     কনভার্টার
                   </h3>
                 )}
@@ -433,12 +433,12 @@ export default function Sidebar() {
                   onMouseEnter={(e) => collapsed && handleMouseEnter(e, "অন্যান্য কনভার্টার")}
                   onMouseLeave={handleMouseLeave}
                   className={cn(
-                    "group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 text-left",
-                    "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800",
+                    "group flex w-full items-center gap-4 rounded-lg px-3 py-2.5 text-sm  transition-all duration-200 text-left",
+                    "text-zinc-300 hover:bg-zinc-900 text-zinc-300 hover:bg-zinc-800",
                     collapsed && "justify-center px-2"
                   )}
                 >
-                  <Layers className="h-5 w-5 shrink-0 text-zinc-500 group-hover:text-zinc-700 dark:group-hover:text-zinc-200" />
+                  <Layers className="h-5 w-5 shrink-0 text-zinc-400 group-hover:text-zinc-200 dark:group-hover:text-zinc-200" />
                   {!collapsed && (
                     <div className="flex flex-1 items-center justify-between">
                       <span className="truncate">অন্যান্য কনভার্টার</span>
@@ -455,7 +455,7 @@ export default function Sidebar() {
                   <div
                     className={cn(
                       "mt-1 space-y-1 overflow-hidden transition-all",
-                      !collapsed && "pl-4 border-l border-zinc-200 ml-4 dark:border-zinc-700"
+                      !collapsed && "pl-4 border-l border-zinc-400/25 ml-4 dark:border-zinc-700"
                     )}
                   >
                     <SidebarItem href="/converter/length" icon={FaRulerCombined} label="দৈর্ঘ্য কনভার্টার" isActive={pathname === "/converter/length"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
@@ -477,7 +477,7 @@ export default function Sidebar() {
             {pathname.startsWith("/bangladesh") && (
   <div className="space-y-1">
     {!collapsed && (
-      <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+      <h3 className="mb-2 px-3 text-xs  uppercase tracking-wider text-zinc-400">
         বাংলাদেশ
       </h3>
     )}
@@ -534,7 +534,7 @@ export default function Sidebar() {
             {pathname.startsWith("/international/") && (
               <div className="space-y-1">
                 {!collapsed && (
-                  <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                  <h3 className="mb-2 px-3 text-xs  uppercase tracking-wider text-zinc-400">
                     আন্তর্জাতিক
                   </h3>
                 )}
@@ -553,7 +553,7 @@ export default function Sidebar() {
             {pathname.startsWith("/islam") && (
               <div className="space-y-1">
                 {!collapsed && (
-                  <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                  <h3 className="mb-2 px-3 text-xs  uppercase tracking-wider text-zinc-400">
                     ইসলাম
                   </h3>
                 )}
@@ -582,7 +582,7 @@ export default function Sidebar() {
             {pathname.startsWith("/tools") && (
               <div className="space-y-1">
                 {!collapsed && (
-                  <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                  <h3 className="mb-2 px-3 text-xs  uppercase tracking-wider text-zinc-400">
                     বিভিন্ন টুলস
                   </h3>
                 )}
@@ -601,7 +601,7 @@ export default function Sidebar() {
 {pathname.startsWith("/software") && (
   <div className="space-y-1">
     {!collapsed && (
-      <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+      <h3 className="mb-2 px-3 text-xs  uppercase tracking-wider text-zinc-400">
         সফটওয়্যার
       </h3>
     )}
@@ -638,7 +638,7 @@ export default function Sidebar() {
 {pathname.startsWith("/contact") && (
   <div className="space-y-1">
     {!collapsed && (
-      <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+      <h3 className="mb-2 px-3 text-xs  uppercase tracking-wider text-zinc-400">
         জরুরী নাম্বার
       </h3>
     )}
@@ -661,7 +661,7 @@ export default function Sidebar() {
             {pathname.startsWith("/signs") && (
               <div className="space-y-1">
                 {!collapsed && (
-                  <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                  <h3 className="mb-2 px-3 text-xs  uppercase tracking-wider text-zinc-400">
                     বিভিন্ন সংকেত
                   </h3>
                 )}
@@ -725,7 +725,7 @@ export default function Sidebar() {
 
         {/* Footer */}
         {/* Footer */}
-<div className="border-t border-zinc-200 p-2 dark:border-zinc-800">
+<div className="border-t border-zinc-400/25 p-2 border-zinc-400/25">
   <SidebarItem
     onClick={openSettingsModal}
     icon={Settings}

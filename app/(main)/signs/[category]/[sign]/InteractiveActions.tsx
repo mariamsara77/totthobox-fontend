@@ -31,13 +31,7 @@ export default function InteractiveActions({
     setLoading(true);
     setMessage(null);
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
-      if (!baseUrl) {
-        setMessage("API URL কনফিগার করা নেই");
-        return;
-      }
-
-      const res = await fetch(`${baseUrl}/api/signs/${itemId}/react`, {
+      const res = await fetch(`/api/backend/signs/${itemId}/react`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -87,16 +81,16 @@ export default function InteractiveActions({
   };
 
   return (
-    <div className="space-y-3 pt-2">
+    <div className="space-y-4 pt-2">
       <div className="flex items-center justify-between gap-4">
         <div className="flex gap-2">
           <button
             onClick={() => react("like")}
             disabled={loading}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition disabled:opacity-50 ${
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition disabled:opacity-50 ${
               liked
                 ? "text-blue-600 bg-blue-50 dark:bg-blue-900/30"
-                : "text-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                : "text-zinc-300 hover:bg-zinc-900 hover:bg-zinc-800"
             }`}
           >
             <ThumbsUp className="w-4 h-4" /> {likeCount}
@@ -104,10 +98,10 @@ export default function InteractiveActions({
           <button
             onClick={() => react("dislike")}
             disabled={loading}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition disabled:opacity-50 ${
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition disabled:opacity-50 ${
               disliked
                 ? "text-red-600 bg-red-50 dark:bg-red-900/30"
-                : "text-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                : "text-zinc-300 hover:bg-zinc-900 hover:bg-zinc-800"
             }`}
           >
             <ThumbsDown className="w-4 h-4" /> {dislikeCount}
@@ -115,7 +109,7 @@ export default function InteractiveActions({
         </div>
         <button
           onClick={share}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm text-zinc-300 hover:bg-zinc-900 hover:bg-zinc-800"
         >
           <Share2 className="w-4 h-4" /> শেয়ার
         </button>
@@ -125,7 +119,7 @@ export default function InteractiveActions({
           className={`text-xs px-3 py-2 rounded-lg ${
             message.includes("লগইন") || message.includes("ব্যর্থ") || message.includes("সংযোগ")
               ? "bg-red-50 text-red-600"
-              : "bg-emerald-50 text-emerald-700"
+              : "bg-zinc-900 text-zinc-200"
           }`}
         >
           {message}

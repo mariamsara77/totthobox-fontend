@@ -9,7 +9,8 @@ import clsx from "clsx";
 import { Mail, ArrowLeft, CheckCircle2 } from "lucide-react";
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com",
+  baseURL:
+    process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com",
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -56,16 +57,16 @@ export default function ForgotPasswordPage() {
 
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">
+          <h1 className="text-2xl font-bold text-zinc-50 dark:text-white">
             পাসওয়ার্ড ভুলে গেছেন?
           </h1>
-          <p className="text-sm text-zinc-500 mt-2">
+          <p className="text-sm text-zinc-400 mt-2">
             আপনার ইমেইল দিন, আমরা পাসওয়ার্ড রিসেট লিংক পাঠাবো
           </p>
         </div>
 
         {success ? (
-          <div className="text-center space-y-6">
+          <div className="text-center space-y-4">
             <div className="flex justify-center">
               <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
                 <CheckCircle2 className="w-8 h-8 text-green-600" />
@@ -73,20 +74,18 @@ export default function ForgotPasswordPage() {
             </div>
 
             <div>
-              <h2 className="text-lg font-semibold text-zinc-900 dark:text-white">
+              <h2 className="text-lg  text-zinc-50 dark:text-white">
                 ইমেইল পাঠানো হয়েছে!
               </h2>
-              <p className="text-sm text-zinc-500 mt-2">
-                <span className="font-medium text-zinc-700 dark:text-zinc-300">
-                  {email}
-                </span>{" "}
-                এ পাসওয়ার্ড রিসেট লিংক পাঠানো হয়েছে। ইনবক্স চেক করুন।
+              <p className="text-sm text-zinc-400 mt-2">
+                <span className=" ">{email}</span> এ পাসওয়ার্ড রিসেট
+                লিংক পাঠানো হয়েছে। ইনবক্স চেক করুন।
               </p>
             </div>
 
             <Link
               href="/login"
-              className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:underline"
+              className="inline-flex items-center gap-2 text-sm  text-blue-600 hover:underline"
             >
               <ArrowLeft size={16} />
               লগইন পেজে ফিরে যান
@@ -103,10 +102,10 @@ export default function ForgotPasswordPage() {
                 required
                 autoFocus
                 className={clsx(
-                  "w-full rounded-full py-3.5 px-6 border bg-zinc-400/10 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition",
+                  "w-full rounded-full py-3.5 px-6 border bg-zinc-800/80 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition",
                   error
                     ? "border-red-500 bg-red-50 dark:bg-red-950/30"
-                    : "border-transparent"
+                    : "border-transparent",
                 )}
               />
               {error && (
@@ -117,16 +116,16 @@ export default function ForgotPasswordPage() {
             <button
               type="submit"
               disabled={loading || !email}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-full transition disabled:opacity-60"
+              className="w-full bg-zinc-700 hover:bg-zinc-600 text-white font-bold py-4 rounded-full transition disabled:opacity-60"
             >
               {loading ? "পাঠানো হচ্ছে..." : "রিসেট লিংক পাঠান"}
             </button>
 
-            <div className="text-center text-sm text-zinc-500">
+            <div className="text-center text-sm text-zinc-400">
               <span>অথবা, </span>
               <Link
                 href="/login"
-                className="font-medium text-blue-600 hover:underline"
+                className=" text-blue-600 hover:underline"
               >
                 লগইন পেজে ফিরে যান
               </Link>

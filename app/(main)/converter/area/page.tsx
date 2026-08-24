@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { Metadata } from "next";
 import AreaConverter from "@/components/converter/AreaConverter";
 
