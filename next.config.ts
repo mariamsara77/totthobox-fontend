@@ -1,33 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // ১. ইমেজের কনফিগারেশন
   images: {
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "totthobox.com",
-      },
-      {
-        protocol: "https",
-        hostname: "admin.totthobox.com",
-      },
-      {
-        protocol: "https",
-        hostname: "*.totthobox.com",
-      },
-      {
-        protocol: "http",
-        hostname: "localhost",
-      },
-      {
-        protocol: "http",
-        hostname: "127.0.0.1",
-      },
+      { protocol: "https", hostname: "totthobox.com" },
+      { protocol: "https", hostname: "admin.totthobox.com" },
+      { protocol: "https", hostname: "**.totthobox.com" },
+      { protocol: "http", hostname: "localhost" },
+      { protocol: "http", hostname: "127.0.0.1" },
     ],
   },
 
-  // ২. প্রোডাকশনে কন্সোল লগ রিমুভ করা
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
@@ -47,12 +30,19 @@ const nextConfig: NextConfig = {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=()",
           },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=31536000; includeSubDomains",
+          },
+          {
+            key: "Cross-Origin-Opener-Policy",
+            value: "same-origin-allow-popups",
+          },
         ],
       },
     ];
   },
 
-  // ৩. প্যাকেজ অপ্টিমাইজেশন
   experimental: {
     optimizePackageImports: ["lucide-react", "react-icons"],
   },
