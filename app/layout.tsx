@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Noto_Sans_Bengali } from "next/font/google"; // ফন্ট ইম্পোর্ট
+import { Geist, Geist_Mono, Noto_Sans_Bengali } from "next/font/google";
 import "./globals.css";
 import { AppProviders } from "./providers";
 import SettingsModalWrapper from "@/components/SettingsModalWrapper";
 import TagManager from "@/components/partials/TagManager";
 import GoogleTranslate from "@/components/GoogleTranslate";
 import VisitorTracker from "@/components/VisitorTracker";
+import PWARegister from "@/components/PWARegister";
 
-// ফন্টগুলোর কনফিগারেশন
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -36,6 +36,19 @@ export const metadata: Metadata = {
   description:
     "Totthobox হলো একটি আধুনিক ডিজিটাল ইনফরমেশন ও ইউটিলিটি সার্ভিস প্ল্যাটফর্ম। প্রয়োজনীয় সকল তথ্য ও সেবা সহজে পেতে ভিজিট করুন।",
   alternates: { canonical: "/" },
+  manifest: "/manifest.webmanifest",
+  icons: {
+    icon: [
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+  },
+  appleWebApp: {
+    capable: true,
+    title: "Totthobox",
+    statusBarStyle: "default",
+  },
   openGraph: {
     type: "website",
     siteName: "Totthobox",
@@ -48,8 +61,6 @@ export const metadata: Metadata = {
   },
 };
 
-// app/layout.tsx
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -57,20 +68,21 @@ export default function RootLayout({
 }>) {
   return (
     <html
-  lang="bn"
-  suppressHydrationWarning
-  className={`${geistSans.variable} ${geistMono.variable} ${notoBengali.variable}`}
->
-  <head />
-  <body
-    suppressHydrationWarning
-    className="min-h-screen dark:bg-zinc-800 antialiased"
-  >
+      lang="bn"
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${geistMono.variable} ${notoBengali.variable}`}
+    >
+      <head />
+      <body
+        suppressHydrationWarning
+        className="min-h-screen dark:bg-zinc-800 antialiased"
+      >
         <TagManager />
+        <PWARegister />
         <AppProviders>
           {children}
           <VisitorTracker />
-          <SettingsModalWrapper /> 
+          <SettingsModalWrapper />
         </AppProviders>
         <GoogleTranslate />
       </body>
