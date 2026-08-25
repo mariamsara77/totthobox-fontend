@@ -23,9 +23,11 @@ export const viewport: Viewport = {
 
 export default function ChatLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className={`${bengali.variable} min-h-[100svh] bg-zinc-50 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50`}>
+    <div
+      className={`${bengali.variable} min-h-0 bg-zinc-50 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50`}
+    >
       <ChatLayoutProvider>
-        <main className="h-[100svh] min-h-0 overflow-hidden">{children}</main>
+        <main className="min-h-0 w-full overflow-hidden">{children}</main>
       </ChatLayoutProvider>
     </div>
   );
