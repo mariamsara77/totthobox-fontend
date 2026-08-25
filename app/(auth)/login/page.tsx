@@ -1,7 +1,22 @@
+import { Metadata } from "next";
 import { Suspense } from "react";
-import LoginContent from "./LoginContent"; // or "./login-content"
+import LoginContent from "./LoginContent";
 
-export const dynamic = "force-dynamic"; // now this actually works
+export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "লগইন | আপনার অ্যাকাউন্টে প্রবেশ করুন",
+  description: "আপনার অ্যাকাউন্টে প্রবেশ করতে ইউজারনেম/ইমেইল এবং পাসওয়ার্ড দিয়ে লগইন করুন।",
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    title: "লগইন | আপনার অ্যাকাউন্টে প্রবেশ করুন",
+    description: "আপনার অ্যাকাউন্টে প্রবেশ করতে ইউজারনেম/ইমেইল এবং পাসওয়ার্ড দিয়ে লগইন করুন।",
+    type: "website",
+  },
+};
 
 export default function LoginPage() {
   return (
