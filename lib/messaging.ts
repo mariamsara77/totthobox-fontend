@@ -66,11 +66,6 @@ function unwrap<T>(payload: T | { data?: T }): T {
   return payload as T;
 }
 
-export async function getConversations() {
-  const payload = await apiFetch<ChatUser[]>({} as never);
-  return payload;
-}
-
 export async function getChatUsers() {
   return apiFetch<ChatUser[]>("/messages/users");
 }
