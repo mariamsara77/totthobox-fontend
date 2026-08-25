@@ -1,4 +1,4 @@
-const VERSION = "totthobox-v2";
+const VERSION = "totthobox-v3";
 const STATIC_CACHE = `${VERSION}-static`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 const DATA_CACHE = `${VERSION}-data`;
@@ -39,6 +39,39 @@ self.addEventListener("message", (event) => {
   if (event.data?.type === "SKIP_WAITING") self.skipWaiting();
 });
 
+self.addEventListener("push", (event) => {
+  let data = {};
+  try { data = event.data?.json() ?? {}; } catch { data = { body: event.data?.text() ?? "" }; }
+
+  const title = typeof data.title === "string" ? data.title : "Totthobox";
+  const body = typeof data.body === "string" ? data.body : "নতুন আপডেট এসেছে।";
+  const targetUrl = typeof data.url === "string" && data.url.startsWith("/") ? data.url : "/";
+
+  event.waitUntil(
+    self.registration.showNotification(title, {
+      body,
+      icon: "/icons/icon-192x192.svg",
+      badge: "/icons/icon-192x192.svg",
+      tag: typeof data.tag === "string" ? data.tag : "totthobox-notification",
+      data: { url: targetUrl },
+      vibrate: [100, 50, 100],
+    })
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const target = event.notification.data?.url || "/";
+  event.waitUntil(clients.matchAll({ type: "window", includeUncontrolled: true }).then((windows) => {
+    const existing = windows.find((client) => "focus" in client);
+    if (existing) {
+      existing.navigate(target);
+      return existing.focus();
+    }
+    return clients.openWindow(target);
+  }));
+});
+
 self.addEventListener("fetch", (event) => {
   const request = event.request;
   if (request.method !== "GET") return;
@@ -50,22 +83,18 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(networkFirstNavigation(request));
     return;
   }
-
   if (url.pathname.startsWith("/_next/static/")) {
     event.respondWith(cacheFirst(request, STATIC_CACHE));
     return;
   }
-
   if (url.pathname.startsWith("/_next/image")) {
     event.respondWith(staleWhileRevalidate(request, RUNTIME_CACHE));
     return;
   }
-
   if (request.destination === "image" || request.destination === "font") {
     event.respondWith(staleWhileRevalidate(request, RUNTIME_CACHE));
     return;
   }
-
   if (request.headers.get("accept")?.includes("application/json")) {
     event.respondWith(networkFirstData(request));
   }
@@ -88,17 +117,13 @@ async function networkFirstData(request) {
     return response;
   } catch {
     const cached = await caches.match(request);
-    return cached || new Response(JSON.stringify({ offline: true, data: null }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" }
-    });
+    return cached || new Response(JSON.stringify({ offline: true, data: null }), { status: 200, headers: { "Content-Type": "application/json" } });
   }
 }
 
 async function cacheFirst(request, cacheName) {
   const cached = await caches.match(request);
   if (cached) return cached;
-
   try {
     const response = await fetch(request);
     if (response.ok) await putLimited(cacheName, request, response.clone());
@@ -111,23 +136,17 @@ async function cacheFirst(request, cacheName) {
 async function staleWhileRevalidate(request, cacheName) {
   const cache = await caches.open(cacheName);
   const cached = await cache.match(request);
-  const network = fetch(request)
-    .then(async (response) => {
-      if (response.ok) await putLimited(cacheName, request, response.clone());
-      return response;
-    })
-    .catch(() => cached);
-
+  const network = fetch(request).then(async (response) => {
+    if (response.ok) await putLimited(cacheName, request, response.clone());
+    return response;
+  }).catch(() => cached);
   return cached || network;
 }
 
 async function putLimited(cacheName, request, response) {
   const cache = await caches.open(cacheName);
   await cache.put(request, response);
-
   const keys = await cache.keys();
   if (keys.length <= MAX_RUNTIME_ENTRIES) return;
-
-  const removeCount = keys.length - MAX_RUNTIME_ENTRIES;
-  await Promise.all(keys.slice(0, removeCount).map((key) => cache.delete(key)));
+  await Promise.all(keys.slice(0, keys.length - MAX_RUNTIME_ENTRIES).map((key) => cache.delete(key)));
 }
