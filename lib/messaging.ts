@@ -3,7 +3,7 @@ import { apiFetch } from "@/lib/api-client";
 export interface ChatUser {
   id: number;
   name: string;
-  slug?: string | null;
+  slug: string;
   email?: string | null;
   avatar?: string | null;
   profile_photo_url?: string | null;
@@ -69,10 +69,12 @@ export async function getOnlineUsers() {
   return apiFetch<ChatUser[]>("/messages/online");
 }
 
-export async function getMessages(userId: number, page = 1, perPage = 30) {
-  return apiFetch<PaginatedMessages>(`/messages/${userId}?page=${page}&per_page=${perPage}`);
+/** User routes use Laravel's configured slug route key. */
+export async function getMessages(userSlug: string, page = 1, perPage = 30) {
+  return apiFetch<PaginatedMessages>(`/messages/${encodeURIComponent(userSlug)}?page=${page}&per_page=${perPage}`);
 }
 
+/** receiver_id is intentionally the database ID; only URL route parameters use slug. */
 export async function sendMessage(userId: number, message: string, attachment?: File | null, parentId?: number | null) {
   const form = new FormData();
   form.append("receiver_id", String(userId));
@@ -86,8 +88,8 @@ export async function sendMessage(userId: number, message: string, attachment?: 
   });
 }
 
-export async function markMessagesAsRead(userId: number) {
-  return apiFetch<{ message: string }>(`/messages/${userId}/read`, { method: "POST" });
+export async function markMessagesAsRead(userSlug: string) {
+  return apiFetch<{ message: string }>(`/messages/${encodeURIComponent(userSlug)}/read`, { method: "POST" });
 }
 
 export async function editMessage(messageId: number, message: string) {
@@ -101,12 +103,12 @@ export async function deleteMessage(messageId: number) {
   return apiFetch<void>(`/messages/${messageId}`, { method: "DELETE" });
 }
 
-export async function getBlockStatus(userId: number) {
-  return apiFetch<{ blocked?: boolean; is_blocked?: boolean }>(`/users/${userId}/block-status`);
+export async function getBlockStatus(userSlug: string) {
+  return apiFetch<{ blocked?: boolean; is_blocked?: boolean }>(`/users/${encodeURIComponent(userSlug)}/block-status`);
 }
 
-export async function toggleBlock(userId: number) {
-  return apiFetch<{ blocked?: boolean; is_blocked?: boolean; message?: string }>(`/users/${userId}/block`, {
+export async function toggleBlock(userSlug: string) {
+  return apiFetch<{ blocked?: boolean; is_blocked?: boolean; message?: string }>(`/users/${encodeURIComponent(userSlug)}/block`, {
     method: "POST",
   });
 }
