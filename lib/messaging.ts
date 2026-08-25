@@ -11,6 +11,8 @@ export interface ChatUser {
   status?: string | null;
   role_label?: string | null;
   roles?: Array<{ id?: number; name: string }>;
+  sentMessages?: ChatMessage[];
+  receivedMessages?: ChatMessage[];
 }
 
 export interface MessageMedia {
@@ -57,13 +59,6 @@ export interface UserProfileResponse {
     profile?: ChatUser & { bio?: string | null; location?: string | null };
   };
   profile?: ChatUser;
-}
-
-function unwrap<T>(payload: T | { data?: T }): T {
-  if (payload && typeof payload === "object" && "data" in payload && payload.data) {
-    return payload.data as T;
-  }
-  return payload as T;
 }
 
 export async function getChatUsers() {
@@ -117,8 +112,7 @@ export async function toggleBlock(userId: number) {
 }
 
 export async function getUserProfileBySlug(slug: string) {
-  const payload = await apiFetch<UserProfileResponse>(`/users/${encodeURIComponent(slug)}/profile`);
-  return unwrap(payload);
+  return apiFetch<UserProfileResponse>(`/users/${encodeURIComponent(slug)}/profile`);
 }
 
 export function getMediaUrl(media?: MessageMedia | null) {
