@@ -1,0 +1,38 @@
+{
+  "name": "Totthobox",
+  "short_name": "Totthobox",
+  "description": "প্রয়োজনীয় সকল তথ্য ও সেবা এক জায়গায়",
+  "lang": "bn-BD",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "categories": ["education", "news", "utilities"],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "হোম",
+      "short_name": "হোম",
+      "url": "/",
+      "icons": [{ "src": "/favicon-96x96.png", "sizes": "96x96", "type": "image/png" }]
+    }
+  ]
+}
