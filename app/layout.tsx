@@ -1,25 +1,16 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono, Noto_Sans_Bengali } from "next/font/google"; // ফন্ট ইম্পোর্ট
+import type { Metadata, Viewport } from "next";
+import { Geist, Geist_Mono, Noto_Sans_Bengali } from "next/font/google";
 import "./globals.css";
 import { AppProviders } from "./providers";
 import SettingsModalWrapper from "@/components/SettingsModalWrapper";
 import TagManager from "@/components/partials/TagManager";
 import GoogleTranslate from "@/components/GoogleTranslate";
 import VisitorTracker from "@/components/VisitorTracker";
+import PWARegister from "@/components/PWARegister";
+import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 
-// ফন্টগুলোর কনফিগারেশন
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: "swap",
-});
-
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"], display: "swap" });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"], display: "swap" });
 const notoBengali = Noto_Sans_Bengali({
   variable: "--font-noto-bengali",
   subsets: ["bengali"],
@@ -36,6 +27,18 @@ export const metadata: Metadata = {
   description:
     "Totthobox হলো একটি আধুনিক ডিজিটাল ইনফরমেশন ও ইউটিলিটি সার্ভিস প্ল্যাটফর্ম। প্রয়োজনীয় সকল তথ্য ও সেবা সহজে পেতে ভিজিট করুন।",
   alternates: { canonical: "/" },
+  manifest: "/manifest.webmanifest",
+  icons: {
+    icon: [
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+  },
+  appleWebApp: {
+    capable: true,
+    title: "Totthobox",
+    statusBarStyle: "black-translucent",
+  },
   openGraph: {
     type: "website",
     siteName: "Totthobox",
@@ -48,31 +51,33 @@ export const metadata: Metadata = {
   },
 };
 
-// app/layout.tsx
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover",
+  themeColor: "#111827",
+  colorScheme: "light dark",
+};
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
-  lang="bn"
-  suppressHydrationWarning
-  className={`${geistSans.variable} ${geistMono.variable} ${notoBengali.variable}`}
->
-  <head />
-  <body
-    suppressHydrationWarning
-    className="min-h-screen dark:bg-zinc-800 antialiased"
-  >
+      lang="bn"
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${geistMono.variable} ${notoBengali.variable}`}
+    >
+      <head />
+      <body suppressHydrationWarning className="min-h-screen dark:bg-zinc-800 antialiased">
         <TagManager />
+        <PWARegister />
         <AppProviders>
           {children}
           <VisitorTracker />
-          <SettingsModalWrapper /> 
+          <SettingsModalWrapper />
         </AppProviders>
         <GoogleTranslate />
+        <PWAInstallPrompt />
       </body>
     </html>
   );
