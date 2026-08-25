@@ -1,33 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // ১. ইমেজের কনফিগারেশন
   images: {
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "totthobox.com",
-      },
-      {
-        protocol: "https",
-        hostname: "admin.totthobox.com",
-      },
-      {
-        protocol: "https",
-        hostname: "*.totthobox.com",
-      },
-      {
-        protocol: "http",
-        hostname: "localhost",
-      },
-      {
-        protocol: "http",
-        hostname: "127.0.0.1",
-      },
+      { protocol: "https", hostname: "totthobox.com" },
+      { protocol: "https", hostname: "admin.totthobox.com" },
+      { protocol: "https", hostname: "*.totthobox.com" },
+      { protocol: "http", hostname: "localhost" },
+      { protocol: "http", hostname: "127.0.0.1" },
     ],
   },
 
-  // ২. প্রোডাকশনে কন্সোল লগ রিমুভ করা
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
@@ -35,24 +18,30 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
+        source: "/sw.js",
+        headers: [
+          { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },
+          { key: "Service-Worker-Allowed", value: "/" },
+        ],
+      },
+      {
+        source: "/manifest.webmanifest",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=300, stale-while-revalidate=86400" },
+        ],
+      },
+      {
         source: "/(.*)",
         headers: [
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "X-Frame-Options", value: "SAMEORIGIN" },
-          {
-            key: "Referrer-Policy",
-            value: "strict-origin-when-cross-origin",
-          },
-          {
-            key: "Permissions-Policy",
-            value: "camera=(), microphone=(), geolocation=()",
-          },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
         ],
       },
     ];
   },
 
-  // ৩. প্যাকেজ অপ্টিমাইজেশন
   experimental: {
     optimizePackageImports: ["lucide-react", "react-icons"],
   },
