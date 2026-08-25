@@ -8,8 +8,8 @@ export const metadata: Metadata = {
   title: "লগইন | আপনার অ্যাকাউন্টে প্রবেশ করুন",
   description: "আপনার অ্যাকাউন্টে প্রবেশ করতে ইউজারনেম/ইমেইল এবং পাসওয়ার্ড দিয়ে লগইন করুন।",
   robots: {
-    index: true,
-    follow: true,
+    index: false,
+    follow: false,
   },
   openGraph: {
     title: "লগইন | আপনার অ্যাকাউন্টে প্রবেশ করুন",

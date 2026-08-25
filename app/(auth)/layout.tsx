@@ -1,6 +1,5 @@
 import Link from "next/link";
 import BrandIcon from "@/components/BrandIcon";
-import { AppProviders } from "../providers";
 
 export default function AuthLayout({
   children,
@@ -15,7 +14,7 @@ export default function AuthLayout({
   </header>
   
   <main>
-    <AppProviders>{children}</AppProviders>
+    {children}
   </main>
     </div>
 </div>

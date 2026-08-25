@@ -168,6 +168,17 @@ export default function Sidebar() {
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsOpen(false);
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, setIsOpen]);
+
   // ========== Fetch Dynamic Data ==========
   useEffect(() => {
     const controller = new AbortController();
@@ -285,9 +296,11 @@ export default function Sidebar() {
               </Link>
 
               <button
+                type="button"
                 onClick={toggleCollapsed}
                 className="hidden rounded-lg p-2 md:flex hover:bg-zinc-400/25"
                 title="Collapse sidebar"
+                aria-label="সাইডবার সংকুচিত করুন"
               >
                 <PanelLeftClose className="h-5 w-5" />
               </button>
@@ -295,7 +308,9 @@ export default function Sidebar() {
           )}
 
           {collapsed && (
-            <div
+            <button
+              type="button"
+              aria-label="সাইডবার প্রসারিত করুন"
               className="group relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg  hover:bg-zinc-400/25"
               onMouseEnter={(e) => handleMouseEnter(e, "Expand Sidebar")}
               onMouseLeave={handleMouseLeave}
@@ -307,11 +322,13 @@ export default function Sidebar() {
               <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                 <PanelLeft className="h-5 w-5" />
               </div>
-            </div>
+            </button>
           )}
 
           <button
+            type="button"
             onClick={() => setIsOpen(false)}
+            aria-label="সাইডবার বন্ধ করুন"
             className="rounded-lg p-2 text-zinc-400 hover:bg-rose-50 hover:text-rose-500 md:hidden"
           >
             <X className="h-5 w-5" />

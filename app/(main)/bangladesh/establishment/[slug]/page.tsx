@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
 import EstablishmentShowClient from "./EstablishmentShowClient";
 
 type Props = {
@@ -20,7 +21,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const item = await getEstablishment(slug);
 
   if (!item) {
-    return { title: "স্থাপনা পাওয়া যায়নি | তথ্যবক্স" };
+    return {
+      title: "স্থাপনা পাওয়া যায়নি | তথ্যবক্স",
+      robots: { index: false, follow: false },
+    };
   }
 
   const title = `${item.title} | বাংলাদেশের স্থাপনা ও প্রতিষ্ঠান | তথ্যবক্স`;
@@ -53,11 +57,7 @@ export default async function EstablishmentShowPage({ params }: Props) {
   const item = await getEstablishment(slug);
 
   if (!item) {
-    return (
-      <div className="max-w-2xl mx-auto p-4 text-center text-zinc-400">
-        স্থাপনা পাওয়া যায়নি
-      </div>
-    );
+    notFound();
   }
 
   return <EstablishmentShowClient establishment={item} />;

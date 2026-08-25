@@ -104,3 +104,25 @@
 .adorsholipi-exp {
   font-family: 'Adorsholipi Exp', serif;
 }
+
+
+/* =========================================
+   Google Translate (optional – delete if not used)
+   ========================================= */
+.goog-te-banner-frame,
+.goog-te-balloon-frame,
+#goog-gt-tt,
+.skiptranslate,
+.goog-te-gadget-icon {
+    display: none !important;
+}
+
+body {
+    top: 0 !important;
+    position: static !important;
+}
+
+.goog-text-highlight {
+    background-color: transparent !important;
+    box-shadow: none !important;
+}

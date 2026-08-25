@@ -26,6 +26,13 @@ const api = axios.create({
   },
 });
 
+const authApi = axios.create({
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  },
+});
+
 export default function RegisterContent() {
   const router = useRouter();
 
@@ -106,14 +113,10 @@ export default function RegisterContent() {
     setLoading(true);
 
     try {
-      const res = await api.post("/api/auth/register/verify", {
+      const res = await authApi.post("/api/auth/register/verify", {
         email,
         otp,
       });
-
-      // Token save
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
 
       // Multi-account cookie logic (optional)
       const cookieName = "saved_accounts";

@@ -1,57 +1,80 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { usePathname, useSearchParams } from 'next/navigation';
-import { getTracker, trackPageView, startNavigation } from '@/lib/tracker';
+import { useEffect } from "react";
+import { usePathname } from "next/navigation";
+import {
+  getTracker,
+  trackPageView,
+  startNavigation,
+} from "@/lib/tracker";
 
 export default function VisitorTracker() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
-  // একবার init
+  // Initialize tracker once
   useEffect(() => {
     getTracker().init();
   }, []);
 
-  // Route change → Page View
+  // Track page view on route change
   useEffect(() => {
-    // ছোট delay দিয়ে দিই যাতে পেজ রেন্ডার শেষ হয়, তারপর ট্র্যাক হয়
-    const t = setTimeout(() => {
+    if (!pathname) return;
+
+    const timer = window.setTimeout(() => {
       trackPageView(pathname);
     }, 120);
 
-    return () => clearTimeout(t);
-  }, [pathname, searchParams]);
+    return () => window.clearTimeout(timer);
+  }, [pathname]);
 
-  // Internal link click → navigation start
+  // Track internal navigation start
   useEffect(() => {
-    const onClick = (e: MouseEvent) => {
-      const anchor = (e.target as HTMLElement).closest('a');
+    const onClick = (event: MouseEvent) => {
+      const target = event.target;
+
+      if (!(target instanceof Element)) return;
+
+      const anchor = target.closest("a");
+
       if (!anchor) return;
 
       if (
         anchor.href &&
         anchor.origin === window.location.origin &&
         !anchor.target &&
-        !anchor.hasAttribute('download') &&
-        !e.ctrlKey &&
-        !e.metaKey &&
-        !e.shiftKey &&
-        !e.altKey
+        !anchor.hasAttribute("download") &&
+        !event.ctrlKey &&
+        !event.metaKey &&
+        !event.shiftKey &&
+        !event.altKey
       ) {
         startNavigation();
       }
     };
 
-    document.addEventListener('click', onClick, { capture: true, passive: true });
-    return () => document.removeEventListener('click', onClick, { capture: true });
+    document.addEventListener("click", onClick, {
+      capture: true,
+      passive: true,
+    });
+
+    return () => {
+      document.removeEventListener("click", onClick, {
+        capture: true,
+      });
+    };
   }, []);
 
-  // Browser Back / Forward
+  // Browser back / forward
   useEffect(() => {
-    const onPop = () => startNavigation();
-    window.addEventListener('popstate', onPop);
-    return () => window.removeEventListener('popstate', onPop);
+    const onPopState = () => {
+      startNavigation();
+    };
+
+    window.addEventListener("popstate", onPopState);
+
+    return () => {
+      window.removeEventListener("popstate", onPopState);
+    };
   }, []);
 
   return null;

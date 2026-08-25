@@ -40,7 +40,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const data = await getHolidayData(slug);
 
-  if (!data) return { title: "ছুটি পাওয়া যায়নি" };
+  if (!data) return { title: "ছুটি পাওয়া যায়নি", robots: { index: false, follow: false } };
 
   const { holiday, seo } = data;
 

@@ -12,6 +12,7 @@ interface SettingsModalProps {
 
 export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -21,6 +22,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     if (isOpen) {
       document.body.style.overflow = "hidden";
       window.addEventListener("keydown", handleKeyDown);
+      closeButtonRef.current?.focus();
     }
 
     return () => {
@@ -34,6 +36,9 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   return (
     // স্ট্যান্ডার্ড ব্লার এবং ব্যাকড্রপ কালার
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="settings-modal-title"
       className="fixed inset-0 z-100 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity duration-300"
       onClick={onClose}
     >
@@ -46,11 +51,13 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         <div className="flex items-center justify-between pb-4 border-b border-zinc-100 dark:border-zinc-800">
           <div className="flex items-center gap-2 text-lg font-medium">
             <Settings className="w-5 h-5 text-zinc-600 dark:text-zinc-400" />
-            <span>সেটিংস</span>
+            <span id="settings-modal-title">সেটিংস</span>
           </div>
           <button
             type="button"
+            ref={closeButtonRef}
             onClick={onClose}
+            aria-label="সেটিংস বন্ধ করুন"
             className="p-1.5 rounded-lg text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
           >
             <X className="w-5 h-5" />

@@ -30,7 +30,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const data = await getItem(slug);
-  if (!data) return { title: "পৃষ্ঠা পাওয়া যায়নি" };
+  if (!data) return { title: "পৃষ্ঠা পাওয়া যায়নি", robots: { index: false, follow: false } };
 
   const item = data.item;
   const title = `${item.bangla_name} - আরবি, উচ্চারণ, অর্থ ও আমল | দোয়া সংগ্রহ`;

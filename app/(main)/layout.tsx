@@ -4,8 +4,6 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Sidebar from "@/components/Sidebar";
 import { SidebarProvider } from "@/context/SidebarContext";
-import { SettingsModalProvider } from "@/context/SettingsModalContext";
-import SettingsModalWrapper from "@/components/SettingsModalWrapper";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://totthobox.com"),
@@ -30,7 +28,7 @@ export default function MainLayout({
             <Sidebar />
 
             {/* Main content area */}
-            <div className="flex min-h-screen flex-1 flex-col">
+            <div className="flex min-h-screen min-w-0 flex-1 flex-col">
               <div className="md:hidden sticky top-0 z-50">
                 <Navbar />
               </div>

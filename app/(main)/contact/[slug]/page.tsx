@@ -22,7 +22,10 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const category = await getCategory(slug);
 
   if (!category) {
-    return { title: "ক্যাটাগরি পাওয়া যায়নি | তথ্যবক্স" };
+    return {
+      title: "ক্যাটাগরি পাওয়া যায়নি | তথ্যবক্স",
+      robots: { index: false, follow: false },
+    };
   }
 
   const catName = category.name;
@@ -59,10 +62,9 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
       description,
     },
     alternates: {
-      canonical: searchTerm
-        ? `https://totthobox.com/contact/${slug}?search=${encodeURIComponent(searchTerm)}`
-        : `https://totthobox.com/contact/${slug}`,
+      canonical: `https://totthobox.com/contact/${slug}`,
     },
+    ...(searchTerm ? { robots: { index: false, follow: true } } : {}),
   };
 }
 

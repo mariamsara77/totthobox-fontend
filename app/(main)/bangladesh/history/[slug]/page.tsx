@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
 import HistoryShowClient from "./HistoryShowClient";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -16,7 +17,12 @@ async function getHistory(slug: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const item = await getHistory(slug);
-  if (!item) return { title: "স্থান পাওয়া যায়নি | তথ্যবক্স" };
+  if (!item) {
+    return {
+      title: "স্থান পাওয়া যায়নি | তথ্যবক্স",
+      robots: { index: false, follow: false },
+    };
+  }
 
   const title = `${item.title} | বাংলাদেশের ঐতিহাসিক স্থান | তথ্যবক্স`;
   const description = (item.description || `${item.title} সম্পর্কে বিস্তারিত ইতিহাস।`)
@@ -42,11 +48,7 @@ export default async function HistoryShowPage({ params }: Props) {
   const { slug } = await params;
   const item = await getHistory(slug);
   if (!item) {
-    return (
-      <div className="max-w-2xl mx-auto p-4 text-center text-zinc-400">
-        স্থান পাওয়া যায়নি
-      </div>
-    );
+    notFound();
   }
   return <HistoryShowClient history={item} />;
 }

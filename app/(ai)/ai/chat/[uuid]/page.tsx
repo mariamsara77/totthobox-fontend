@@ -3,6 +3,7 @@ import ChatPanel from "@/components/ai/ChatPanel";
 
 export const metadata: Metadata = {
   title: "চ্যাট | Totthobox AI",
+  robots: { index: false, follow: false },
 };
 
 export default async function AiChatSessionPage({

@@ -8,8 +8,8 @@ export const metadata: Metadata = {
   title: "রেজিস্ট্রেশন | অ্যাকাউন্ট তৈরি করুন",
   description: "নতুন অ্যাকাউন্ট তৈরি করতে আপনার তথ্য দিয়ে রেজিস্ট্রেশন সম্পন্ন করুন।",
   robots: {
-    index: true,
-    follow: true,
+    index: false,
+    follow: false,
   },
   openGraph: {
     title: "রেজিস্ট্রেশন | অ্যাকাউন্ট তৈরি করুন",

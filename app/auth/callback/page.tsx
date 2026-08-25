@@ -11,7 +11,6 @@ function CallbackHandler() {
     const token = searchParams.get("token");
     if (token) {
       // এখানে আপনার লগইন বা টোকেন হ্যান্ডেল করার লজিক বসান
-      console.log("Token:", token);
     }
   }, [searchParams]);
 

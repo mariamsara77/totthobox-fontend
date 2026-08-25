@@ -15,7 +15,9 @@ export default function Navbar() {
         <div className="flex items-center gap-4">
           {/* Mobile menu button */}
           <button
+            type="button"
             onClick={() => setIsOpen(true)}
+            aria-label="সাইডবার খুলুন"
             className="rounded-lg p-2 hover:opacity-50 md:hidden"
           >
             <Menu className="h-6 w-6" />

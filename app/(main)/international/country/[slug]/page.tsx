@@ -6,11 +6,11 @@ import {
   generateFaqs,
   formatPopulation,
   formatArea,
-  type Country,
 } from "@/lib/countries";
 import { FlagImage } from "@/components/international/FlagImage";
 import { CoatOfArms } from "@/components/international/CoatOfArms";
 import { FaHome } from "react-icons/fa";
+import { notFound } from "next/navigation";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -90,53 +90,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: [country.flag],
     },
     alternates: {
-      canonical: `/international/${country.slug}`,
+      canonical: `/international/country/${country.slug}`,
     },
   };
 }
 
 export default async function CountryPage({ params }: Props) {
   const { slug } = await params;
-  const { country, neighbors, popular } = await getCountry(slug);
+  const { country, neighbors } = await getCountry(slug);
 
   // ── NOT FOUND ──
   if (!country) {
-    return (
-      <section className="max-w-2xl mx-auto p-4 text-center space-y-4">
-        <div className="text-7xl animate-bounce">🌐</div>
-        <h1 className="text-3xl font-bold">দেশটি পাওয়া যায়নি</h1>
-        <p className="text-zinc-400">
-          "<strong>{slug}</strong>" নামের কোনো দেশ আমাদের ডেটাবেসে নেই। বানান
-          ঠিক আছে কিনা যাচাই করুন, অথবা নিচে থেকে জনপ্রিয় কোনো দেশ বেছে নিন।
-        </p>
-        <div className="flex justify-center">
-          <Link
-            href="/international/all-country"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg  text-white dark:text-zinc-50 "
-          >
-            ← সকল দেশে ফিরুন
-          </Link>
-        </div>
-
-        {popular.length > 0 && (
-          <div className="pt-6 border-t border-zinc-400/25">
-            <p className="text-sm text-zinc-400 mb-4">জনপ্রিয় দেশসমূহ</p>
-            <div className="flex flex-wrap justify-center gap-4">
-              {popular.map((pc) => (
-                <Link
-                  key={pc.slug}
-                  href={`/international/all-country/${pc.slug}`}
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-800/80 border border-zinc-400/25 hover:border-indigo-400/40 text-sm "
-                >
-                  <span>{pc.flag_emoji}</span>
-                  <span>{pc.name}</span>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
-      </section>
-    );
+    notFound();
   }
 
   const overviewText = generateOverview(country);

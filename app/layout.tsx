@@ -30,11 +30,22 @@ const notoBengali = Noto_Sans_Bengali({
 export const metadata: Metadata = {
   metadataBase: new URL("https://totthobox.com"),
   title: {
-    default: "Totthobox - আপনার প্রয়োজনীয় সকল তথ্য ও সেবা এক জায়গায়",
+    default: "Totthobox - প্রয়োজনীয় সকল তথ্য ও সেবা এক জায়গায়",
     template: "%s | Totthobox",
   },
   description:
     "Totthobox হলো একটি আধুনিক ডিজিটাল ইনফরমেশন ও ইউটিলিটি সার্ভিস প্ল্যাটফর্ম। প্রয়োজনীয় সকল তথ্য ও সেবা সহজে পেতে ভিজিট করুন।",
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: "Totthobox",
+    locale: "bn_BD",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/og-image.png"],
+  },
 };
 
 // app/layout.tsx
@@ -45,17 +56,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html 
-      lang="bn" 
-      suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} ${notoBengali.variable}`}
-    >
-      <head />
-      {/* body ট্যাগে suppressHydrationWarning যুক্ত করা হয়েছে */}
-      <body
-        suppressHydrationWarning
-        className="min-h-screen dark:bg-zinc-800 dark:text-white antialiased"
-      >
+    <html
+  lang="bn"
+  suppressHydrationWarning
+  className={`${geistSans.variable} ${geistMono.variable} ${notoBengali.variable}`}
+>
+  <head />
+  <body
+    suppressHydrationWarning
+    className="min-h-screen dark:bg-zinc-800 antialiased"
+  >
         <TagManager />
         <AppProviders>
           {children}

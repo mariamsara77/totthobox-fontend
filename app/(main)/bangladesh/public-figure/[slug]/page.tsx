@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
 import PersonShowClient from "./PersonShowClient";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -14,7 +15,12 @@ async function getPerson(slug: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const person = await getPerson(slug);
-  if (!person) return { title: "প্রোফাইল পাওয়া যায়নি | তথ্যবক্স" };
+  if (!person) {
+    return {
+      title: "প্রোফাইল পাওয়া যায়নি | তথ্যবক্স",
+      robots: { index: false, follow: false },
+    };
+  }
 
   const title = `${person.name} | প্রোফাইল আর্কাইভ | তথ্যবক্স`;
   const description = (person.bio || `${person.name} এর জীবনবৃত্তান্ত।`)
@@ -40,11 +46,7 @@ export default async function PersonShowPage({ params }: Props) {
   const { slug } = await params;
   const person = await getPerson(slug);
   if (!person) {
-    return (
-      <div className="max-w-2xl mx-auto p-4 text-center text-zinc-400">
-        প্রোফাইল পাওয়া যায়নি
-      </div>
-    );
+    notFound();
   }
   return <PersonShowClient person={person} />;
 }

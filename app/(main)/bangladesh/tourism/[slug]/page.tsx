@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
 import TourismShowClient from "./TourismShowClient";
 
 type Props = {
@@ -20,7 +21,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const item = await getTourism(slug);
 
   if (!item) {
-    return { title: "স্থান পাওয়া যায়নি | তথ্যবক্স" };
+    return {
+      title: "স্থান পাওয়া যায়নি | তথ্যবক্স",
+      robots: { index: false, follow: false },
+    };
   }
 
   const title = `${item.title} | বাংলাদেশের পর্যটন কেন্দ্র | তথ্যবক্স`;
@@ -51,11 +55,7 @@ export default async function TourismShowPage({ params }: Props) {
   const item = await getTourism(slug);
 
   if (!item) {
-    return (
-      <div className="max-w-2xl mx-auto p-4 text-center text-zinc-400">
-        স্থান পাওয়া যায়নি
-      </div>
-    );
+    notFound();
   }
 
   return <TourismShowClient tourism={item} />;

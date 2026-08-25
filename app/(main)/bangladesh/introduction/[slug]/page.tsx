@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
 import IntroductionShowClient from "./IntroductionShowClient";
 
 type Props = {
@@ -20,7 +21,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const intro = await getIntro(slug);
 
   if (!intro) {
-    return { title: "তথ্য পাওয়া যায়নি | তথ্যবক্স" };
+    return {
+      title: "তথ্য পাওয়া যায়নি | তথ্যবক্স",
+      robots: { index: false, follow: false },
+    };
   }
 
   const title = `${intro.title} | বাংলাদেশের পরিচিতি | তথ্যবক্স`;
@@ -51,11 +55,7 @@ export default async function IntroductionShowPage({ params }: Props) {
   const intro = await getIntro(slug);
 
   if (!intro) {
-    return (
-      <div className="max-w-2xl mx-auto p-4 text-center text-zinc-400">
-        তথ্য পাওয়া যায়নি
-      </div>
-    );
+    notFound();
   }
 
   // শুধু এটা — InteractiveActions Client-এর ভিতরে যাবে

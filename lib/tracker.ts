@@ -170,6 +170,8 @@ class VisitorTracker {
 
     this.scheduleSend(() => {
       const params = new URLSearchParams(window.location.search);
+      const trackedUrl = new URL(window.location.href);
+      trackedUrl.searchParams.delete('token');
 
       this.send(`${API_BASE}/api/tracking/event`, {
         category: 'page',
@@ -178,7 +180,7 @@ class VisitorTracker {
         session_id: this.sessionId,
         payload: {
           path: currentPath,
-          url: window.location.href,
+          url: trackedUrl.toString(),
           referrer: document.referrer || null,
           title: document.title || null,
           route_name: routeName || null,

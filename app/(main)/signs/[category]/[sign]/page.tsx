@@ -26,7 +26,7 @@ async function getItem(category: string, sign: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category, sign } = await params;
   const data = await getItem(category, sign);
-  if (!data) return { title: "পৃষ্ঠা পাওয়া যায়নি" };
+  if (!data) return { title: "পৃষ্ঠা পাওয়া যায়নি", robots: { index: false, follow: false } };
 
   const item = data.item;
   const cat = data.category;

@@ -2,14 +2,11 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Noto_Sans_Bengali } from "next/font/google";
 import NavbarHeader from "@/components/NavbarHeader";
 import Footer from "@/components/Footer";
-import { SidebarProvider } from "@/context/SidebarContext";
-import { SettingsModalProvider } from "@/context/SettingsModalContext";
-import SettingsModalWrapper from "@/components/SettingsModalWrapper";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://totthobox.com"),
   title: {
-    default: "Totthobox - আপনার প্রয়োজনীয় সকল তথ্য ও সেবা এক জায়গায়",
+    default: "Totthobox - প্রয়োজনীয় সকল তথ্য ও সেবা এক জায়গায়",
     template: "%s | Totthobox",
   },
   description:
@@ -23,18 +20,15 @@ export default function HomeLayout({
 }>) {
   return (
     <div>
-        <SidebarProvider>
-          <div className="flex min-h-screen">
-            <div className="flex min-h-screen flex-1 flex-col">
-              <div className="sticky top-0 z-50">
-                <NavbarHeader />
-              </div>
-              <main className="flex-1 w-full">{children}</main>
-              <Footer />
-            </div>
+      <div className="flex min-h-screen">
+        <div className="flex min-h-screen flex-1 flex-col">
+          <div className="sticky top-0 z-50">
+            <NavbarHeader />
           </div>
-          <SettingsModalWrapper />
-        </SidebarProvider>
+          <main className="flex-1 w-full">{children}</main>
+          <Footer />
+        </div>
+      </div>
     </div>
   );
 }

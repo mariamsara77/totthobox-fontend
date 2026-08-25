@@ -22,6 +22,8 @@ export async function generateMetadata({
       title: `"${search.slice(0, 40)}" — দেশের তথ্য | ${site}`,
       description: `"${search}" সম্পর্কিত দেশের রাজধানী, জনসংখ্যা, আয়তন — ${site}।`,
       keywords: `${search}, দেশের তালিকা, রাজধানী, জনসংখ্যা, ${site}`,
+      robots: { index: false, follow: true },
+      alternates: { canonical: "/international/all-country" },
       openGraph: {
         title: `"${search.slice(0, 40)}" — দেশের তথ্য | ${site}`,
         description: `"${search}" সম্পর্কিত দেশের রাজধানী, জনসংখ্যা, আয়তন — ${site}।`,
@@ -35,6 +37,8 @@ export async function generateMetadata({
       title: `${regionFilter} অঞ্চলের দেশসমূহ — রাজধানী ও তথ্য | ${site}`,
       description: `${regionFilter} অঞ্চলের দেশের রাজধানী, জনসংখ্যা ও আন্তর্জাতিক কোড — ${site}।`,
       keywords: `${regionFilter}, দেশের তালিকা, ${regionFilter} দেশ, ${site}`,
+      robots: { index: false, follow: true },
+      alternates: { canonical: "/international/all-country" },
       openGraph: {
         title: `${regionFilter} অঞ্চলের দেশসমূহ — রাজধানী ও তথ্য | ${site}`,
         description: `${regionFilter} অঞ্চলের দেশের রাজধানী, জনসংখ্যা ও আন্তর্জাতিক কোড — ${site}।`,
@@ -55,6 +59,7 @@ export async function generateMetadata({
         "পৃথিবীর ২৫০+ দেশের রাজধানী, জনসংখ্যা, আয়তন, ভাষা ও আন্তর্জাতিক কোডসহ সম্পূর্ণ তথ্যভাণ্ডার — Totthobox।",
       images: ["/og-image.png"],
     },
+    alternates: { canonical: "/international/all-country" },
   };
 }
 

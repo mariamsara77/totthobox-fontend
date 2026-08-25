@@ -49,7 +49,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const data = await getAppData(slug);
 
-  if (!data) return { title: "অ্যাপ পাওয়া যায়নি" };
+  if (!data) return { title: "অ্যাপ পাওয়া যায়নি", robots: { index: false, follow: false } };
 
   const { app, seo } = data;
 

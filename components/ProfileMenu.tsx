@@ -57,7 +57,10 @@ export default function ProfileMenu() {
   return (
   <div className="relative" ref={dropdownRef}>
     <button
+      type="button"
       onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+      aria-label="প্রোফাইল মেনু"
+      aria-expanded={isDropdownOpen}
       className="flex items-center"
     >
       <img

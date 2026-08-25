@@ -322,6 +322,15 @@ export default function AdvancedBanglaCalendar() {
       {/* Selected Date Card */}
       <section
         onClick={() => setShowModal(true)}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            setShowModal(true);
+          }
+        }}
+        role="button"
+        tabIndex={0}
+        aria-label="তারিখ নির্বাচন করুন"
         className="rounded-2xl border border-zinc-400/25 p-4"
       >
         <div className="flex items-center justify-between">
@@ -360,7 +369,9 @@ export default function AdvancedBanglaCalendar() {
       {/* Month / Year Controls */}
       <section className="flex items-center justify-between rounded-2xl bg-zinc-400/10 p-2">
         <button
+          type="button"
           onClick={() => navigateMonth(-1)}
+          aria-label="আগের মাস"
           className="p-2 bg-zinc-400/10 hover:bg-zinc-400/25 rounded-full"
         >
           <ChevronLeft className="w-5 h-5" />
@@ -437,7 +448,9 @@ export default function AdvancedBanglaCalendar() {
         </button>
 
         <button
+          type="button"
           onClick={() => navigateMonth(1)}
+          aria-label="পরের মাস"
           className="p-2 bg-zinc-400/10 hover:bg-zinc-400/25 rounded-full"
         >
           <ChevronRight className="w-5 h-5" />
