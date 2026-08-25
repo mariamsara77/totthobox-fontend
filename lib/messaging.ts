@@ -6,6 +6,7 @@ export interface ChatUser {
   slug: string;
   email?: string | null;
   avatar?: string | null;
+  avatar_url?: string | null;
   profile_photo_url?: string | null;
   is_online?: boolean;
   status?: string | null;
@@ -56,7 +57,10 @@ export interface PaginatedMessages {
 export interface UserProfileResponse {
   success?: boolean;
   data?: {
-    profile?: ChatUser & { bio?: string | null; location?: string | null };
+    profile?: ChatUser & {
+      bio?: string | null;
+      location?: string | null;
+    };
   };
   profile?: ChatUser;
 }
@@ -69,13 +73,20 @@ export async function getOnlineUsers() {
   return apiFetch<ChatUser[]>("/messages/online");
 }
 
-/** User routes use Laravel's configured slug route key. */
+/** Laravel resolves the {user} binding by the User model's slug route key. */
 export async function getMessages(userSlug: string, page = 1, perPage = 30) {
-  return apiFetch<PaginatedMessages>(`/messages/${encodeURIComponent(userSlug)}?page=${page}&per_page=${perPage}`);
+  return apiFetch<PaginatedMessages>(
+    `/messages/${encodeURIComponent(userSlug)}?page=${page}&per_page=${perPage}`,
+  );
 }
 
-/** receiver_id is intentionally the database ID; only URL route parameters use slug. */
-export async function sendMessage(userId: number, message: string, attachment?: File | null, parentId?: number | null) {
+/** The message payload intentionally uses the database ID for receiver_id. */
+export async function sendMessage(
+  userId: number,
+  message: string,
+  attachment?: File | null,
+  parentId?: number | null,
+) {
   const form = new FormData();
   form.append("receiver_id", String(userId));
   if (message.trim()) form.append("message", message.trim());
@@ -89,7 +100,10 @@ export async function sendMessage(userId: number, message: string, attachment?: 
 }
 
 export async function markMessagesAsRead(userSlug: string) {
-  return apiFetch<{ message: string }>(`/messages/${encodeURIComponent(userSlug)}/read`, { method: "POST" });
+  return apiFetch<{ message: string }>(
+    `/messages/${encodeURIComponent(userSlug)}/read`,
+    { method: "POST" },
+  );
 }
 
 export async function editMessage(messageId: number, message: string) {
@@ -104,17 +118,22 @@ export async function deleteMessage(messageId: number) {
 }
 
 export async function getBlockStatus(userSlug: string) {
-  return apiFetch<{ blocked?: boolean; is_blocked?: boolean }>(`/users/${encodeURIComponent(userSlug)}/block-status`);
+  return apiFetch<{ blocked?: boolean; is_blocked?: boolean }>(
+    `/users/${encodeURIComponent(userSlug)}/block-status`,
+  );
 }
 
 export async function toggleBlock(userSlug: string) {
-  return apiFetch<{ blocked?: boolean; is_blocked?: boolean; message?: string }>(`/users/${encodeURIComponent(userSlug)}/block`, {
-    method: "POST",
-  });
+  return apiFetch<{ blocked?: boolean; is_blocked?: boolean; message?: string }>(
+    `/users/${encodeURIComponent(userSlug)}/block`,
+    { method: "POST" },
+  );
 }
 
 export async function getUserProfileBySlug(slug: string) {
-  return apiFetch<UserProfileResponse>(`/users/${encodeURIComponent(slug)}/profile`);
+  return apiFetch<UserProfileResponse>(
+    `/users/${encodeURIComponent(slug)}/profile`,
+  );
 }
 
 export function getMediaUrl(media?: MessageMedia | null) {
@@ -136,6 +155,9 @@ export function isAudioMedia(media?: MessageMedia | null) {
 export function formatFileSize(bytes?: number | null) {
   if (!bytes || bytes <= 0) return "ফাইল";
   const units = ["B", "KB", "MB", "GB"];
-  const index = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+  const index = Math.min(
+    Math.floor(Math.log(bytes) / Math.log(1024)),
+    units.length - 1,
+  );
   return `${(bytes / 1024 ** index).toFixed(index === 0 ? 0 : 1)} ${units[index]}`;
 }
