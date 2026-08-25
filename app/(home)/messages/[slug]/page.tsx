@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import MessagingShell from "@/components/messaging/MessagingShell";
+import ChatApp from "@/components/messaging/ChatApp";
 
 export const metadata: Metadata = {
   title: "চ্যাট",
@@ -12,5 +12,5 @@ export default async function DirectMessagePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  return <MessagingShell targetSlug={slug} />;
+  return <ChatApp targetSlug={slug} />;
 }
