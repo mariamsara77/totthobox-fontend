@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import "./ai-chat.css";
 import AiChatShell from "@/components/ai/AiChatShell";
 
