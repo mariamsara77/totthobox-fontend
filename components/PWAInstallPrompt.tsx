@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 
 interface BeforeInstallPromptEvent extends Event {
@@ -85,7 +86,13 @@ export default function PWAInstallPrompt() {
     >
       <div className="mx-auto flex max-w-lg items-center gap-3 rounded-2xl border border-zinc-200 bg-white/95 p-3 shadow-2xl backdrop-blur dark:border-zinc-700 dark:bg-zinc-900/95">
         <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-800">
-          <img src="/icons/icon-192.png" alt="" width="44" height="44" className="h-full w-full object-cover" />
+          <Image
+            src="/icons/icon-192.png"
+            alt=""
+            width={44}
+            height={44}
+            className="h-full w-full object-cover"
+          />
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold">Totthobox অ্যাপ ইনস্টল করুন</p>
