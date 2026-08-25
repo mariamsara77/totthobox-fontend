@@ -58,6 +58,7 @@ export interface UserProfileResponse {
   success?: boolean;
   data?: {
     profile?: ChatUser & {
+      avatar?: string | null;
       bio?: string | null;
       location?: string | null;
     };
@@ -65,19 +66,41 @@ export interface UserProfileResponse {
   profile?: ChatUser;
 }
 
+function normalizeUser(user: ChatUser): ChatUser {
+  return {
+    ...user,
+    avatar: user.avatar || user.avatar_url || user.profile_photo_url || null,
+  };
+}
+
+function normalizeMessage(message: ChatMessage): ChatMessage {
+  return {
+    ...message,
+    sender: message.sender ? normalizeUser(message.sender) : message.sender,
+    receiver: message.receiver ? normalizeUser(message.receiver) : message.receiver,
+  };
+}
+
 export async function getChatUsers() {
-  return apiFetch<ChatUser[]>("/messages/users");
+  const users = await apiFetch<ChatUser[]>("/messages/users");
+  return (Array.isArray(users) ? users : []).map(normalizeUser);
 }
 
 export async function getOnlineUsers() {
-  return apiFetch<ChatUser[]>("/messages/online");
+  const users = await apiFetch<ChatUser[]>("/messages/online");
+  return (Array.isArray(users) ? users : []).map(normalizeUser);
 }
 
 /** Laravel resolves the {user} binding by the User model's slug route key. */
 export async function getMessages(userSlug: string, page = 1, perPage = 30) {
-  return apiFetch<PaginatedMessages>(
+  const payload = await apiFetch<PaginatedMessages>(
     `/messages/${encodeURIComponent(userSlug)}?page=${page}&per_page=${perPage}`,
   );
+
+  return {
+    ...payload,
+    data: Array.isArray(payload.data) ? payload.data.map(normalizeMessage) : [],
+  };
 }
 
 /** The message payload intentionally uses the database ID for receiver_id. */
@@ -93,10 +116,12 @@ export async function sendMessage(
   if (parentId) form.append("parent_id", String(parentId));
   if (attachment) form.append("attachment", attachment);
 
-  return apiFetch<ChatMessage>("/messages", {
+  const sent = await apiFetch<ChatMessage>("/messages", {
     method: "POST",
     body: form,
   });
+
+  return normalizeMessage(sent);
 }
 
 export async function markMessagesAsRead(userSlug: string) {
@@ -107,10 +132,11 @@ export async function markMessagesAsRead(userSlug: string) {
 }
 
 export async function editMessage(messageId: number, message: string) {
-  return apiFetch<ChatMessage>(`/messages/${messageId}`, {
+  const updated = await apiFetch<ChatMessage>(`/messages/${messageId}`, {
     method: "PUT",
     body: JSON.stringify({ message: message.trim() }),
   });
+  return normalizeMessage(updated);
 }
 
 export async function deleteMessage(messageId: number) {
@@ -131,9 +157,18 @@ export async function toggleBlock(userSlug: string) {
 }
 
 export async function getUserProfileBySlug(slug: string) {
-  return apiFetch<UserProfileResponse>(
+  const response = await apiFetch<UserProfileResponse>(
     `/users/${encodeURIComponent(slug)}/profile`,
   );
+
+  if (response.data?.profile) {
+    response.data.profile = normalizeUser(response.data.profile);
+  }
+  if (response.profile) {
+    response.profile = normalizeUser(response.profile);
+  }
+
+  return response;
 }
 
 export function getMediaUrl(media?: MessageMedia | null) {
