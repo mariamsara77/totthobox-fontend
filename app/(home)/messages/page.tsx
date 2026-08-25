@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import MessagingShell from "@/components/messaging/MessagingShell";
+import ChatApp from "@/components/messaging/ChatApp";
 
 export const metadata: Metadata = {
   title: "মেসেজ",
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function MessagesPage() {
-  return <MessagingShell />;
+  return <ChatApp />;
 }
