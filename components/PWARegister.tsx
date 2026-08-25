@@ -7,6 +7,7 @@ export default function PWARegister() {
     if (!("serviceWorker" in navigator)) return;
 
     let registration: ServiceWorkerRegistration | undefined;
+    let disposed = false;
 
     const register = async () => {
       try {
@@ -15,7 +16,21 @@ export default function PWARegister() {
           updateViaCache: "none",
         });
 
-        registration.update().catch(() => undefined);
+        if (disposed) return;
+
+        const checkForUpdate = () => registration?.update().catch(() => undefined);
+        checkForUpdate();
+
+        const onVisibilityChange = () => {
+          if (document.visibilityState === "visible") checkForUpdate();
+        };
+
+        const onControllerChange = () => {
+          if (!disposed) window.location.reload();
+        };
+
+        document.addEventListener("visibilitychange", onVisibilityChange);
+        navigator.serviceWorker.addEventListener("controllerchange", onControllerChange, { once: true });
 
         registration.addEventListener("updatefound", () => {
           const worker = registration?.installing;
@@ -27,6 +42,10 @@ export default function PWARegister() {
             }
           });
         });
+
+        return () => {
+          document.removeEventListener("visibilitychange", onVisibilityChange);
+        };
       } catch (error) {
         if (process.env.NODE_ENV !== "production") {
           console.warn("PWA service worker registration failed:", error);
@@ -34,7 +53,12 @@ export default function PWARegister() {
       }
     };
 
-    register();
+    const cleanupPromise = register();
+
+    return () => {
+      disposed = true;
+      cleanupPromise.then((cleanup) => cleanup?.()).catch(() => undefined);
+    };
   }, []);
 
   return null;
