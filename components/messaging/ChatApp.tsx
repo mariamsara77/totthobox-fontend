@@ -16,6 +16,7 @@ import {
   getMessages,
   getUserProfileBySlug,
   markMessagesAsRead,
+  searchUsers,
   sendMessage,
   toggleBlock,
 } from "@/lib/messaging";
@@ -39,21 +40,16 @@ function lastMessage(user: ChatUser) {
 function MessageBubble({ message, own, onReply, onEdit, onDelete }: { message: ChatMessage; own: boolean; onReply: () => void; onEdit: () => void; onDelete: () => void }) {
   const media = message.media || [];
   const images = media.filter(m => m.mime_type?.startsWith("image/") && (m.original_url || m.url || m.preview_url));
-  return <div className={`group flex w-full ${own ? "justify-end" : "justify-start"}`}>
-    <div className={`max-w-[min(78%,620px)] ${own ? "items-end" : "items-start"} flex flex-col gap-1`}>
-      {message.parent ? <button type="button" onClick={onReply} className="max-w-full rounded-lg border-l-2 border-emerald-500 bg-zinc-100 px-3 py-1.5 text-left text-xs text-zinc-500 dark:bg-zinc-900 dark:text-zinc-400"><span className="font-semibold text-emerald-600">{message.parent.sender?.name || "রিপ্লাই"}</span><span className="ml-1 line-clamp-2">{message.parent.message || "সংযুক্তি"}</span></button> : null}
-      <div className={`relative rounded-2xl px-3.5 py-2.5 shadow-sm ${own ? "rounded-br-md bg-emerald-600 text-white" : "rounded-bl-md border border-zinc-200 bg-white text-zinc-800 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"}`}>
-        {images.length ? <MediaGallery media={images.map(m => ({ url: m.original_url || m.url || m.preview_url || "", name: m.name || m.file_name || "image" }))} /> : null}
-        {message.message ? <p className="whitespace-pre-wrap break-words text-sm leading-6">{message.message}</p> : null}
-        {media.filter(m => !m.mime_type?.startsWith("image/")).map(m => <a key={m.id} href={m.original_url || m.url || m.preview_url || "#"} target="_blank" rel="noreferrer" className="mt-1 flex items-center gap-2 rounded-xl bg-black/5 px-3 py-2 text-xs dark:bg-white/5"><FileText className="size-4" /><span className="max-w-52 truncate">{m.name || m.file_name || "ফাইল"}</span></a>)}
-        <div className={`mt-1 text-[10px] ${own ? "text-emerald-100" : "text-zinc-400"}`}>{time(message.created_at)}{message.updated_at && message.updated_at !== message.created_at ? " · সম্পাদিত" : ""}</div>
-      </div>
-      <div className="flex items-center gap-1 opacity-0 transition group-hover:opacity-100 focus-within:opacity-100">
-        <button type="button" onClick={onReply} className="rounded-lg px-2 py-1 text-[11px] text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-900"><Reply className="mr-1 inline size-3" />রিপ্লাই</button>
-        {own ? <><button type="button" onClick={onEdit} className="rounded-lg px-2 py-1 text-[11px] text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-900">এডিট</button><button type="button" onClick={onDelete} className="rounded-lg px-2 py-1 text-[11px] text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30">মুছুন</button></> : null}
-      </div>
+  return <div className={`group flex w-full ${own ? "justify-end" : "justify-start"}`}><div className={`max-w-[min(78%,620px)] ${own ? "items-end" : "items-start"} flex flex-col gap-1`}>
+    {message.parent ? <button type="button" onClick={onReply} className="max-w-full rounded-lg border-l-2 border-emerald-500 bg-zinc-100 px-3 py-1.5 text-left text-xs text-zinc-500 dark:bg-zinc-900 dark:text-zinc-400"><span className="font-semibold text-emerald-600">{message.parent.sender?.name || "রিপ্লাই"}</span><span className="ml-1 line-clamp-2">{message.parent.message || "সংযুক্তি"}</span></button> : null}
+    <div className={`relative rounded-2xl px-3.5 py-2.5 shadow-sm ${own ? "rounded-br-md bg-emerald-600 text-white" : "rounded-bl-md border border-zinc-200 bg-white text-zinc-800 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"}`}>
+      {images.length ? <MediaGallery media={images.map(m => ({ url: m.original_url || m.url || m.preview_url || "", name: m.name || m.file_name || "image" }))} /> : null}
+      {message.message ? <p className="whitespace-pre-wrap break-words text-sm leading-6">{message.message}</p> : null}
+      {media.filter(m => !m.mime_type?.startsWith("image/")).map(m => <a key={m.id} href={m.original_url || m.url || m.preview_url || "#"} target="_blank" rel="noreferrer" className="mt-1 flex items-center gap-2 rounded-xl bg-black/5 px-3 py-2 text-xs dark:bg-white/5"><FileText className="size-4" /><span className="max-w-52 truncate">{m.name || m.file_name || "ফাইল"}</span></a>)}
+      <div className={`mt-1 text-[10px] ${own ? "text-emerald-100" : "text-zinc-400"}`}>{time(message.created_at)}{message.updated_at && message.updated_at !== message.created_at ? " · সম্পাদিত" : ""}</div>
     </div>
-  </div>;
+    <div className="flex items-center gap-1 opacity-0 transition group-hover:opacity-100 focus-within:opacity-100"><button type="button" onClick={onReply} className="rounded-lg px-2 py-1 text-[11px] text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-900"><Reply className="mr-1 inline size-3" />রিপ্লাই</button>{own ? <><button type="button" onClick={onEdit} className="rounded-lg px-2 py-1 text-[11px] text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-900">এডিট</button><button type="button" onClick={onDelete} className="rounded-lg px-2 py-1 text-[11px] text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30">মুছুন</button></> : null}</div>
+  </div></div>;
 }
 
 export default function ChatApp({ targetSlug }: { targetSlug?: string }) {
@@ -81,10 +77,32 @@ export default function ChatApp({ targetSlug }: { targetSlug?: string }) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const openedTargetRef = useRef<string | null>(null);
+  const searchRequestRef = useRef(0);
 
   useEffect(() => { void getChatUsers().then(setUsers).catch(e => toast.error(e instanceof Error ? e.message : "কথোপকথন লোড করা যায়নি")); }, []);
   useEffect(() => { if (!file) { setPreview(null); return; } const url = URL.createObjectURL(file); setPreview(url); return () => URL.revokeObjectURL(url); }, [file]);
-  useEffect(() => { const t = window.setTimeout(async () => { if (!query.trim()) { setPeople(users); return; } setSearching(true); try { const result = await fetch(`/api/users/search?search=${encodeURIComponent(query.trim())}`, { credentials: "include" }); if (!result.ok) throw new Error("ব্যবহারকারী খোঁজা যায়নি"); const json = await result.json(); setPeople(Array.isArray(json?.data) ? json.data : []); } catch { setPeople([]); } finally { setSearching(false); } }, 300); return () => window.clearTimeout(t); }, [query, users]);
+
+  // Existing Laravel endpoint: GET /api/users/search?search=...
+  useEffect(() => {
+    const value = query.trim();
+    const requestId = ++searchRequestRef.current;
+    const timer = window.setTimeout(async () => {
+      if (!value) { setPeople(users); setSearching(false); return; }
+      setSearching(true);
+      try {
+        const results = await searchUsers(value);
+        if (requestId === searchRequestRef.current) setPeople(results);
+      } catch (error) {
+        if (requestId === searchRequestRef.current) {
+          setPeople([]);
+          toast.error(error instanceof Error ? error.message : "ব্যবহারকারী খোঁজা যায়নি");
+        }
+      } finally {
+        if (requestId === searchRequestRef.current) setSearching(false);
+      }
+    }, 300);
+    return () => window.clearTimeout(timer);
+  }, [query, users]);
 
   const loadMessages = async (slug: string, requestedPage = 1, append = false) => { if (requestedPage === 1) setLoadingMessages(true); else setMoreLoading(true); try { const data = await getMessages(slug, requestedPage, 30); setMessages(current => append ? [...data.data, ...current] : data.data.reverse()); setPage(requestedPage); setHasMore(Boolean(data.next_page_url || requestedPage < (data.last_page || requestedPage))); } finally { setLoadingMessages(false); setMoreLoading(false); } };
   const selectUser = async (user: ChatUser) => { setSelected(user); setMobileChat(true); setPage(1); setMessages([]); setReplyTo(null); setEditing(null); try { const [blockState] = await Promise.all([getBlockStatus(user.slug), loadMessages(user.slug, 1)]); setBlocked(Boolean(blockState.blocked ?? blockState.is_blocked)); } catch (e) { toast.error(e instanceof Error ? e.message : "চ্যাট লোড করা যায়নি"); } };
@@ -95,14 +113,10 @@ export default function ChatApp({ targetSlug }: { targetSlug?: string }) {
     const openTarget = async () => {
       try {
         const fromList = users.find(user => user.slug === targetSlug);
-        const target = fromList ?? ((await getUserProfileBySlug(targetSlug)).data?.profile ?? (await getUserProfileBySlug(targetSlug)).profile);
-        if (!cancelled && target) {
-          openedTargetRef.current = targetSlug;
-          await selectUser(target);
-        }
-      } catch (e) {
-        if (!cancelled) toast.error(e instanceof Error ? e.message : "চ্যাট লোড করা যায়নি");
-      }
+        const response = fromList ? null : await getUserProfileBySlug(targetSlug);
+        const target = fromList ?? response?.data?.profile ?? response?.profile;
+        if (!cancelled && target) { openedTargetRef.current = targetSlug; await selectUser(target); }
+      } catch (e) { if (!cancelled) toast.error(e instanceof Error ? e.message : "চ্যাট লোড করা যায়নি"); }
     };
     void openTarget();
     return () => { cancelled = true; };
