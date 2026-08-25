@@ -6,11 +6,6 @@ export const metadata: Metadata = {
   description: "Totthobox-এ ব্যক্তিগত কথোপকথন।",
 };
 
-export default async function DirectMessagePage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
-  return <ChatApp targetSlug={slug} />;
+export default function DirectMessagePage() {
+  return <ChatApp />;
 }
