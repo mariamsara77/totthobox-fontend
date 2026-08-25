@@ -24,6 +24,13 @@
 .DS_Store
 *.pem
 
+# Android / TWA signing credentials
+*.keystore
+*.jks
+*.p12
+android/keystore/
+twa/keystore/
+
 # debug
 npm-debug.log*
 yarn-debug.log*
