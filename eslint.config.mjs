@@ -5,12 +5,12 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
-  
+
   // Custom Rules
   {
     rules: {
-      "no-console": ["warn", { allow: ["warn", "error"] }], // console.log দিলে ওয়ার্নিং দেবে
-      "@typescript-eslint/no-unused-vars": "warn", // অব্যবহৃত ভ্যারিয়েবলে ওয়ার্নিং
+      "no-console": ["warn", { allow: ["warn", "error"] }],
+      "@typescript-eslint/no-unused-vars": "warn",
     },
   },
 
@@ -21,6 +21,7 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     "node_modules/**",
+    "public/pdf.worker.min.mjs",
   ]),
 ]);
 
