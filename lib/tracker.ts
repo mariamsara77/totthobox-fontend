@@ -81,7 +81,12 @@ class VisitorTracker {
   }
 
   private makeId(prefix: string): string {
-    return `${prefix}${crypto.randomUUID?.() ?? `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`}`;
+    const randomId =
+      typeof crypto.randomUUID === "function"
+        ? crypto.randomUUID()
+        : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+
+    return `${prefix}${randomId}`;
   }
 
   private getId(key: string, prefix: string, useSessionStorage: boolean): string {
@@ -151,12 +156,7 @@ class VisitorTracker {
 
   private scheduleSend(fn: () => void): void {
     if (typeof window === "undefined") return;
-
-    if ("requestIdleCallback" in window) {
-      window.requestIdleCallback(fn, { timeout: 2000 });
-    } else {
-      window.setTimeout(fn, 100);
-    }
+    window.setTimeout(fn, 100);
   }
 
   public startNavigation(): void {
