@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, FileText, Loader2, Paperclip, Reply, Search, Send, ShieldBan, X } from "lucide-react";
-import { toast } from "sonner";
-import { useAuth } from "@/contexts/AuthContext";
-import { useChatLayout } from "@/components/messaging/ChatLayoutContext";
+import { toast } from "react-hot-toast";
+import { useAuth } from "@/context/AuthContext";
+import { useChatLayout } from "@/context/ChatLayoutContext";
 import MediaGallery from "@/components/MediaGallery";
 import {
   ChatMessage,
@@ -14,7 +14,6 @@ import {
   getBlockStatus,
   getChatUsers,
   getMessages,
-  getOnlineUsers,
   getUserProfileBySlug,
   markMessagesAsRead,
   sendMessage,
@@ -57,7 +56,7 @@ function MessageBubble({ message, own, onReply, onEdit, onDelete }: { message: C
   </div>;
 }
 
-export default function ChatApp() {
+export default function ChatApp({ targetSlug }: { targetSlug?: string }) {
   const { user: me, loading: authLoading } = useAuth();
   const { mobileChat, setMobileChat } = useChatLayout();
   const [users, setUsers] = useState<ChatUser[]>([]);
@@ -81,13 +80,33 @@ export default function ChatApp() {
   const [hasMore, setHasMore] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const openedTargetRef = useRef<string | null>(null);
 
   useEffect(() => { void getChatUsers().then(setUsers).catch(e => toast.error(e instanceof Error ? e.message : "কথোপকথন লোড করা যায়নি")); }, []);
   useEffect(() => { if (!file) { setPreview(null); return; } const url = URL.createObjectURL(file); setPreview(url); return () => URL.revokeObjectURL(url); }, [file]);
   useEffect(() => { const t = window.setTimeout(async () => { if (!query.trim()) { setPeople(users); return; } setSearching(true); try { const result = await fetch(`/api/users/search?search=${encodeURIComponent(query.trim())}`, { credentials: "include" }); if (!result.ok) throw new Error("ব্যবহারকারী খোঁজা যায়নি"); const json = await result.json(); setPeople(Array.isArray(json?.data) ? json.data : []); } catch { setPeople([]); } finally { setSearching(false); } }, 300); return () => window.clearTimeout(t); }, [query, users]);
 
-  const selectUser = async (user: ChatUser) => { setSelected(user); setMobileChat(true); setPage(1); setMessages([]); setReplyTo(null); setEditing(null); try { const [blockState] = await Promise.all([getBlockStatus(user.slug), loadMessages(user.slug, 1)]); setBlocked(Boolean(blockState.blocked ?? blockState.is_blocked)); } catch (e) { toast.error(e instanceof Error ? e.message : "চ্যাট লোড করা যায়নি"); } };
   const loadMessages = async (slug: string, requestedPage = 1, append = false) => { if (requestedPage === 1) setLoadingMessages(true); else setMoreLoading(true); try { const data = await getMessages(slug, requestedPage, 30); setMessages(current => append ? [...data.data, ...current] : data.data.reverse()); setPage(requestedPage); setHasMore(Boolean(data.next_page_url || requestedPage < (data.last_page || requestedPage))); } finally { setLoadingMessages(false); setMoreLoading(false); } };
+  const selectUser = async (user: ChatUser) => { setSelected(user); setMobileChat(true); setPage(1); setMessages([]); setReplyTo(null); setEditing(null); try { const [blockState] = await Promise.all([getBlockStatus(user.slug), loadMessages(user.slug, 1)]); setBlocked(Boolean(blockState.blocked ?? blockState.is_blocked)); } catch (e) { toast.error(e instanceof Error ? e.message : "চ্যাট লোড করা যায়নি"); } };
+
+  useEffect(() => {
+    if (!targetSlug || openedTargetRef.current === targetSlug) return;
+    let cancelled = false;
+    const openTarget = async () => {
+      try {
+        const target = users.find(user => user.slug === targetSlug) ?? await getUserProfileBySlug(targetSlug);
+        if (!cancelled && target) {
+          openedTargetRef.current = targetSlug;
+          await selectUser(target);
+        }
+      } catch (e) {
+        if (!cancelled) toast.error(e instanceof Error ? e.message : "চ্যাট লোড করা যায়নি");
+      }
+    };
+    void openTarget();
+    return () => { cancelled = true; };
+  }, [targetSlug, users]);
+
   useEffect(() => { if (selected) void markMessagesAsRead(selected.slug).catch(() => undefined); }, [selected, messages.length]);
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages.length]);
 
@@ -96,8 +115,8 @@ export default function ChatApp() {
   const update = async () => { if (!editing || !editText.trim()) return; try { const u = await editMessage(editing, editText); setMessages(c => c.map(m => m.id === u.id ? u : m)); setEditing(null); setEditText(""); toast.success("মেসেজ আপডেট হয়েছে"); } catch (e) { toast.error(e instanceof Error ? e.message : "মেসেজ আপডেট করা যায়নি"); } };
   const block = async () => { if (!selected?.slug || blockLoading) return; setBlockLoading(true); try { const r = await toggleBlock(selected.slug); const next = Boolean(r.blocked ?? r.is_blocked ?? !blocked); setBlocked(next); toast.success(next ? "ব্যবহারকারী ব্লক করা হয়েছে" : "ব্যবহারকারী আনব্লক করা হয়েছে"); } catch (e) { toast.error(e instanceof Error ? e.message : "অ্যাকশন সম্পন্ন হয়নি"); } finally { setBlockLoading(false); } };
 
+  const currentPeople = people.length || query ? people : users;
   if (authLoading || !me) return <div className="flex min-h-[60vh] items-center justify-center"><Loader2 className="size-6 animate-spin text-zinc-400" /></div>;
-  const currentPeople = useMemo(() => people.length || query ? people : users, [people, query, users]);
 
   return <section className="w-full py-0 sm:py-5"><div className="mx-auto w-full max-w-7xl px-0 sm:px-4"><div className="grid h-[calc(100svh-4rem)] min-h-0 w-full grid-cols-1 overflow-hidden border-y border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950 sm:h-[min(760px,calc(100svh-6rem))] sm:min-h-[620px] sm:rounded-2xl sm:border sm:shadow-sm md:grid-cols-[minmax(280px,340px)_minmax(0,1fr)]">
     <aside className={`${mobileChat ? "hidden md:flex" : "flex"} min-h-0 min-w-0 flex-col border-r border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950`}><div className="shrink-0 border-b border-zinc-200 px-4 py-4 dark:border-zinc-800"><div className="mb-3 flex items-center justify-between gap-3"><div><h1 className="text-lg font-bold tracking-tight text-zinc-900 dark:text-white">মেসেজ</h1><p className="mt-0.5 text-xs text-zinc-500">আপনার ব্যক্তিগত কথোপকথন</p></div><span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-medium text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300">{users.length} জন</span></div><label className="flex h-10 items-center gap-2 rounded-xl border border-zinc-200 bg-zinc-50 px-3 transition focus-within:border-emerald-400 focus-within:bg-white dark:border-zinc-800 dark:bg-zinc-900 dark:focus-within:bg-zinc-950"><Search className="size-4 shrink-0 text-zinc-400" /><input value={query} onChange={e => setQuery(e.target.value)} placeholder="নাম, ইমেইল বা ব্যবহারকারী খুঁজুন..." className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-zinc-400" /></label></div><div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">{searching ? <div className="flex justify-center py-10"><Loader2 className="size-5 animate-spin text-zinc-400" /></div> : currentPeople.length ? <div className="py-1">{currentPeople.map(u => { const last = lastMessage(u); const active = selected?.id === u.id; return <button key={u.id} type="button" onClick={() => void selectUser(u)} className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors ${active ? "bg-emerald-50/80 dark:bg-emerald-950/20" : "hover:bg-zinc-50 dark:hover:bg-zinc-900/70"}`}><Avatar user={u} /><span className="min-w-0 flex-1"><span className="flex items-center justify-between gap-2"><span className="truncate text-sm font-semibold text-zinc-800 dark:text-zinc-100">{u.name}</span><span className="shrink-0 text-[10px] text-zinc-400">{last ? time(last.created_at) : ""}</span></span><span className="mt-0.5 block truncate text-xs text-zinc-500 dark:text-zinc-400">{last?.message || (last?.media?.length ? "সংযুক্তি" : "নতুন কথোপকথন শুরু করুন")}</span></span></button>; })}</div> : <div className="px-6 py-16 text-center"><Search className="mx-auto mb-3 size-6 text-zinc-300" /><p className="text-sm font-medium text-zinc-600 dark:text-zinc-300">{query ? "কোনো ব্যবহারকারী পাওয়া যায়নি" : "কোনো কথোপকথন নেই"}</p></div>}</div></aside>
