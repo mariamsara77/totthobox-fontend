@@ -1,50 +1,48 @@
-// app/api/tracking/event/route.ts
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
+
+type TrackingPayload = Record<string, unknown>;
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
+    const body: unknown = await req.json();
 
-    const {
-      category = 'interaction',
-      action = 'click',
-      js_visitor_id,
-      session_id,
-      payload = {},
-    } = body;
+    if (!isRecord(body)) {
+      return NextResponse.json(
+        { status: "error", message: "Invalid tracking payload." },
+        { status: 400 },
+      );
+    }
 
-    // ============================================
-    // এখানে তোমার DB লজিক লিখবে
-    // উদাহরণ (Prisma):
-    //
-    // const visitor = await getOrCreateVisitor({
-    //   jsVisitorId: js_visitor_id,
-    //   ip: req.ip || req.headers.get('x-forwarded-for'),
-    //   userAgent: req.headers.get('user-agent'),
-    // });
-    //
-    // if (category === 'system') {
-    //   await updateVisitorSpecs(visitor, payload);
-    // }
-    //
-    // await prisma.trackingEvent.create({
-    //   data: {
-    //     visitorId: visitor.id,
-    //     category,
-    //     action,
-    //     label: payload.label || null,
-    //     payload,
-    //     sessionId: session_id,
-    //   },
-    // });
-    // ============================================
+    const category = typeof body.category === "string" ? body.category : null;
+    const action = typeof body.action === "string" ? body.action : null;
+    const visitorId =
+      typeof body.js_visitor_id === "string" ? body.js_visitor_id : null;
+    const sessionId =
+      typeof body.session_id === "string" ? body.session_id : null;
+    const payload = isRecord(body.payload)
+      ? (body.payload as TrackingPayload)
+      : {};
 
-    console.log('[Tracking Event]', { category, action, js_visitor_id, payload });
+    if (!category || !action || !visitorId || !sessionId) {
+      return NextResponse.json(
+        { status: "error", message: "Required tracking fields are missing." },
+        { status: 400 },
+      );
+    }
 
-    return NextResponse.json({ status: 'success' });
-  } catch (error) {
-    console.error('Tracking Error:', error);
-    // সবসময় 200 দাও যাতে ক্লায়েন্ট রিট্রাই না করে
-    return NextResponse.json({ status: 'error' }, { status: 200 });
+    // This endpoint intentionally accepts tracking data without blocking the UI.
+    // Persistence belongs to the configured analytics/backend service.
+    void payload;
+
+    return NextResponse.json({ status: "success" }, { status: 202 });
+  } catch {
+    return NextResponse.json(
+      { status: "error", message: "Unable to process tracking event." },
+      { status: 400 },
+    );
   }
 }
