@@ -94,7 +94,8 @@ export default function ChatApp({ targetSlug }: { targetSlug?: string }) {
     let cancelled = false;
     const openTarget = async () => {
       try {
-        const target = users.find(user => user.slug === targetSlug) ?? await getUserProfileBySlug(targetSlug);
+        const fromList = users.find(user => user.slug === targetSlug);
+        const target = fromList ?? ((await getUserProfileBySlug(targetSlug)).data?.profile ?? (await getUserProfileBySlug(targetSlug)).profile);
         if (!cancelled && target) {
           openedTargetRef.current = targetSlug;
           await selectUser(target);
