@@ -20,7 +20,7 @@ export default function FacebookCallbackContent() {
 
     if (token) {
       toast.success("সফলভাবে লগইন হয়েছে!");
-      window.location.assign(`/api/auth/session?token=${encodeURIComponent(token)}`);
+      window.location.href = `/api/auth/session?token=${encodeURIComponent(token)}`;
     } else {
       toast.error("টোকেন পাওয়া যায়নি");
       router.replace("/login");
