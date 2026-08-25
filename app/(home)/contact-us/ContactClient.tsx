@@ -15,7 +15,6 @@ export default function ContactClient() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form Submitted:", formData);
   };
 
   return (
@@ -194,7 +193,7 @@ export default function ContactClient() {
               icon: Mail,
             },
           ].map((item) => {
-            const IconComponent = item.icon; // ডাইনামিক কম্পোনেন্ট ভ্যারিয়েবল
+            const IconComponent = item.icon;
 
             return (
               <a
