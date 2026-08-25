@@ -1,25 +1,47 @@
 // lib/tracker.ts
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://admin.totthobox.com';
 
-type TrackPayload = Record<string, any>;
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_URL || "https://admin.totthobox.com";
+
+type TrackPayload = Record<string, unknown>;
+
+type DeviceNavigator = Navigator & {
+  deviceMemory?: number;
+  standalone?: boolean;
+};
+
+type QueuedTrackingItem = {
+  url: string;
+  data: TrackingEventPayload;
+  ts: number;
+};
+
+type TrackingEventPayload = {
+  category: string;
+  action: string;
+  js_visitor_id: string;
+  session_id: string;
+  payload: TrackPayload;
+};
 
 class VisitorTracker {
-  private visitorId: string;
-  private sessionId: string;
-  private systemPayload: Record<string, any> = {};
+  private readonly visitorId: string;
+  private readonly sessionId: string;
+  private readonly systemPayload: TrackPayload;
   private initialized = false;
-  private lastPageView = '';
+  private lastPageView = "";
   private lastPageViewTime = 0;
   private navigationStart = 0;
   private isNavigating = false;
 
   constructor() {
-    this.visitorId = this.getId('visitor_id', 'vis_', false);
-    this.sessionId = this.getId('session_id', 'ses_', true);
+    this.visitorId = this.getId("visitor_id", "vis_", false);
+    this.sessionId = this.getId("session_id", "ses_", true);
 
-    // সিস্টেম ইনফো একবারই তৈরি
+    const nav = navigator as DeviceNavigator;
+
     this.systemPayload = {
-      ram: (navigator as any).deviceMemory ?? null,
+      ram: nav.deviceMemory ?? null,
       cpu_cores: navigator.hardwareConcurrency ?? null,
       screen_res: `${screen.width}x${screen.height}`,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -28,21 +50,30 @@ class VisitorTracker {
   }
 
   private detectPwa(): boolean {
-    if (typeof window === 'undefined') return false;
+    if (typeof window === "undefined") return false;
+
+    const nav = window.navigator as DeviceNavigator;
+
     return (
-      window.matchMedia('(display-mode: standalone)').matches ||
-      (window.navigator as any).standalone === true ||
-      document.referrer.includes('android-app://')
+      window.matchMedia("(display-mode: standalone)").matches ||
+      nav.standalone === true ||
+      document.referrer.includes("android-app://")
     );
   }
 
-  private storage(key: string, val?: string, session = false): string | null {
+  private storage(
+    key: string,
+    value?: string,
+    useSessionStorage = false,
+  ): string | null {
     try {
-      const store = session ? sessionStorage : localStorage;
-      if (val !== undefined) {
-        store.setItem(key, val);
-        return val;
+      const store = useSessionStorage ? sessionStorage : localStorage;
+
+      if (value !== undefined) {
+        store.setItem(key, value);
+        return value;
       }
+
       return store.getItem(key);
     } catch {
       return null;
@@ -50,34 +81,48 @@ class VisitorTracker {
   }
 
   private makeId(prefix: string): string {
+    return `${prefix}${crypto.randomUUID?.() ?? `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`}`;
+  }
+
+  private getId(key: string, prefix: string, useSessionStorage: boolean): string {
+    const existingId = this.storage(key, undefined, useSessionStorage);
+
+    if (existingId) return existingId;
+
+    const id = this.makeId(prefix);
+    this.storage(key, id, useSessionStorage);
+    return id;
+  }
+
+  private queueOffline(url: string, data: TrackingEventPayload): void {
+    try {
+      const raw = this.storage("tracking_queue");
+      const parsed: unknown = raw ? JSON.parse(raw) : [];
+      const queue: QueuedTrackingItem[] = Array.isArray(parsed)
+        ? parsed.filter(this.isQueuedTrackingItem)
+        : [];
+
+      queue.push({ url, data, ts: Date.now() });
+      this.storage("tracking_queue", JSON.stringify(queue.slice(-25)));
+    } catch {
+      // Tracking must never affect the application UI.
+    }
+  }
+
+  private isQueuedTrackingItem(value: unknown): value is QueuedTrackingItem {
+    if (!value || typeof value !== "object") return false;
+
+    const item = value as Record<string, unknown>;
     return (
-      prefix +
-      Math.random().toString(36).slice(2, 10) +
-      Date.now().toString(36)
+      typeof item.url === "string" &&
+      typeof item.ts === "number" &&
+      !!item.data &&
+      typeof item.data === "object"
     );
   }
 
-  private getId(key: string, prefix: string, session: boolean): string {
-    let id = this.storage(key, undefined, session);
-    if (!id) {
-      id = this.makeId(prefix);
-      this.storage(key, id, session);
-    }
-    return id!;
-  }
-
-  private queueOffline(url: string, data: any) {
-    try {
-      const existing = JSON.parse(this.storage('tracking_queue') || '[]');
-      existing.push({ url, data, ts: Date.now() });
-      // শুধু শেষ ২৫টা রাখি (স্টোরেজ চাপ কম রাখতে)
-      this.storage('tracking_queue', JSON.stringify(existing.slice(-25)));
-    } catch {}
-  }
-
-  /** সবচেয়ে হালকা পাঠানোর উপায় */
-  private send(url: string, data: any) {
-    if (typeof navigator === 'undefined') return;
+  private send(url: string, data: TrackingEventPayload): void {
+    if (typeof navigator === "undefined") return;
 
     if (!navigator.onLine) {
       this.queueOffline(url, data);
@@ -86,43 +131,44 @@ class VisitorTracker {
 
     const json = JSON.stringify(data);
 
-    // ১. sendBeacon (সবচেয়ে ভালো – UI ব্লক করে না)
     if (navigator.sendBeacon) {
-      const blob = new Blob([json], { type: 'application/json' });
+      const blob = new Blob([json], { type: "application/json" });
       if (navigator.sendBeacon(url, blob)) return;
     }
 
-    // ২. fallback fetch (keepalive + low priority)
-    fetch(url, {
-      method: 'POST',
+    void fetch(url, {
+      method: "POST",
       keepalive: true,
-      credentials: 'include',
+      credentials: "include",
       headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        'X-Requested-With': 'XMLHttpRequest',
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "X-Requested-With": "XMLHttpRequest",
       },
       body: json,
-      // @ts-ignore
-      priority: 'low',
     }).catch(() => this.queueOffline(url, data));
   }
 
-  /** Idle সময়ে পাঠায় – মেইন থ্রেড ব্লক করে না */
-  private scheduleSend(fn: () => void) {
-    if ('requestIdleCallback' in window) {
-      (window as any).requestIdleCallback(fn, { timeout: 2000 });
+  private scheduleSend(fn: () => void): void {
+    if (typeof window === "undefined") return;
+
+    if ("requestIdleCallback" in window) {
+      window.requestIdleCallback(fn, { timeout: 2000 });
     } else {
-      setTimeout(fn, 100);
+      window.setTimeout(fn, 100);
     }
   }
 
-  public startNavigation() {
+  public startNavigation(): void {
     this.navigationStart = performance.now();
     this.isNavigating = true;
   }
 
-  public trackEvent(category: string, action: string, payload: TrackPayload = {}) {
+  public trackEvent(
+    category: string,
+    action: string,
+    payload: TrackPayload = {},
+  ): void {
     this.scheduleSend(() => {
       this.send(`${API_BASE}/api/tracking/event`, {
         category,
@@ -134,14 +180,16 @@ class VisitorTracker {
     });
   }
 
-  public trackPageView(path?: string, routeName?: string) {
-    if (typeof window === 'undefined') return;
+  public trackPageView(path?: string, routeName?: string): void {
+    if (typeof window === "undefined") return;
 
     const currentPath = path || window.location.pathname;
     const now = Date.now();
 
-    // একই পেজ ৮ সেকেন্ডের মধ্যে আবার ট্র্যাক করব না
-    if (currentPath === this.lastPageView && now - this.lastPageViewTime < 8000) {
+    if (
+      currentPath === this.lastPageView &&
+      now - this.lastPageViewTime < 8000
+    ) {
       return;
     }
 
@@ -153,29 +201,28 @@ class VisitorTracker {
     if (this.isNavigating && this.navigationStart > 0) {
       loadTimeMs = Math.round(performance.now() - this.navigationStart);
     } else {
-      const nav = performance.getEntriesByType('navigation')[0] as
+      const nav = performance.getEntriesByType("navigation")[0] as
         | PerformanceNavigationTiming
         | undefined;
+
       if (nav && nav.loadEventEnd > 0) {
         loadTimeMs = Math.round(nav.loadEventEnd - nav.startTime);
       }
     }
 
-    // রিসেট
     this.isNavigating = false;
     this.navigationStart = 0;
 
-    // অতিরিক্ত বড় ভ্যালু ফিল্টার
     if (loadTimeMs > 30000) loadTimeMs = 0;
 
     this.scheduleSend(() => {
       const params = new URLSearchParams(window.location.search);
       const trackedUrl = new URL(window.location.href);
-      trackedUrl.searchParams.delete('token');
+      trackedUrl.searchParams.delete("token");
 
       this.send(`${API_BASE}/api/tracking/event`, {
-        category: 'page',
-        action: 'view',
+        category: "page",
+        action: "view",
         js_visitor_id: this.visitorId,
         session_id: this.sessionId,
         payload: {
@@ -184,9 +231,9 @@ class VisitorTracker {
           referrer: document.referrer || null,
           title: document.title || null,
           route_name: routeName || null,
-          utm_source: params.get('utm_source'),
-          utm_medium: params.get('utm_medium'),
-          utm_campaign: params.get('utm_campaign'),
+          utm_source: params.get("utm_source"),
+          utm_medium: params.get("utm_medium"),
+          utm_campaign: params.get("utm_campaign"),
           is_pwa: this.detectPwa(),
           load_time_ms: loadTimeMs,
           ...this.systemPayload,
@@ -195,99 +242,113 @@ class VisitorTracker {
     });
   }
 
-  public syncPwaStatus(isPwa: boolean) {
-    this.scheduleSend(() => {
-      this.send(`${API_BASE}/api/tracking/sync-pwa`, { is_pwa: isPwa });
-    });
+  public syncPwaStatus(isPwa: boolean): void {
+    this.trackEvent("pwa", "status", { is_pwa: isPwa });
   }
 
-  public flushOfflineQueue() {
+  public flushOfflineQueue(): void {
     try {
-      const raw = this.storage('tracking_queue');
+      const raw = this.storage("tracking_queue");
       if (!raw) return;
-      const queue = JSON.parse(raw);
+
+      const parsed: unknown = JSON.parse(raw);
+      const queue: QueuedTrackingItem[] = Array.isArray(parsed)
+        ? parsed.filter(this.isQueuedTrackingItem)
+        : [];
+
       if (!queue.length) return;
 
-      const activities = queue.map((item: any) => ({
-        type: item.data?.category || 'interaction',
-        key: item.data?.action || 'unknown',
-        value: item.data?.payload || null,
+      const activities = queue.map((item) => ({
+        type: item.data.category,
+        key: item.data.action,
+        value: item.data.payload,
         timestamp: item.ts,
-        id: item.data?.js_visitor_id || null,
+        id: item.data.js_visitor_id,
       }));
 
-      this.send(`${API_BASE}/api/tracking/sync`, { activities });
-      localStorage.removeItem('tracking_queue');
-    } catch {}
+      this.send(`${API_BASE}/api/tracking/sync`, {
+        category: "offline",
+        action: "sync",
+        js_visitor_id: this.visitorId,
+        session_id: this.sessionId,
+        payload: { activities },
+      });
+
+      this.storage("tracking_queue", JSON.stringify([]));
+    } catch {
+      // Invalid local tracking data is safely ignored.
+    }
   }
 
-  public init() {
-    if (this.initialized || typeof window === 'undefined') return;
+  public init(): void {
+    if (this.initialized || typeof window === "undefined") return;
     this.initialized = true;
 
-    // Hardware info – অনেক পরে পাঠাই
-    if (!this.storage('hw_tracked', undefined, true)) {
+    if (!this.storage("hw_tracked", undefined, true)) {
       this.scheduleSend(() => {
-        this.trackEvent('system', 'hardware_info');
-        this.storage('hw_tracked', '1', true);
+        this.trackEvent("system", "hardware_info");
+        this.storage("hw_tracked", "1", true);
       });
     }
 
-    // PWA
-    if (this.detectPwa() && !this.storage('pwa_synced', undefined, true)) {
+    if (this.detectPwa() && !this.storage("pwa_synced", undefined, true)) {
       this.syncPwaStatus(true);
-      this.storage('pwa_synced', '1', true);
+      this.storage("pwa_synced", "1", true);
     }
 
-    // Click tracking (passive – স্পিড নষ্ট করে না)
     document.addEventListener(
-      'click',
-      (e) => {
-        const el = (e.target as HTMLElement).closest('[data-track]') as HTMLElement | null;
-        if (!el) return;
+      "click",
+      (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
 
-        this.trackEvent('interaction', 'click', {
-          label: el.dataset.track,
-          element: el.tagName.toLowerCase(),
-          href: (el as HTMLAnchorElement).href || null,
+        const element = target.closest<HTMLElement>("[data-track]");
+        if (!element) return;
+
+        this.trackEvent("interaction", "click", {
+          label: element.dataset.track ?? null,
+          element: element.tagName.toLowerCase(),
+          href:
+            element instanceof HTMLAnchorElement ? element.href : null,
         });
       },
-      { passive: true }
+      { passive: true },
     );
 
-    window.addEventListener('online', () => this.flushOfflineQueue());
+    window.addEventListener("online", () => this.flushOfflineQueue());
   }
 }
 
-// ---------------- Singleton + SSR Safe ----------------
 let trackerInstance: VisitorTracker | null = null;
 
 export function getTracker(): VisitorTracker {
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     return {
-      trackEvent: () => {},
-      trackPageView: () => {},
-      startNavigation: () => {},
-      syncPwaStatus: () => {},
-      flushOfflineQueue: () => {},
-      init: () => {},
-    } as any;
+      trackEvent: () => undefined,
+      trackPageView: () => undefined,
+      startNavigation: () => undefined,
+      syncPwaStatus: () => undefined,
+      flushOfflineQueue: () => undefined,
+      init: () => undefined,
+    } as unknown as VisitorTracker;
   }
 
-  if (!trackerInstance) {
-    trackerInstance = new VisitorTracker();
-  }
+  trackerInstance ??= new VisitorTracker();
   return trackerInstance;
 }
 
-export function track(category: string, action: string, payload?: TrackPayload) {
+export function track(
+  category: string,
+  action: string,
+  payload?: TrackPayload,
+): void {
   getTracker().trackEvent(category, action, payload);
 }
 
-export function trackPageView(path?: string, routeName?: string) {
+export function trackPageView(path?: string, routeName?: string): void {
   getTracker().trackPageView(path, routeName);
 }
 
-export function startNavigation() {
+export function startNavigation(): void {
   getTracker().startNavigation();
 }
