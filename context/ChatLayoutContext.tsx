@@ -7,6 +7,8 @@ type ChatLayoutContextValue = {
   setMobileListOpen: (open: boolean) => void;
   openMobileList: () => void;
   closeMobileList: () => void;
+  mobileChat: boolean;
+  setMobileChat: (open: boolean) => void;
 };
 
 const ChatLayoutContext = createContext<ChatLayoutContextValue | null>(null);
@@ -20,6 +22,8 @@ export function ChatLayoutProvider({ children }: { children: React.ReactNode }) 
       setMobileListOpen,
       openMobileList: () => setMobileListOpen(true),
       closeMobileList: () => setMobileListOpen(false),
+      mobileChat: !mobileListOpen,
+      setMobileChat: (open: boolean) => setMobileListOpen(!open),
     }),
     [mobileListOpen],
   );
