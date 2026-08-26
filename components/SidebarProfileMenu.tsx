@@ -99,7 +99,7 @@ export default function SidebarProfileMenu({
         <img
           src={avatarUrl}
           alt={user.name}
-          className="h-8 w-8 shrink-0 rounded-full border border-zinc-400/25 object-cover"
+          className="h-8 w-8 shrink-0 rounded-xl border border-zinc-400/25 object-cover"
         />
         {!collapsed && (
           <div className="min-w-0 space-y-2">
