@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Noto_Sans_Bengali } from "next/font/google"; // ফন্ট ইম্পোর্ট
+import { Geist, Geist_Mono, Noto_Sans_Bengali } from "next/font/google";
 import "./globals.css";
 import { AppProviders } from "./providers";
+import GoogleTranslate from "@/components/GoogleTranslate";
 import SettingsModalWrapper from "@/components/SettingsModalWrapper";
 import TagManager from "@/components/partials/TagManager";
-import GoogleTranslate from "@/components/GoogleTranslate";
 import VisitorTracker from "@/components/VisitorTracker";
 
-// ফন্টগুলোর কনফিগারেশন
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -48,29 +47,21 @@ export const metadata: Metadata = {
   },
 };
 
-// app/layout.tsx
-
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
-  lang="bn"
-  suppressHydrationWarning
-  className={`${geistSans.variable} ${geistMono.variable} ${notoBengali.variable}`}
->
-  <head/>
-  <body
-    suppressHydrationWarning
-    className="min-h-screen dark:bg-zinc-800 antialiased"
-  >
-        <TagManager/>
+      lang="bn"
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${geistMono.variable} ${notoBengali.variable}`}
+    >
+      <body className="min-h-screen antialiased dark:bg-zinc-800" suppressHydrationWarning>
+        <TagManager />
         <AppProviders>
           {children}
           <VisitorTracker />
-          <SettingsModalWrapper /> 
+          <SettingsModalWrapper />
         </AppProviders>
         <GoogleTranslate />
       </body>
