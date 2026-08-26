@@ -10,9 +10,9 @@ export default function FacebookLoginButton() {
     <button
       type="button"
       onClick={handleFacebookLogin}
-      className="w-full flex items-center text-white justify-center gap-4 rounded-full p-4 bg-blue-600 hover:opacity-90"
+      className="flex w-full items-center justify-center gap-4 rounded-xl border border-zinc-400/25 bg-zinc-400/10 p-4 hover:bg-zinc-400/25"
     >
-      <span className="flex justify-center rounded-full pt-1 text-xl font-bold items-center text-center text-blue-600 bg-white h-6 w-6">f</span>
+      <span className="flex h-6 w-6 items-center justify-center rounded-xl border border-zinc-400/25 bg-zinc-400/10 text-xl font-bold">f</span>
       ফেসবুক দিয়ে লগইন করুন
     </button>
   );
