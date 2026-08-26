@@ -56,7 +56,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} ${notoBengali.variable}`}
     >
-      <body className="min-h-screen antialiased dark:bg-zinc-800" suppressHydrationWarning>
+      <body className="min-h-screen bg-zinc-200 antialiased dark:bg-zinc-800">
         <TagManager />
         <AppProviders>
           {children}
