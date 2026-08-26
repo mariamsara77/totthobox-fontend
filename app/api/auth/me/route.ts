@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { createHash } from "node:crypto";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -32,17 +33,28 @@ export async function GET() {
     return NextResponse.json(null, { status: 401, headers: NO_STORE_HEADERS });
   }
 
+  // Protect against an upstream proxy/CDN that caches authenticated GETs by
+  // URL while ignoring Authorization. The raw token is never placed in the URL.
+  const sessionKey = createHash("sha256")
+    .update(token)
+    .digest("hex")
+    .slice(0, 32);
+
   let laravelRes: Response;
   try {
-    laravelRes = await fetch(`${API_BASE}/api/user`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-        "Cache-Control": "no-cache",
-      },
-      cache: "no-store",
-    });
+    laravelRes = await fetch(
+      `${API_BASE}/api/user?session=${sessionKey}`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+          "Cache-Control": "no-store, no-cache, max-age=0",
+          Pragma: "no-cache",
+        },
+        cache: "no-store",
+      }
+    );
   } catch {
     return NextResponse.json(
       { message: "ব্যাকএন্ড সার্ভার অনুপলব্ধ।" },
