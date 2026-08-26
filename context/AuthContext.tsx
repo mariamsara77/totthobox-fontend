@@ -9,7 +9,7 @@ import {
   useRef,
   ReactNode,
 } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ApiError } from "@/lib/api-client";
 import { User } from "@/lib/auth";
 import { clearClientAuthState, clearClientCaches } from "@/lib/auth-storage";
@@ -26,167 +26,173 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const extractUser = (data: unknown): User | null => {
+function extractUser(data: unknown): User | null {
   if (!data || typeof data !== "object") return null;
+
   const source = data as Record<string, unknown>;
-  const u = source.user ?? source.data ?? data;
-  if (u && typeof u === "object") {
-    const candidate = u as Record<string, unknown>;
-    if (candidate.id || candidate.email || candidate.name) return candidate as unknown as User;
-  }
-  return null;
-};
+  const candidateValue = source.user ?? source.data ?? data;
+  if (!candidateValue || typeof candidateValue !== "object") return null;
+
+  const candidate = candidateValue as Record<string, unknown>;
+  if (!candidate.id || !candidate.email || !candidate.name) return null;
+
+  return candidate as unknown as User;
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-  const pathname = usePathname();
-  const isMounted = useRef(true);
-  const authGeneration = useRef(0);
-  const refreshController = useRef<AbortController | null>(null);
 
-  const invalidateAuthGeneration = useCallback(() => {
-    authGeneration.current += 1;
-    refreshController.current?.abort();
-    refreshController.current = null;
-    return authGeneration.current;
+  const mountedRef = useRef(false);
+  const generationRef = useRef(0);
+  const refreshControllerRef = useRef<AbortController | null>(null);
+  const loginInProgressRef = useRef(false);
+
+  const invalidate = useCallback(() => {
+    generationRef.current += 1;
+    refreshControllerRef.current?.abort();
+    refreshControllerRef.current = null;
+    return generationRef.current;
   }, []);
 
-  const resetClientAuthState = useCallback(async () => {
+  const clearAllClientState = useCallback(async () => {
     clearClientAuthState();
     await clearClientCaches();
   }, []);
 
   const refreshUser = useCallback(async (): Promise<boolean> => {
-    const generation = authGeneration.current;
-    refreshController.current?.abort();
+    const generation = generationRef.current;
+
+    refreshControllerRef.current?.abort();
     const controller = new AbortController();
-    refreshController.current = controller;
+    refreshControllerRef.current = controller;
 
     try {
-      const res = await fetch("/api/auth/me", {
+      const response = await fetch("/api/auth/me", {
         method: "GET",
         headers: { Accept: "application/json" },
-        cache: "no-store",
         credentials: "include",
+        cache: "no-store",
         signal: controller.signal,
       });
 
-      if (!isMounted.current || generation !== authGeneration.current) return false;
+      if (!mountedRef.current || generation !== generationRef.current) return false;
 
-      if (res.ok) {
-        const data = await res.json();
-        const fetchedUser = extractUser(data);
-        if (fetchedUser) {
-          setUser(fetchedUser);
-          return true;
-        }
+      if (response.status === 401) {
+        setUser(null);
+        return false;
       }
 
-      setUser(null);
-      return false;
+      if (!response.ok) return !!user;
+
+      const data = await response.json().catch(() => null);
+      const nextUser = extractUser(data);
+
+      if (!nextUser) {
+        setUser(null);
+        return false;
+      }
+
+      setUser(nextUser);
+      return true;
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") return false;
-      if (isMounted.current && generation === authGeneration.current) setUser(null);
       return false;
     } finally {
-      if (refreshController.current === controller) refreshController.current = null;
+      if (refreshControllerRef.current === controller) {
+        refreshControllerRef.current = null;
+      }
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
-    isMounted.current = true;
+    mountedRef.current = true;
 
-    const handleUnauthorized = () => {
-      invalidateAuthGeneration();
-      if (isMounted.current) setUser(null);
-      void resetClientAuthState();
-
-      const { pathname: currentPath } = window.location;
-      if (currentPath !== "/login" && currentPath !== "/register") {
-        fetch("/api/auth/logout", {
-          method: "POST",
-          credentials: "include",
-          cache: "no-store",
-        }).catch(() => {});
-        window.location.replace("/login");
-      }
-    };
-
-    window.addEventListener("auth:unauthorized", handleUnauthorized);
-
-    (async () => {
+    void (async () => {
       await refreshUser();
-      if (isMounted.current) setLoading(false);
+      if (mountedRef.current) setLoading(false);
     })();
 
     return () => {
-      isMounted.current = false;
-      refreshController.current?.abort();
-      window.removeEventListener("auth:unauthorized", handleUnauthorized);
+      mountedRef.current = false;
+      refreshControllerRef.current?.abort();
     };
-  }, [refreshUser, invalidateAuthGeneration, resetClientAuthState]);
+  }, [refreshUser]);
 
   useEffect(() => {
-    if (loading) return;
-    void refreshUser();
-  }, [pathname, loading, refreshUser]);
+    const handleUnauthorized = async () => {
+      invalidate();
+      setUser(null);
+      await clearAllClientState();
+      window.location.replace("/login");
+    };
 
-  const PROTECTED_ROUTES = ["/profile", "/messages", "/settings", "/dashboard", "/admin"];
+    window.addEventListener("auth:unauthorized", handleUnauthorized);
+    return () => window.removeEventListener("auth:unauthorized", handleUnauthorized);
+  }, [clearAllClientState, invalidate]);
 
   const login = useCallback(
     async (email: string, password: string): Promise<void> => {
-      invalidateAuthGeneration();
-      setUser(null);
-      await resetClientAuthState();
-
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        credentials: "include",
-        cache: "no-store",
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json().catch(() => ({}));
-
-      if (!res.ok) {
-        throw new ApiError(
-          data?.message || "লগইন ব্যর্থ হয়েছে",
-          res.status,
-          data
-        );
+      if (loginInProgressRef.current) {
+        throw new ApiError("লগইন ইতিমধ্যে প্রক্রিয়াধীন।", 409);
       }
 
-      const generation = authGeneration.current;
-      const refreshed = await refreshUser();
-      if (generation !== authGeneration.current) {
-        throw new ApiError("লগইন সেশন পরিবর্তিত হয়েছে। আবার চেষ্টা করুন।", 409);
-      }
+      loginInProgressRef.current = true;
+      const generation = invalidate();
 
-      if (!refreshed) {
-        invalidateAuthGeneration();
+      try {
+        // Remove every client-side trace of the previous account before the
+        // new authentication transaction starts.
         setUser(null);
-        await resetClientAuthState();
-        await fetch("/api/auth/logout", {
+        await clearAllClientState();
+
+        const response = await fetch("/api/auth/login", {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
           credentials: "include",
           cache: "no-store",
-        }).catch(() => {});
-        throw new ApiError("লগইনের পর প্রোফাইল তথ্য পাওয়া যায়নি।", 401);
+          body: JSON.stringify({ email, password }),
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          throw new ApiError(data?.message || "লগইন ব্যর্থ হয়েছে", response.status, data);
+        }
+
+        if (generation !== generationRef.current) {
+          throw new ApiError("লগইন সেশন পরিবর্তিত হয়েছে। আবার চেষ্টা করুন।", 409);
+        }
+
+        // Login response data is deliberately ignored as the profile source.
+        // /api/auth/me must resolve the user from the newly-set HttpOnly cookie.
+        const authenticated = await refreshUser();
+
+        if (!authenticated || generation !== generationRef.current) {
+          invalidate();
+          setUser(null);
+          await clearAllClientState();
+          await fetch("/api/auth/logout", {
+            method: "POST",
+            credentials: "include",
+            cache: "no-store",
+          }).catch(() => {});
+          throw new ApiError("লগইনের পর বর্তমান ব্যবহারকারীর তথ্য পাওয়া যায়নি।", 401);
+        }
+      } finally {
+        loginInProgressRef.current = false;
       }
     },
-    [invalidateAuthGeneration, refreshUser, resetClientAuthState]
+    [clearAllClientState, invalidate, refreshUser]
   );
 
   const logout = useCallback(async (): Promise<void> => {
-    invalidateAuthGeneration();
+    invalidate();
     setUser(null);
-    await resetClientAuthState();
 
     try {
       await fetch("/api/auth/logout", {
@@ -194,22 +200,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         credentials: "include",
         headers: { Accept: "application/json" },
         cache: "no-store",
+        keepalive: true,
       });
     } catch {
-      // Local session remains cleared even if Laravel is unavailable.
+      // Local state is still cleared below.
+    } finally {
+      await clearAllClientState();
     }
 
-    const currentPath = window.location.pathname;
-    const isProtected = PROTECTED_ROUTES.some((route) =>
-      currentPath.startsWith(route)
-    );
-
-    router.refresh();
-
-    if (isProtected) {
+    // Hard navigation intentionally destroys the current React/Next.js client
+    // tree and its RSC/router state before the next account is loaded.
+    if (typeof window !== "undefined") {
+      window.location.replace("/login");
+    } else {
       router.replace("/login");
     }
-  }, [invalidateAuthGeneration, resetClientAuthState, router]);
+  }, [clearAllClientState, invalidate, router]);
 
   return (
     <AuthContext.Provider
@@ -229,9 +235,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 }
 
 export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return ctx;
+  const context = useContext(AuthContext);
+  if (!context) throw new Error("useAuth must be used within AuthProvider");
+  return context;
 }
