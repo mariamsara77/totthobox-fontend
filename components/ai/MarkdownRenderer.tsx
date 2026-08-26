@@ -1,20 +1,19 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { isValidElement, useState, type ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
 
 type Props = {
   content: string;
-  animate?: boolean;
 };
 
 function textContent(node: ReactNode): string {
   if (node == null || typeof node === "boolean") return "";
   if (typeof node === "string" || typeof node === "number") return String(node);
   if (Array.isArray(node)) return node.map(textContent).join("");
-  if (typeof node === "object" && "props" in node) return textContent(node.props.children);
+  if (isValidElement(node)) return textContent(node.props.children);
   return "";
 }
 
