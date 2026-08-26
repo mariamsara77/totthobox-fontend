@@ -21,6 +21,9 @@ type Props = {
   };
 };
 
+const actionClass =
+  "inline-flex items-center gap-2 p-4 rounded-xl border border-zinc-400/25 bg-zinc-400/10 hover:bg-zinc-400/25 disabled:opacity-50";
+
 export default function InteractiveActions({ personId, initialData }: Props) {
   const router = useRouter();
   const [reactions, setReactions] = useState<Reactions>({
@@ -42,26 +45,17 @@ export default function InteractiveActions({ personId, initialData }: Props) {
       }
 
       try {
-        const res = await fetch(
-          `/api/backend/people/${personId}/reaction-status`,
-          {
-            headers: {
-              ...getAuthHeaders(),
-              Accept: "application/json",
-            },
-          },
-        );
+        const res = await fetch(`/api/backend/people/${personId}/reaction-status`, {
+          headers: { ...getAuthHeaders(), Accept: "application/json" },
+        });
 
         if (res.ok && !cancelled) {
           const data = await res.json();
           setReactions((prev) => ({
             ...prev,
-            user_has_liked:
-              data.has_like ?? data.user_has_liked ?? prev.user_has_liked,
+            user_has_liked: data.has_like ?? data.user_has_liked ?? prev.user_has_liked,
             user_has_disliked:
-              data.has_dislike ??
-              data.user_has_disliked ??
-              prev.user_has_disliked,
+              data.has_dislike ?? data.user_has_disliked ?? prev.user_has_disliked,
           }));
         }
       } catch (error) {
@@ -120,14 +114,12 @@ export default function InteractiveActions({ personId, initialData }: Props) {
       }
 
       const json = await res.json();
-
       setReactions({
         like_count: json.like_count ?? 0,
         dislike_count: json.dislike_count ?? 0,
         user_has_liked: json.has_like ?? false,
         user_has_disliked: json.has_dislike ?? false,
       });
-
       router.refresh();
     } catch (err) {
       console.error(err);
@@ -153,16 +145,12 @@ export default function InteractiveActions({ personId, initialData }: Props) {
 
   return (
     <div className="flex items-center justify-between gap-4 pt-4 border-t border-zinc-400/25">
-      <div className="flex gap-4">
+      <div className="flex gap-2">
         <button
           type="button"
           onClick={() => handleReact("like")}
           disabled={loading || statusLoading}
-          className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm   disabled:opacity-50 ${
-            reactions.user_has_liked
-              ? "bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
-              : "bg-zinc-400/10  hover:bg-zinc-800 hover:bg-zinc-700"
-          }`}
+          className={actionClass}
         >
           <ThumbsUp className="w-4 h-4" />
           {reactions.like_count}
@@ -172,22 +160,14 @@ export default function InteractiveActions({ personId, initialData }: Props) {
           type="button"
           onClick={() => handleReact("dislike")}
           disabled={loading || statusLoading}
-          className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm   disabled:opacity-50 ${
-            reactions.user_has_disliked
-              ? "bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400"
-              : "bg-zinc-400/10  hover:bg-zinc-800 hover:bg-zinc-700"
-          }`}
+          className={actionClass}
         >
           <ThumbsDown className="w-4 h-4" />
           {reactions.dislike_count}
         </button>
       </div>
 
-      <button
-        type="button"
-        onClick={handleShare}
-        className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm  bg-zinc-400/10  hover:bg-zinc-800 hover:bg-zinc-700 "
-      >
+      <button type="button" onClick={handleShare} className={actionClass}>
         <Share2 className="w-4 h-4" />
         শেয়ার
       </button>
