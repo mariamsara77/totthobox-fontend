@@ -15,12 +15,12 @@ const COLOR_PRESETS = [
 ];
 
 const PAPER_STYLES: { id: PaperStyle; name: string; preview: string }[] = [
-  { id: "blank", name: "Blank", preview: "bg-zinc-950" },
-  { id: "lined", name: "Lined", preview: "bg-zinc-950" },
-  { id: "grid", name: "Grid", preview: "bg-zinc-950" },
-  { id: "graph", name: "Graph", preview: "bg-zinc-950" },
-  { id: "yellow", name: "Yellow", preview: "bg-yellow-50" },
-  { id: "parchment", name: "Parchment", preview: "bg-amber-50" },
+  { id: "blank", name: "Blank", preview: "bg-zinc-400/10" },
+  { id: "lined", name: "Lined", preview: "bg-zinc-400/10" },
+  { id: "grid", name: "Grid", preview: "bg-zinc-400/10" },
+  { id: "graph", name: "Graph", preview: "bg-zinc-400/10" },
+  { id: "yellow", name: "Yellow", preview: "bg-zinc-400/25" },
+  { id: "parchment", name: "Parchment", preview: "bg-zinc-400/25" },
 ];
 
 const CHARACTER_CATEGORIES = [
@@ -111,14 +111,14 @@ export default function SettingsPanel({
       />
 
       {/* Panel */}
-      <div className="relative w-full max-w-md bg-zinc-950 bg-zinc-900 h-full overflow-y-auto shadow-2xl p-4 space-y-7">
+      <div className="relative w-full max-w-md bg-zinc-400/10 bg-zinc-400/10 h-full overflow-y-auto shadow-2xl p-4 space-y-7">
         {/* Header */}
-        <div className="flex items-center justify-between sticky top-0 bg-zinc-950 bg-zinc-900 pb-2 z-10">
+        <div className="flex items-center justify-between sticky top-0 bg-zinc-400/10 bg-zinc-400/10 pb-2 z-10">
           <h2 className="text-xl ">সেটিংস</h2>
           <button
             type="button"
             onClick={onClose}
-            className="size-8 flex items-center justify-center rounded-lg hover:bg-zinc-900 hover:bg-zinc-800 transition text-lg"
+            className="size-8 flex items-center justify-center rounded-xl hover:bg-zinc-400/10 hover:bg-zinc-400/10 transition text-lg"
           >
             ✕
           </button>
@@ -132,7 +132,7 @@ export default function SettingsPanel({
               type="color"
               value={currentColor}
               onChange={(e) => onColorChange(e.target.value)}
-              className="size-12 rounded-xl cursor-pointer border border-zinc-700 dark:border-zinc-600"
+              className="size-12 rounded-xl cursor-pointer border border-zinc-400/25 dark:border-zinc-400/25"
             />
             <div className="flex flex-wrap gap-2">
               {COLOR_PRESETS.map((c) => (
@@ -140,10 +140,10 @@ export default function SettingsPanel({
                   key={c}
                   type="button"
                   onClick={() => onColorChange(c)}
-                  className={`size-8 rounded-lg border-2 transition-transform ${
+                  className={`size-8 rounded-xl border-2 transition-transform ${
                     currentColor === c
-                      ? "border-blue-500 scale-110"
-                      : "border-zinc-700 dark:border-zinc-600"
+                      ? "border-zinc-400/25 scale-110"
+                      : "border-zinc-400/25 dark:border-zinc-400/25"
                   }`}
                   style={{ backgroundColor: c }}
                 />
@@ -156,7 +156,7 @@ export default function SettingsPanel({
         <div className="space-y-2">
           <h3 className="text-sm ">
             ব্রাশের সাইজ:{" "}
-            <span className="text-blue-600 ">{currentSize}</span>px
+            <span className="opacity-50 ">{currentSize}</span>px
           </h3>
           <input
             type="range"
@@ -177,7 +177,7 @@ export default function SettingsPanel({
         <div className="space-y-2">
           <h3 className="text-sm ">
             স্বচ্ছতা:{" "}
-            <span className="text-blue-600 ">
+            <span className="opacity-50 ">
               {Math.round(opacity * 100)}
             </span>
             %
@@ -200,12 +200,12 @@ export default function SettingsPanel({
             {CHARACTER_CATEGORIES.map((cat, index) => (
               <div
                 key={cat.name}
-                className="border border-zinc-400/25 dark:border-zinc-700 rounded-xl overflow-hidden"
+                className="border border-zinc-400/25 dark:border-zinc-400/25 rounded-xl overflow-hidden"
               >
                 <button
                   type="button"
                   onClick={() => toggleCategory(index)}
-                  className="w-full flex justify-between items-center p-4 hover:bg-zinc-900 hover:bg-zinc-800 text-left transition"
+                  className="w-full flex justify-between items-center p-4 hover:bg-zinc-400/10 hover:bg-zinc-400/10 text-left transition"
                 >
                   <span className="text-sm ">{cat.name}</span>
                   <span className="text-zinc-400 text-xs">
@@ -214,7 +214,7 @@ export default function SettingsPanel({
                 </button>
 
                 {openCategories[index] && (
-                  <div className="p-3 grid grid-cols-6 gap-2 border-t border-zinc-400/25 dark:border-zinc-700">
+                  <div className="p-3 grid grid-cols-6 gap-2 border-t border-zinc-400/25 dark:border-zinc-400/25">
                     {cat.characters.map((char) => (
                       <button
                         key={char}
@@ -223,7 +223,7 @@ export default function SettingsPanel({
                           onGuideTextChange(char);
                           onClose();
                         }}
-                        className="h-10 flex items-center justify-center rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700  text-lg transition"
+                        className="h-10 flex items-center justify-center rounded-xl bg-zinc-400/10 hover:bg-zinc-400/10 hover:bg-zinc-400/25  text-lg transition"
                       >
                         {char}
                       </button>
@@ -238,7 +238,7 @@ export default function SettingsPanel({
             <button
               type="button"
               onClick={() => onGuideTextChange("")}
-              className="text-sm text-red-600 hover:underline"
+              className="text-sm opacity-50 hover:underline"
             >
               গাইড অক্ষর সরান ({guideText})
             </button>
@@ -256,12 +256,12 @@ export default function SettingsPanel({
                 onClick={() => onPaperStyleChange(paper.id)}
                 className={`p-2.5 rounded-xl border-2 text-center transition ${
                   paperStyle === paper.id
-                    ? "border-blue-500 ring-1 ring-blue-500"
-                    : "border-zinc-400/25 dark:border-zinc-700 hover:border-zinc-700"
+                    ? "border-zinc-400/25 ring-1 ring-blue-500"
+                    : "border-zinc-400/25 dark:border-zinc-400/25 hover:border-zinc-400/25"
                 }`}
               >
                 <div
-                  className={`h-11 rounded-lg mb-1.5 border border-zinc-400/25 dark:border-zinc-600 ${paper.preview}`}
+                  className={`h-11 rounded-xl mb-1.5 border border-zinc-400/25 dark:border-zinc-400/25 ${paper.preview}`}
                 />
                 <span className="text-xs ">{paper.name}</span>
               </button>

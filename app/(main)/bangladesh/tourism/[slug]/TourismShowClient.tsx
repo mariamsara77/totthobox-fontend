@@ -104,7 +104,7 @@ export default function TourismShowClient({ tourism }: Props) {
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 space-y-2">
             {tourism.type_label && (
-              <span className="inline-block px-2.5 py-0.5 rounded-md text-xs  bg-zinc-400/10 ">
+              <span className="inline-block px-2.5 py-0.5 rounded-xl text-xs  bg-zinc-400/10 ">
                 {tourism.type_label}
               </span>
             )}
@@ -121,7 +121,7 @@ export default function TourismShowClient({ tourism }: Props) {
             )}
 
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs bg-zinc-400/10 text-zinc-300">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-xl text-xs bg-zinc-400/10 text-zinc-300">
                 <Eye className="w-3.5 h-3.5" />
                 {tourism.views_count?.toLocaleString("bn-BD") || 0}
               </span>
@@ -133,7 +133,7 @@ export default function TourismShowClient({ tourism }: Props) {
             <button
               type="button"
               onClick={() => setShowCreators(!showCreators)}
-              className="p-2 rounded-lg text-zinc-400 hover:bg-zinc-900 hover:bg-zinc-800"
+              className="p-2 rounded-xl text-zinc-400 hover:bg-zinc-400/10 hover:bg-zinc-400/10"
               aria-label="তথ্য প্রদানকারীগণ"
             >
               <Users className="w-5 h-5" />
@@ -145,7 +145,7 @@ export default function TourismShowClient({ tourism }: Props) {
                   className="fixed inset-0 z-40"
                   onClick={() => setShowCreators(false)}
                 />
-                <div className="absolute right-0 top-full mt-2 w-80 max-h-80 overflow-y-auto rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900  p-4 z-50 space-y-4">
+                <div className="absolute right-0 top-full mt-2 w-80 max-h-80 overflow-y-auto rounded-2xl border border-zinc-400/25 bg-zinc-400/10 bg-zinc-400/10  p-4 z-50 space-y-4">
                   <h3 className=" text-sm text-zinc-50 text-zinc-200">
                     তথ্য প্রদানকারী
                   </h3>
@@ -278,7 +278,7 @@ export default function TourismShowClient({ tourism }: Props) {
           <div className="px-4 pb-4 text-sm ">
             <Link
               href="/bangladesh/tourism"
-              className="text-amber-600 hover:underline"
+              className="opacity-50 hover:underline"
             >
               পর্যটন কেন্দ্র
             </Link>{" "}

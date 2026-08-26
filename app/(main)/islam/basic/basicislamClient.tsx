@@ -125,14 +125,14 @@ export default function BasicIslamClient() {
         <div className="relative">
           <button
             onClick={() => setShowCreators(!showCreators)}
-            className="p-2 rounded-lg hover:bg-zinc-400/10"
+            className="p-2 rounded-xl hover:bg-zinc-400/10"
             aria-label="তথ্য প্রদানকারীগণ দেখুন"
           >
             <Users className="w-5 h-5" />
           </button>
 
           {showCreators && (
-            <div className="absolute right-0 top-full mt-2 w-80 max-h-112 overflow-y-auto rounded-2xl border border-zinc-400/25 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 z-50 p-4 space-y-4">
+            <div className="absolute right-0 top-full mt-2 w-80 max-h-112 overflow-y-auto rounded-2xl border border-zinc-400/25 dark:border-zinc-400/25 bg-zinc-100 bg-zinc-400/10 z-50 p-4 space-y-4">
               <div className="space-y-1">
                 <h2 className="">
                   তথ্য প্রদানকারীগণ ({creators.length})
@@ -168,7 +168,7 @@ export default function BasicIslamClient() {
                           )}
                           <span
                             className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white ${
-                              creator.is_online ? "bg-green-500" : "bg-zinc-700"
+                              creator.is_online ? "bg-zinc-400/25" : "bg-zinc-400/25"
                             }`}
                           />
                         </div>
@@ -178,7 +178,7 @@ export default function BasicIslamClient() {
                               {creator.name}
                             </span>
                             {creator.email_verified && (
-                              <Check className="w-4 h-4 text-blue-600 shrink-0" />
+                              <Check className="w-4 h-4 opacity-50 shrink-0" />
                             )}
                           </div>
                           <p className="text-xs truncate">
@@ -186,7 +186,7 @@ export default function BasicIslamClient() {
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-center justify-between text-xs pt-2 border-t border-zinc-400/25/50 dark:border-zinc-700/50">
+                      <div className="flex items-center justify-between text-xs pt-2 border-t border-zinc-400/25/50 dark:border-zinc-400/25">
                         <span>একটিভ: {creator.last_active_bn}</span>
                         <Link
                           href={`/users/${creator.slug}`}
@@ -200,7 +200,7 @@ export default function BasicIslamClient() {
                 )}
               </div>
 
-              <p className="text-xs  text-center border-t border-zinc-400/25 dark:border-zinc-700 pt-3">
+              <p className="text-xs  text-center border-t border-zinc-400/25 dark:border-zinc-400/25 pt-3">
                 আমাদের সকল তথ্য ভেরিফাইড এবং যাচাইকৃত।
               </p>
             </div>
@@ -217,14 +217,14 @@ export default function BasicIslamClient() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="বিষয় খুঁজুন (যেমন: নামাজ, যাকাত)..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-400/10 border-0 focus:ring-2 focus:ring-zinc-500 outline-none"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-400/10 border-0   outline-none"
             aria-label="বিষয় খুঁজুন"
           />
         </div>
         {search && (
           <button
             onClick={() => setSearch("")}
-            className="p-2 rounded-lg bg-zinc-400/10 hover:bg-zinc-400/25"
+            className="p-2 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/25"
             aria-label="সার্চ মুছুন"
           >
             <X className="w-5 h-5" />
@@ -244,7 +244,7 @@ export default function BasicIslamClient() {
 
       {/* Error Message */}
       {error && (
-        <div className="rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 text-sm text-red-700 dark:text-red-300">
+        <div className="rounded-xl bg-zinc-400/25 dark:bg-zinc-400/25 border border-zinc-400/25 dark:border-zinc-400/25 p-4 text-sm opacity-50 dark:opacity-50">
           <p className="">ডেটা লোড করতে সমস্যা হয়েছে</p>
           <p className="mt-1 text-xs opacity-80">{error}</p>
           <button

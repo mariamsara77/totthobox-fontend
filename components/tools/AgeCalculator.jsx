@@ -226,7 +226,7 @@ export default function AgeCalculator() {
                     value={dob}
                     max={todayISO()}
                     onChange={(e) => setDob(e.target.value)}
-                    className="w-full p-2 rounded-lg bg-zinc-400/10 outline-none"
+                    className="w-full p-2 rounded-xl bg-zinc-400/10 outline-none"
                   />
                 </div>
                 <div className="flex flex-col gap-2">
@@ -237,13 +237,13 @@ export default function AgeCalculator() {
                     type="date"
                     value={targetDate}
                     onChange={(e) => setTargetDate(e.target.value)}
-                    className="w-full p-2 rounded-lg bg-zinc-400/10 outline-none"
+                    className="w-full p-2 rounded-xl bg-zinc-400/10 outline-none"
                   />
                 </div>
               </div>
               <button
                 onClick={resetSingle}
-                className="bg-zinc-400/10 hover:bg-zinc-400/25 rounded-lg px-4 py-2"
+                className="bg-zinc-400/10 hover:bg-zinc-400/25 rounded-xl px-4 py-2"
               >
                 রিসেট করুন
               </button>
@@ -319,7 +319,7 @@ export default function AgeCalculator() {
                       </div>
                       <div className="p-3 bg-zinc-400/10 rounded-xl text-center ">
                         <div className=" text-zinc-400">পূর্ববর্তী জন্মদিন</div>
-                        <div className="text-base sm:text-lg font-bold mt-1 text-amber-600 dark:text-amber-400">
+                        <div className="text-base sm:text-lg font-bold mt-1 opacity-50 dark:opacity-50">
                           {singleAge.prevBirthdayDays} দিন আগে
                         </div>
                       </div>
@@ -362,7 +362,7 @@ export default function AgeCalculator() {
                     value={person1Dob}
                     max={todayISO()}
                     onChange={(e) => setPerson1Dob(e.target.value)}
-                    className="w-full p-2 rounded-lg bg-zinc-400/10 border-none outline-none"
+                    className="w-full p-2 rounded-xl bg-zinc-400/10 border-none outline-none"
                   />
                 </div>
                 <div className="flex flex-col gap-2">
@@ -374,13 +374,13 @@ export default function AgeCalculator() {
                     value={person2Dob}
                     max={todayISO()}
                     onChange={(e) => setPerson2Dob(e.target.value)}
-                    className="w-full p-2 rounded-lg bg-zinc-400/10 border-none outline-none"
+                    className="w-full p-2 rounded-xl bg-zinc-400/10 border-none outline-none"
                   />
                 </div>
               </div>
               <button
                 onClick={resetDifference}
-                className="bg-zinc-400/10 rounded-lg py-2 px-4 hover:bg-zinc-400/25"
+                className="bg-zinc-400/10 rounded-xl py-2 px-4 hover:bg-zinc-400/25"
               >
                 রিসেট করুন
               </button>
@@ -453,7 +453,7 @@ export default function AgeCalculator() {
         <div className="mt-16 pt-10 border-t border-zinc-400/25 space-y-4  ">
           <div>
             <h3 className="text-lg font-bold text-zinc-50 text-zinc-200 mb-4 flex items-center gap-2">
-              <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-5 h-5 opacity-50" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
                   d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"

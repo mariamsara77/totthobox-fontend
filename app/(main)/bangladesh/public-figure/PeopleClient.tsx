@@ -90,7 +90,7 @@ export default function PeopleClient() {
     <div className="max-w-2xl mx-auto space-y-4 p-4 sm:p-6">
       <header>
         <h1 className="text-2xl font-bold flex items-center gap-2">
-          <Users className="w-6 h-6 text-amber-600" />
+          <Users className="w-6 h-6 opacity-50" />
           প্রোফাইল আর্কাইভ
         </h1>
         <p className="text-sm text-zinc-400 mt-1">
@@ -106,7 +106,7 @@ export default function PeopleClient() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="নামে খুঁজুন..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-400/25 bg-zinc-800/80 text-sm"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-400/25 bg-zinc-400/10 text-sm"
             />
           </div>
           {hasFilters && (
@@ -131,7 +131,7 @@ export default function PeopleClient() {
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="min-w-36 rounded-lg border border-zinc-400/25 bg-zinc-400/10 text-sm px-3 py-2"
+            className="min-w-36 rounded-xl border border-zinc-400/25 bg-zinc-400/10 text-sm px-3 py-2"
           >
             <option value="">সকল ক্যাটাগরি</option>
             {categories.map((c) => (
@@ -144,7 +144,7 @@ export default function PeopleClient() {
           <select
             value={position}
             onChange={(e) => setPosition(e.target.value)}
-            className="min-w-36 rounded-lg border border-zinc-400/25 bg-zinc-400/10 text-sm px-3 py-2"
+            className="min-w-36 rounded-xl border border-zinc-400/25 bg-zinc-400/10 text-sm px-3 py-2"
           >
             <option value="">সকল পদবী</option>
             {positions.map((p) => (
@@ -157,7 +157,7 @@ export default function PeopleClient() {
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="min-w-36 rounded-lg border border-zinc-400/25 bg-zinc-400/10 text-sm px-3 py-2"
+            className="min-w-36 rounded-xl border border-zinc-400/25 bg-zinc-400/10 text-sm px-3 py-2"
           >
             <option value="all">অবস্থা (সকল)</option>
             <option value="current">বর্তমানে কর্মরত</option>
@@ -168,13 +168,13 @@ export default function PeopleClient() {
             type="date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
-            className="min-w-36 rounded-lg border border-zinc-400/25 bg-zinc-400/10 text-sm px-3 py-2"
+            className="min-w-36 rounded-xl border border-zinc-400/25 bg-zinc-400/10 text-sm px-3 py-2"
           />
           <input
             type="date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
-            className="min-w-36 rounded-lg border border-zinc-400/25 bg-zinc-400/10 text-sm px-3 py-2"
+            className="min-w-36 rounded-xl border border-zinc-400/25 bg-zinc-400/10 text-sm px-3 py-2"
           />
         </div>
       </div>
@@ -187,7 +187,7 @@ export default function PeopleClient() {
         {isLoading ? (
            <div className="space-y-4">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="rounded-2xl border border-zinc-400/25 bg-zinc-800/80 p-4 animate-pulse">
+              <div key={i} className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 animate-pulse">
                 <div className="flex gap-4">
                   <div className="w-16 h-16 rounded-xl bg-zinc-400/10" />
                   <div className="flex-1 space-y-2">
@@ -207,10 +207,10 @@ export default function PeopleClient() {
             <Link
               key={person.id}
               href={`/bangladesh/public-figure/${person.slug}`}
-              className="block rounded-2xl border border-zinc-400/25 bg-zinc-800/80 p-4 hover:bg-zinc-900/50 hover:bg-zinc-800/30 transition"
+              className="block rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 hover:bg-zinc-400/10 hover:bg-zinc-400/10 transition"
             >
               <div className="flex gap-4 items-start">
-                <div className="w-16 h-16 rounded-xl overflow-hidden bg-zinc-800 bg-zinc-800 shrink-0">
+                <div className="w-16 h-16 rounded-xl overflow-hidden bg-zinc-400/10 bg-zinc-400/10 shrink-0">
                   {person.image_url ? (
                     <img
                       src={person.image_url}
@@ -229,7 +229,7 @@ export default function PeopleClient() {
                       {person.name}
                     </h2>
                     {person.is_current && (
-                      <span className="text-xs px-2 py-0.5 rounded-md bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                      <span className="text-xs px-2 py-0.5 rounded-xl bg-zinc-400/25 opacity-50 dark:bg-zinc-400/25 dark:opacity-50">
                         বর্তমান
                       </span>
                     )}
@@ -259,7 +259,7 @@ export default function PeopleClient() {
                 </div>
               </div>
               <div className="mt-3 pt-3 border-t border-zinc-400/25">
-                <span className="inline-flex items-center gap-2 text-xs  text-amber-600">
+                <span className="inline-flex items-center gap-2 text-xs  opacity-50">
                   বিস্তারিত পড়ুন <ArrowRight className="w-3.5 h-3.5" />
                 </span>
               </div>

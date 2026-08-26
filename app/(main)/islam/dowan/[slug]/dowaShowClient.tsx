@@ -63,7 +63,7 @@ export default function DowaShowClient({ initialData, slug }: Props) {
       {/* Header badges */}
       <div className="flex flex-wrap items-center gap-2">
         {item.is_featured && (
-          <span className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+          <span className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-zinc-400/25 opacity-50 dark:bg-zinc-400/25 dark:opacity-50">
             <Star className="w-3.5 h-3.5" /> বিশেষ আমল
           </span>
         )}
@@ -161,9 +161,9 @@ export default function DowaShowClient({ initialData, slug }: Props) {
         )}
 
         {item.bangla_fojilot && (
-          <div className="rounded-2xl bg-amber-50/50 dark:bg-amber-950/10 border border-amber-200/60 dark:border-amber-900/40 p-4">
-            <h3 className="text-sm font-bold text-amber-800 dark:text-amber-400 mb-4 tracking-wide flex items-center gap-2">
-              <span className="text-amber-600">ℹ</span> ফজিলত ও আমল
+          <div className="rounded-2xl bg-zinc-400/25 dark:bg-zinc-400/25 border border-zinc-400/25 dark:border-zinc-400/25 p-4">
+            <h3 className="text-sm font-bold opacity-50 dark:opacity-50 mb-4 tracking-wide flex items-center gap-2">
+              <span className="opacity-50">ℹ</span> ফজিলত ও আমল
             </h3>
             <div
               className="prose prose-sm dark:prose-invert max-w-none  leading-relaxed"
@@ -221,8 +221,8 @@ export default function DowaShowClient({ initialData, slug }: Props) {
       <section className="space-y-4">
         <h2 className="text-lg font-bold">প্রায়শই জিজ্ঞাসিত প্রশ্ন</h2>
         <div className="space-y-2">
-          <details className="group rounded-xl border border-zinc-400/25 dark:border-zinc-700 overflow-hidden">
-            <summary className="flex items-center justify-between cursor-pointer px-4 py-2  list-none hover:bg-zinc-900 hover:bg-zinc-800/50">
+          <details className="group rounded-xl border border-zinc-400/25 dark:border-zinc-400/25 overflow-hidden">
+            <summary className="flex items-center justify-between cursor-pointer px-4 py-2  list-none hover:bg-zinc-400/10 hover:bg-zinc-400/10">
               <span>{item.bangla_name} কখন পড়বেন?</span>
               <span className="text-zinc-400 group-open:rotate-180 transition">
                 ▼
@@ -233,8 +233,8 @@ export default function DowaShowClient({ initialData, slug }: Props) {
               নিয়মিত পাঠ করলে বেশি উপকার পাওয়া যায়।
             </div>
           </details>
-          <details className="group rounded-xl border border-zinc-400/25 dark:border-zinc-700 overflow-hidden">
-            <summary className="flex items-center justify-between cursor-pointer px-4 py-2  list-none hover:bg-zinc-900 hover:bg-zinc-800/50">
+          <details className="group rounded-xl border border-zinc-400/25 dark:border-zinc-400/25 overflow-hidden">
+            <summary className="flex items-center justify-between cursor-pointer px-4 py-2  list-none hover:bg-zinc-400/10 hover:bg-zinc-400/10">
               <span>অন্যান্য দোয়া কোথায় পাব?</span>
               <span className="text-zinc-400 group-open:rotate-180 transition">
                 ▼

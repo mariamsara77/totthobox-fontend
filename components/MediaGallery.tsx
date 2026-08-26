@@ -87,7 +87,7 @@ export default function MediaGallery({ media }: MediaGalleryProps) {
               />
 
               {isLastOverlay && (
-                <div className="absolute inset-0 flex items-center justify-center bg-zinc-800/60 backdrop-blur-[2px] text-white font-bold  group-hover:bg-zinc-900/70">
+                <div className="absolute inset-0 flex items-center justify-center bg-zinc-400/10 backdrop-blur-[2px] text-white font-bold  group-hover:bg-zinc-400/10">
                   <span className="text-lg">+ {toBengaliNumber(count - 3)} টি</span>
                 </div>
               )}

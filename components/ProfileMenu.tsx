@@ -67,7 +67,7 @@ export default function ProfileMenu() {
       </button>
 
       <div
-        className={`absolute right-0 z-50 mt-2 w-64 rounded-2xl border border-zinc-400/25 bg-zinc-200 dark:bg-zinc-800 p-2 transition-all ${
+        className={`absolute right-0 z-50 mt-2 w-64 rounded-2xl border border-zinc-400/25 bg-zinc-200 bg-zinc-400/10 p-2 transition-all ${
           isDropdownOpen
             ? "visible translate-y-0 opacity-100"
             : "invisible -translate-y-1 opacity-0"

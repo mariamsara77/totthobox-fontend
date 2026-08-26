@@ -173,7 +173,7 @@ export default function HolidaysClient() {
           <select
             value={selectedYear}
             onChange={(event) => setSelectedYear(event.target.value)}
-            className="rounded-xl border border-zinc-400/25 bg-zinc-200 p-4 dark:bg-zinc-800"
+            className="rounded-xl border border-zinc-400/25 bg-zinc-200 p-4 bg-zinc-400/10"
             aria-label="বছর নির্বাচন"
           >
             {years.length > 0
@@ -186,7 +186,7 @@ export default function HolidaysClient() {
           <select
             value={selectedType}
             onChange={(event) => setSelectedType(event.target.value)}
-            className="rounded-xl border border-zinc-400/25 bg-zinc-200 p-4 dark:bg-zinc-800"
+            className="rounded-xl border border-zinc-400/25 bg-zinc-200 p-4 bg-zinc-400/10"
             aria-label="ধরন নির্বাচন"
           >
             <option value="">সকল ধরণ</option>
@@ -199,7 +199,7 @@ export default function HolidaysClient() {
             type="date"
             value={fromDate}
             onChange={(event) => setFromDate(event.target.value)}
-            className="rounded-xl border border-zinc-400/25 bg-zinc-200 p-4 dark:bg-zinc-800"
+            className="rounded-xl border border-zinc-400/25 bg-zinc-200 p-4 bg-zinc-400/10"
             aria-label="শুরুর তারিখ"
           />
 
@@ -207,7 +207,7 @@ export default function HolidaysClient() {
             type="date"
             value={toDate}
             onChange={(event) => setToDate(event.target.value)}
-            className="rounded-xl border border-zinc-400/25 bg-zinc-200 p-4 dark:bg-zinc-800"
+            className="rounded-xl border border-zinc-400/25 bg-zinc-200 p-4 bg-zinc-400/10"
             aria-label="শেষের তারিখ"
           />
         </div>

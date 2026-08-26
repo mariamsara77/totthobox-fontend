@@ -112,7 +112,7 @@ export default function SidebarProfileMenu({
       {isDropdownOpen && (
         <div
           role="menu"
-          className={`absolute bottom-full z-50 mb-2 w-64 rounded-2xl border border-zinc-400/25 bg-zinc-200 p-4 dark:bg-zinc-800 ${collapsed ? "left-14" : "left-0"}`}
+          className={`absolute bottom-full z-50 mb-2 w-64 rounded-2xl border border-zinc-400/25 bg-zinc-200 p-4 bg-zinc-400/10 ${collapsed ? "left-14" : "left-0"}`}
         >
           <div className="flex items-center gap-2 border-b border-zinc-400/25 pb-4">
             <img src={avatarUrl} alt="" className="h-10 w-10 rounded-xl object-cover" />

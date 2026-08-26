@@ -306,7 +306,7 @@ export default function MediaConverter() {
         className="flex items-center justify-between rounded-xl bg-zinc-400/10 p-4"
       >
         <div className="flex items-center gap-4 min-w-0">
-          <div className="rounded-lg bg-zinc-400/10 p-2">
+          <div className="rounded-xl bg-zinc-400/10 p-2">
             {VIDEO_FORMATS.includes(sourceFormat) ? (
               <Film className="size-5" />
             ) : (
@@ -323,7 +323,7 @@ export default function MediaConverter() {
         </div>
         <button
           onClick={removeFile}
-          className="p-1.5 hover:bg-zinc-400/25 rounded-lg"
+          className="p-1.5 hover:bg-zinc-400/25 rounded-xl"
         >
           <X className="size-4" />
         </button>
@@ -340,7 +340,7 @@ export default function MediaConverter() {
           className="space-y-4 overflow-hidden"
         >
           <div className="flex items-center gap-2 text-sm">
-            <span className="inline-flex items-center rounded-lg bg-zinc-400/10 px-2.5 py-1 text-sm">
+            <span className="inline-flex items-center rounded-xl bg-zinc-400/10 px-2.5 py-1 text-sm">
               {sourceFormat.toUpperCase()}
             </span>
             <span>→ Convert to</span>
@@ -352,9 +352,9 @@ export default function MediaConverter() {
                 onClick={() => setTargetFormat(opt)}
                 disabled={status === "converting"}
                 className={cn(
-                  "px-2.5 py-1 rounded-lg text-sm uppercase transition",
+                  "px-2.5 py-1 rounded-xl text-sm uppercase transition",
                   targetFormat === opt
-                    ? "bg-zinc-700 text-white"
+                    ? "bg-zinc-400/25 text-white"
                     : "bg-zinc-400/10 hover:bg-zinc-400/25",
                 )}
               >
@@ -393,7 +393,7 @@ export default function MediaConverter() {
     {status === "converting" && (
       <div className="w-full bg-zinc-400/10 rounded-full h-2 overflow-hidden">
         <div
-          className="bg-zinc-700 h-2 rounded-full transition-all duration-300"
+          className="bg-zinc-400/25 h-2 rounded-full transition-all duration-300"
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -426,7 +426,7 @@ export default function MediaConverter() {
           )}
 
           {status === "failed" && (
-            <div className="rounded-xl dark:bg-zinc-400/40 p-4 flex items-start gap-4">
+            <div className="rounded-xl bg-zinc-400/10 p-4 flex items-start gap-4">
               <AlertCircle className="size-5 shrink-0" />
               {errorMessage || "Something went wrong. Please try again."}
             </div>
@@ -532,20 +532,20 @@ function StatusBadge({ status }: { status: ConversionStatus }) {
     converting: {
       label: "Converting",
       color:
-        "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300",
+        "bg-zinc-400/25 opacity-50 dark:bg-zinc-400/25 dark:opacity-50",
     },
     completed: {
       label: "Completed",
-      color: "bg-zinc-900 text-zinc-200 dark:bg-emerald-900/40 text-zinc-300",
+      color: "bg-zinc-400/10 text-zinc-200 dark:bg-emerald-900/40 text-zinc-300",
     },
     failed: {
       label: "Failed",
-      color: "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300",
+      color: "bg-zinc-400/25 opacity-50 dark:bg-zinc-400/25 dark:opacity-50",
     },
   };
   const item = map[status] || {
     label: status,
-    color: "bg-zinc-900 text-zinc-300",
+    color: "bg-zinc-400/10 text-zinc-300",
   };
   return (
     <span
@@ -569,10 +569,10 @@ function FaqItem({
 }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="rounded-xl border border-zinc-400/25 dark:border-zinc-700 overflow-hidden">
+    <div className="rounded-xl border border-zinc-400/25 dark:border-zinc-400/25 overflow-hidden">
       <button
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between px-4 py-3.5 text-left  hover:bg-zinc-900 hover:bg-zinc-800/50 transition"
+        className="flex w-full items-center justify-between px-4 py-3.5 text-left  hover:bg-zinc-400/10 hover:bg-zinc-400/10 transition"
       >
         <span>{question}</span>
         <ChevronDown

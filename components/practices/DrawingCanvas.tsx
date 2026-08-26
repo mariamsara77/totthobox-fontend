@@ -446,7 +446,7 @@ const DrawingCanvas = forwardRef<DrawingCanvasHandle, Props>(function DrawingCan
   return (
     <div
       ref={containerRef}
-      className="relative border rounded-xl overflow-hidden bg-zinc-950 bg-zinc-900 "
+      className="relative border rounded-xl overflow-hidden bg-zinc-400/10 bg-zinc-400/10 "
     >
       <canvas
         ref={canvasRef}

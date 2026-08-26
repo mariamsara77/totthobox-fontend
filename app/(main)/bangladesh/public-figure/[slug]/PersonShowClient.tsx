@@ -119,13 +119,13 @@ export default function PersonShowClient({ person }: Props) {
               {person.categories?.map((cat) => (
                 <span
                   key={cat.id}
-                  className="inline-block px-2.5 py-0.5 rounded-md text-xs  bg-zinc-400/10 "
+                  className="inline-block px-2.5 py-0.5 rounded-xl text-xs  bg-zinc-400/10 "
                 >
                   {cat.name}
                 </span>
               ))}
               {person.current_role && (
-                <span className="inline-block px-2.5 py-0.5 rounded-md text-xs  bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                <span className="inline-block px-2.5 py-0.5 rounded-xl text-xs  bg-zinc-400/25 opacity-50 dark:bg-zinc-400/25 dark:opacity-50">
                   বর্তমানে কর্মরত
                 </span>
               )}
@@ -148,7 +148,7 @@ export default function PersonShowClient({ person }: Props) {
             )}
 
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs bg-zinc-400/10 text-zinc-300">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-xl text-xs bg-zinc-400/10 text-zinc-300">
                 <Eye className="w-3.5 h-3.5" />
                 {person.views_count?.toLocaleString("bn-BD") || 0}
               </span>
@@ -160,7 +160,7 @@ export default function PersonShowClient({ person }: Props) {
             <button
               type="button"
               onClick={() => setShowCreators(!showCreators)}
-              className="p-2 rounded-lg text-zinc-400 hover:bg-zinc-900 hover:bg-zinc-800"
+              className="p-2 rounded-xl text-zinc-400 hover:bg-zinc-400/10 hover:bg-zinc-400/10"
               aria-label="তথ্য প্রদানকারীগণ"
             >
               <Users className="w-5 h-5" />
@@ -172,7 +172,7 @@ export default function PersonShowClient({ person }: Props) {
                   className="fixed inset-0 z-40"
                   onClick={() => setShowCreators(false)}
                 />
-                <div className="absolute right-0 top-full mt-2 w-80 max-h-80 overflow-y-auto rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900  p-4 z-50 space-y-4">
+                <div className="absolute right-0 top-full mt-2 w-80 max-h-80 overflow-y-auto rounded-2xl border border-zinc-400/25 bg-zinc-400/10 bg-zinc-400/10  p-4 z-50 space-y-4">
                   <h3 className=" text-sm text-zinc-50 text-zinc-200">
                     তথ্য প্রদানকারী
                   </h3>
@@ -259,7 +259,7 @@ export default function PersonShowClient({ person }: Props) {
               >
                 <div className="flex items-center gap-2 min-w-0">
                   {h.is_current && (
-                    <span className="text-xs px-1.5 py-0.5 rounded bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 shrink-0">
+                    <span className="text-xs px-1.5 py-0.5 rounded bg-zinc-400/25 opacity-50 dark:bg-zinc-400/25 dark:opacity-50 shrink-0">
                       বর্তমান
                     </span>
                   )}
@@ -335,7 +335,7 @@ export default function PersonShowClient({ person }: Props) {
           <div className="px-4 pb-4 text-sm ">
             <Link
               href="/bangladesh/public-figure"
-              className="text-amber-600 hover:underline"
+              className="opacity-50 hover:underline"
             >
               প্রোফাইল আর্কাইভ
             </Link>{" "}

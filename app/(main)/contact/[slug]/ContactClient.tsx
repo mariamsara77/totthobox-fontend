@@ -213,7 +213,7 @@ export default function ContactClient({ category }: Props) {
       </header>
 
       {/* Filters */}
-      <nav className="bg-zinc-950 bg-zinc-800 rounded-xl p-4  border border-zinc-400/20 space-y-4">
+      <nav className="bg-zinc-400/10 bg-zinc-400/10 rounded-xl p-4  border border-zinc-400/20 space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
@@ -222,14 +222,14 @@ export default function ContactClient({ category }: Props) {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="নাম বা ঠিকানা দিয়ে খুঁজুন..."
-              className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-zinc-400/25  text-sm focus:outline-none focus:ring-2 focus:ring-zinc-400"
+              className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-zinc-400/25  text-sm focus:outline-none  "
             />
           </div>
 
           <select
             value={divisionId}
             onChange={(e) => setDivisionId(e.target.value)}
-            className="w-full px-3 py-2.5 rounded-lg border border-zinc-400/25  text-sm focus:outline-none focus:ring-2 focus:ring-zinc-400"
+            className="w-full px-3 py-2.5 rounded-xl border border-zinc-400/25  text-sm focus:outline-none  "
           >
             <option value="">সব বিভাগ</option>
             {divisions.map((d) => (
@@ -243,7 +243,7 @@ export default function ContactClient({ category }: Props) {
             value={districtId}
             onChange={(e) => setDistrictId(e.target.value)}
             disabled={!divisionId}
-            className="w-full px-3 py-2.5 rounded-lg border border-zinc-400/25  text-sm focus:outline-none focus:ring-2 focus:ring-zinc-400 disabled:opacity-50"
+            className="w-full px-3 py-2.5 rounded-xl border border-zinc-400/25  text-sm focus:outline-none   disabled:opacity-50"
           >
             <option value="">সব জেলা</option>
             {districts.map((d) => (
@@ -257,7 +257,7 @@ export default function ContactClient({ category }: Props) {
             value={thanaId}
             onChange={(e) => setThanaId(e.target.value)}
             disabled={!districtId}
-            className="w-full px-3 py-2.5 rounded-lg border border-zinc-400/25  text-sm focus:outline-none focus:ring-2 focus:ring-zinc-400 disabled:opacity-50"
+            className="w-full px-3 py-2.5 rounded-xl border border-zinc-400/25  text-sm focus:outline-none   disabled:opacity-50"
           >
             <option value="">সব থানা</option>
             {thanas.map((t) => (
@@ -316,7 +316,7 @@ export default function ContactClient({ category }: Props) {
             return (
               <article
                 key={contact.id}
-                className="rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900 p-4 space-y-4 hover: transition-shadow"
+                className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 bg-zinc-400/10 p-4 space-y-4 hover: transition-shadow"
               >
                 <div className="flex items-start gap-4">
                   <div className="size-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow shrink-0">
@@ -328,7 +328,7 @@ export default function ContactClient({ category }: Props) {
                         {contact.name}
                       </h3>
                       {contact.type && (
-                        <span className="px-2 py-0.5 rounded-md text-xs  bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
+                        <span className="px-2 py-0.5 rounded-xl text-xs  bg-zinc-400/25 opacity-50 dark:bg-zinc-400/25 dark:opacity-50">
                           {contact.type}
                         </span>
                       )}
@@ -350,13 +350,13 @@ export default function ContactClient({ category }: Props) {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-zinc-400/10/50 rounded-xl p-2 text-sm">
                   {contact.phone && (
                     <div className="flex items-center gap-2">
-                      <Phone className="w-4 h-4 text-green-600" />
+                      <Phone className="w-4 h-4 opacity-50" />
                       <span className="font-mono">{contact.phone}</span>
                     </div>
                   )}
                   {contact.alt_phone && (
                     <div className="flex items-center gap-2">
-                      <Phone className="w-4 h-4 text-blue-600" />
+                      <Phone className="w-4 h-4 opacity-50" />
                       <span className="font-mono text-zinc-300">{contact.alt_phone}</span>
                     </div>
                   )}
@@ -378,7 +378,7 @@ export default function ContactClient({ category }: Props) {
                   {contact.phone && (
                     <a
                       href={`tel:${contact.phone}`}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-700 text-white text-sm  hover:bg-zinc-600"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-400/25 text-white text-sm  hover:bg-zinc-400/25"
                     >
                       <Phone className="w-4 h-4" />
                       কল করুন
@@ -386,7 +386,7 @@ export default function ContactClient({ category }: Props) {
                   )}
                   <button
                     onClick={() => shareContact(contact)}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-zinc-400/30 text-sm  hover:bg-zinc-900 hover:bg-zinc-800"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-zinc-400/30 text-sm  hover:bg-zinc-400/10 hover:bg-zinc-400/10"
                   >
                     <Share2 className="w-4 h-4" />
                     শেয়ার
@@ -394,7 +394,7 @@ export default function ContactClient({ category }: Props) {
                   {contact.phone && (
                     <button
                       onClick={(e) => copyPhone(contact.phone!, e.currentTarget)}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-zinc-400/30 text-sm  hover:bg-zinc-900 hover:bg-zinc-800"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-zinc-400/30 text-sm  hover:bg-zinc-400/10 hover:bg-zinc-400/10"
                     >
                       <Copy className="w-4 h-4" />
                       কপি

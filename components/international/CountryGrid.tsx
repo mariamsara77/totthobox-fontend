@@ -236,13 +236,13 @@ export function CountryGrid({
       <div className="space-y-8 animate-pulse">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-24 bg-zinc-800 bg-zinc-800 rounded-xl" />
+            <div key={i} className="h-24 bg-zinc-400/10 bg-zinc-400/10 rounded-xl" />
           ))}
         </div>
-        <div className="h-32 bg-zinc-800 bg-zinc-800 rounded-xl" />
+        <div className="h-32 bg-zinc-400/10 bg-zinc-400/10 rounded-xl" />
         <div className="grid md:grid-cols-2 gap-6">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-64 bg-zinc-800 bg-zinc-800 rounded-xl" />
+            <div key={i} className="h-64 bg-zinc-400/10 bg-zinc-400/10 rounded-xl" />
           ))}
         </div>
       </div>
@@ -254,23 +254,23 @@ export function CountryGrid({
       {/* Stats */}
       {countries.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-zinc-800/80 border border-zinc-400/25 rounded-xl p-4">
+          <div className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl p-4">
             <p className="text-sm text-zinc-400">মোট দেশ</p>
             <p className="text-xl font-bold">
               {stats.total.toLocaleString("bn-BD")} টি
             </p>
           </div>
-          <div className="bg-zinc-800/80 border border-zinc-400/25 rounded-xl p-4">
+          <div className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl p-4">
             <p className="text-sm text-zinc-400">বিশ্ব জনসংখ্যা</p>
             <p className="text-xl font-bold">
               {formatPopulation(stats.population)}
             </p>
           </div>
-          <div className="bg-zinc-800/80 border border-zinc-400/25 rounded-xl p-4">
+          <div className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl p-4">
             <p className="text-sm text-zinc-400">অঞ্চল</p>
             <p className="text-xl font-bold">{stats.regions} টি</p>
           </div>
-          <div className="bg-zinc-800/80 border border-zinc-400/25 rounded-xl p-4">
+          <div className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl p-4">
             <p className="text-sm text-zinc-400">স্থলবেষ্টিত</p>
             <p className="text-xl font-bold">{stats.landlocked} টি</p>
           </div>
@@ -278,7 +278,7 @@ export function CountryGrid({
       )}
 
       {/* Filters */}
-      <div className="bg-zinc-800/80 p-4 rounded-xl  border border-zinc-400/25">
+      <div className="bg-zinc-400/10 p-4 rounded-xl  border border-zinc-400/25">
         <div className="flex flex-wrap gap-4 items-center">
           <div className="flex-1 min-w-[200px]">
             <input
@@ -286,14 +286,14 @@ export function CountryGrid({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="দেশের নাম বা রাজধানী খুঁজুন..."
-              className="w-full px-4 py-2.5 rounded-lg border border-zinc-700 dark:border-zinc-700 bg-zinc-950 bg-zinc-900 text-zinc-50 text-zinc-100 focus:outline-none focus:ring-2 focus:ring-zinc-400"
+              className="w-full px-4 py-2.5 rounded-xl border border-zinc-400/25 dark:border-zinc-400/25 bg-zinc-400/10 bg-zinc-400/10 text-zinc-50 text-zinc-100 focus:outline-none  "
             />
           </div>
 
           <select
             value={regionFilter}
             onChange={(e) => setRegionFilter(e.target.value)}
-            className="w-full sm:w-auto min-w-[150px] px-4 py-2.5 rounded-lg border border-zinc-700 dark:border-zinc-700 bg-zinc-950 bg-zinc-900"
+            className="w-full sm:w-auto min-w-[150px] px-4 py-2.5 rounded-xl border border-zinc-400/25 dark:border-zinc-400/25 bg-zinc-400/10 bg-zinc-400/10"
           >
             <option value="">সকল অঞ্চল</option>
             {regions.map((r) => (
@@ -306,7 +306,7 @@ export function CountryGrid({
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="w-full sm:w-auto min-w-[160px] px-4 py-2.5 rounded-lg border border-zinc-700 dark:border-zinc-700 bg-zinc-950 bg-zinc-900"
+            className="w-full sm:w-auto min-w-[160px] px-4 py-2.5 rounded-xl border border-zinc-400/25 dark:border-zinc-400/25 bg-zinc-400/10 bg-zinc-400/10"
           >
             <option value="name">নাম (A-Z)</option>
             <option value="population_desc">জনসংখ্যা (বেশি → কম)</option>
@@ -343,11 +343,11 @@ export function CountryGrid({
           displayed.map((country, idx) => (
             <div key={country.code}>
               {idx > 0 && idx % 6 === 0 && (
-                <div className="md:col-span-2 hidden md:flex bg-zinc-400/10 rounded-xl items-center justify-center p-4 min-h-[120px] text-zinc-400 text-sm border border-dashed border-zinc-700 dark:border-zinc-700 mb-6">
+                <div className="md:col-span-2 hidden md:flex bg-zinc-400/10 rounded-xl items-center justify-center p-4 min-h-[120px] text-zinc-400 text-sm border border-dashed border-zinc-400/25 dark:border-zinc-400/25 mb-6">
                   Advertisement
                 </div>
               )}
-              <article className="bg-zinc-800/80 border border-zinc-400/25 rounded-xl overflow-hidden hover: transition-shadow">
+              <article className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl overflow-hidden hover: transition-shadow">
                 <div className="flex items-center gap-4 p-4 border-b border-zinc-400/25">
                   <img
                     src={country.flag}

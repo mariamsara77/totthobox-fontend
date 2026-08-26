@@ -10,7 +10,7 @@ export default function Navbar() {
   const { setIsOpen, isCollapsed, toggleCollapsed } = useSidebar();
 
   return (
-    <header className="w-full border-b border-zinc-400/25 bg-zinc-200 dark:bg-zinc-800">
+    <header className="w-full border-b border-zinc-400/25 bg-zinc-200 bg-zinc-400/10">
       <div className="flex items-center justify-between gap-4 p-4">
         <div className="flex items-center gap-2">
           <button

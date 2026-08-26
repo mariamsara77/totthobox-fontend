@@ -117,12 +117,12 @@ export default async function AppShowPage({
           <div className="flex-1 space-y-2">
             <div className="flex flex-wrap gap-2">
               {app.platform && (
-                <span className="inline-flex items-center rounded-md bg-zinc-400/10 px-2.5 py-1 text-xs  ">
+                <span className="inline-flex items-center rounded-xl bg-zinc-400/10 px-2.5 py-1 text-xs  ">
                   {app.platform}
                 </span>
               )}
               {app.version && (
-                <span className="inline-flex items-center rounded-md bg-zinc-400/10 px-2.5 py-1 text-xs  ">
+                <span className="inline-flex items-center rounded-xl bg-zinc-400/10 px-2.5 py-1 text-xs  ">
                   v{app.version}
                 </span>
               )}
@@ -133,12 +133,12 @@ export default async function AppShowPage({
             </h1>
 
             <div className="flex items-center gap-2 flex-wrap">
-              <div className="inline-flex items-center gap-2 rounded-md bg-green-50 dark:bg-green-900/20 px-2.5 py-1 text-xs  text-green-700 dark:text-green-400">
+              <div className="inline-flex items-center gap-2 rounded-xl bg-zinc-400/25 dark:bg-zinc-400/25 px-2.5 py-1 text-xs  opacity-50 dark:opacity-50">
                 <Download className="w-3.5 h-3.5" />
                 {app.download_count ?? 0}+ Downloads
               </div>
 
-              <div className="inline-flex items-center gap-2 rounded-md bg-zinc-400/10/50 px-2.5 py-1 text-xs  ">
+              <div className="inline-flex items-center gap-2 rounded-xl bg-zinc-400/10/50 px-2.5 py-1 text-xs  ">
                 <Eye className="w-3.5 h-3.5" />
                 {app.views_count ?? 0}
               </div>
@@ -157,7 +157,7 @@ export default async function AppShowPage({
       {/* App Icon */}
       <div className="flex justify-center">
         {app.icon_url ? (
-          <div className="relative w-28 h-28 rounded-2xl overflow-hidden border border-zinc-400/25 dark:border-zinc-700 ">
+          <div className="relative w-28 h-28 rounded-2xl overflow-hidden border border-zinc-400/25 dark:border-zinc-400/25 ">
             <Image
               src={app.icon_url}
               alt={app.name}
@@ -168,7 +168,7 @@ export default async function AppShowPage({
             />
           </div>
         ) : (
-          <div className="w-28 h-28 rounded-2xl bg-zinc-400/10 flex items-center justify-center border border-zinc-400/25 dark:border-zinc-700">
+          <div className="w-28 h-28 rounded-2xl bg-zinc-400/10 flex items-center justify-center border border-zinc-400/25 dark:border-zinc-400/25">
             <Puzzle className="w-12 h-12 text-zinc-400" />
           </div>
         )}
@@ -200,8 +200,8 @@ export default async function AppShowPage({
 
       {/* Archive Password */}
       {app.download_password && (
-        <section className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-2xl border border-blue-200 dark:border-blue-800 flex items-center gap-4">
-          <div className="bg-blue-500 p-2 rounded-xl text-white shrink-0">
+        <section className="bg-zinc-400/25 dark:bg-zinc-400/25 p-4 rounded-2xl border border-zinc-400/25 dark:border-zinc-400/25 flex items-center gap-4">
+          <div className="bg-zinc-400/25 p-2 rounded-xl text-white shrink-0">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="w-5 h-5"
@@ -243,7 +243,7 @@ export default async function AppShowPage({
       <div>
         <Link
           href="/software"
-          className="inline-flex items-center gap-2 px-4 py-2 text-sm  text-zinc-300 hover:bg-zinc-900 text-zinc-300 hover:bg-zinc-800 rounded-lg "
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm  text-zinc-300 hover:bg-zinc-400/10 text-zinc-300 hover:bg-zinc-400/10 rounded-xl "
         >
           <ArrowLeft className="w-4 h-4" />
           Digital Resource Library তে ফিরে যান
@@ -277,8 +277,8 @@ export default async function AppShowPage({
         </h2>
 
         <div className="space-y-2">
-          <details className="group rounded-xl border border-zinc-400/25 bg-zinc-800/80 overflow-hidden">
-            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5  text-zinc-50 text-zinc-200 hover:bg-zinc-900 hover:bg-zinc-800/50 transition list-none">
+          <details className="group rounded-xl border border-zinc-400/25 bg-zinc-400/10 overflow-hidden">
+            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5  text-zinc-50 text-zinc-200 hover:bg-zinc-400/10 hover:bg-zinc-400/10 transition list-none">
               <span>{app.name} কি ফ্রি?</span>
               <ChevronDown className="w-4 h-4 text-zinc-400 group-open:rotate-180 transition shrink-0" />
             </summary>
@@ -287,8 +287,8 @@ export default async function AppShowPage({
             </div>
           </details>
 
-          <details className="group rounded-xl border border-zinc-400/25 bg-zinc-800/80 overflow-hidden">
-            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5  text-zinc-50 text-zinc-200 hover:bg-zinc-900 hover:bg-zinc-800/50 transition list-none">
+          <details className="group rounded-xl border border-zinc-400/25 bg-zinc-400/10 overflow-hidden">
+            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5  text-zinc-50 text-zinc-200 hover:bg-zinc-400/10 hover:bg-zinc-400/10 transition list-none">
               <span>ডাউনলোড নিরাপদ কি?</span>
               <ChevronDown className="w-4 h-4 text-zinc-400 group-open:rotate-180 transition shrink-0" />
             </summary>
@@ -299,8 +299,8 @@ export default async function AppShowPage({
             </div>
           </details>
 
-          <details className="group rounded-xl border border-zinc-400/25 bg-zinc-800/80 overflow-hidden">
-            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5  text-zinc-50 text-zinc-200 hover:bg-zinc-900 hover:bg-zinc-800/50 transition list-none">
+          <details className="group rounded-xl border border-zinc-400/25 bg-zinc-400/10 overflow-hidden">
+            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5  text-zinc-50 text-zinc-200 hover:bg-zinc-400/10 hover:bg-zinc-400/10 transition list-none">
               <span>কোন প্ল্যাটফর্মের জন্য?</span>
               <ChevronDown className="w-4 h-4 text-zinc-400 group-open:rotate-180 transition shrink-0" />
             </summary>
@@ -310,8 +310,8 @@ export default async function AppShowPage({
             </div>
           </details>
 
-          <details className="group rounded-xl border border-zinc-400/25 bg-zinc-800/80 overflow-hidden">
-            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5  text-zinc-50 text-zinc-200 hover:bg-zinc-900 hover:bg-zinc-800/50 transition list-none">
+          <details className="group rounded-xl border border-zinc-400/25 bg-zinc-400/10 overflow-hidden">
+            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5  text-zinc-50 text-zinc-200 hover:bg-zinc-400/10 hover:bg-zinc-400/10 transition list-none">
               <span>কীভাবে ইনস্টল করব?</span>
               <ChevronDown className="w-4 h-4 text-zinc-400 group-open:rotate-180 transition shrink-0" />
             </summary>

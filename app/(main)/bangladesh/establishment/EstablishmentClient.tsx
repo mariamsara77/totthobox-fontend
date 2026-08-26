@@ -118,7 +118,7 @@ export default function EstablishmentClient() {
     <div className="max-w-2xl mx-auto space-y-4 p-4 sm:p-6">
       <header>
         <h1 className="text-2xl font-bold flex items-center gap-2 text-zinc-50 text-zinc-100">
-          <Building2 className="w-6 h-6 text-amber-600" />
+          <Building2 className="w-6 h-6 opacity-50" />
           বাংলাদেশের স্থাপনাসমূহ
         </h1>
         <p className="text-sm text-zinc-400 mt-1">
@@ -135,7 +135,7 @@ export default function EstablishmentClient() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="নামে বা বিবরণে খুঁজুন..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-400/25 bg-zinc-800/80 text-sm"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-400/25 bg-zinc-400/10 text-sm"
             />
           </div>
           {hasFilters && (
@@ -159,7 +159,7 @@ export default function EstablishmentClient() {
           <select
             value={type}
             onChange={(e) => setType(e.target.value)}
-            className="min-w-40 rounded-lg border border-zinc-400/25 bg-zinc-400/10 text-sm px-3 py-2"
+            className="min-w-40 rounded-xl border border-zinc-400/25 bg-zinc-400/10 text-sm px-3 py-2"
           >
             <option value="">সকল ধরন</option>
             {types.map((t) => (
@@ -171,7 +171,7 @@ export default function EstablishmentClient() {
           <select
             value={divisionId}
             onChange={(e) => setDivisionId(e.target.value)}
-            className="min-w-32 rounded-lg border border-zinc-400/25 bg-zinc-400/10 text-sm px-3 py-2"
+            className="min-w-32 rounded-xl border border-zinc-400/25 bg-zinc-400/10 text-sm px-3 py-2"
           >
             <option value="">সকল বিভাগ</option>
             {divisions.map((d) => (
@@ -184,7 +184,7 @@ export default function EstablishmentClient() {
             value={districtId}
             onChange={(e) => setDistrictId(e.target.value)}
             disabled={!divisionId}
-            className="min-w-32 rounded-lg border border-zinc-400/25 bg-zinc-400/10 text-sm px-3 py-2 disabled:opacity-50"
+            className="min-w-32 rounded-xl border border-zinc-400/25 bg-zinc-400/10 text-sm px-3 py-2 disabled:opacity-50"
           >
             <option value="">সকল জেলা</option>
             {districts.map((d) => (
@@ -197,7 +197,7 @@ export default function EstablishmentClient() {
             value={thanaId}
             onChange={(e) => setThanaId(e.target.value)}
             disabled={!districtId}
-            className="min-w-32 rounded-lg border border-zinc-400/25 bg-zinc-400/10 text-sm px-3 py-2 disabled:opacity-50"
+            className="min-w-32 rounded-xl border border-zinc-400/25 bg-zinc-400/10 text-sm px-3 py-2 disabled:opacity-50"
           >
             <option value="">সকল থানা</option>
             {thanas.map((t) => (
@@ -219,7 +219,7 @@ export default function EstablishmentClient() {
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div
                 key={i}
-                className="rounded-2xl border border-zinc-400/25 bg-zinc-800/80 p-4 animate-pulse"
+                className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 animate-pulse"
               >
                 <div className="flex gap-4">
                   <div className="w-16 h-16 rounded-xl bg-zinc-400/10" />
@@ -279,7 +279,7 @@ export default function EstablishmentClient() {
                 </div>
               </div>
               <div className="mt-3 pt-3 border-t border-zinc-400/25">
-                <span className="inline-flex items-center gap-2 text-xs  text-amber-600">
+                <span className="inline-flex items-center gap-2 text-xs  opacity-50">
                   বিস্তারিত পড়ুন <ArrowRight className="w-3.5 h-3.5" />
                 </span>
               </div>

@@ -64,7 +64,7 @@ export default function CookieSettings() {
       <button
         type="button"
         onClick={() => setIsModalOpen(true)}
-        className="flex items-center gap-2 rounded-full bg-zinc-800 px-2.5 py-1 text-xs text-zinc-50 hover:bg-zinc-700"
+        className="flex items-center gap-2 rounded-full bg-zinc-400/10 px-2.5 py-1 text-xs text-zinc-50 hover:bg-zinc-400/25"
       >
         <RxSwitch className="w-4 h-4" /> কুকি সেটিংস
       </button>
@@ -76,7 +76,7 @@ export default function CookieSettings() {
           aria-labelledby="cookie-settings-title"
           className="fixed inset-0 z-50 mt-20 ml-35 flex items-center justify-center duration-200"
         >
-          <div className="rounded-xl border border-zinc-400/25 bg-zinc-950 p-4 duration-200">
+          <div className="rounded-xl border border-zinc-400/25 bg-zinc-400/10 p-4 duration-200">
             <div className="mb-3">
               <h3 id="cookie-settings-title" className="text-lg text-zinc-50">কুকি সেটিংস</h3>
               <p className="mt-1 text-xs text-zinc-400">
@@ -92,7 +92,7 @@ export default function CookieSettings() {
                     সাইট সঠিকভাবে চালানোর জন্য আবশ্যক
                   </p>
                 </div>
-                <span className="rounded-md bg-zinc-800 px-2 py-1 text-xs text-zinc-300">
+                <span className="rounded-xl bg-zinc-400/10 px-2 py-1 text-xs text-zinc-300">
                   সর্বদা চালু
                 </span>
               </div>
@@ -114,10 +114,10 @@ export default function CookieSettings() {
                       analytics: !cookieSettings.analytics,
                     })
                   }
-                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 ${cookieSettings.analytics ? "bg-zinc-700" : "bg-zinc-800"}`}
+                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 ${cookieSettings.analytics ? "bg-zinc-400/25" : "bg-zinc-400/10"}`}
                 >
                   <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-zinc-900 shadow transition duration-200 ease-in-out ${cookieSettings.analytics ? "translate-x-4.5" : "translate-x-0.5"}`}
+                    className={`inline-block h-4 w-4 transform rounded-full bg-zinc-400/10 shadow transition duration-200 ease-in-out ${cookieSettings.analytics ? "translate-x-4.5" : "translate-x-0.5"}`}
                   />
                 </button>
               </div>
@@ -139,10 +139,10 @@ export default function CookieSettings() {
                       marketing: !cookieSettings.marketing,
                     })
                   }
-                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 ${cookieSettings.marketing ? "bg-zinc-700" : "bg-zinc-800"}`}
+                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 ${cookieSettings.marketing ? "bg-zinc-400/25" : "bg-zinc-400/10"}`}
                 >
                   <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-zinc-900 shadow transition duration-200 ease-in-out ${cookieSettings.marketing ? "translate-x-4.5" : "translate-x-0.5"}`}
+                    className={`inline-block h-4 w-4 transform rounded-full bg-zinc-400/10 shadow transition duration-200 ease-in-out ${cookieSettings.marketing ? "translate-x-4.5" : "translate-x-0.5"}`}
                   />
                 </button>
               </div>
@@ -163,21 +163,21 @@ export default function CookieSettings() {
               <button
                 type="button"
                 onClick={() => saveConsent(false, true)}
-                className="w-full rounded-lg px-2 py-1 text-sm text-zinc-300 hover:bg-zinc-800 sm:w-auto"
+                className="w-full rounded-xl px-2 py-1 text-sm text-zinc-300 hover:bg-zinc-400/10 sm:w-auto"
               >
                 শুধু প্রয়োজনীয়
               </button>
               <button
                 type="button"
                 onClick={() => saveConsent()}
-                className="w-full rounded-lg bg-zinc-800 px-2 py-1 text-sm text-zinc-50 hover:bg-zinc-700 sm:w-auto"
+                className="w-full rounded-xl bg-zinc-400/10 px-2 py-1 text-sm text-zinc-50 hover:bg-zinc-400/25 sm:w-auto"
               >
                 সংরক্ষণ করুন
               </button>
               <button
                 type="button"
                 onClick={() => saveConsent(true)}
-                className="rounded-lg bg-zinc-700 px-2 py-1 text-sm text-zinc-50 hover:bg-zinc-600"
+                className="rounded-xl bg-zinc-400/25 px-2 py-1 text-sm text-zinc-50 hover:bg-zinc-400/25"
               >
                 সব গ্রহণ করুন
               </button>

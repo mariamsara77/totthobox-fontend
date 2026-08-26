@@ -75,16 +75,16 @@ export default function HistoryShowClient({ history }: { history: History }) {
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 space-y-2">
             <div className="flex flex-wrap gap-2">
-              <span className="text-xs px-2.5 py-0.5 rounded-md bg-zinc-400/10 text-zinc-300">
+              <span className="text-xs px-2.5 py-0.5 rounded-xl bg-zinc-400/10 text-zinc-300">
                 ইতিহাস ও ঐতিহ্য
               </span>
               {history.is_featured && (
-                <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-md bg-amber-500 text-white">
+                <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-xl bg-zinc-400/25 text-white">
                   <Star className="w-3 h-3" /> Featured
                 </span>
               )}
               {history.era && (
-                <span className="text-xs px-2.5 py-0.5 rounded-md bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300">
+                <span className="text-xs px-2.5 py-0.5 rounded-xl bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300">
                   {history.era}
                 </span>
               )}
@@ -93,12 +93,12 @@ export default function HistoryShowClient({ history }: { history: History }) {
               {history.title}
             </h1>
             {(history.start_year || history.end_year) && (
-              <p className="text-sm  text-amber-700 dark:text-amber-400 flex items-center gap-2">
+              <p className="text-sm  opacity-50 dark:opacity-50 flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
                 {history.start_year ?? "?"} – {history.end_year ?? "?"}
               </p>
             )}
-            <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-md bg-zinc-400/10 text-zinc-300">
+            <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-xl bg-zinc-400/10 text-zinc-300">
               <Eye className="w-3.5 h-3.5" />
               {history.views_count?.toLocaleString("bn-BD") || 0}
             </span>
@@ -108,7 +108,7 @@ export default function HistoryShowClient({ history }: { history: History }) {
             <button
               type="button"
               onClick={() => setShowCreators(!showCreators)}
-              className="p-2 rounded-lg text-zinc-400 hover:bg-zinc-900 hover:bg-zinc-800"
+              className="p-2 rounded-xl text-zinc-400 hover:bg-zinc-400/10 hover:bg-zinc-400/10"
             >
               <Users className="w-5 h-5" />
             </button>
@@ -118,7 +118,7 @@ export default function HistoryShowClient({ history }: { history: History }) {
                   className="fixed inset-0 z-40"
                   onClick={() => setShowCreators(false)}
                 />
-                <div className="absolute right-0 top-full mt-2 w-80 max-h-80 overflow-y-auto rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900  p-4 z-50 space-y-4">
+                <div className="absolute right-0 top-full mt-2 w-80 max-h-80 overflow-y-auto rounded-2xl border border-zinc-400/25 bg-zinc-400/10 bg-zinc-400/10  p-4 z-50 space-y-4">
                   <h3 className=" text-sm">তথ্য প্রদানকারী</h3>
                   {creators.length === 0 ? (
                     <p className="text-xs text-zinc-400 text-center py-2">
@@ -134,7 +134,7 @@ export default function HistoryShowClient({ history }: { history: History }) {
                             className="w-9 h-9 rounded-full object-cover"
                           />
                         ) : (
-                          <div className="w-9 h-9 rounded-full bg-zinc-800 flex items-center justify-center text-xs">
+                          <div className="w-9 h-9 rounded-full bg-zinc-400/10 flex items-center justify-center text-xs">
                             {c.name?.charAt(0)}
                           </div>
                         )}
@@ -255,7 +255,7 @@ export default function HistoryShowClient({ history }: { history: History }) {
           <div className="px-4 pb-4 text-sm ">
             <Link
               href="/bangladesh/history"
-              className="text-amber-600 hover:underline"
+              className="opacity-50 hover:underline"
             >
               ঐতিহাসিক স্থান
             </Link>{" "}

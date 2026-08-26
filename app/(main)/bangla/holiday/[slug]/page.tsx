@@ -101,7 +101,7 @@ export default async function HolidayShowPage({
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 space-y-2">
             {holiday.type && (
-              <span className="inline-flex items-center rounded-md bg-zinc-400/10 px-2.5 py-1 text-xs  ">
+              <span className="inline-flex items-center rounded-xl bg-zinc-400/10 px-2.5 py-1 text-xs  ">
                 {holiday.type}
               </span>
             )}
@@ -115,7 +115,7 @@ export default async function HolidayShowPage({
             </p>
 
             <div className="flex items-center gap-2 flex-wrap">
-              <div className="inline-flex items-center gap-2 rounded-md bg-zinc-400/10/50 px-2.5 py-1 text-xs  ">
+              <div className="inline-flex items-center gap-2 rounded-xl bg-zinc-400/10/50 px-2.5 py-1 text-xs  ">
                 <Eye className="w-3.5 h-3.5" />
                 {holiday.views_count_bn || holiday.views_count || 0} বার দেখা
                 হয়েছে
@@ -133,9 +133,9 @@ export default async function HolidayShowPage({
       </header>
 
       {/* Date Card */}
-      <div className="flex gap-4 p-4 rounded-2xl border border-zinc-400/25 bg-zinc-800/80 ">
-        <div className="flex flex-col items-center justify-center w-16 h-16 rounded-xl bg-amber-50 dark:bg-amber-900/20 shrink-0">
-          <span className="text-xs uppercase font-black text-amber-600 dark:text-amber-500">
+      <div className="flex gap-4 p-4 rounded-2xl border border-zinc-400/25 bg-zinc-400/10 ">
+        <div className="flex flex-col items-center justify-center w-16 h-16 rounded-xl bg-zinc-400/25 dark:bg-zinc-400/25 shrink-0">
+          <span className="text-xs uppercase font-black opacity-50 dark:opacity-50">
             {holiday.month_short}
           </span>
           <span className="text-2xl font-bold leading-none text-zinc-50 text-zinc-100">
@@ -210,7 +210,7 @@ export default async function HolidayShowPage({
       <div>
         <Link
           href="/bangla/holiday"
-          className="inline-flex items-center gap-2 px-4 py-2 text-sm  text-zinc-300 hover:bg-zinc-900 text-zinc-300 hover:bg-zinc-800 rounded-lg "
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm  text-zinc-300 hover:bg-zinc-400/10 text-zinc-300 hover:bg-zinc-400/10 rounded-xl "
         >
           <ArrowLeft className="w-4 h-4" />
           ছুটির ক্যালেন্ডারে ফিরে যান
@@ -238,8 +238,8 @@ export default async function HolidayShowPage({
         </h2>
 
         <div className="space-y-2">
-          <details className="group rounded-xl border border-zinc-400/25 bg-zinc-800/80 overflow-hidden">
-            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5  text-zinc-50 text-zinc-200 hover:bg-zinc-900 hover:bg-zinc-800/50 transition list-none">
+          <details className="group rounded-xl border border-zinc-400/25 bg-zinc-400/10 overflow-hidden">
+            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5  text-zinc-50 text-zinc-200 hover:bg-zinc-400/10 hover:bg-zinc-400/10 transition list-none">
               <span>{holiday.title} কী?</span>
               <ChevronDown className="w-4 h-4 text-zinc-400 group-open:rotate-180 transition shrink-0" />
             </summary>
@@ -249,15 +249,15 @@ export default async function HolidayShowPage({
             </div>
           </details>
 
-          <details className="group rounded-xl border border-zinc-400/25 bg-zinc-800/80 overflow-hidden">
-            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5  text-zinc-50 text-zinc-200 hover:bg-zinc-900 hover:bg-zinc-800/50 transition list-none">
+          <details className="group rounded-xl border border-zinc-400/25 bg-zinc-400/10 overflow-hidden">
+            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5  text-zinc-50 text-zinc-200 hover:bg-zinc-400/10 hover:bg-zinc-400/10 transition list-none">
               <span>অন্যান্য ছুটি কোথায় পাব?</span>
               <ChevronDown className="w-4 h-4 text-zinc-400 group-open:rotate-180 transition shrink-0" />
             </summary>
             <div className="px-4 pb-4 text-sm  leading-relaxed border-t border-zinc-400/25 pt-3">
               <Link
                 href="/bangla/holiday"
-                className="text-amber-600 hover:underline "
+                className="opacity-50 hover:underline "
               >
                 ছুটির ক্যালেন্ডার
               </Link>{" "}

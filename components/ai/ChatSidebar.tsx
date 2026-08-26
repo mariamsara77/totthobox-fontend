@@ -161,7 +161,7 @@ useEffect(() => {
                     e.preventDefault();
                     remove(s.id, s.uuid);
                   }}
-                  className="absolute right-1.5 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 p-2 rounded-lg hover:bg-zinc-400/25 "
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 p-2 rounded-xl hover:bg-zinc-400/25 "
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>

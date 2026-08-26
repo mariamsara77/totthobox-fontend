@@ -26,7 +26,7 @@ export default function Navbar() {
             <Link
               href="/messages"
               aria-label="মেসেজ"
-              className="flex items-center gap-2 rounded-xl p-2 text-zinc-700 transition hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-900"
+              className="flex items-center gap-2 rounded-xl p-2 text-zinc-700 transition hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-400/10"
             >
               <MessageCircle className="h-5 w-5" />
               <span className="hidden sm:inline-block">মেসেজ</span>
@@ -36,7 +36,7 @@ export default function Navbar() {
           <button
             type="button"
             onClick={openSettingsModal}
-            className="flex items-center gap-2 rounded-xl p-2 hover:bg-zinc-100 dark:hover:bg-zinc-900"
+            className="flex items-center gap-2 rounded-xl p-2 hover:bg-zinc-100 dark:hover:bg-zinc-400/10"
           >
             <Settings className="h-5 w-5" />
             <span className="hidden sm:inline-block">সেটিংস</span>

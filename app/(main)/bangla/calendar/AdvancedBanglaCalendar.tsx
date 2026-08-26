@@ -309,7 +309,7 @@ export default function AdvancedBanglaCalendar() {
       <header className="space-y-1.5">
         <h1 className="text-xl">
           আজকের বাংলা তারিখ:{" "}
-          <span className="text-green-600">
+          <span className="opacity-50">
             {bnNum(selBn.day)} {selBn.month} {bnNum(selBn.year)}
           </span>
         </h1>
@@ -388,7 +388,7 @@ export default function AdvancedBanglaCalendar() {
                   new Date(viewDate.getFullYear(), parseInt(e.target.value), 1),
                 );
               }}
-              className="appearance-none bg-zinc-200 dark:bg-zinc-800 hover:opacity-90 outline-none
+              className="appearance-none bg-zinc-200 bg-zinc-400/10 hover:opacity-90 outline-none
                  rounded-xl pl-4 pr-9 py-2 cursor-pointer"
             >
               {Array.from({ length: 12 }).map((_, i) => (
@@ -416,7 +416,7 @@ export default function AdvancedBanglaCalendar() {
                   new Date(parseInt(e.target.value), viewDate.getMonth(), 1),
                 );
               }}
-              className="appearance-none bg-zinc-200 dark:bg-zinc-800 hover:opacity-90 outline-none
+              className="appearance-none bg-zinc-200 bg-zinc-400/10 hover:opacity-90 outline-none
                  rounded-xl pl-4 pr-9 py-2 cursor-pointer"
             >
               {Array.from({ length: 121 }).map((_, i) => {
@@ -539,7 +539,7 @@ export default function AdvancedBanglaCalendar() {
                   </div>
 
                   {holiday && !isSelected && (
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-35 px-2.5 py-1.5 bg-zinc-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 ">
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-35 px-2.5 py-1.5 bg-zinc-400/10 text-white text-xs rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 ">
                       {holiday.title}
                     </div>
                   )}
@@ -562,7 +562,7 @@ export default function AdvancedBanglaCalendar() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.94, y: 12 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-zinc-200 dark:bg-zinc-800 rounded-3xl p-4 w-full max-w-sm relative"
+              className="bg-zinc-200 bg-zinc-400/10 rounded-3xl p-4 w-full max-w-sm relative"
             >
               <button
                 onClick={() => setShowModal(false)}

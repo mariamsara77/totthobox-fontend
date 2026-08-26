@@ -251,7 +251,7 @@ export default function DataConverter() {
       ) : (
         <div className="flex items-center justify-between rounded-xl bg-zinc-400/10 p-4">
           <div className="flex items-center gap-4 min-w-0">
-            <div className="rounded-lg bg-zinc-400/10 p-2">
+            <div className="rounded-xl bg-zinc-400/10 p-2">
               <FileJson className="size-5" />
             </div>
             <div className="min-w-0">
@@ -263,7 +263,7 @@ export default function DataConverter() {
           </div>
           <button
             onClick={clearAll}
-            className="p-1.5 hover:bg-zinc-400/25 rounded-lg"
+            className="p-1.5 hover:bg-zinc-400/25 rounded-xl"
           >
             <X className="size-4" />
           </button>
@@ -282,9 +282,9 @@ export default function DataConverter() {
             key={fmt}
             onClick={() => setSourceManually(fmt)}
             className={cn(
-              "py-1.5 rounded-lg text-sm uppercase transition",
+              "py-1.5 rounded-xl text-sm uppercase transition",
               sourceFormat === fmt
-                ? "bg-zinc-700 text-white"
+                ? "bg-zinc-400/25 text-white"
                 : "bg-zinc-400/10 hover:bg-zinc-400/25",
             )}
           >
@@ -301,7 +301,7 @@ export default function DataConverter() {
           3. Source Data
         </label>
         {sourceFormat && (
-          <span className="inline-flex items-center rounded-lg bg-zinc-400/10 px-2.5 py-1 text-sm uppercase">
+          <span className="inline-flex items-center rounded-xl bg-zinc-400/10 px-2.5 py-1 text-sm uppercase">
             {sourceFormat}
           </span>
         )}
@@ -315,7 +315,7 @@ export default function DataConverter() {
         }}
         rows={9}
         placeholder={`{"example": "paste your raw data here..."}`}
-        className="w-full rounded-lg bg-zinc-400/10 p-2 outline-none"
+        className="w-full rounded-xl bg-zinc-400/10 p-2 outline-none"
       />
     </div>
 
@@ -338,9 +338,9 @@ export default function DataConverter() {
                   key={opt}
                   onClick={() => setTargetFormat(opt)}
                   className={cn(
-                    "px-2.5 py-1 rounded-lg text-sm uppercase transition",
+                    "px-2.5 py-1 rounded-xl text-sm uppercase transition",
                     targetFormat === opt
-                      ? "bg-zinc-700 text-white"
+                      ? "bg-zinc-400/25 text-white"
                       : "bg-zinc-400/10 hover:bg-zinc-400/25",
                   )}
                 >
@@ -376,7 +376,7 @@ export default function DataConverter() {
 
     {/* Error */}
     {errorMessage && (
-      <div className="rounded-xl dark:bg-zinc-400/40 p-4 flex items-start gap-4">
+      <div className="rounded-xl bg-zinc-400/10 p-4 flex items-start gap-4">
         <AlertCircle className="size-5 shrink-0" />
         {errorMessage}
       </div>
@@ -399,7 +399,7 @@ export default function DataConverter() {
 
             <button
               onClick={copyResult}
-              className="inline-flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-sm hover:bg-zinc-400/25 transition"
+              className="inline-flex items-center gap-2 rounded-xl px-2.5 py-1.5 text-sm hover:bg-zinc-400/25 transition"
             >
               {copied ? (
                 <>
@@ -419,7 +419,7 @@ export default function DataConverter() {
             readOnly
             value={resultContent}
             rows={9}
-            className="w-full rounded-lg bg-zinc-400/10 p-2 outline-none"
+            className="w-full rounded-xl bg-zinc-400/10 p-2 outline-none"
           />
 
           <button
@@ -588,10 +588,10 @@ function FaqItem({
 }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="rounded-xl border border-zinc-400/25 dark:border-zinc-700 overflow-hidden">
+    <div className="rounded-xl border border-zinc-400/25 dark:border-zinc-400/25 overflow-hidden">
       <button
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between px-4 py-3.5 text-left  text-zinc-50 text-zinc-200 hover:bg-zinc-900 hover:bg-zinc-800/50 transition"
+        className="flex w-full items-center justify-between px-4 py-3.5 text-left  text-zinc-50 text-zinc-200 hover:bg-zinc-400/10 hover:bg-zinc-400/10 transition"
       >
         <span>{question}</span>
         <ChevronDown

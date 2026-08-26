@@ -282,10 +282,10 @@ export default function ZodiacCalculator() {
   }, [person1Dob, person2Dob]);
 
   const statusColor = {
-    excellent: " bg-zinc-900 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800",
-    good: "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800",
-    average: "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800",
-    medium: "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800",
+    excellent: " bg-zinc-400/10 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800",
+    good: "opacity-50 dark:opacity-50 bg-zinc-400/25 dark:bg-zinc-400/25 border-zinc-400/25 dark:border-zinc-400/25",
+    average: "opacity-50 dark:opacity-50 bg-zinc-400/25 dark:bg-zinc-400/25 border-zinc-400/25 dark:border-zinc-400/25",
+    medium: "opacity-50 dark:opacity-50 bg-zinc-400/25 dark:bg-zinc-400/25 border-zinc-400/25 dark:border-zinc-400/25",
     poor: "text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800",
   };
 
@@ -303,13 +303,13 @@ export default function ZodiacCalculator() {
         </div>
 
         {/* Tabs */}
-        <div className="flex rounded-xl overflow-hidden border border-zinc-400/25 dark:border-zinc-700">
+        <div className="flex rounded-xl overflow-hidden border border-zinc-400/25 dark:border-zinc-400/25">
           <button
             onClick={() => setTab("single")}
             className={`flex-1 py-2 text-sm   ${
               tab === "single"
-                ? "bg-indigo-500 text-white"
-                : "bg-zinc-400/10  hover:bg-zinc-900 hover:bg-zinc-700"
+                ? "bg-zinc-400/25 text-white"
+                : "bg-zinc-400/10  hover:bg-zinc-400/10 hover:bg-zinc-400/25"
             }`}
           >
             একক রাশি
@@ -318,8 +318,8 @@ export default function ZodiacCalculator() {
             onClick={() => setTab("compatibility")}
             className={`flex-1 py-2 text-sm   ${
               tab === "compatibility"
-                ? "bg-indigo-500 text-white"
-                : "bg-zinc-400/10  hover:bg-zinc-900 hover:bg-zinc-700"
+                ? "bg-zinc-400/25 text-white"
+                : "bg-zinc-400/10  hover:bg-zinc-400/10 hover:bg-zinc-400/25"
             }`}
           >
             রাশির মিল
@@ -329,7 +329,7 @@ export default function ZodiacCalculator() {
         {/* ========== SINGLE ========== */}
         {tab === "single" && (
           <div className="space-y-4">
-            <div className="rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900/50 p-4 space-y-4">
+            <div className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 bg-zinc-400/10 p-4 space-y-4">
               <div className="flex flex-col gap-2">
                 <label className="text-sm  ">
                   আপনার জন্মতারিখ দিন
@@ -339,7 +339,7 @@ export default function ZodiacCalculator() {
                   value={dob}
                   max={todayISO()}
                   onChange={(e) => setDob(e.target.value)}
-                  className="w-full p-2 rounded-lg bg-zinc-400/10 border-none outline-none"
+                  className="w-full p-2 rounded-xl bg-zinc-400/10 border-none outline-none"
                 />
               </div>
               <button
@@ -364,7 +364,7 @@ export default function ZodiacCalculator() {
                         আপনার রাশিফল
                       </p>
                       <div className="mt-4 mb-2 text-7xl">{singleZodiac.emoji}</div>
-                      <h3 className="text-3xl   text-indigo-600 dark:text-indigo-400">
+                      <h3 className="text-3xl   opacity-50 dark:opacity-50">
                         {singleZodiac.name}
                       </h3>
                       <p className="text-lg   mt-1">
@@ -377,38 +377,38 @@ export default function ZodiacCalculator() {
 
                     {/* Stats */}
                     <div className="grid grid-cols-2 gap-4 pt-4 border-t border-zinc-400/25">
-                      <div className="p-3 bg-zinc-950 bg-zinc-800 rounded-xl  text-center">
+                      <div className="p-3 bg-zinc-400/10 bg-zinc-400/10 rounded-xl  text-center">
                         <div className="text-xs text-zinc-400">উপাদান (Element)</div>
                         <div className="text-base sm:text-lg font-bold mt-1 ">
                           {singleZodiac.element}
                         </div>
                       </div>
-                      <div className="p-3 bg-zinc-950 bg-zinc-800 rounded-xl  text-center">
+                      <div className="p-3 bg-zinc-400/10 bg-zinc-400/10 rounded-xl  text-center">
                         <div className="text-xs text-zinc-400">অধিপতি গ্রহ</div>
-                        <div className="text-base sm:text-lg font-bold mt-1 text-blue-600 dark:text-blue-400">
+                        <div className="text-base sm:text-lg font-bold mt-1 opacity-50 dark:opacity-50">
                           {singleZodiac.planet}
                         </div>
                       </div>
-                      <div className="p-3 bg-zinc-950 bg-zinc-800 rounded-xl  text-center">
+                      <div className="p-3 bg-zinc-400/10 bg-zinc-400/10 rounded-xl  text-center">
                         <div className="text-xs text-zinc-400">শুভ রং</div>
-                        <div className="text-sm font-bold mt-1 text-pink-600 dark:text-pink-400">
+                        <div className="text-sm font-bold mt-1 opacity-50 dark:opacity-50">
                           {singleZodiac.color}
                         </div>
                       </div>
-                      <div className="p-3 bg-zinc-950 bg-zinc-800 rounded-xl  text-center">
+                      <div className="p-3 bg-zinc-400/10 bg-zinc-400/10 rounded-xl  text-center">
                         <div className="text-xs text-zinc-400">শুভ সংখ্যা</div>
-                        <div className="text-base sm:text-lg font-bold mt-1 text-purple-600 dark:text-purple-400">
+                        <div className="text-base sm:text-lg font-bold mt-1 opacity-50 dark:opacity-50">
                           {singleZodiac.number}
                         </div>
                       </div>
                     </div>
 
                     {/* Trait */}
-                    <div className="p-4 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-center">
-                      <div className="text-sm  text-indigo-800 dark:text-indigo-300 mb-2">
+                    <div className="p-4 rounded-xl bg-zinc-400/25 dark:bg-zinc-400/25 border border-zinc-400/25 dark:border-zinc-400/25 text-center">
+                      <div className="text-sm  opacity-50 dark:opacity-50 mb-2">
                         ব্যক্তিত্ব ও বৈশিষ্ট্য
                       </div>
-                      <div className="text-base  text-indigo-700 dark:text-indigo-400 leading-relaxed">
+                      <div className="text-base  opacity-50 dark:opacity-50 leading-relaxed">
                         &ldquo;{singleZodiac.trait}&rdquo;
                       </div>
                     </div>
@@ -422,7 +422,7 @@ export default function ZodiacCalculator() {
         {/* ========== COMPATIBILITY ========== */}
         {tab === "compatibility" && (
           <div className="space-y-4">
-            <div className="rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900/50 p-4 space-y-4">
+            <div className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 bg-zinc-400/10 p-4 space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-2">
                   <label className="text-sm  ">
@@ -433,7 +433,7 @@ export default function ZodiacCalculator() {
                     value={person1Dob}
                     max={todayISO()}
                     onChange={(e) => setPerson1Dob(e.target.value)}
-                    className="w-full p-2 rounded-lg bg-zinc-400/10 border-none outline-none"
+                    className="w-full p-2 rounded-xl bg-zinc-400/10 border-none outline-none"
                   />
                 </div>
                 <div className="flex flex-col gap-2">
@@ -445,7 +445,7 @@ export default function ZodiacCalculator() {
                     value={person2Dob}
                     max={todayISO()}
                     onChange={(e) => setPerson2Dob(e.target.value)}
-                    className="w-full p-2 rounded-lg bg-zinc-400/10 border-none outline-none"
+                    className="w-full p-2 rounded-xl bg-zinc-400/10 border-none outline-none"
                   />
                 </div>
               </div>
@@ -464,17 +464,17 @@ export default function ZodiacCalculator() {
               <div className="p-4 sm:p-6  rounded-2xl space-y-4 border border-zinc-400/25">
                 {/* Two signs */}
                 <div className="grid grid-cols-2 gap-4 text-center">
-                  <div className="p-4 bg-zinc-950 bg-zinc-800 rounded-xl">
+                  <div className="p-4 bg-zinc-400/10 bg-zinc-400/10 rounded-xl">
                     <div className="text-4xl mb-2">{compatibility.p1.emoji}</div>
-                    <div className="font-bold text-indigo-600 dark:text-indigo-400">
+                    <div className="font-bold opacity-50 dark:opacity-50">
                       {compatibility.p1.name}
                     </div>
                     <div className="text-xs text-zinc-400">{compatibility.p1.en}</div>
                     <div className="text-xs text-zinc-400 mt-1">{compatibility.p1.element}</div>
                   </div>
-                  <div className="p-4 bg-zinc-950 bg-zinc-800 rounded-xl">
+                  <div className="p-4 bg-zinc-400/10 bg-zinc-400/10 rounded-xl">
                     <div className="text-4xl mb-2">{compatibility.p2.emoji}</div>
-                    <div className="font-bold text-indigo-600 dark:text-indigo-400">
+                    <div className="font-bold opacity-50 dark:opacity-50">
                       {compatibility.p2.name}
                     </div>
                     <div className="text-xs text-zinc-400">{compatibility.p2.en}</div>
@@ -499,7 +499,7 @@ export default function ZodiacCalculator() {
         <div className="mt-16 pt-10 border-t border-zinc-400/25 space-y-4 text-sm ">
           <div>
             <h3 className="text-lg font-bold text-zinc-50 text-zinc-200 mb-4 flex items-center gap-2">
-              <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-5 h-5 opacity-50" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
                   d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"

@@ -78,7 +78,7 @@ export default async function UserProfilePage({
             <header className="overflow-hidden">
                 <div className="flex flex-col md:flex-row gap-8 items-start">
                     <div className="relative">
-                        <div className="size-32 md:size-40 rounded-full overflow-hidden relative border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-4xl font-bold text-zinc-600 dark:text-zinc-300">
+                        <div className="size-32 md:size-40 rounded-full overflow-hidden relative border border-zinc-200 dark:border-zinc-400/25 bg-zinc-100 bg-zinc-400/10 flex items-center justify-center text-4xl font-bold text-zinc-600 dark:text-zinc-300">
                             {profile.avatar ? (
                                 <Image
                                     src={profile.avatar}
@@ -89,7 +89,7 @@ export default async function UserProfilePage({
                             ) : (
                                 profile.name.charAt(0)
                             )}
-                            <span className={`absolute bottom-2 right-2 size-4 rounded-full border-2 border-white dark:border-zinc-900 ${profile.is_online ? 'bg-green-500' : 'bg-zinc-400'}`} />
+                            <span className={`absolute bottom-2 right-2 size-4 rounded-full border-2 border-white dark:border-zinc-400/25 ${profile.is_online ? 'bg-zinc-400/25' : 'bg-zinc-400'}`} />
                         </div>
                     </div>
 
@@ -100,7 +100,7 @@ export default async function UserProfilePage({
                                     {profile.name}
                                 </h1>
                                 {profile.is_verified_admin && (
-                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-50 dark:bg-teal-500/10 text-teal-700 dark:text-teal-400">
+                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-zinc-400/25 dark:bg-zinc-400/25 opacity-50 dark:opacity-50">
                                         ভেরিফাইড এডমিন
                                     </span>
                                 )}
@@ -121,7 +121,7 @@ export default async function UserProfilePage({
                         </div>
 
                         <div className="flex gap-4">
-                            <Link href={`/messages/${profile.slug}`} className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-sm font-medium bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 hover:opacity-90 transition">
+                            <Link href={`/messages/${profile.slug}`} className="inline-flex items-center justify-center px-3 py-1.5 rounded-xl text-sm font-medium bg-zinc-400/10 text-white dark:bg-zinc-100 dark:text-zinc-900 hover:opacity-90 transition">
                                 মেসেজ পাঠান
                             </Link>
                         </div>
@@ -140,7 +140,7 @@ export default async function UserProfilePage({
                     </div>
                 )}
 
-                <div className="p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 space-y-4">
+                <div className="p-4 rounded-2xl border border-zinc-200 dark:border-zinc-400/25 bg-zinc-50/50 bg-zinc-400/10 space-y-4">
                     <h2 className="text-base font-semibold text-zinc-800 dark:text-zinc-200">যোগাযোগের তথ্য</h2>
                     <div className="space-y-4">
                         {profile.location && (
@@ -162,13 +162,13 @@ export default async function UserProfilePage({
                 </div>
             </section>
 
-            <hr className="my-8 border-zinc-200 dark:border-zinc-800" />
+            <hr className="my-8 border-zinc-200 dark:border-zinc-400/25" />
 
             {/* Published Content */}
             <section className="space-y-8">
                 <div className="flex items-center gap-4">
-                    <div className="p-2 bg-teal-50 dark:bg-teal-500/10 rounded-lg">
-                        <svg className="size-6 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6 6.878V6a2.25 2.25 0 0 1 2.25-2.25h7.5A2.25 2.25 0 0 1 18 6v.878m-12 0c.235-.083.487-.128.75-.128h10.5c.263 0 .515.045.75.128m-12 0A2.25 2.25 0 0 0 4.5 9v9.75A2.25 2.25 0 0 0 6.75 21h10.5a2.25 2.25 0 0 0 2.25-2.25V9a2.25 2.25 0 0 0-1.5-2.122M12 11.25v4.5m-2.25-2.25h4.5" /></svg>
+                    <div className="p-2 bg-zinc-400/25 dark:bg-zinc-400/25 rounded-xl">
+                        <svg className="size-6 opacity-50 dark:opacity-50" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6 6.878V6a2.25 2.25 0 0 1 2.25-2.25h7.5A2.25 2.25 0 0 1 18 6v.878m-12 0c.235-.083.487-.128.75-.128h10.5c.263 0 .515.045.75.128m-12 0A2.25 2.25 0 0 0 4.5 9v9.75A2.25 2.25 0 0 0 6.75 21h10.5a2.25 2.25 0 0 0 2.25-2.25V9a2.25 2.25 0 0 0-1.5-2.122M12 11.25v4.5m-2.25-2.25h4.5" /></svg>
                     </div>
                     <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-200">
                         প্রকাশিত কন্টেন্ট সমূহ
@@ -181,13 +181,13 @@ export default async function UserProfilePage({
                             <article key={index} className="p-4 rounded-2xl border border-zinc-400/10 bg-zinc-400/10 transition-all space-y-3.5">
                                 <div className="flex gap-4 items-start">
                                     {item.thumbnail && (
-                                        <div className="relative size-12 rounded-full overflow-hidden shrink-0 bg-zinc-200 dark:bg-zinc-800">
+                                        <div className="relative size-12 rounded-full overflow-hidden shrink-0 bg-zinc-200 bg-zinc-400/10">
                                             <Image src={item.thumbnail} alt={item.title} fill className="object-cover" />
                                         </div>
                                     )}
                                     <div className="flex-1">
                                         <div className="flex justify-between items-start gap-4">
-                                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-teal-50 dark:bg-teal-500/10 text-teal-700 dark:text-teal-400">
+                                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-zinc-400/25 dark:bg-zinc-400/25 opacity-50 dark:opacity-50">
                                                 {item.type_label}
                                             </span>
                                             <time className="text-xs text-zinc-500 font-medium shrink-0">
@@ -207,14 +207,14 @@ export default async function UserProfilePage({
                                 </div>
 
                                 <div className="pt-2 flex items-center justify-between border-t border-zinc-400/25">
-                                    <Link href={item.url} className="text-sm font-medium text-teal-600 dark:text-teal-400 hover:underline inline-flex items-center gap-1">
+                                    <Link href={item.url} className="text-sm font-medium opacity-50 dark:opacity-50 hover:underline inline-flex items-center gap-1">
                                         বিস্তারিত দেখুন &rarr;
                                     </Link>
                                 </div>
                             </article>
                         ))
                     ) : (
-                        <div className="col-span-full py-12 text-center border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-2xl">
+                        <div className="col-span-full py-12 text-center border-2 border-dashed border-zinc-200 dark:border-zinc-400/25 rounded-2xl">
                             <h3 className="text-base font-medium text-zinc-500">কোনো তথ্য পাওয়া যায়নি</h3>
                             <p className="text-sm text-zinc-400 mt-1">এখনো কোনো কন্টেন্ট প্রকাশ করা হয়নি।</p>
                         </div>

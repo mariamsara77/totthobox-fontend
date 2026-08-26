@@ -391,7 +391,7 @@ export default function QRGenerator() {
   const canShare = typeof navigator !== "undefined" && !!navigator.share;
 
   const inputClass =
-    "w-full p-2 rounded-lg bg-zinc-400/10 border-none outline-none text-sm";
+    "w-full p-2 rounded-xl bg-zinc-400/10 border-none outline-none text-sm";
   const labelClass = "text-sm  ";
 
   return (
@@ -410,13 +410,13 @@ export default function QRGenerator() {
       </div>
 
       {libFailed && (
-        <div className="rounded-xl border border-red-300 dark:border-red-800 bg-red-50 dark:bg-red-900/20 px-4 py-2 flex items-center justify-between gap-4">
-          <p className="text-sm text-red-700 dark:text-red-300">
+        <div className="rounded-xl border border-zinc-400/25 dark:border-zinc-400/25 bg-zinc-400/25 dark:bg-zinc-400/25 px-4 py-2 flex items-center justify-between gap-4">
+          <p className="text-sm opacity-50 dark:opacity-50">
             QR লাইব্রেরি লোড হয়নি। ইন্টারনেট সংযোগ পরীক্ষা করুন।
           </p>
           <button
             onClick={() => window.location.reload()}
-            className="px-3 py-1.5 text-xs rounded-lg bg-red-600 text-white"
+            className="px-3 py-1.5 text-xs rounded-xl bg-zinc-400/25 text-white"
           >
             আবার চেষ্টা করুন
           </button>
@@ -430,10 +430,10 @@ export default function QRGenerator() {
             <button
               key={t.id}
               onClick={() => changeType(t.id)}
-              className={`px-3 py-2 text-xs sm:text-sm  rounded-lg whitespace-nowrap  ${
+              className={`px-3 py-2 text-xs sm:text-sm  rounded-xl whitespace-nowrap  ${
                 type === t.id
-                  ? "bg-indigo-500 text-white"
-                  : "bg-zinc-400/10  hover:bg-zinc-800 hover:bg-zinc-700"
+                  ? "bg-zinc-400/25 text-white"
+                  : "bg-zinc-400/10  hover:bg-zinc-400/10 hover:bg-zinc-400/25"
               }`}
             >
               {t.label}
@@ -445,7 +445,7 @@ export default function QRGenerator() {
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* Inputs */}
         <div className="lg:col-span-3 space-y-5">
-          <div className="rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900/50 p-4 space-y-4">
+          <div className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 bg-zinc-400/10 p-4 space-y-4">
             {type === "text" && (
               <div className="flex flex-col gap-2">
                 <label className={labelClass}>যা লিখতে চান</label>
@@ -624,14 +624,14 @@ export default function QRGenerator() {
             <div className="flex flex-wrap gap-2 pt-3 border-t border-zinc-400/25">
               <button
                 onClick={() => changeType(type)}
-                className="px-3 py-1.5 text-sm rounded-lg text-zinc-400 hover:bg-zinc-900 hover:bg-zinc-800"
+                className="px-3 py-1.5 text-sm rounded-xl text-zinc-400 hover:bg-zinc-400/10 hover:bg-zinc-400/10"
               >
                 রিসেট
               </button>
               {type === "text" && (
                 <button
                   onClick={() => setContent("আসসালামু আলাইকুম! এটি একটি টেস্ট QR কোড।")}
-                  className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700"
+                  className="px-3 py-1.5 text-xs rounded-xl bg-zinc-400/10 hover:bg-zinc-400/10 hover:bg-zinc-400/25"
                 >
                   বাংলা টেক্সট
                 </button>
@@ -640,13 +640,13 @@ export default function QRGenerator() {
                 <>
                   <button
                     onClick={() => setContent("https://google.com")}
-                    className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700"
+                    className="px-3 py-1.5 text-xs rounded-xl bg-zinc-400/10 hover:bg-zinc-400/10 hover:bg-zinc-400/25"
                   >
                     Google
                   </button>
                   <button
                     onClick={() => setContent("https://youtube.com")}
-                    className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700"
+                    className="px-3 py-1.5 text-xs rounded-xl bg-zinc-400/10 hover:bg-zinc-400/10 hover:bg-zinc-400/25"
                   >
                     YouTube
                   </button>
@@ -660,7 +660,7 @@ export default function QRGenerator() {
                     setWifiEncryption("WPA");
                     setWifiHidden(false);
                   }}
-                  className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700"
+                  className="px-3 py-1.5 text-xs rounded-xl bg-zinc-400/10 hover:bg-zinc-400/10 hover:bg-zinc-400/25"
                 >
                   ওয়াইফাই উদাহরণ
                 </button>
@@ -668,7 +668,7 @@ export default function QRGenerator() {
               {type === "email" && (
                 <button
                   onClick={() => setContent("hello@example.com")}
-                  className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700"
+                  className="px-3 py-1.5 text-xs rounded-xl bg-zinc-400/10 hover:bg-zinc-400/10 hover:bg-zinc-400/25"
                 >
                   ইমেইল
                 </button>
@@ -676,7 +676,7 @@ export default function QRGenerator() {
               {type === "phone" && (
                 <button
                   onClick={() => setContent("+8801712345678")}
-                  className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700"
+                  className="px-3 py-1.5 text-xs rounded-xl bg-zinc-400/10 hover:bg-zinc-400/10 hover:bg-zinc-400/25"
                 >
                   ফোন
                 </button>
@@ -687,7 +687,7 @@ export default function QRGenerator() {
                     setSmsNumber("+8801712345678");
                     setSmsMessage("আসসালামু আলাইকুম");
                   }}
-                  className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700"
+                  className="px-3 py-1.5 text-xs rounded-xl bg-zinc-400/10 hover:bg-zinc-400/10 hover:bg-zinc-400/25"
                 >
                   SMS উদাহরণ
                 </button>
@@ -701,7 +701,7 @@ export default function QRGenerator() {
                     setVcardOrg("Totthobox");
                     setVcardUrl("https://totthobox.com");
                   }}
-                  className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700"
+                  className="px-3 py-1.5 text-xs rounded-xl bg-zinc-400/10 hover:bg-zinc-400/10 hover:bg-zinc-400/25"
                 >
                   ভিকার্ড উদাহরণ
                 </button>
@@ -710,10 +710,10 @@ export default function QRGenerator() {
           </div>
 
           {/* Advanced customization */}
-          <div className="rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900/50 overflow-hidden">
+          <div className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 bg-zinc-400/10 overflow-hidden">
             <button
               onClick={() => setShowAdvanced(!showAdvanced)}
-              className="w-full flex items-center justify-between px-4 py-2  text-zinc-50 text-zinc-200 hover:bg-zinc-900 hover:bg-zinc-800/50"
+              className="w-full flex items-center justify-between px-4 py-2  text-zinc-50 text-zinc-200 hover:bg-zinc-400/10 hover:bg-zinc-400/10"
             >
               <span>অ্যাডভান্সড কাস্টমাইজেশন</span>
               <svg
@@ -748,7 +748,7 @@ export default function QRGenerator() {
                         <button
                           key={s}
                           onClick={() => setSize(s)}
-                          className="px-2 py-1 text-xs rounded bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700"
+                          className="px-2 py-1 text-xs rounded bg-zinc-400/10 hover:bg-zinc-400/10 hover:bg-zinc-400/25"
                         >
                           {s === 256 ? "ছোট" : s === 512 ? "মাঝারি" : "বড়"}
                         </button>
@@ -791,7 +791,7 @@ export default function QRGenerator() {
                         type="color"
                         value={fgColor}
                         onChange={(e) => setFgColor(e.target.value)}
-                        className="h-10 w-14 rounded-lg border cursor-pointer"
+                        className="h-10 w-14 rounded-xl border cursor-pointer"
                       />
                       <input
                         type="text"
@@ -808,7 +808,7 @@ export default function QRGenerator() {
                         type="color"
                         value={bgColor}
                         onChange={(e) => setBgColor(e.target.value)}
-                        className="h-10 w-14 rounded-lg border cursor-pointer"
+                        className="h-10 w-14 rounded-xl border cursor-pointer"
                       />
                       <input
                         type="text"
@@ -839,7 +839,7 @@ export default function QRGenerator() {
                             type="color"
                             value={fgColor2}
                             onChange={(e) => setFgColor2(e.target.value)}
-                            className="h-10 w-14 rounded-lg border cursor-pointer"
+                            className="h-10 w-14 rounded-xl border cursor-pointer"
                           />
                           <input
                             type="text"
@@ -913,12 +913,12 @@ export default function QRGenerator() {
                       type="file"
                       accept="image/*"
                       onChange={onLogoChange}
-                      className="text-sm text-zinc-400 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-zinc-900 dark:file:bg-zinc-800 file:text-sm file: hover:file:bg-zinc-800 dark:hover:file:bg-zinc-700 cursor-pointer"
+                      className="text-sm text-zinc-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-zinc-400/10 dark:file:bg-zinc-400/10 file:text-sm file: hover:file:bg-zinc-400/10 dark:hover:file:bg-zinc-400/25 cursor-pointer"
                     />
                     {logoDataUrl && (
                       <button
                         onClick={removeLogo}
-                        className="px-2 py-1 text-xs rounded bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700"
+                        className="px-2 py-1 text-xs rounded bg-zinc-400/10 hover:bg-zinc-400/10 hover:bg-zinc-400/25"
                       >
                         লোগো সরান
                       </button>
@@ -931,7 +931,7 @@ export default function QRGenerator() {
 
                 <button
                   onClick={resetStyle}
-                  className="px-3 py-1.5 text-sm rounded-lg text-zinc-400 hover:bg-zinc-900 hover:bg-zinc-800"
+                  className="px-3 py-1.5 text-sm rounded-xl text-zinc-400 hover:bg-zinc-400/10 hover:bg-zinc-400/10"
                 >
                   স্টাইল রিসেট করুন
                 </button>
@@ -942,12 +942,12 @@ export default function QRGenerator() {
 
         {/* Preview */}
         <div className="lg:col-span-2">
-          <div className="sticky top-6 rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900/50 p-4 space-y-4">
+          <div className="sticky top-6 rounded-2xl border border-zinc-400/25 bg-zinc-400/10 bg-zinc-400/10 p-4 space-y-4">
             <div className="text-center">
               <span className="inline-block px-2.5 py-0.5 text-xs  rounded-full bg-zinc-400/10  mb-4">
                 লাইভ প্রিভিউ
               </span>
-              <div className="flex justify-center items-center p-4 bg-zinc-400/10/50 rounded-xl border border-dashed border-zinc-700 dark:border-zinc-700 min-h-[220px]">
+              <div className="flex justify-center items-center p-4 bg-zinc-400/10/50 rounded-xl border border-dashed border-zinc-400/25 dark:border-zinc-400/25 min-h-[220px]">
                 {!hasContent && (
                   <div className="text-center text-zinc-400">
                     <svg className="mx-auto w-12 h-12 mb-2 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -958,7 +958,7 @@ export default function QRGenerator() {
                 )}
                 <div
                   ref={containerRef}
-                  className={`[&>canvas]:rounded-lg [&>canvas]: [&>canvas]:max-w-full ${hasContent ? "" : "hidden"}`}
+                  className={`[&>canvas]:rounded-xl [&>canvas]: [&>canvas]:max-w-full ${hasContent ? "" : "hidden"}`}
                 />
               </div>
             </div>
@@ -968,39 +968,39 @@ export default function QRGenerator() {
                 <div className="grid grid-cols-3 gap-2">
                   <button
                     onClick={() => download("png")}
-                    className="py-2 text-sm  rounded-lg bg-indigo-500 text-white hover:bg-indigo-600"
+                    className="py-2 text-sm  rounded-xl bg-zinc-400/25 text-white bg-zinc-400/25"
                   >
                     PNG
                   </button>
                   <button
                     onClick={() => download("jpeg")}
-                    className="py-2 text-sm  rounded-lg bg-indigo-500 text-white hover:bg-indigo-600"
+                    className="py-2 text-sm  rounded-xl bg-zinc-400/25 text-white bg-zinc-400/25"
                   >
                     JPEG
                   </button>
                   <button
                     onClick={() => download("svg")}
-                    className="py-2 text-sm  rounded-lg bg-indigo-500 text-white hover:bg-indigo-600"
+                    className="py-2 text-sm  rounded-xl bg-zinc-400/25 text-white bg-zinc-400/25"
                   >
                     SVG
                   </button>
                 </div>
                 <button
                   onClick={copyImage}
-                  className="w-full py-2 text-sm rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700"
+                  className="w-full py-2 text-sm rounded-xl bg-zinc-400/10 hover:bg-zinc-400/10 hover:bg-zinc-400/25"
                 >
                   {copied ? "কপি হয়েছে!" : "ছবি কপি করুন"}
                 </button>
                 <button
                   onClick={copyText}
-                  className="w-full py-2 text-sm rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700"
+                  className="w-full py-2 text-sm rounded-xl bg-zinc-400/10 hover:bg-zinc-400/10 hover:bg-zinc-400/25"
                 >
                   ডেটা টেক্সট কপি করুন
                 </button>
                 {canShare && (
                   <button
                     onClick={shareQR}
-                    className="w-full py-2 text-sm rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700"
+                    className="w-full py-2 text-sm rounded-xl bg-zinc-400/10 hover:bg-zinc-400/10 hover:bg-zinc-400/25"
                   >
                     শেয়ার করুন
                   </button>
@@ -1090,9 +1090,9 @@ export default function QRGenerator() {
             ].map((item, i) => (
               <details
                 key={i}
-                className="group rounded-xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900 overflow-hidden"
+                className="group rounded-xl border border-zinc-400/25 bg-zinc-400/10 bg-zinc-400/10 overflow-hidden"
               >
-                <summary className="flex items-center justify-between cursor-pointer px-4 py-2  text-zinc-50 text-zinc-200 hover:bg-zinc-900 hover:bg-zinc-800/50">
+                <summary className="flex items-center justify-between cursor-pointer px-4 py-2  text-zinc-50 text-zinc-200 hover:bg-zinc-400/10 hover:bg-zinc-400/10">
                   {item.q}
                   <svg
                     className="w-4 h-4 text-zinc-400 group-open:rotate-180 transition"

@@ -105,14 +105,14 @@ export default function DowaClient() {
         <div className="relative">
           <button
             onClick={() => setShowCreators(!showCreators)}
-            className="p-2 rounded-lg hover:bg-zinc-400/10"
+            className="p-2 rounded-xl hover:bg-zinc-400/10"
             aria-label="তথ্য প্রদানকারীগণ দেখুন"
           >
             <Users className="w-5 h-5" />
           </button>
 
           {showCreators && (
-            <div className="absolute right-0 top-full mt-2 w-80 max-h-112 overflow-y-auto rounded-2xl border border-zinc-400/25 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 z-50 p-4 space-y-4">
+            <div className="absolute right-0 top-full mt-2 w-80 max-h-112 overflow-y-auto rounded-2xl border border-zinc-400/25 dark:border-zinc-400/25 bg-zinc-100 bg-zinc-400/10 z-50 p-4 space-y-4">
               <div className="space-y-1">
                 <h2 className="">
                   তথ্য প্রদানকারীগণ ({creators.length})
@@ -151,7 +151,7 @@ export default function DowaClient() {
                               {c.name}
                             </span>
                             {c.email_verified && (
-                              <Check className="w-4 h-4 text-blue-600 shrink-0" />
+                              <Check className="w-4 h-4 opacity-50 shrink-0" />
                             )}
                           </div>
                           <p className="text-xs  truncate">
@@ -188,7 +188,7 @@ export default function DowaClient() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="দোয়া খুঁজুন (যেমন: ঘুমানোর দোয়া, খাবারের দোয়া)..."
-          className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-400/10 border-0 focus:ring-2 focus:ring-zinc-500 outline-none"
+          className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-400/10 border-0   outline-none"
           aria-label="দোয়া খুঁজুন"
         />
         {search && (

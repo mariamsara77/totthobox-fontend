@@ -40,7 +40,7 @@ export default function BasicIslamShowClient({ initialData, slug }: Props) {
       </nav>
 
       {/* Header */}
-      <header className="space-y-4 border-b border-zinc-400/25 dark:border-zinc-700 pb-4">
+      <header className="space-y-4 border-b border-zinc-400/25 dark:border-zinc-400/25 pb-4">
         <h1 className="text-2xl  font-bold tracking-tight text-zinc-300">
           {item.title}
         </h1>
@@ -52,14 +52,14 @@ export default function BasicIslamShowClient({ initialData, slug }: Props) {
           <div className="relative">
             <button
               onClick={() => setShowCreators(!showCreators)}
-              className="p-1.5 rounded-lg hover:bg-zinc-900 hover:bg-zinc-800"
+              className="p-1.5 rounded-xl hover:bg-zinc-400/10 hover:bg-zinc-400/10"
               aria-label="তথ্য প্রদানকারীগণ দেখুন"
             >
               <User className="w-4 h-4" />
             </button>
 
             {showCreators && (
-              <div className="absolute right-0 top-full mt-2 w-72 max-h-80 overflow-y-auto rounded-2xl border border-zinc-400/25 dark:border-zinc-700 bg-zinc-950 bg-zinc-900  z-50 p-4 space-y-4">
+              <div className="absolute right-0 top-full mt-2 w-72 max-h-80 overflow-y-auto rounded-2xl border border-zinc-400/25 dark:border-zinc-400/25 bg-zinc-400/10 bg-zinc-400/10  z-50 p-4 space-y-4">
                 <div>
                   <h2 className=" text-sm">তথ্য প্রদানকারী</h2>
                   <p className="text-xs text-zinc-400">
@@ -85,7 +85,7 @@ export default function BasicIslamShowClient({ initialData, slug }: Props) {
                             className="w-9 h-9 rounded-full object-cover"
                           />
                         ) : (
-                          <div className="w-9 h-9 rounded-full bg-zinc-900 flex items-center justify-center text-sm  text-zinc-200">
+                          <div className="w-9 h-9 rounded-full bg-zinc-400/10 flex items-center justify-center text-sm  text-zinc-200">
                             {c.name.charAt(0)}
                           </div>
                         )}
@@ -191,8 +191,8 @@ export default function BasicIslamShowClient({ initialData, slug }: Props) {
       <section className="space-y-4">
         <h2 className="text-lg font-bold">প্রায়শই জিজ্ঞাসিত প্রশ্ন</h2>
         <div className="space-y-2">
-          <details className="group rounded-xl border border-zinc-400/25 dark:border-zinc-700 overflow-hidden">
-            <summary className="flex items-center justify-between cursor-pointer px-4 py-2  list-none hover:bg-zinc-900 hover:bg-zinc-800/50">
+          <details className="group rounded-xl border border-zinc-400/25 dark:border-zinc-400/25 overflow-hidden">
+            <summary className="flex items-center justify-between cursor-pointer px-4 py-2  list-none hover:bg-zinc-400/10 hover:bg-zinc-400/10">
               <span>{item.title} কেন গুরুত্বপূর্ণ?</span>
               <span className="text-zinc-400 group-open:rotate-180 transition">
                 ▼
@@ -203,8 +203,8 @@ export default function BasicIslamShowClient({ initialData, slug }: Props) {
               জন্য প্রয়োজনীয়। উপরের বিবরণে বিস্তারিত ব্যাখ্যা আছে।
             </div>
           </details>
-          <details className="group rounded-xl border border-zinc-400/25 dark:border-zinc-700 overflow-hidden">
-            <summary className="flex items-center justify-between cursor-pointer px-4 py-2  list-none hover:bg-zinc-900 hover:bg-zinc-800/50">
+          <details className="group rounded-xl border border-zinc-400/25 dark:border-zinc-400/25 overflow-hidden">
+            <summary className="flex items-center justify-between cursor-pointer px-4 py-2  list-none hover:bg-zinc-400/10 hover:bg-zinc-400/10">
               <span>আরও বিষয় কোথায় পাব?</span>
               <span className="text-zinc-400 group-open:rotate-180 transition">
                 ▼

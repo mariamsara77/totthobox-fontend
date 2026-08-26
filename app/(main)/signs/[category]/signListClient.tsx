@@ -103,14 +103,14 @@ export default function SignListClient({
         <div className="relative">
           <button
             onClick={() => setShowCreators(!showCreators)}
-            className="p-2 rounded-lg hover:bg-zinc-900 hover:bg-zinc-800"
+            className="p-2 rounded-xl hover:bg-zinc-400/10 hover:bg-zinc-400/10"
             aria-label="তথ্য প্রদানকারীগণ"
           >
             <Users className="w-5 h-5" />
           </button>
 
           {showCreators && (
-            <div className="absolute right-0 top-full mt-2 w-80 max-h-112 overflow-y-auto rounded-2xl border bg-zinc-950 bg-zinc-900  z-50 p-4 space-y-4">
+            <div className="absolute right-0 top-full mt-2 w-80 max-h-112 overflow-y-auto rounded-2xl border bg-zinc-400/10 bg-zinc-400/10  z-50 p-4 space-y-4">
               <div>
                 <h2 className="">
                   তথ্য প্রদানকারীগণ ({creators.length})
@@ -137,7 +137,7 @@ export default function SignListClient({
                           className="w-10 h-10 rounded-full object-cover"
                         />
                       ) : (
-                        <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 ">
+                        <div className="w-10 h-10 rounded-full bg-zinc-400/25 flex items-center justify-center opacity-50 ">
                           {c.name.charAt(0)}
                         </div>
                       )}
@@ -159,7 +159,7 @@ export default function SignListClient({
                       <span>একটিভ: {c.last_active_bn}</span>
                       <Link
                         href={`/users/${c.slug}`}
-                        className="text-amber-600 hover:underline inline-flex items-center gap-0.5"
+                        className="opacity-50 hover:underline inline-flex items-center gap-0.5"
                       >
                         প্রোফাইল <ArrowRight className="w-3 h-3" />
                       </Link>
@@ -184,13 +184,13 @@ export default function SignListClient({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="সাইন খুঁজুন (যেমন: স্টপ, জিগজ্যাগ)..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-400/10 border-0 focus:ring-2 focus:ring-amber-500 outline-none"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-400/10 border-0   outline-none"
           />
         </div>
         {search && (
           <button
             onClick={() => setSearch("")}
-            className="p-2 rounded-lg hover:bg-zinc-900"
+            className="p-2 rounded-xl hover:bg-zinc-400/10"
           >
             <X className="w-5 h-5" />
           </button>
@@ -255,7 +255,7 @@ export default function SignListClient({
                     <h2 className=" text-lg">
                       <Link
                         href={`/signs/${catSlug}/${sign.slug}`}
-                        className="hover:text-amber-600"
+                        className="opacity-50"
                       >
                         {sign.name}
                       </Link>
@@ -275,7 +275,7 @@ export default function SignListClient({
                 <div className="mt-3 pt-3 border-t border-zinc-100 border-zinc-400/25">
                   <Link
                     href={`/signs/${catSlug}/${sign.slug}`}
-                    className="inline-flex items-center gap-1 text-sm text-amber-600 hover:underline"
+                    className="inline-flex items-center gap-1 text-sm opacity-50 hover:underline"
                   >
                     বিস্তারিত পড়ুন <ArrowRight className="w-4 h-4" />
                   </Link>
@@ -289,7 +289,7 @@ export default function SignListClient({
       {/* About */}
       <section className="space-y-4 pt-6 border-t">
         <h2 className="text-lg font-bold flex items-center gap-2">
-          <Info className="w-5 h-5 text-amber-600" />
+          <Info className="w-5 h-5 opacity-50" />
           {isAll
             ? "সকল ট্রাফিক সাইন সম্পর্কে"
             : `${category?.name || ""} সম্পর্কে`}
@@ -352,9 +352,9 @@ export default function SignListClient({
           ].map((faq, i) => (
             <details
               key={i}
-              className="group rounded-xl border border-zinc-400/25 dark:border-zinc-700 overflow-hidden"
+              className="group rounded-xl border border-zinc-400/25 dark:border-zinc-400/25 overflow-hidden"
             >
-              <summary className="flex justify-between cursor-pointer px-4 py-2  list-none hover:bg-zinc-900 hover:bg-zinc-800/50">
+              <summary className="flex justify-between cursor-pointer px-4 py-2  list-none hover:bg-zinc-400/10 hover:bg-zinc-400/10">
                 <span>{faq.q}</span>
                 <span className="text-zinc-400 group-open:rotate-180 transition">
                   ▼

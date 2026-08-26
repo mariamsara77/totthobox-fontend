@@ -61,7 +61,7 @@ export default function AboutPage() {
           <div className="text-center p-4 rounded-xl bg-zinc-400/10">
             <div className="mx-auto mb-2 size-6 ">👥</div>
             <p className="text-sm ">মোট ব্যবহারকারী</p>
-            <p className="text-lg font-bold text-indigo-600 dark:text-indigo-400 mt-1">
+            <p className="text-lg font-bold opacity-50 dark:opacity-50 mt-1">
               {analytics.total}
             </p>
           </div>
@@ -89,7 +89,7 @@ export default function AboutPage() {
           <div className="text-center p-4 rounded-xl bg-zinc-400/10">
             <div className="mx-auto mb-2 size-6">📱</div>
             <p className="text-sm ">অ্যাপ ইউজার (PWA)</p>
-            <p className="text-lg font-bold text-blue-600 dark:text-blue-400 mt-1">
+            <p className="text-lg font-bold opacity-50 dark:opacity-50 mt-1">
               {analytics.pwa}
             </p>
           </div>
@@ -162,7 +162,7 @@ export default function AboutPage() {
               className="p-4 rounded-xl bg-zinc-400/10"
             >
               <div className="flex items-start gap-4">
-                <div className={`p-2 rounded-lg bg-zinc-400/10`}>
+                <div className={`p-2 rounded-xl bg-zinc-400/10`}>
                   {item.icon}
                 </div>
                 <div>
@@ -198,7 +198,7 @@ export default function AboutPage() {
         </div>
         <Link
           href="/contact"
-          className="items-center gap-2 px-4 py-2 rounded-lg bg-zinc-400/25 hover:bg-zinc-400/50"
+          className="items-center gap-2 px-4 py-2 rounded-xl bg-zinc-400/25 hover:bg-zinc-400/50"
         >
           যোগাযোগ করুন
         </Link>

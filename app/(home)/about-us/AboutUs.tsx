@@ -163,7 +163,7 @@ export default function AboutUs() {
               className="p-4 rounded-xl border transition-all"
             >
               <div className="flex items-start gap-4">
-                <div className="p-2.5 rounded-lg text-lg border">
+                <div className="p-2.5 rounded-xl text-lg border">
                   {item.icon}
                 </div>
                 <div>
@@ -208,7 +208,7 @@ export default function AboutUs() {
         </div>
         <Link
           href="/contact"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border font-medium transition-colors"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border font-medium transition-colors"
         >
           যোগাযোগ করুন
         </Link>

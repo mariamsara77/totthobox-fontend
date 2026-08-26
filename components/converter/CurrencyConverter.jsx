@@ -248,7 +248,7 @@ export default function CurrencyConverter() {
   </header>
 
   {errorMessage && (
-    <div className="rounded-xl dark:bg-zinc-400/40 p-4 flex items-start gap-4">
+    <div className="rounded-xl bg-zinc-400/10 p-4 flex items-start gap-4">
       {errorMessage}
     </div>
   )}
@@ -277,7 +277,7 @@ export default function CurrencyConverter() {
                 value={fromSearch}
                 onChange={(e) => setFromSearch(e.target.value)}
                 placeholder="সার্চ করুন..."
-                className="w-full rounded-lg bg-zinc-400/10 p-2 outline-none text-sm"
+                className="w-full rounded-xl bg-zinc-400/10 p-2 outline-none text-sm"
               />
             </div>
             <ul className="max-h-60 overflow-y-auto space-y-2 p-2">
@@ -345,7 +345,7 @@ export default function CurrencyConverter() {
                 value={toSearch}
                 onChange={(e) => setToSearch(e.target.value)}
                 placeholder="সার্চ করুন..."
-                className="w-full rounded-lg bg-zinc-400/10 p-2 outline-none text-sm"
+                className="w-full rounded-xl bg-zinc-400/10 p-2 outline-none text-sm"
               />
             </div>
             <ul className="max-h-60 overflow-y-auto space-y-2 p-2">

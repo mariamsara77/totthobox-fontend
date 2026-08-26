@@ -184,7 +184,7 @@ export default async function CountryPage({ params }: Props) {
 
         {/* HERO */}
         <div className="rounded-2xl overflow-hidden border border-zinc-400/25  hover: transition-shadow">
-          <div className="relative aspect-video w-full overflow-hidden bg-zinc-800/80">
+          <div className="relative aspect-video w-full overflow-hidden bg-zinc-400/10">
             <FlagImage
               src={country.flag_svg || country.flag}
               fallbackSrc={country.flag}
@@ -194,20 +194,20 @@ export default async function CountryPage({ params }: Props) {
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
 
             <div className="absolute top-4 left-4 flex flex-wrap gap-2">
-              <span className="px-2.5 py-1 rounded-full bg-indigo-600 text-white text-xs ">
+              <span className="px-2.5 py-1 rounded-full bg-zinc-400/25 text-white text-xs ">
                 {country.region}
               </span>
               {country.subregion && (
-                <span className="px-2.5 py-1 rounded-full bg-zinc-700/80 text-white text-xs">
+                <span className="px-2.5 py-1 rounded-full bg-zinc-400/25 text-white text-xs">
                   {country.subregion}
                 </span>
               )}
             </div>
             <div className="absolute top-4 right-4 flex flex-wrap gap-2">
-              <span className="px-2.5 py-1 rounded-full bg-zinc-800/80 text-white text-xs font-mono">
+              <span className="px-2.5 py-1 rounded-full bg-zinc-400/10 text-white text-xs font-mono">
                 {country.code}
               </span>
-              <span className="px-2.5 py-1 rounded-full bg-zinc-800/80 text-white text-xs font-mono">
+              <span className="px-2.5 py-1 rounded-full bg-zinc-400/10 text-white text-xs font-mono">
                 {country.cca3}
               </span>
             </div>
@@ -233,13 +233,13 @@ export default async function CountryPage({ params }: Props) {
             </div>
           </div>
 
-          <div className="bg-zinc-800/80 px-5 py-2 flex flex-wrap items-center justify-between gap-4 border-t border-zinc-400/25">
+          <div className="bg-zinc-400/10 px-5 py-2 flex flex-wrap items-center justify-between gap-4 border-t border-zinc-400/25">
             <div className="flex flex-wrap gap-2">
               <span
                 className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs  ${
                   country.un_member.includes("সদস্য নয়")
                     ? "bg-zinc-400/10 "
-                    : "bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300"
+                    : "bg-zinc-400/25 dark:bg-zinc-400/25 opacity-50 dark:opacity-50"
                 }`}
               >
                 {country.un_member}
@@ -247,14 +247,14 @@ export default async function CountryPage({ params }: Props) {
               <span
                 className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs  ${
                   country.independent.includes("অধীনস্থ")
-                    ? "bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300"
-                    : "bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300"
+                    ? "bg-zinc-400/25 dark:bg-zinc-400/25 opacity-50 dark:opacity-50"
+                    : "bg-zinc-400/25 dark:bg-zinc-400/25 opacity-50 dark:opacity-50"
                 }`}
               >
                 {country.independent}
               </span>
               {country.landlocked === "স্থলবেষ্টিত" ? (
-                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs  bg-orange-100 dark:bg-orange-900/40 text-orange-800 dark:text-orange-300">
+                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs  bg-zinc-400/25 dark:bg-zinc-400/25 opacity-50 dark:opacity-50">
                   স্থলবেষ্টিত দেশ
                 </span>
               ) : (
@@ -267,9 +267,9 @@ export default async function CountryPage({ params }: Props) {
         </div>
 
         {/* Overview */}
-        <article className="bg-zinc-800/80 border border-zinc-400/25 rounded-xl p-4">
+        <article className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl p-4">
           <div className="flex items-center gap-2 mb-4">
-            <span className="text-indigo-500">📖</span>
+            <span className="opacity-50">📖</span>
             <h2 className="text-sm font-bold">
               {country.name} সম্পর্কে সংক্ষিপ্ত পরিচিতি
             </h2>
@@ -283,27 +283,27 @@ export default async function CountryPage({ params }: Props) {
             {
               label: "জনসংখ্যা",
               value: formatPopulation(country.population),
-              color: "text-blue-500",
+              color: "opacity-50",
             },
             {
               label: "আয়তন",
               value: formatArea(country.area),
-              color: "text-green-500",
+              color: "opacity-50",
             },
             {
               label: "জনঘনত্ব",
               value: country.density,
-              color: "text-amber-500",
+              color: "opacity-50",
             },
             {
               label: "রাজধানী",
               value: country.capital,
-              color: "text-purple-500",
+              color: "opacity-50",
             },
           ].map((stat) => (
             <div
               key={stat.label}
-              className="group bg-zinc-800/80 border border-zinc-400/25 rounded-xl p-4 text-center transition-all hover:border-indigo-400/40 hover:-translate-y-0.5"
+              className="group bg-zinc-400/10 border border-zinc-400/25 rounded-xl p-4 text-center transition-all border-zinc-400/25 hover:-translate-y-0.5"
             >
               <div
                 className={`text-lg font-bold font-mono leading-tight truncate ${stat.color}`}
@@ -317,9 +317,9 @@ export default async function CountryPage({ params }: Props) {
 
         {/* Codes + Geography */}
         <div className="grid md:grid-cols-2 gap-6">
-          <div className="bg-zinc-800/80 border border-zinc-400/25 rounded-xl overflow-hidden">
+          <div className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl overflow-hidden">
             <div className="px-4 py-2 border-b border-zinc-400/25 flex items-center gap-2">
-              <span className="text-indigo-500">🆔</span>
+              <span className="opacity-50">🆔</span>
               <h3 className="text-sm font-bold">আন্তর্জাতিক কোড</h3>
             </div>
             <div className="divide-y divide-zinc-200/50 dark:divide-zinc-700/50">
@@ -356,9 +356,9 @@ export default async function CountryPage({ params }: Props) {
             </div>
           </div>
 
-          <div className="bg-zinc-800/80 border border-zinc-400/25 rounded-xl overflow-hidden">
+          <div className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl overflow-hidden">
             <div className="px-4 py-2 border-b border-zinc-400/25 flex items-center gap-2">
-              <span className="text-indigo-500">📍</span>
+              <span className="opacity-50">📍</span>
               <h3 className="text-sm font-bold">ভৌগোলিক তথ্য</h3>
             </div>
             <div className="divide-y divide-zinc-200/50 dark:divide-zinc-700/50">
@@ -407,9 +407,9 @@ export default async function CountryPage({ params }: Props) {
         {/* Languages + Currencies */}
         <div className="grid md:grid-cols-2 gap-6">
           {country.languages.length > 0 && (
-            <div className="bg-zinc-800/80 border border-zinc-400/25 rounded-xl overflow-hidden">
+            <div className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl overflow-hidden">
               <div className="px-4 py-2 border-b border-zinc-400/25 flex items-center gap-2">
-                <span className="text-green-500">🗣️</span>
+                <span className="opacity-50">🗣️</span>
                 <h3 className="text-sm font-bold">
                   সরকারি ভাষা ({country.languages.length})
                 </h3>
@@ -419,7 +419,7 @@ export default async function CountryPage({ params }: Props) {
                   {country.languages.map((lang) => (
                     <span
                       key={lang}
-                      className="px-2.5 py-1 rounded-full bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 text-xs "
+                      className="px-2.5 py-1 rounded-full bg-zinc-400/25 dark:bg-zinc-400/25 opacity-50 dark:opacity-50 text-xs "
                     >
                       {lang}
                     </span>
@@ -430,9 +430,9 @@ export default async function CountryPage({ params }: Props) {
           )}
 
           {country.currencies.length > 0 && (
-            <div className="bg-zinc-800/80 border border-zinc-400/25 rounded-xl overflow-hidden">
+            <div className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl overflow-hidden">
               <div className="px-4 py-2 border-b border-zinc-400/25 flex items-center gap-2">
-                <span className="text-amber-500">💰</span>
+                <span className="opacity-50">💰</span>
                 <h3 className="text-sm font-bold">ব্যবহৃত মুদ্রা</h3>
               </div>
               <div className="divide-y divide-zinc-200/50 dark:divide-zinc-700/50">
@@ -442,13 +442,13 @@ export default async function CountryPage({ params }: Props) {
                     className="flex justify-between items-center px-4 py-3"
                   >
                     <div className="flex items-center gap-2">
-                      <span className="px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 text-xs font-mono font-bold">
+                      <span className="px-2 py-0.5 rounded bg-zinc-400/25 dark:bg-zinc-400/25 opacity-50 dark:opacity-50 text-xs font-mono font-bold">
                         {cur.code}
                       </span>
                       <span className="text-sm ">{cur.name}</span>
                     </div>
                     {cur.symbol ? (
-                      <span className="text-xl font-black text-indigo-600 dark:text-indigo-400 font-mono">
+                      <span className="text-xl font-black opacity-50 dark:opacity-50 font-mono">
                         {cur.symbol}
                       </span>
                     ) : (
@@ -463,16 +463,16 @@ export default async function CountryPage({ params }: Props) {
 
         {/* Translations */}
         {translations.length > 0 && (
-          <div className="bg-zinc-800/80 border border-zinc-400/25 rounded-xl overflow-hidden">
+          <div className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl overflow-hidden">
             <div className="px-4 py-2 border-b border-zinc-400/25 flex items-center gap-2">
-              <span className="text-indigo-500">🌐</span>
+              <span className="opacity-50">🌐</span>
               <h3 className="text-sm font-bold">বিভিন্ন ভাষায় নাম</h3>
             </div>
             <div className="p-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
               {translations.map(([label, name]) => (
                 <div
                   key={label}
-                  className="bg-zinc-400/10/50 rounded-lg px-3 py-2.5 hover:bg-zinc-700/25 "
+                  className="bg-zinc-400/10/50 rounded-xl px-3 py-2.5 hover:bg-zinc-400/25 "
                 >
                   <p className="text-xs text-zinc-400 mb-1">{label}</p>
                   <p className="text-sm  truncate">{name}</p>
@@ -484,7 +484,7 @@ export default async function CountryPage({ params }: Props) {
 
         {/* Timezones */}
         {country.timezones.length > 0 && (
-          <div className="bg-zinc-800/80 border border-zinc-400/25 rounded-xl overflow-hidden">
+          <div className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl overflow-hidden">
             <div className="px-4 py-2 border-b border-zinc-400/25 flex items-center gap-2">
               <span className="text-sky-500">🕒</span>
               <h3 className="text-sm font-bold">
@@ -505,9 +505,9 @@ export default async function CountryPage({ params }: Props) {
         )}
 
         {/* Neighbors */}
-        <div className="bg-zinc-800/80 border border-zinc-400/25 rounded-xl overflow-hidden">
+        <div className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl overflow-hidden">
           <div className="px-4 py-2 border-b border-zinc-400/25 flex items-center gap-2">
-            <span className="text-indigo-500">🗺️</span>
+            <span className="opacity-50">🗺️</span>
             <h3 className="text-sm font-bold">
               {neighbors.length > 0
                 ? `সীমান্তবর্তী দেশ (${neighbors.length})`
@@ -520,7 +520,7 @@ export default async function CountryPage({ params }: Props) {
                 <Link
                   key={nb.cca3}
                   href={`/international/${nb.slug}`}
-                  className="flex items-center gap-2 p-2 rounded-lg bg-zinc-400/10/50 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 border border-transparent hover:border-indigo-200 dark:hover:border-indigo-800/50 transition-all group"
+                  className="flex items-center gap-2 p-2 rounded-xl bg-zinc-400/10/50 bg-zinc-400/25 dark:bg-zinc-400/25 border border-transparent border-zinc-400/25 dark:border-zinc-400/25 transition-all group"
                 >
                   {nb.flag && (
                     <FlagImage
@@ -532,7 +532,7 @@ export default async function CountryPage({ params }: Props) {
                     />
                   )}
                   <div className="min-w-0">
-                    <p className="text-xs  truncate group-hover:text-indigo-700 dark:group-hover:text-indigo-300">
+                    <p className="text-xs  truncate group-opacity-50 dark:group-opacity-50">
                       {nb.name}
                     </p>
                     <p className="text-xs text-zinc-400 font-mono">{nb.cca3}</p>
@@ -542,7 +542,7 @@ export default async function CountryPage({ params }: Props) {
             </div>
           ) : (
             <div className="p-6 text-center">
-              <p className="text-blue-400 text-2xl mb-2">🛡️</p>
+              <p className="opacity-50 text-2xl mb-2">🛡️</p>
               <p className="text-sm text-zinc-400 ">
                 দ্বীপ দেশ — কোনো স্থল সীমান্ত নেই
               </p>
@@ -552,9 +552,9 @@ export default async function CountryPage({ params }: Props) {
 
         {/* Coat of Arms */}
         {country.coat_of_arms && (
-          <div className="bg-zinc-800/80 border border-zinc-400/25 rounded-xl overflow-hidden">
+          <div className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl overflow-hidden">
             <div className="px-4 py-2 border-b border-zinc-400/25 flex items-center gap-2">
-              <span className="text-indigo-500">🛡️</span>
+              <span className="opacity-50">🛡️</span>
               <h3 className="text-sm font-bold">রাষ্ট্রীয় প্রতীক</h3>
             </div>
             <CoatOfArms
@@ -566,10 +566,10 @@ export default async function CountryPage({ params }: Props) {
 
         {/* Maps */}
         {country.google_maps_embed ? (
-          <div className="bg-zinc-800/80 border border-zinc-400/25 rounded-xl overflow-hidden">
+          <div className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl overflow-hidden">
             <div className="px-4 py-2 border-b border-zinc-400/25 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="text-indigo-500">🗺️</span>
+                <span className="opacity-50">🗺️</span>
                 <h3 className="text-sm font-bold">মানচিত্র</h3>
               </div>
               <div className="flex gap-2">
@@ -578,7 +578,7 @@ export default async function CountryPage({ params }: Props) {
                     href={country.open_street_maps}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs px-2.5 py-1 rounded bg-zinc-400/10 hover:bg-zinc-700 dark:hover:bg-zinc-600"
+                    className="text-xs px-2.5 py-1 rounded bg-zinc-400/10 hover:bg-zinc-400/25 dark:hover:bg-zinc-400/25"
                   >
                     OpenStreetMap
                   </a>
@@ -587,13 +587,13 @@ export default async function CountryPage({ params }: Props) {
                   href={country.google_maps}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs px-2.5 py-1 rounded bg-indigo-600 text-white hover:bg-indigo-700"
+                  className="text-xs px-2.5 py-1 rounded bg-zinc-400/25 text-white bg-zinc-400/25"
                 >
                   Google Maps
                 </a>
               </div>
             </div>
-            <div className="aspect-video w-full bg-zinc-800/80">
+            <div className="aspect-video w-full bg-zinc-400/10">
               <iframe
                 src={country.google_maps_embed}
                 className="w-full h-full border-0"
@@ -603,7 +603,7 @@ export default async function CountryPage({ params }: Props) {
                 title={`${country.name} মানচিত্র`}
               />
             </div>
-            <div className="px-4 py-2.5 bg-zinc-800/80 border-t border-zinc-400/25 flex flex-wrap gap-4 text-xs text-zinc-400 font-mono">
+            <div className="px-4 py-2.5 bg-zinc-400/10 border-t border-zinc-400/25 flex flex-wrap gap-4 text-xs text-zinc-400 font-mono">
               <span>📍 {country.coords}</span>
               {country.capital !== "N/A" && country.capital_lat && (
                 <span>
@@ -618,7 +618,7 @@ export default async function CountryPage({ params }: Props) {
             href={country.google_maps}
             target="_blank"
             rel="noopener noreferrer"
-            className="block w-full text-center py-2 rounded-xl bg-indigo-600 text-white  hover:bg-indigo-700"
+            className="block w-full text-center py-2 rounded-xl bg-zinc-400/25 text-white  bg-zinc-400/25"
           >
             {country.name} Google Maps-এ দেখুন
           </a>
@@ -626,9 +626,9 @@ export default async function CountryPage({ params }: Props) {
 
         {/* FAQ */}
         {faqs.length > 0 && (
-          <div className="bg-zinc-800/80 border border-zinc-400/25 rounded-xl overflow-hidden">
+          <div className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl overflow-hidden">
             <div className="px-4 py-2 border-b border-zinc-400/25 flex items-center gap-2">
-              <span className="text-indigo-500">❓</span>
+              <span className="opacity-50">❓</span>
               <h2 className="text-sm font-bold">প্রায়শই জিজ্ঞাসিত প্রশ্ন</h2>
             </div>
             <div className="divide-y divide-zinc-100 dark:divide-zinc-800">

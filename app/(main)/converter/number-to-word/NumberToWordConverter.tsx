@@ -1592,7 +1592,7 @@ export default function NumberToWordConverter() {
               value={number}
               onChange={(e) => setNumber(e.target.value)}
               placeholder="যেমন: 12500.50 অথবা ১২৫০০.৫০"
-              className="w-full pl-10 pr-4 py-2 rounded-lg  bg-zinc-400/10 outline-none"
+              className="w-full pl-10 pr-4 py-2 rounded-xl  bg-zinc-400/10 outline-none"
               lang="en"
             />
           </div>
@@ -1624,11 +1624,11 @@ export default function NumberToWordConverter() {
 
             <div className="space-y-4">
               {/* Bangla Unicode Currency */}
-              <div className="bg-zinc-400/10 rounded-lg p-4 space-y-2">
+              <div className="bg-zinc-400/10 rounded-xl p-4 space-y-2">
                 <p className="text-sm " >
                   বাংলা (ইউনিকোড)
                 </p>
-                <p className="text-2xl  text-amber-700" >
+                <p className="text-2xl  opacity-50" >
                   {currencyBn}
                 </p>
                 <button
@@ -1641,13 +1641,13 @@ export default function NumberToWordConverter() {
               </div>
 
               {/* AdorshoLipi Currency */}
-              <div className="bg-zinc-400/10 rounded-lg p-4 space-y-2">
+              <div className="bg-zinc-400/10 rounded-xl p-4 space-y-2">
                 <p className="text-sm " >
                   টাকা-পয়সা (আদর্শলিপি আউটপুট)
                 </p>
                 <p
                   ref={currencyAdarshaRef}
-                  className="text-2xl  text-orange-600 adorsholipi-exp"
+                  className="text-2xl  opacity-50 adorsholipi-exp"
                 />
                 <button
                   onClick={() => {
@@ -1662,9 +1662,9 @@ export default function NumberToWordConverter() {
               </div>
 
               {/* English Currency */}
-              <div className="bg-zinc-400/10 rounded-lg p-4 space-y-2">
+              <div className="bg-zinc-400/10 rounded-xl p-4 space-y-2">
                 <p className="text-sm ">English</p>
-                <p className="text-2xl  text-amber-700">
+                <p className="text-2xl  opacity-50">
                   {currencyEn}
                 </p>
                 <button
@@ -1688,14 +1688,14 @@ export default function NumberToWordConverter() {
                 </h3>
               </div>
               <span
-                className="text-xs  bg-green-100 text-green-800 p-2 rounded-full"
+                className="text-xs  bg-zinc-400/25 opacity-50 p-2 rounded-full"
                 
               >
                 বাংলা
               </span>
             </div>
             <p
-              className="text-3xl   text-green-700 leading-snug"
+              className="text-3xl   opacity-50 leading-snug"
               
             >
               {bnUnicode}
@@ -1720,13 +1720,13 @@ export default function NumberToWordConverter() {
                   আদর্শলিপি আউটপুট (প্রিন্টিং-এর জন্য)
                 </h3>
               </div>
-              <span className="text-xs  bg-orange-100 text-orange-800 p-2 rounded-full">
+              <span className="text-xs  bg-zinc-400/25 opacity-50 p-2 rounded-full">
                 ANSI / AdorshoLipi
               </span>
             </div>
             <p
               ref={adarshaRef}
-              className="text-xl text-orange-600 leading-snug adorsholipi-exp"
+              className="text-xl opacity-50 leading-snug adorsholipi-exp"
             />
             <div className="border-t border-zinc-400/25 pt-3">
               <button

@@ -25,11 +25,11 @@ export default function SignShowClient({ initialData, categorySlug }: Props) {
     <div className="max-w-2xl mx-auto space-y-4 px-4 py-6">
       {/* Breadcrumb */}
       <nav className="text-sm text-zinc-400 flex flex-wrap items-center gap-1">
-        <Link href="/" className="hover:text-amber-600">
+        <Link href="/" className="opacity-50">
           হোম
         </Link>
         <span>/</span>
-        <Link href={`/signs/${categorySlug}`} className="hover:text-amber-600">
+        <Link href={`/signs/${categorySlug}`} className="opacity-50">
           {category.name} সাইন
         </Link>
         <span>/</span>
@@ -59,13 +59,13 @@ export default function SignShowClient({ initialData, categorySlug }: Props) {
         <div className="relative shrink-0">
           <button
             onClick={() => setShowCreators(!showCreators)}
-            className="p-1.5 rounded-lg hover:bg-zinc-900 hover:bg-zinc-800"
+            className="p-1.5 rounded-xl hover:bg-zinc-400/10 hover:bg-zinc-400/10"
             aria-label="তথ্য প্রদানকারী"
           >
             <User className="w-4 h-4" />
           </button>
           {showCreators && (
-            <div className="absolute right-0 top-full mt-2 w-72 max-h-80 overflow-y-auto rounded-2xl border bg-zinc-950 bg-zinc-900  z-50 p-4 space-y-4">
+            <div className="absolute right-0 top-full mt-2 w-72 max-h-80 overflow-y-auto rounded-2xl border bg-zinc-400/10 bg-zinc-400/10  z-50 p-4 space-y-4">
               <div>
                 <h2 className=" text-sm">তথ্য প্রদানকারী</h2>
                 <p className="text-xs text-zinc-400">
@@ -90,7 +90,7 @@ export default function SignShowClient({ initialData, categorySlug }: Props) {
                           className="w-9 h-9 rounded-full object-cover"
                         />
                       ) : (
-                        <div className="w-9 h-9 rounded-full bg-amber-100 flex items-center justify-center text-sm  text-amber-700">
+                        <div className="w-9 h-9 rounded-full bg-zinc-400/25 flex items-center justify-center text-sm  opacity-50">
                           {c.name.charAt(0)}
                         </div>
                       )}
@@ -112,7 +112,7 @@ export default function SignShowClient({ initialData, categorySlug }: Props) {
                       <span>একটিভ: {c.last_active_bn}</span>
                       <Link
                         href={`/users/${c.slug}`}
-                        className="text-amber-600 hover:underline inline-flex items-center gap-0.5"
+                        className="opacity-50 hover:underline inline-flex items-center gap-0.5"
                       >
                         প্রোফাইল <ArrowRight className="w-3 h-3" />
                       </Link>
@@ -176,7 +176,7 @@ export default function SignShowClient({ initialData, categorySlug }: Props) {
       <div>
         <Link
           href={`/signs/${categorySlug}`}
-          className="inline-flex items-center gap-2 text-sm text-zinc-300 hover:text-amber-600"
+          className="inline-flex items-center gap-2 text-sm text-zinc-300 opacity-50"
         >
           <ArrowLeft className="w-4 h-4" /> {category.name} তালিকায় ফিরে যান
         </Link>
@@ -197,7 +197,7 @@ export default function SignShowClient({ initialData, categorySlug }: Props) {
         <h2 className="text-lg font-bold">প্রায়শই জিজ্ঞাসিত প্রশ্ন</h2>
         <div className="space-y-2">
           <details className="group rounded-xl border overflow-hidden">
-            <summary className="flex justify-between cursor-pointer px-4 py-2  list-none hover:bg-zinc-900 hover:bg-zinc-800/50">
+            <summary className="flex justify-between cursor-pointer px-4 py-2  list-none hover:bg-zinc-400/10 hover:bg-zinc-400/10">
               <span>{item.name} কী বোঝায়?</span>
               <span className="text-zinc-400 group-open:rotate-180 transition">
                 ▼
@@ -208,7 +208,7 @@ export default function SignShowClient({ initialData, categorySlug }: Props) {
             </div>
           </details>
           <details className="group rounded-xl border overflow-hidden">
-            <summary className="flex justify-between cursor-pointer px-4 py-2  list-none hover:bg-zinc-900 hover:bg-zinc-800/50">
+            <summary className="flex justify-between cursor-pointer px-4 py-2  list-none hover:bg-zinc-400/10 hover:bg-zinc-400/10">
               <span>একই ক্যাটাগরির অন্য সাইন কোথায়?</span>
               <span className="text-zinc-400 group-open:rotate-180 transition">
                 ▼
@@ -217,7 +217,7 @@ export default function SignShowClient({ initialData, categorySlug }: Props) {
             <div className="px-4 pb-4 text-sm ">
               <Link
                 href={`/signs/${categorySlug}`}
-                className="text-amber-600 hover:underline"
+                className="opacity-50 hover:underline"
               >
                 {category.name}
               </Link>{" "}

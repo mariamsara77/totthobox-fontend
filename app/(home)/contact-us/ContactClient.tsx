@@ -43,7 +43,7 @@ export default function ContactClient() {
               </div>
               <a
                 href="tel:+8801340792677"
-                className="block w-full text-center py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 font-medium text-sm transition text-white"
+                className="block w-full text-center py-2.5 rounded-xl bg-zinc-400/25 bg-zinc-400/25 font-medium text-sm transition text-white"
               >
                 +880 1340-792677
               </a>
@@ -65,7 +65,7 @@ export default function ContactClient() {
                 href="https://wa.me/8801340792677"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block w-full text-center py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-sm transition"
+                className="block w-full text-center py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-sm transition"
               >
                 চ্যাট শুরু করুন
               </a>
@@ -98,7 +98,7 @@ export default function ContactClient() {
                     setFormData({ ...formData, name: e.target.value })
                   }
                   placeholder="সম্পূর্ণ নাম লিখুন"
-                  className="w-full px-4 py-2 rounded-lg outline-none bg-zinc-400/10"
+                  className="w-full px-4 py-2 rounded-xl outline-none bg-zinc-400/10"
                 />
               </div>
               <div>
@@ -113,7 +113,7 @@ export default function ContactClient() {
                     setFormData({ ...formData, email: e.target.value })
                   }
                   placeholder="example@email.com"
-                  className="w-full px-4 py-2 rounded-lg outline-none bg-zinc-400/10"
+                  className="w-full px-4 py-2 rounded-xl outline-none bg-zinc-400/10"
                 />
               </div>
             </div>
@@ -128,7 +128,7 @@ export default function ContactClient() {
                   setFormData({ ...formData, subject: e.target.value })
                 }
                 placeholder="মেসেজের বিষয় লিখুন"
-                className="w-full px-4 py-2 rounded-lg outline-none bg-zinc-400/10"
+                className="w-full px-4 py-2 rounded-xl outline-none bg-zinc-400/10"
               />
             </div>
 
@@ -144,14 +144,14 @@ export default function ContactClient() {
                   setFormData({ ...formData, message: e.target.value })
                 }
                 placeholder="বিস্তারিত লিখুন..."
-                className="w-full px-4 py-2 rounded-lg outline-none bg-zinc-400/10"
+                className="w-full px-4 py-2 rounded-xl outline-none bg-zinc-400/10"
               />
             </div>
 
             <div className="flex justify-end pt-2">
               <button
                 type="submit"
-                className="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-zinc-400/25 bg-zinc-400/25 text-white font-medium text-sm transition flex items-center justify-center gap-2"
               >
                 ✈ মেসেজ পাঠান
               </button>
@@ -247,7 +247,7 @@ export default function ContactClient() {
         </div>
       </div>
 
-      <div className="h-px bg-zinc-200 dark:bg-zinc-800" />
+      <div className="h-px bg-zinc-200 bg-zinc-400/10" />
 
       {/* Bottom Badge */}
       <div className="flex justify-center">

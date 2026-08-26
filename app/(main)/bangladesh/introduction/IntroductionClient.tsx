@@ -60,7 +60,7 @@ export default function IntroductionClient() {
       <header className="flex items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-zinc-50 text-zinc-100 flex items-center gap-2">
-            <Map className="w-6 h-6 text-amber-600 dark:text-amber-500" />
+            <Map className="w-6 h-6 opacity-50 dark:opacity-50" />
             বাংলাদেশের পরিচিতি
           </h1>
           <p className="text-sm  mt-1">
@@ -73,14 +73,14 @@ export default function IntroductionClient() {
         <div className="relative shrink-0">
           <button
             onClick={() => setShowCreators(!showCreators)}
-            className="p-2 rounded-lg text-zinc-400 hover:bg-zinc-900 hover:bg-zinc-800"
+            className="p-2 rounded-xl text-zinc-400 hover:bg-zinc-400/10 hover:bg-zinc-400/10"
             aria-label="তথ্য প্রদানকারীগণ"
           >
             <Users className="w-5 h-5" />
           </button>
 
           {showCreators && (
-            <div className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-y-auto rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900  p-4 z-50 space-y-4">
+            <div className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-y-auto rounded-2xl border border-zinc-400/25 bg-zinc-400/10 bg-zinc-400/10  p-4 z-50 space-y-4">
               <div>
                 <h3 className=" text-zinc-50 text-zinc-200">
                   তথ্য প্রদানকারীগণ ({creators.length})
@@ -98,7 +98,7 @@ export default function IntroductionClient() {
                 creators.map((c) => (
                   <div
                     key={c.id}
-                    className="flex items-start gap-4 p-2 rounded-xl hover:bg-zinc-900 hover:bg-zinc-800"
+                    className="flex items-start gap-4 p-2 rounded-xl hover:bg-zinc-400/10 hover:bg-zinc-400/10"
                   >
                     <div className="relative">
                       {c.avatar_url ? (
@@ -113,8 +113,8 @@ export default function IntroductionClient() {
                         </div>
                       )}
                       <span
-                        className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white dark:border-zinc-900 ${
-                          c.is_online ? "bg-green-500" : "bg-zinc-700"
+                        className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white dark:border-zinc-400/25 ${
+                          c.is_online ? "bg-zinc-400/25" : "bg-zinc-400/25"
                         }`}
                       />
                     </div>
@@ -151,13 +151,13 @@ export default function IntroductionClient() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="বিভাগ, জেলা বা শিরোনাম দিয়ে খুঁজুন..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-400/25 bg-zinc-800/80 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-400"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-400/25 bg-zinc-400/10 text-sm focus:outline-none  "
           />
         </div>
         {search && (
           <button
             onClick={() => setSearch("")}
-            className="p-2.5 rounded-xl border border-zinc-400/25 text-zinc-400 hover:bg-zinc-900 hover:bg-zinc-800"
+            className="p-2.5 rounded-xl border border-zinc-400/25 text-zinc-400 hover:bg-zinc-400/10 hover:bg-zinc-400/10"
           >
             <X className="w-5 h-5" />
           </button>
@@ -177,7 +177,7 @@ export default function IntroductionClient() {
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div
                 key={i}
-                className="rounded-2xl border border-zinc-400/25 bg-zinc-800/80 p-4 animate-pulse"
+                className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 animate-pulse"
               >
                 <div className="flex gap-4">
                   <div className="w-16 h-16 rounded-xl bg-zinc-400/10" />
@@ -198,7 +198,7 @@ export default function IntroductionClient() {
           Object.entries(grouped).map(([category, items]) => (
             <div key={category} className="space-y-4">
               <div className="flex justify-center">
-                <span className="px-4 py-1 rounded-full bg-zinc-800 text-white bg-zinc-800 dark:text-zinc-50 text-xs font-bold uppercase tracking-widest">
+                <span className="px-4 py-1 rounded-full bg-zinc-400/10 text-white bg-zinc-400/10 dark:text-zinc-50 text-xs font-bold uppercase tracking-widest">
                   {category}
                 </span>
               </div>
@@ -207,7 +207,7 @@ export default function IntroductionClient() {
                 <Link
                   key={item.id}
                   href={`/bangladesh/introduction/${item.slug}`}
-                  className="block rounded-2xl border border-zinc-400/25 bg-zinc-800/80 p-4 hover:bg-zinc-900/50 hover:bg-zinc-800/30 "
+                  className="block rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 hover:bg-zinc-400/10 hover:bg-zinc-400/10 "
                 >
                   <div className="flex gap-4 items-start">
                     <div className="shrink-0">
@@ -235,7 +235,7 @@ export default function IntroductionClient() {
                     </div>
                   </div>
                   <div className="mt-3 pt-3 border-t border-zinc-400/25">
-                    <span className="inline-flex items-center gap-2 text-xs  text-amber-600 dark:text-amber-400">
+                    <span className="inline-flex items-center gap-2 text-xs  opacity-50 dark:opacity-50">
                       বিস্তারিত পড়ুন
                       <ArrowRight className="w-3.5 h-3.5" />
                     </span>

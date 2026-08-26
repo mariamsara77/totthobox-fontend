@@ -334,7 +334,7 @@ export default function AdvancedBanglaCalendar() {
       <section className="flex items-center justify-between rounded-2xl bg-zinc-400/10/50 px-3 py-2 ">
         <button
           onClick={() => navigateMonth(-1)}
-          className="p-2 hover:bg-zinc-800 hover:bg-zinc-700 rounded-full "
+          className="p-2 hover:bg-zinc-400/10 hover:bg-zinc-400/25 rounded-full "
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
@@ -381,7 +381,7 @@ export default function AdvancedBanglaCalendar() {
 
         <button
           onClick={() => navigateMonth(1)}
-          className="p-2 hover:bg-zinc-800 hover:bg-zinc-700 rounded-full "
+          className="p-2 hover:bg-zinc-400/10 hover:bg-zinc-400/25 rounded-full "
         >
           <ChevronRight className="w-5 h-5" />
         </button>
@@ -419,11 +419,11 @@ export default function AdvancedBanglaCalendar() {
                 return <div key={`empty-${index}`} className="aspect-square" />;
 
               const { isSelected, isToday, holiday } = day;
-              let cellBg = "hover:bg-zinc-900 hover:bg-zinc-800";
+              let cellBg = "hover:bg-zinc-400/10 hover:bg-zinc-400/10";
               if (isSelected)
                 cellBg =
                   "bg-emerald-600  shadow-emerald-200/60 scale-[1.05] z-10";
-              else if (isToday) cellBg = "bg-zinc-900 ring-2 ring-zinc-500";
+              else if (isToday) cellBg = "bg-zinc-400/10 ring-2 ring-zinc-500";
 
               return (
                 <button
@@ -452,7 +452,7 @@ export default function AdvancedBanglaCalendar() {
 
                   {/* Tooltip on Hover */}
                   {holiday && !isSelected && (
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-2 py-1 bg-zinc-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-2 py-1 bg-zinc-400/10 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                       {holiday.title}
                     </div>
                   )}
@@ -475,11 +475,11 @@ export default function AdvancedBanglaCalendar() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-zinc-950 bg-zinc-900 rounded-3xl p-4 w-full max-w-sm shadow-2xl relative"
+              className="bg-zinc-400/10 bg-zinc-400/10 rounded-3xl p-4 w-full max-w-sm shadow-2xl relative"
             >
               <button
                 onClick={() => setShowModal(false)}
-                className="absolute top-4 right-4 p-1 rounded-full hover:bg-zinc-900 hover:bg-zinc-800 text-zinc-400 "
+                className="absolute top-4 right-4 p-1 rounded-full hover:bg-zinc-400/10 hover:bg-zinc-400/10 text-zinc-400 "
               >
                 <X className="w-5 h-5" />
               </button>
@@ -511,7 +511,7 @@ export default function AdvancedBanglaCalendar() {
                     </p>
                     <button
                       onClick={addToGoogleCalendar}
-                      className="mt-3 w-full py-2 px-4 bg-zinc-950 bg-zinc-800 rounded-xl text-sm  text-rose-600  border border-rose-100 dark:border-rose-900 hover:scale-[1.02] transition-transform"
+                      className="mt-3 w-full py-2 px-4 bg-zinc-400/10 bg-zinc-400/10 rounded-xl text-sm  text-rose-600  border border-rose-100 dark:border-rose-900 hover:scale-[1.02] transition-transform"
                     >
                       ক্যালেন্ডারে সেভ করুন
                     </button>

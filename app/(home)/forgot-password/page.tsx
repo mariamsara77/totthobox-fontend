@@ -68,8 +68,8 @@ export default function ForgotPasswordPage() {
         {success ? (
           <div className="text-center space-y-4">
             <div className="flex justify-center">
-              <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                <CheckCircle2 className="w-8 h-8 text-green-600" />
+              <div className="w-16 h-16 rounded-full bg-zinc-400/25 dark:bg-zinc-400/25 flex items-center justify-center">
+                <CheckCircle2 className="w-8 h-8 opacity-50" />
               </div>
             </div>
 
@@ -85,7 +85,7 @@ export default function ForgotPasswordPage() {
 
             <Link
               href="/login"
-              className="inline-flex items-center gap-2 text-sm  text-blue-600 hover:underline"
+              className="inline-flex items-center gap-2 text-sm  opacity-50 hover:underline"
             >
               <ArrowLeft size={16} />
               লগইন পেজে ফিরে যান
@@ -102,21 +102,21 @@ export default function ForgotPasswordPage() {
                 required
                 autoFocus
                 className={clsx(
-                  "w-full rounded-full py-3.5 px-6 border bg-zinc-800/80 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition",
+                  "w-full rounded-full py-3.5 px-6 border bg-zinc-400/10 focus:outline-none   dark: transition",
                   error
-                    ? "border-red-500 bg-red-50 dark:bg-red-950/30"
+                    ? "border-zinc-400/25 bg-zinc-400/25 dark:bg-zinc-400/25"
                     : "border-transparent",
                 )}
               />
               {error && (
-                <p className="text-red-600 text-xs mt-1.5 pl-4">{error}</p>
+                <p className="opacity-50 text-xs mt-1.5 pl-4">{error}</p>
               )}
             </div>
 
             <button
               type="submit"
               disabled={loading || !email}
-              className="w-full bg-zinc-700 hover:bg-zinc-600 text-white font-bold py-4 rounded-full transition disabled:opacity-60"
+              className="w-full bg-zinc-400/25 hover:bg-zinc-400/25 text-white font-bold py-4 rounded-full transition disabled:opacity-60"
             >
               {loading ? "পাঠানো হচ্ছে..." : "রিসেট লিংক পাঠান"}
             </button>
@@ -125,7 +125,7 @@ export default function ForgotPasswordPage() {
               <span>অথবা, </span>
               <Link
                 href="/login"
-                className=" text-blue-600 hover:underline"
+                className=" opacity-50 hover:underline"
               >
                 লগইন পেজে ফিরে যান
               </Link>

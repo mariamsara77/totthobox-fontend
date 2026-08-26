@@ -189,17 +189,17 @@ export default function RegisterContent() {
               onChange={(e) => setName(e.target.value)}
               placeholder="আপনার পূর্ণ নাম"
               className={clsx(
-                "w-full rounded-full py-3.5 px-6 border bg-zinc-400/10 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition",
+                "w-full rounded-full py-3.5 px-6 border bg-zinc-400/10 focus:outline-none   dark: transition",
                 errors.name
-                  ? "border-red-500 bg-red-50 dark:bg-red-950/30"
+                  ? "border-zinc-400/25 bg-zinc-400/25 dark:bg-zinc-400/25"
                   : "border-transparent",
               )}
             />
             {name && isNameValid && !errors.name && (
-              <CheckCircle2 className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-green-500" />
+              <CheckCircle2 className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 opacity-50" />
             )}
             {errors.name && (
-              <p className="text-red-600 text-xs mt-1.5 pl-4">
+              <p className="opacity-50 text-xs mt-1.5 pl-4">
                 {errors.name}
               </p>
             )}
@@ -213,17 +213,17 @@ export default function RegisterContent() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="ইমেইল (যেমন: name@example.com)"
               className={clsx(
-                "w-full rounded-full py-3.5 px-6 border bg-zinc-400/10 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition",
+                "w-full rounded-full py-3.5 px-6 border bg-zinc-400/10 focus:outline-none   dark: transition",
                 errors.email
-                  ? "border-red-500 bg-red-50 dark:bg-red-950/30"
+                  ? "border-zinc-400/25 bg-zinc-400/25 dark:bg-zinc-400/25"
                   : "border-transparent",
               )}
             />
             {email && isEmailValid && !errors.email && (
-              <CheckCircle2 className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-green-500" />
+              <CheckCircle2 className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 opacity-50" />
             )}
             {errors.email && (
-              <p className="text-red-600 text-xs mt-1.5 pl-4">
+              <p className="opacity-50 text-xs mt-1.5 pl-4">
                 {errors.email}
               </p>
             )}
@@ -237,15 +237,15 @@ export default function RegisterContent() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="পাসওয়ার্ড দিন"
               className={clsx(
-                "w-full rounded-full py-3.5 px-6 border bg-zinc-400/10 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition pr-20",
+                "w-full rounded-full py-3.5 px-6 border bg-zinc-400/10 focus:outline-none   dark: transition pr-20",
                 errors.password
-                  ? "border-red-500 bg-red-50 dark:bg-red-950/30"
+                  ? "border-zinc-400/25 bg-zinc-400/25 dark:bg-zinc-400/25"
                   : "border-transparent",
               )}
             />
             <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3">
               {password && isPasswordValid && !errors.password && (
-                <CheckCircle2 className="w-5 h-5 text-green-500" />
+                <CheckCircle2 className="w-5 h-5 opacity-50" />
               )}
               <button
                 type="button"
@@ -256,7 +256,7 @@ export default function RegisterContent() {
               </button>
             </div>
             {errors.password && (
-              <p className="text-red-600 text-xs mt-1.5 pl-4">
+              <p className="opacity-50 text-xs mt-1.5 pl-4">
                 {errors.password}
               </p>
             )}
@@ -270,18 +270,18 @@ export default function RegisterContent() {
               onChange={(e) => setPasswordConfirmation(e.target.value)}
               placeholder="পাসওয়ার্ডটি পুনরায় লিখুন"
               className={clsx(
-                "w-full rounded-full py-3.5 px-6 border bg-zinc-400/10 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition pr-20",
+                "w-full rounded-full py-3.5 px-6 border bg-zinc-400/10 focus:outline-none   dark: transition pr-20",
                 errors.password_confirmation
-                  ? "border-red-500 bg-red-50 dark:bg-red-950/30"
+                  ? "border-zinc-400/25 bg-zinc-400/25 dark:bg-zinc-400/25"
                   : "border-transparent",
               )}
             />
             <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3">
               {passwordConfirmation &&
                 (isConfirmValid ? (
-                  <CheckCircle2 className="w-5 h-5 text-green-500" />
+                  <CheckCircle2 className="w-5 h-5 opacity-50" />
                 ) : (
-                  <XCircle className="w-5 h-5 text-red-400" />
+                  <XCircle className="w-5 h-5 opacity-50" />
                 ))}
               <button
                 type="button"
@@ -292,7 +292,7 @@ export default function RegisterContent() {
               </button>
             </div>
             {errors.password_confirmation && (
-              <p className="text-red-600 text-xs mt-1.5 pl-4">
+              <p className="opacity-50 text-xs mt-1.5 pl-4">
                 {errors.password_confirmation}
               </p>
             )}
@@ -301,7 +301,7 @@ export default function RegisterContent() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-full transition disabled:opacity-60"
+            className="w-full bg-zinc-400/25 bg-zinc-400/25 text-white font-bold py-4 rounded-full transition disabled:opacity-60"
           >
             {loading ? "পাঠানো হচ্ছে..." : "ভেরিফিকেশন কোড পাঠান"}
           </button>
@@ -318,7 +318,7 @@ export default function RegisterContent() {
               href={getEmailDashboardUrl()}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-blue-600 hover:underline font-medium"
+              className="inline-flex items-center gap-1.5 opacity-50 hover:underline font-medium"
             >
               {email}
               <ExternalLink size={14} className="opacity-60" />
@@ -336,17 +336,17 @@ export default function RegisterContent() {
               value={otp}
               onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
               placeholder="••••"
-              className="w-48 text-center text-3xl tracking-[0.5em] font-bold rounded-2xl py-4 border-2 border-zinc-200 dark:border-zinc-700 bg-zinc-400/10 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"
+              className="w-48 text-center text-3xl tracking-[0.5em] font-bold rounded-2xl py-4 border-2 border-zinc-200 dark:border-zinc-400/25 bg-zinc-400/10 focus:outline-none   dark:"
             />
           </div>
           {errors.otp && (
-            <p className="text-center text-red-500 text-sm">{errors.otp}</p>
+            <p className="text-center opacity-50 text-sm">{errors.otp}</p>
           )}
 
           <button
             type="submit"
             disabled={loading || otp.length !== 4}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-full transition disabled:opacity-60"
+            className="w-full bg-zinc-400/25 bg-zinc-400/25 text-white font-bold py-4 rounded-full transition disabled:opacity-60"
           >
             {loading ? "যাচাই করা হচ্ছে..." : "যাচাই ও অ্যাকাউন্ট তৈরি"}
           </button>
@@ -384,7 +384,7 @@ export default function RegisterContent() {
             অ্যাকাউন্ট আছে?{" "}
             <Link
               href="/login"
-              className="font-bold text-blue-600 hover:underline"
+              className="font-bold opacity-50 hover:underline"
             >
               লগ ইন করুন
             </Link>

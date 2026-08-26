@@ -406,7 +406,7 @@ export default function AdvancedDocumentConverter() {
             }}
             className={`flex flex-col items-center gap-2 rounded-xl p-4 text-sm transition ${
               activeTool === t.id
-                ? "bg-zinc-700 text-white"
+                ? "bg-zinc-400/25 text-white"
                 : "bg-zinc-400/10 hover:bg-zinc-400/25"
             }`}
           >
@@ -465,7 +465,7 @@ export default function AdvancedDocumentConverter() {
               </div>
               <button
                 onClick={() => removeFile(f.id)}
-                className="p-1.5 hover:bg-zinc-400/25 rounded-lg"
+                className="p-1.5 hover:bg-zinc-400/25 rounded-xl"
               >
                 <Trash2 className="size-4" />
               </button>
@@ -489,7 +489,7 @@ export default function AdvancedDocumentConverter() {
           <input
             value={splitPages}
             onChange={(e) => setSplitPages(e.target.value)}
-            className="mt-2 w-full rounded-lg bg-zinc-400/10 p-2 outline-none"
+            className="mt-2 w-full rounded-xl bg-zinc-400/10 p-2 outline-none"
             placeholder="1-3,5"
           />
         </div>
@@ -501,9 +501,9 @@ export default function AdvancedDocumentConverter() {
             <button
               key={a}
               onClick={() => setRotateAngle(a)}
-              className={`px-2.5 py-1 rounded-lg text-sm transition ${
+              className={`px-2.5 py-1 rounded-xl text-sm transition ${
                 rotateAngle === a
-                  ? "bg-zinc-700 text-white"
+                  ? "bg-zinc-400/25 text-white"
                   : "bg-zinc-400/10 hover:bg-zinc-400/25"
               }`}
             >
@@ -519,9 +519,9 @@ export default function AdvancedDocumentConverter() {
             <button
               key={o}
               onClick={() => setExcelOutput(o)}
-              className={`px-2.5 py-1 rounded-lg text-sm uppercase transition ${
+              className={`px-2.5 py-1 rounded-xl text-sm uppercase transition ${
                 excelOutput === o
-                  ? "bg-zinc-700 text-white"
+                  ? "bg-zinc-400/25 text-white"
                   : "bg-zinc-400/10 hover:bg-zinc-400/25"
               }`}
             >
@@ -581,7 +581,7 @@ export default function AdvancedDocumentConverter() {
       )}
 
       {error && (
-        <div className="rounded-xl dark:bg-zinc-400/40 p-4 flex items-start gap-4">
+        <div className="rounded-xl bg-zinc-400/10 p-4 flex items-start gap-4">
           <X className="size-5 shrink-0" />
           {error}
         </div>

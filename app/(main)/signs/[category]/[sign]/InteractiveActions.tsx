@@ -87,10 +87,10 @@ export default function InteractiveActions({
           <button
             onClick={() => react("like")}
             disabled={loading}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition disabled:opacity-50 ${
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm transition disabled:opacity-50 ${
               liked
-                ? "text-blue-600 bg-blue-50 dark:bg-blue-900/30"
-                : "text-zinc-300 hover:bg-zinc-900 hover:bg-zinc-800"
+                ? "opacity-50 bg-zinc-400/25 dark:bg-zinc-400/25"
+                : "text-zinc-300 hover:bg-zinc-400/10 hover:bg-zinc-400/10"
             }`}
           >
             <ThumbsUp className="w-4 h-4" /> {likeCount}
@@ -98,10 +98,10 @@ export default function InteractiveActions({
           <button
             onClick={() => react("dislike")}
             disabled={loading}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition disabled:opacity-50 ${
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm transition disabled:opacity-50 ${
               disliked
-                ? "text-red-600 bg-red-50 dark:bg-red-900/30"
-                : "text-zinc-300 hover:bg-zinc-900 hover:bg-zinc-800"
+                ? "opacity-50 bg-zinc-400/25 dark:bg-zinc-400/25"
+                : "text-zinc-300 hover:bg-zinc-400/10 hover:bg-zinc-400/10"
             }`}
           >
             <ThumbsDown className="w-4 h-4" /> {dislikeCount}
@@ -109,17 +109,17 @@ export default function InteractiveActions({
         </div>
         <button
           onClick={share}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm text-zinc-300 hover:bg-zinc-900 hover:bg-zinc-800"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm text-zinc-300 hover:bg-zinc-400/10 hover:bg-zinc-400/10"
         >
           <Share2 className="w-4 h-4" /> শেয়ার
         </button>
       </div>
       {message && (
         <p
-          className={`text-xs px-3 py-2 rounded-lg ${
+          className={`text-xs px-3 py-2 rounded-xl ${
             message.includes("লগইন") || message.includes("ব্যর্থ") || message.includes("সংযোগ")
-              ? "bg-red-50 text-red-600"
-              : "bg-zinc-900 text-zinc-200"
+              ? "bg-zinc-400/25 opacity-50"
+              : "bg-zinc-400/10 text-zinc-200"
           }`}
         >
           {message}

@@ -97,7 +97,7 @@ function SidebarItem({
         <span className="truncate flex-1 text-left">{label}</span>
       )}
       {!collapsed && badge !== undefined && (
-        <span className="ml-auto rounded-full bg-zinc-800 px-2 py-0.5 text-xs text-zinc-200">
+        <span className="ml-auto rounded-full bg-zinc-400/10 px-2 py-0.5 text-xs text-zinc-200">
           {badge}
         </span>
       )}
@@ -105,7 +105,7 @@ function SidebarItem({
   );
 
   const className = cn(
-    "group flex w-full items-center gap-4 rounded-lg p-2 text-sm",
+    "group flex w-full items-center gap-4 rounded-xl p-2 text-sm",
     isActive
       ? "bg-zinc-400/25"
       : "hover:bg-zinc-400/25", 
@@ -263,7 +263,7 @@ export default function Sidebar() {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed top-0 left-0 z-50 flex h-screen flex-col bg-zinc-100 dark:bg-zinc-900 transition-all duration-300 ease-in-out",
+          "fixed top-0 left-0 z-50 flex h-screen flex-col bg-zinc-100 bg-zinc-400/10 transition-all duration-300 ease-in-out",
           isOpen ? "translate-x-0" : "-translate-x-full",
           "md:sticky md:top-0 md:translate-x-0",
           collapsed ? "md:w-16" : "md:w-64",
@@ -298,7 +298,7 @@ export default function Sidebar() {
               <button
                 type="button"
                 onClick={toggleCollapsed}
-                className="hidden rounded-lg p-2 md:flex hover:bg-zinc-400/25"
+                className="hidden rounded-xl p-2 md:flex hover:bg-zinc-400/25"
                 title="Collapse sidebar"
                 aria-label="সাইডবার সংকুচিত করুন"
               >
@@ -311,7 +311,7 @@ export default function Sidebar() {
             <button
               type="button"
               aria-label="সাইডবার প্রসারিত করুন"
-              className="group relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg  hover:bg-zinc-400/25"
+              className="group relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl  hover:bg-zinc-400/25"
               onMouseEnter={(e) => handleMouseEnter(e, "Expand Sidebar")}
               onMouseLeave={handleMouseLeave}
               onClick={toggleCollapsed}
@@ -329,7 +329,7 @@ export default function Sidebar() {
             type="button"
             onClick={() => setIsOpen(false)}
             aria-label="সাইডবার বন্ধ করুন"
-            className="rounded-lg p-2 text-zinc-400 hover:bg-rose-50 hover:text-rose-500 md:hidden"
+            className="rounded-xl p-2 text-zinc-400 hover:bg-rose-50 hover:text-rose-500 md:hidden"
           >
             <X className="h-5 w-5" />
           </button>
@@ -450,8 +450,8 @@ export default function Sidebar() {
                   onMouseEnter={(e) => collapsed && handleMouseEnter(e, "অন্যান্য কনভার্টার")}
                   onMouseLeave={handleMouseLeave}
                   className={cn(
-                    "group flex w-full items-center gap-4 rounded-lg px-3 py-2.5 text-sm  transition-all duration-200 text-left",
-                    "text-zinc-300 hover:bg-zinc-900 text-zinc-300 hover:bg-zinc-800",
+                    "group flex w-full items-center gap-4 rounded-xl px-3 py-2.5 text-sm  transition-all duration-200 text-left",
+                    "text-zinc-300 hover:bg-zinc-400/10 text-zinc-300 hover:bg-zinc-400/10",
                     collapsed && "justify-center px-2"
                   )}
                 >
@@ -472,7 +472,7 @@ export default function Sidebar() {
                   <div
                     className={cn(
                       "mt-1 space-y-1 overflow-hidden transition-all",
-                      !collapsed && "pl-4 border-l border-zinc-400/25 ml-4 dark:border-zinc-700"
+                      !collapsed && "pl-4 border-l border-zinc-400/25 ml-4 dark:border-zinc-400/25"
                     )}
                   >
                     <SidebarItem href="/converter/length" icon={FaRulerCombined} label="দৈর্ঘ্য কনভার্টার" isActive={pathname === "/converter/length"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
@@ -710,7 +710,7 @@ export default function Sidebar() {
             {pathname.startsWith("/excel-expert") && (
               <div className="space-y-1">
                 {!collapsed && (
-                  <h3 className="mb-2 px-3 text-lg font-bold text-green-600 border-b pb-2">
+                  <h3 className="mb-2 px-3 text-lg font-bold opacity-50 border-b pb-2">
                     Excel টিউটোরিয়াল
                   </h3>
                 )}

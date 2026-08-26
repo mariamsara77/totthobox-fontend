@@ -33,7 +33,7 @@ export default function AiChatShell({
       {/* Sidebar Area */}
       <aside
         className={`
-          fixed inset-y-0 left-0 z-30 h-full bg-zinc-100 dark:bg-zinc-900 overflow-hidden transition-all duration-300 ease-in-out
+          fixed inset-y-0 left-0 z-30 h-full bg-zinc-100 bg-zinc-400/10 overflow-hidden transition-all duration-300 ease-in-out
           md:static md:shrink-0
           ${
             isOpen
@@ -58,7 +58,7 @@ export default function AiChatShell({
             <div className="md:hidden flex">
             <button
               onClick={() => setIsOpen(false)}
-              className="p-1.5 rounded-lg hover:bg-zinc-400/10 "
+              className="p-1.5 rounded-xl hover:bg-zinc-400/10 "
             >
               <X className="w-5 h-5" />
             </button>

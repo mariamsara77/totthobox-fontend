@@ -62,7 +62,7 @@ export default function WrittingPracticeClient() {
         <div className="flex items-center gap-1">
           <button
             onClick={() => setShowHelp(true)}
-            className="size-9 flex items-center justify-center rounded-lg text-zinc-400 hover:bg-zinc-900 hover:bg-zinc-800 transition"
+            className="size-9 flex items-center justify-center rounded-xl text-zinc-400 hover:bg-zinc-400/10 hover:bg-zinc-400/10 transition"
             title="Help"
           >
             <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -72,7 +72,7 @@ export default function WrittingPracticeClient() {
 
           <button
             onClick={() => canvasRef.current?.toggleFullscreen()}
-            className="size-9 flex items-center justify-center rounded-lg text-zinc-400 hover:bg-zinc-900 hover:bg-zinc-800 transition"
+            className="size-9 flex items-center justify-center rounded-xl text-zinc-400 hover:bg-zinc-400/10 hover:bg-zinc-400/10 transition"
             title="Fullscreen"
           >
             <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>

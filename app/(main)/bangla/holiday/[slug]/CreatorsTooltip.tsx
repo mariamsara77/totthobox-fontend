@@ -21,7 +21,7 @@ export default function CreatorsTooltip({ creators }: { creators: Creator[] }) {
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="p-2 rounded-lg hover:bg-zinc-900 hover:bg-zinc-800 "
+        className="p-2 rounded-xl hover:bg-zinc-400/10 hover:bg-zinc-400/10 "
         aria-label="তথ্য প্রদানকারীগণ"
       >
         <FaUser className="w-5 h-5 " />
@@ -30,7 +30,7 @@ export default function CreatorsTooltip({ creators }: { creators: Creator[] }) {
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-full mt-2 w-80 z-50 rounded-2xl border border-zinc-800 bg-zinc-950 bg-zinc-700  p-4 space-y-4">
+          <div className="absolute right-0 top-full mt-2 w-80 z-50 rounded-2xl border border-zinc-400/25 bg-zinc-400/10 bg-zinc-400/25  p-4 space-y-4">
             <div>
               <h3 className="font-bold text-zinc-50 text-zinc-100">
                 তথ্য প্রদানকারী ({creators.length})
@@ -44,7 +44,7 @@ export default function CreatorsTooltip({ creators }: { creators: Creator[] }) {
               {creators.map((creator) => (
                 <div
                   key={creator.slug}
-                  className="flex items-start gap-4 p-2 rounded-xl bg-zinc-800/80"
+                  className="flex items-start gap-4 p-2 rounded-xl bg-zinc-400/10"
                 >
                   <div className="w-10 h-10 rounded-full bg-zinc-400/10 overflow-hidden shrink-0">
                     {creator.avatar_url ? (

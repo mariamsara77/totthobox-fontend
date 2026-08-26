@@ -431,13 +431,13 @@ export default function AdorshoLipiConverter() {
             onChange={(e) => handleAdorshoChange(e.target.value)}
             rows={6}
             placeholder="BcnÑ¢m¢f HM¡®e V¡Cf Ll¤e..."
-            className="w-full resize-none p-4 rounded-lg bg-zinc-400/10 adorsholipi-exp outline-none leading-relaxed "
+            className="w-full resize-none p-4 rounded-xl bg-zinc-400/10 adorsholipi-exp outline-none leading-relaxed "
           />
 
           <div className="flex justify-end">
             <button
               onClick={() => copy(adorsho, 'a')}
-              className="inline-flex items-center gap-2 px-4 py-2   bg-zinc-400/10 rounded-lg hover:bg-zinc-700 transition"
+              className="inline-flex items-center gap-2 px-4 py-2   bg-zinc-400/10 rounded-xl hover:bg-zinc-400/25 transition"
             >
               <Clipboard className="size-4" />
               {copyTextA}
@@ -466,13 +466,13 @@ export default function AdorshoLipiConverter() {
             onChange={(e) => handleUnicodeChange(e.target.value)}
             rows={6}
             placeholder="এখানে ইউনিকোড বাংলা লিখুন..."
-            className="w-full resize-none p-4 rounded-lg bg-zinc-400/10 outline-none leading-relaxed "
+            className="w-full resize-none p-4 rounded-xl bg-zinc-400/10 outline-none leading-relaxed "
           />
 
           <div className="flex justify-between items-center">
             <button
               onClick={clearAll}
-              className="inline-flex items-center rounded-xl gap-2 px-3 py-2  bg-zinc-400/10 hover:bg-zinc-700/25 transition"
+              className="inline-flex items-center rounded-xl gap-2 px-3 py-2  bg-zinc-400/10 hover:bg-zinc-400/25 transition"
             >
               <Trash2 className="size-4" />
               সব মুছুন
@@ -480,7 +480,7 @@ export default function AdorshoLipiConverter() {
 
             <button
               onClick={() => copy(unicode, 'u')}
-              className="inline-flex items-center gap-2 px-4 py-2   bg-zinc-800 text-white rounded-lg hover:bg-zinc-700 transition"
+              className="inline-flex items-center gap-2 px-4 py-2   bg-zinc-400/10 text-white rounded-xl hover:bg-zinc-400/25 transition"
             >
               <Clipboard className="size-4" />
               {copyTextU}

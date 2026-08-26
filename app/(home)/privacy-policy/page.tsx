@@ -35,7 +35,7 @@ export default function PrivacyPolicyPage() {
             Totthobox - আপনার ব্যক্তিগত তথ্যের সুরক্ষা আমাদের সর্বোচ্চ
             অগ্রাধিকার
           </p>
-          <div className="mt-4 h-px bg-zinc-800 bg-zinc-800" />
+          <div className="mt-4 h-px bg-zinc-400/10 bg-zinc-400/10" />
           <p className="mt-4 text-sm text-zinc-400">
             সর্বশেষ আপডেট: {lastUpdated}
           </p>
@@ -48,7 +48,7 @@ export default function PrivacyPolicyPage() {
             <strong>Totthobox</strong>-এ আপনাকে স্বাগতম। আমরা (
             <a
               href="https://totthobox.com"
-              className="text-indigo-600 hover:underline"
+              className="opacity-50 hover:underline"
             >
               totthobox.com
             </a>
@@ -66,7 +66,7 @@ export default function PrivacyPolicyPage() {
 
         {/* Services Overview */}
         <div className="p-6 rounded-xl bg-zinc-400/10/50">
-          <h3 className="mb-4 text-indigo-600 ">
+          <h3 className="mb-4 opacity-50 ">
             আমাদের মূল সেবাসমূহ
           </h3>
           <p className="mb-5">
@@ -89,7 +89,7 @@ export default function PrivacyPolicyPage() {
               "Totthobox AI চ্যাটবট",
             ].map((item) => (
               <div key={item} className="flex items-start gap-2">
-                <span className="text-green-500 mt-0.5">✓</span>
+                <span className="opacity-50 mt-0.5">✓</span>
                 <span>{item}</span>
               </div>
             ))}
@@ -214,7 +214,7 @@ export default function PrivacyPolicyPage() {
               href="https://www.google.com/settings/ads"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-indigo-600 hover:underline"
+              className="opacity-50 hover:underline"
             >
               Google Ads Settings
             </a>{" "}
@@ -228,7 +228,7 @@ export default function PrivacyPolicyPage() {
               href="https://policies.google.com/privacy"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-indigo-600 hover:underline"
+              className="opacity-50 hover:underline"
             >
               https://policies.google.com/privacy
             </a>
@@ -327,7 +327,7 @@ export default function PrivacyPolicyPage() {
           </p>
         </section>
 
-        <div className="h-px bg-zinc-800 bg-zinc-800 my-10" />
+        <div className="h-px bg-zinc-400/10 bg-zinc-400/10 my-10" />
 
         {/* Contact */}
         <div className="bg-zinc-400/10 p-8 rounded-2xl text-center space-y-4">
@@ -339,7 +339,7 @@ export default function PrivacyPolicyPage() {
           <div className="pt-2">
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-zinc-400/25 text-white bg-zinc-400/25 transition"
             >
               📧 সাপোর্ট সেন্টারে মেসেজ দিন
             </Link>

@@ -491,19 +491,19 @@ export default function AdvancedImageConverter() {
               </button>
               <button
                 onClick={() => setFlipH((f) => !f)}
-                className={`btn-icon ${flipH ? "bg-zinc-700 text-white" : ""}`}
+                className={`btn-icon ${flipH ? "bg-zinc-400/25 text-white" : ""}`}
                 title="Flip Horizontal"
               >
                 <FlipHorizontal className="size-4" />
               </button>
               <button
                 onClick={() => setFlipV((f) => !f)}
-                className={`btn-icon ${flipV ? "bg-zinc-700 text-white" : ""}`}
+                className={`btn-icon ${flipV ? "bg-zinc-400/25 text-white" : ""}`}
                 title="Flip Vertical"
               >
                 <FlipVertical className="size-4" />
               </button>
-              <div className="h-6 w-px bg-zinc-800 mx-1" />
+              <div className="h-6 w-px bg-zinc-400/10 mx-1" />
               <button
                 onClick={() => setZoom((z) => Math.max(1, z - 0.1))}
                 className="btn-icon"
@@ -534,10 +534,10 @@ export default function AdvancedImageConverter() {
                   <button
                     key={ar.label}
                     onClick={() => setAspect(ar.value)}
-                    className={`px-2.5 py-1 rounded-lg text-sm  transition ${
+                    className={`px-2.5 py-1 rounded-xl text-sm  transition ${
                       aspect === ar.value
-                        ? "bg-zinc-700 text-white"
-                        : "bg-zinc-400/10  hover:bg-zinc-800"
+                        ? "bg-zinc-400/25 text-white"
+                        : "bg-zinc-400/10  hover:bg-zinc-400/10"
                     }`}
                   >
                     {ar.label}
@@ -594,7 +594,7 @@ export default function AdvancedImageConverter() {
                     type="number"
                     value={resizeWidth}
                     onChange={(e) => onWidthChange(Number(e.target.value))}
-                    className="w-full rounded-lg bg-zinc-400/10 p-2 outline-none"
+                    className="w-full rounded-xl bg-zinc-400/10 p-2 outline-none"
                   />
                 </div>
                 <div>
@@ -603,7 +603,7 @@ export default function AdvancedImageConverter() {
                     type="number"
                     value={resizeHeight}
                     onChange={(e) => onHeightChange(Number(e.target.value))}
-                    className="w-full rounded-lg bg-zinc-400/10 px-2.5 py-1.5  outline-none"
+                    className="w-full rounded-xl bg-zinc-400/10 px-2.5 py-1.5  outline-none"
                   />
                 </div>
               </div>
@@ -628,9 +628,9 @@ export default function AdvancedImageConverter() {
                   <button
                     key={f}
                     onClick={() => setTargetFormat(f)}
-                    className={`py-1.5 rounded-lg text-sm  uppercase transition ${
+                    className={`py-1.5 rounded-xl text-sm  uppercase transition ${
                       targetFormat === f
-                        ? "bg-zinc-700 text-white"
+                        ? "bg-zinc-400/25 text-white"
                         : "bg-zinc-400/10 "
                     }`}
                   >
@@ -749,7 +749,7 @@ export default function AdvancedImageConverter() {
       )}
 
       {error && (
-        <div className="rounded-xl dark:bg-zinc-400/40 p-4 flex items-start gap-4">
+        <div className="rounded-xl bg-zinc-400/10 p-4 flex items-start gap-4">
           <X className="size-5 shrink-0" />
           {error}
         </div>

@@ -488,12 +488,12 @@ export default function ImageResizer() {
             <div className="flex items-center gap-2">
               <button
                 onClick={resetAll}
-                className="px-3 py-1.5 text-sm rounded-lg hover:bg-zinc-400/25 "
+                className="px-3 py-1.5 text-sm rounded-xl hover:bg-zinc-400/25 "
               >
                 রিসেট
               </button>
               <label className="cursor-pointer">
-                <span className="px-3 py-1.5 text-sm rounded-lg hover:bg-zinc-400/25  inline-block">
+                <span className="px-3 py-1.5 text-sm rounded-xl hover:bg-zinc-400/25  inline-block">
                   বদলান
                 </span>
                 <input
@@ -506,7 +506,7 @@ export default function ImageResizer() {
               </label>
               <button
                 onClick={removeImage}
-                className="px-3 py-1.5 text-sm rounded-lg hover:bg-rose-500/10 text-rose-500"
+                className="px-3 py-1.5 text-sm rounded-xl hover:bg-rose-500/10 text-rose-500"
               >
                 মুছুন
               </button>
@@ -538,7 +538,7 @@ export default function ImageResizer() {
             onDragOver={(e) => e.preventDefault()}
             onDrop={onDrop}
             onClick={() => fileInputRef.current?.click()}
-            className="border-2 border-dashed border-zinc-700 dark:border-zinc-700 rounded-2xl p-12 sm:p-16 text-center cursor-pointer hover:border-indigo-400 dark:hover:border-indigo-500  bg-zinc-900/50 bg-zinc-900/30"
+            className="border-2 border-dashed border-zinc-400/25 dark:border-zinc-400/25 rounded-2xl p-12 sm:p-16 text-center cursor-pointer border-zinc-400/25 dark:border-zinc-400/25  bg-zinc-400/10 bg-zinc-400/10"
           >
             <input
               ref={fileInputRef}
@@ -562,8 +562,8 @@ export default function ImageResizer() {
             {/* Side by side */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Original + Crop */}
-              <div className="bg-zinc-900/80 bg-zinc-800/50 rounded-2xl overflow-hidden">
-                <div className="px-3 py-2 border-b border-zinc-400/25 dark:border-zinc-700 flex items-center justify-between text-xs">
+              <div className="bg-zinc-400/10 bg-zinc-400/10 rounded-2xl overflow-hidden">
+                <div className="px-3 py-2 border-b border-zinc-400/25 dark:border-zinc-400/25 flex items-center justify-between text-xs">
                   <span className=" text-zinc-400 tracking-wider">Original</span>
                   <span className="text-zinc-400">
                     {originalWidth}×{originalHeight}
@@ -575,7 +575,7 @@ export default function ImageResizer() {
 
                 <div
                   ref={containerRef}
-                  className="relative bg-zinc-800/50 bg-zinc-900 select-none"
+                  className="relative bg-zinc-400/10 bg-zinc-400/10 select-none"
                   style={{ minHeight: 200 }}
                   onMouseDown={startCropDrag}
                   onTouchStart={startCropDrag}
@@ -597,7 +597,7 @@ export default function ImageResizer() {
                   {/* Crop overlay */}
                   {(cropMode || tempCrop) && tempCrop && (
                     <div
-                      className="absolute border-2 border-indigo-500 bg-indigo-500/20 pointer-events-none"
+                      className="absolute border-2 border-zinc-400/25 bg-zinc-400/25 pointer-events-none"
                       style={{
                         left: `${tempCrop.x + (getImageDisplayRect()?.offsetX || 0)}px`,
                         top: `${tempCrop.y + (getImageDisplayRect()?.offsetY || 0)}px`,
@@ -630,9 +630,9 @@ export default function ImageResizer() {
                           setCropMode(true);
                           setTempCrop(null);
                         }}
-                        className={`px-2 py-1 text-xs rounded-md ${
+                        className={`px-2 py-1 text-xs rounded-xl ${
                           cropMode && aspectRatio === r.value
-                            ? "bg-indigo-500 text-white"
+                            ? "bg-zinc-400/25 text-white"
                             : "hover:bg-zinc-400/25 "
                         }`}
                       >
@@ -640,12 +640,12 @@ export default function ImageResizer() {
                       </button>
                     ))}
 
-                    <div className="w-px h-5 bg-zinc-700 dark:bg-zinc-600 mx-1" />
+                    <div className="w-px h-5 bg-zinc-400/25 bg-zinc-400/10 mx-1" />
 
                     <button
                       onClick={() => rotate(-90)}
                       title="বামে ঘোরান"
-                      className="p-1.5 rounded-md hover:bg-zinc-400/25"
+                      className="p-1.5 rounded-xl hover:bg-zinc-400/25"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
@@ -654,7 +654,7 @@ export default function ImageResizer() {
                     <button
                       onClick={() => rotate(90)}
                       title="ডানে ঘোরান"
-                      className="p-1.5 rounded-md hover:bg-zinc-400/25"
+                      className="p-1.5 rounded-xl hover:bg-zinc-400/25"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 10H11a8 8 0 00-8 8v2M21 10l-6 6m6-6l-6-6" />
@@ -663,7 +663,7 @@ export default function ImageResizer() {
                     <button
                       onClick={toggleFlipH}
                       title="Horizontal Flip"
-                      className={`p-1.5 rounded-md ${flipH ? "bg-indigo-500 text-white" : "hover:bg-zinc-400/25"}`}
+                      className={`p-1.5 rounded-xl ${flipH ? "bg-zinc-400/25 text-white" : "hover:bg-zinc-400/25"}`}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
@@ -672,7 +672,7 @@ export default function ImageResizer() {
                     <button
                       onClick={toggleFlipV}
                       title="Vertical Flip"
-                      className={`p-1.5 rounded-md ${flipV ? "bg-indigo-500 text-white" : "hover:bg-zinc-400/25"}`}
+                      className={`p-1.5 rounded-xl ${flipV ? "bg-zinc-400/25 text-white" : "hover:bg-zinc-400/25"}`}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
@@ -683,12 +683,12 @@ export default function ImageResizer() {
                   <div className="flex items-center justify-between gap-2">
                     <button
                       onClick={resetCrop}
-                      className="px-2 py-1 text-xs rounded-md hover:bg-zinc-400/25 text-zinc-400"
+                      className="px-2 py-1 text-xs rounded-xl hover:bg-zinc-400/25 text-zinc-400"
                     >
                       Crop Clear
                     </button>
                     {cropMode ? (
-                      <span className="text-xs text-indigo-600 dark:text-indigo-400 ">
+                      <span className="text-xs opacity-50 dark:opacity-50 ">
                         ড্র্যাগ করে ক্রপ এলাকা সিলেক্ট করুন
                       </span>
                     ) : (
@@ -697,7 +697,7 @@ export default function ImageResizer() {
                           setCropMode(true);
                           setTempCrop(null);
                         }}
-                        className="px-3 py-1.5 text-xs  rounded-lg bg-indigo-500 text-white hover:bg-indigo-600"
+                        className="px-3 py-1.5 text-xs  rounded-xl bg-zinc-400/25 text-white bg-zinc-400/25"
                       >
                         Crop শুরু করুন
                       </button>
@@ -707,12 +707,12 @@ export default function ImageResizer() {
               </div>
 
               {/* Preview */}
-              <div className="bg-zinc-900/80 bg-zinc-800/50 rounded-2xl overflow-hidden">
-                <div className="px-3 py-2 border-b border-zinc-400/25 dark:border-zinc-700 flex items-center justify-between text-xs">
+              <div className="bg-zinc-400/10 bg-zinc-400/10 rounded-2xl overflow-hidden">
+                <div className="px-3 py-2 border-b border-zinc-400/25 dark:border-zinc-400/25 flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2">
                     <span className="relative flex h-1.5 w-1.5">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-zinc-700 opacity-75" />
-                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-zinc-9000" />
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-zinc-400/25 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-zinc-400/100" />
                     </span>
                     <span className=" text-zinc-400 tracking-wider">Edited</span>
                   </div>
@@ -733,12 +733,12 @@ export default function ImageResizer() {
                   )}
                 </div>
 
-                <div className="relative min-h-[180px] flex items-center justify-center p-2 bg-zinc-700/40 bg-zinc-900">
+                <div className="relative min-h-[180px] flex items-center justify-center p-2 bg-zinc-400/25 bg-zinc-400/10">
                   {previewUrl ? (
                     <img
                       src={previewUrl}
                       alt="Preview"
-                      className="max-w-full rounded-lg "
+                      className="max-w-full rounded-xl "
                       style={{ maxHeight: 260, objectFit: "contain" }}
                     />
                   ) : (
@@ -755,22 +755,22 @@ export default function ImageResizer() {
             </div>
 
             {/* Controls Card */}
-            <div className="rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900/50 overflow-hidden">
+            <div className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 bg-zinc-400/10 overflow-hidden">
               <div className="p-4 space-y-5">
                 {/* Format */}
                 <div>
                   <label className="text-sm   mb-2 block">
                     ফরম্যাট
                   </label>
-                  <div className="flex rounded-xl overflow-hidden border border-zinc-400/25 dark:border-zinc-700">
+                  <div className="flex rounded-xl overflow-hidden border border-zinc-400/25 dark:border-zinc-400/25">
                     {FORMATS.map((f) => (
                       <button
                         key={f.value}
                         onClick={() => setFormat(f.value)}
                         className={`flex-1 py-2.5 text-sm   ${
                           format === f.value
-                            ? "bg-indigo-500 text-white"
-                            : "bg-zinc-400/10  hover:bg-zinc-900 hover:bg-zinc-700"
+                            ? "bg-zinc-400/25 text-white"
+                            : "bg-zinc-400/10  hover:bg-zinc-400/10 hover:bg-zinc-400/25"
                         }`}
                       >
                         {f.label}
@@ -824,14 +824,14 @@ export default function ImageResizer() {
                       value={outputWidth}
                       onChange={(e) => setOutputWidth(e.target.value)}
                       placeholder={`প্রস্থ ${originalWidth || ""}`}
-                      className="w-full p-2 rounded-lg bg-zinc-400/10 border-none outline-none text-sm"
+                      className="w-full p-2 rounded-xl bg-zinc-400/10 border-none outline-none text-sm"
                     />
                     <input
                       type="number"
                       value={outputHeight}
                       onChange={(e) => setOutputHeight(e.target.value)}
                       placeholder={`উচ্চতা ${originalHeight || ""}`}
-                      className="w-full p-2 rounded-lg bg-zinc-400/10 border-none outline-none text-sm"
+                      className="w-full p-2 rounded-xl bg-zinc-400/10 border-none outline-none text-sm"
                     />
                   </div>
 
@@ -840,7 +840,7 @@ export default function ImageResizer() {
                       <button
                         key={p.label}
                         onClick={() => applyPreset(p)}
-                        className="px-2.5 py-1 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700 "
+                        className="px-2.5 py-1 text-xs rounded-xl bg-zinc-400/10 hover:bg-zinc-400/10 hover:bg-zinc-400/25 "
                       >
                         {p.label}
                       </button>
@@ -852,14 +852,14 @@ export default function ImageResizer() {
               {/* Download bar */}
               <div className="px-4 pb-4">
                 <div className="flex items-center gap-2">
-                  <div className="flex-1 grid grid-cols-3 gap-0.5 rounded-xl overflow-hidden border border-zinc-400/25 dark:border-zinc-700">
+                  <div className="flex-1 grid grid-cols-3 gap-0.5 rounded-xl overflow-hidden border border-zinc-400/25 dark:border-zinc-400/25">
                     {FORMATS.map((f) => (
                       <button
                         key={f.value}
                         onClick={() => setFormat(f.value)}
                         className={`py-2 text-xs  ${
                           format === f.value
-                            ? "bg-indigo-500 text-white"
+                            ? "bg-zinc-400/25 text-white"
                             : "bg-zinc-400/10 "
                         }`}
                       >
@@ -871,7 +871,7 @@ export default function ImageResizer() {
                   <button
                     onClick={download}
                     disabled={!previewUrl || isProcessing}
-                    className="shrink-0 px-5 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-600 disabled:opacity-50 text-white text-sm  flex items-center gap-2"
+                    className="shrink-0 px-5 py-2.5 rounded-xl bg-zinc-400/25 bg-zinc-400/25 disabled:opacity-50 text-white text-sm  flex items-center gap-2"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -930,7 +930,7 @@ export default function ImageResizer() {
 
           <div>
             <h3 className="text-lg font-bold text-zinc-50 text-zinc-200 mb-4 flex items-center gap-2">
-              <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-5 h-5 opacity-50" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
                   d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"

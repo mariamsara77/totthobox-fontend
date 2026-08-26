@@ -35,7 +35,7 @@ type Props = {
 
 function AppSkeleton() {
   return (
-    <div className="rounded-2xl border border-zinc-400/25 bg-zinc-800/80 p-4 animate-pulse">
+    <div className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 animate-pulse">
       <div className="flex gap-4 items-start">
         <div className="w-16 h-16 rounded-xl bg-zinc-400/10 shrink-0" />
         <div className="flex-1 space-y-2.5">
@@ -115,7 +115,7 @@ export default function SoftwareClient({ platform = "" }: Props) {
       {/* Header */}
       <header className="border-b border-zinc-400/25 pb-4">
         <h1 className="text-2xl font-bold tracking-tight text-zinc-50 text-zinc-100 flex items-center gap-2">
-          <Puzzle className="w-6 h-6 text-amber-600 dark:text-amber-500" />
+          <Puzzle className="w-6 h-6 opacity-50 dark:opacity-50" />
           {platform
             ? `Free ${platform} Software Download`
             : "Digital Resource Library"}
@@ -137,14 +137,14 @@ export default function SoftwareClient({ platform = "" }: Props) {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="অ্যাপের নামে খুঁজুন..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-400/25 bg-zinc-800/80 text-sm text-zinc-50 text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-400 dark:focus:ring-zinc-600"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-400/25 bg-zinc-400/10 text-sm text-zinc-50 text-zinc-100 placeholder:text-zinc-400 focus:outline-none   dark:"
             />
           </div>
 
           {hasActiveFilters && (
             <button
               onClick={resetFilters}
-              className="p-2.5 rounded-xl border border-zinc-400/25 text-zinc-400 hover:bg-zinc-900 hover:bg-zinc-800 "
+              className="p-2.5 rounded-xl border border-zinc-400/25 text-zinc-400 hover:bg-zinc-400/10 hover:bg-zinc-400/10 "
             >
               <X className="w-5 h-5" />
             </button>
@@ -157,7 +157,7 @@ export default function SoftwareClient({ platform = "" }: Props) {
             <select
               value={platform}
               onChange={(e) => handlePlatformChange(e.target.value)}
-              className="appearance-none w-full bg-zinc-800 border border-zinc-400/25 text-sm  text-zinc-50 text-zinc-200 rounded-xl pl-3 pr-8 py-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-zinc-400 dark:focus:ring-zinc-600"
+              className="appearance-none w-full bg-zinc-400/10 border border-zinc-400/25 text-sm  text-zinc-50 text-zinc-200 rounded-xl pl-3 pr-8 py-2 cursor-pointer focus:outline-none   dark:"
             >
               <option value="">All Platforms</option>
               <option value="Windows">Windows</option>
@@ -200,7 +200,7 @@ export default function SoftwareClient({ platform = "" }: Props) {
             <Link
               key={app.id}
               href={`/software/${app.slug}`}
-              className="block rounded-2xl border border-zinc-400/25 bg-zinc-800/80 p-4 hover:bg-zinc-900/50 hover:bg-zinc-800/30 "
+              className="block rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 hover:bg-zinc-400/10 hover:bg-zinc-400/10 "
             >
               <div className="flex gap-4 items-start">
                 <div className="shrink-0">
@@ -223,7 +223,7 @@ export default function SoftwareClient({ platform = "" }: Props) {
                       {app.name}
                     </h2>
                     {app.platform && (
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs  border border-zinc-400/30 ">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-xl text-xs  border border-zinc-400/30 ">
                         {app.platform}
                       </span>
                     )}
@@ -261,7 +261,7 @@ export default function SoftwareClient({ platform = "" }: Props) {
           <button
             onClick={() => setSize(size + 1)}
             disabled={isValidating}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-zinc-400/25 bg-zinc-800/80 text-sm   hover:bg-zinc-900 hover:bg-zinc-800  disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-zinc-400/25 bg-zinc-400/10 text-sm   hover:bg-zinc-400/10 hover:bg-zinc-400/10  disabled:opacity-50"
           >
             {isValidating ? "লোড হচ্ছে..." : "আরও দেখুন"}
           </button>
@@ -271,7 +271,7 @@ export default function SoftwareClient({ platform = "" }: Props) {
       {/* SEO Content */}
       <section className="space-y-4 pt-8 border-t border-zinc-400/25">
         <h2 className="text-lg font-bold text-zinc-50 text-zinc-100 flex items-center gap-2">
-          <Puzzle className="w-5 h-5 text-amber-600 dark:text-amber-500" />
+          <Puzzle className="w-5 h-5 opacity-50 dark:opacity-50" />
           {platform
             ? `ফ্রি ${platform} সফটওয়্যার ও অ্যাপ ডাউনলোড`
             : "ফ্রি সফটওয়্যার ও অ্যাপ রিসোর্স লাইব্রেরি"}

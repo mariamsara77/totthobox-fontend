@@ -95,16 +95,16 @@ export default function InteractiveActions({
   };
 
   return (
-    <div className="space-y-4 pt-4 border-t border-zinc-400/25 dark:border-zinc-700">
+    <div className="space-y-4 pt-4 border-t border-zinc-400/25 dark:border-zinc-400/25">
       <div className="flex items-center justify-between gap-4">
         <div className="flex gap-4">
           <button
             onClick={() => react("like")}
             disabled={loading}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition disabled:opacity-50 ${
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm transition disabled:opacity-50 ${
               liked
-                ? "text-blue-600 bg-blue-50 dark:bg-blue-900/30"
-                : " hover:bg-zinc-900 hover:bg-zinc-800"
+                ? "opacity-50 bg-zinc-400/25 dark:bg-zinc-400/25"
+                : " hover:bg-zinc-400/10 hover:bg-zinc-400/10"
             }`}
           >
             <ThumbsUp className="w-4 h-4" />
@@ -114,10 +114,10 @@ export default function InteractiveActions({
           <button
             onClick={() => react("dislike")}
             disabled={loading}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition disabled:opacity-50 ${
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm transition disabled:opacity-50 ${
               disliked
-                ? "text-red-600 bg-red-50 dark:bg-red-900/30"
-                : " hover:bg-zinc-900 hover:bg-zinc-800"
+                ? "opacity-50 bg-zinc-400/25 dark:bg-zinc-400/25"
+                : " hover:bg-zinc-400/10 hover:bg-zinc-400/10"
             }`}
           >
             <ThumbsDown className="w-4 h-4" />
@@ -127,7 +127,7 @@ export default function InteractiveActions({
 
         <button
           onClick={share}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm  hover:bg-zinc-900 hover:bg-zinc-800"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm  hover:bg-zinc-400/10 hover:bg-zinc-400/10"
         >
           <Share2 className="w-4 h-4" />
           শেয়ার
@@ -136,12 +136,12 @@ export default function InteractiveActions({
 
       {message && (
         <p
-          className={`text-xs px-3 py-2 rounded-lg ${
+          className={`text-xs px-3 py-2 rounded-xl ${
             message.includes("লগইন") ||
             message.includes("ব্যর্থ") ||
             message.includes("সংযোগ")
-              ? "bg-red-50 text-red-600 dark:bg-red-900/20"
-              : "bg-zinc-900 text-zinc-200 dark:bg-emerald-900/20"
+              ? "bg-zinc-400/25 opacity-50 dark:bg-zinc-400/25"
+              : "bg-zinc-400/10 text-zinc-200 dark:bg-emerald-900/20"
           }`}
         >
           {message}

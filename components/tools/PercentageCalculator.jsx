@@ -314,10 +314,10 @@ export default function PercentageCalculator() {
               <button
                 key={t.id}
                 onClick={() => changeTab(t.id)}
-                className={`px-3 py-2 text-xs sm:text-sm  rounded-lg whitespace-nowrap  ${
+                className={`px-3 py-2 text-xs sm:text-sm  rounded-xl whitespace-nowrap  ${
                   tab === t.id
-                    ? "bg-indigo-500 text-white"
-                    : "bg-zinc-400/10  hover:bg-zinc-800 hover:bg-zinc-700"
+                    ? "bg-zinc-400/25 text-white"
+                    : "bg-zinc-400/10  hover:bg-zinc-400/10 hover:bg-zinc-400/25"
                 }`}
               >
                 {t.label}
@@ -327,7 +327,7 @@ export default function PercentageCalculator() {
         </div>
 
         {/* Input Card */}
-        <div className="rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900/50 p-4 space-y-4">
+        <div className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 bg-zinc-400/10 p-4 space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {fields.map((f) => (
               <div key={f.key} className="flex flex-col gap-2">
@@ -342,7 +342,7 @@ export default function PercentageCalculator() {
                     else setPercent(e.target.value);
                   }}
                   placeholder={f.placeholder}
-                  className="w-full p-2 rounded-lg bg-zinc-400/10 border-none outline-none"
+                  className="w-full p-2 rounded-xl bg-zinc-400/10 border-none outline-none"
                 />
               </div>
             ))}
@@ -351,7 +351,7 @@ export default function PercentageCalculator() {
           <div className="flex flex-wrap items-center gap-2 pt-1">
             <button
               onClick={resetAll}
-              className="px-3 py-1.5 text-sm rounded-lg text-zinc-400 hover:text-zinc-200 dark:hover:text-zinc-300 hover:bg-zinc-900 hover:bg-zinc-800"
+              className="px-3 py-1.5 text-sm rounded-xl text-zinc-400 hover:text-zinc-200 dark:hover:text-zinc-300 hover:bg-zinc-400/10 hover:bg-zinc-400/10"
             >
               মুছে ফেলুন
             </button>
@@ -359,7 +359,7 @@ export default function PercentageCalculator() {
               <button
                 key={ex.label}
                 onClick={() => fillExample(ex)}
-                className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700 "
+                className="px-3 py-1.5 text-xs rounded-xl bg-zinc-400/10 hover:bg-zinc-400/10 hover:bg-zinc-400/25 "
               >
                 {ex.label}
               </button>
@@ -369,7 +369,7 @@ export default function PercentageCalculator() {
 
         {/* Result */}
         {result ? (
-          <div className="rounded-2xl border border-emerald-500/30 dark:border-emerald-500/20 bg-zinc-950 bg-zinc-900/50 p-4 space-y-4">
+          <div className="rounded-2xl border border-emerald-500/30 dark:border-emerald-500/20 bg-zinc-400/10 bg-zinc-400/10 p-4 space-y-4">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <span className="inline-block px-2.5 py-0.5 text-xs  rounded-full bg-zinc-400/10 ">
@@ -382,7 +382,7 @@ export default function PercentageCalculator() {
               </div>
               <button
                 onClick={copyResult}
-                className="px-3 py-1.5 text-sm rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700 shrink-0"
+                className="px-3 py-1.5 text-sm rounded-xl bg-zinc-400/10 hover:bg-zinc-400/10 hover:bg-zinc-400/25 shrink-0"
               >
                 {copied ? "কপি হয়েছে!" : "কপি"}
               </button>
@@ -410,7 +410,7 @@ export default function PercentageCalculator() {
             </div>
           </div>
         ) : (
-          <div className="rounded-2xl border border-dashed border-zinc-700 dark:border-zinc-700 /30 py-12 text-center">
+          <div className="rounded-2xl border border-dashed border-zinc-400/25 dark:border-zinc-400/25 /30 py-12 text-center">
             <svg
               className="mx-auto w-8 h-8 text-zinc-400 mb-4"
               fill="none"

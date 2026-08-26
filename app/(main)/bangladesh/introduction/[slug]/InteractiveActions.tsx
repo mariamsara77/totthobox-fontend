@@ -168,10 +168,10 @@ export default function InteractiveActions({ introId, initialData }: Props) {
           type="button"
           onClick={() => handleReact("like")}
           disabled={loading || statusLoading}
-          className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm   disabled:opacity-50 ${
+          className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm   disabled:opacity-50 ${
             reactions.user_has_liked
-              ? "bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
-              : "bg-zinc-400/10  hover:bg-zinc-800 hover:bg-zinc-700"
+              ? "bg-zinc-400/25 opacity-50 dark:bg-zinc-400/25 dark:opacity-50"
+              : "bg-zinc-400/10  hover:bg-zinc-400/10 hover:bg-zinc-400/25"
           }`}
         >
           <ThumbsUp className="w-4 h-4" />
@@ -182,10 +182,10 @@ export default function InteractiveActions({ introId, initialData }: Props) {
           type="button"
           onClick={() => handleReact("dislike")}
           disabled={loading || statusLoading}
-          className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm   disabled:opacity-50 ${
+          className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm   disabled:opacity-50 ${
             reactions.user_has_disliked
-              ? "bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400"
-              : "bg-zinc-400/10  hover:bg-zinc-800 hover:bg-zinc-700"
+              ? "bg-zinc-400/25 opacity-50 dark:bg-zinc-400/25 dark:opacity-50"
+              : "bg-zinc-400/10  hover:bg-zinc-400/10 hover:bg-zinc-400/25"
           }`}
         >
           <ThumbsDown className="w-4 h-4" />
@@ -196,7 +196,7 @@ export default function InteractiveActions({ introId, initialData }: Props) {
       <button
         type="button"
         onClick={handleShare}
-        className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm  bg-zinc-400/10  hover:bg-zinc-800 hover:bg-zinc-700 "
+        className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm  bg-zinc-400/10  hover:bg-zinc-400/10 hover:bg-zinc-400/25 "
       >
         <Share2 className="w-4 h-4" />
         শেয়ার

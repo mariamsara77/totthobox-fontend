@@ -79,7 +79,7 @@ export default function ChatInput({
     <div className="text-center">
       {/* গেস্ট নোটিফিকেশন বার */}
       {isGuest && (
-        <div className="flex items-center justify-between text-xs  rounded-lg mb-2 bg-zinc-400/10 p-2">
+        <div className="flex items-center justify-between text-xs  rounded-xl mb-2 bg-zinc-400/10 p-2">
           <span>
             বিনা মূল্যে বাকি আছে: <strong>{guestRemaining}</strong> টি উত্তর
           </span>
@@ -102,7 +102,7 @@ export default function ChatInput({
           <img
             src={imagePreview}
             alt="Upload preview"
-            className="w-16 h-16 object-cover rounded-lg border border-gray-700"
+            className="w-16 h-16 object-cover rounded-xl border border-gray-700"
           />
           <button
             type="button"
@@ -147,7 +147,7 @@ export default function ChatInput({
           type="button"
           onClick={handleSubmit}
           disabled={disabled || (!text.trim() && !imageBase64)}
-          className="p-2 m-1 bg-zinc-400/10 rounded-lg hover:bg-zinc-400/50 disabled:opacity-50 transition"
+          className="p-2 m-1 bg-zinc-400/10 rounded-xl hover:bg-zinc-400/50 disabled:opacity-50 transition"
         >
           <Send className="w-4 h-4" />
         </button>

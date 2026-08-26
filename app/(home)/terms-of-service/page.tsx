@@ -34,13 +34,13 @@ export default function TermsPage() {
               সর্বশেষ আপডেট: {lastUpdated}
             </span>
           </div>
-          <div className="pt-2 h-px bg-zinc-800 bg-zinc-800" />
+          <div className="pt-2 h-px bg-zinc-400/10 bg-zinc-400/10" />
         </div>
 
         {/* 1. Acceptance */}
         <section className="space-y-4">
           <div className="flex items-center gap-4">
-            <div className="p-2 rounded-lg bg-zinc-400/10">📄</div>
+            <div className="p-2 rounded-xl bg-zinc-400/10">📄</div>
             <h2 className="text-xl ">
               ১. সাধারণ নিয়মাবলি ও গ্রহণযোগ্যতা
             </h2>
@@ -49,7 +49,7 @@ export default function TermsPage() {
             <strong>Totthobox</strong> (
             <a
               href="https://totthobox.com"
-              className="text-indigo-600 hover:underline"
+              className="opacity-50 hover:underline"
             >
               totthobox.com
             </a>
@@ -67,7 +67,7 @@ export default function TermsPage() {
         {/* 2. Services */}
         <section className="space-y-4">
           <div className="flex items-center gap-4">
-            <div className="p-2 rounded-lg bg-zinc-400/10">▦</div>
+            <div className="p-2 rounded-xl bg-zinc-400/10">▦</div>
             <h2 className="text-xl ">২. আমাদের সেবাসমূহ</h2>
           </div>
           <p>Totthobox নিম্নলিখিত ধরনের সেবা প্রদান করে:</p>
@@ -83,7 +83,7 @@ export default function TermsPage() {
               "Totthobox AI চ্যাটবট",
             ].map((item) => (
               <li key={item} className="flex items-center gap-2">
-                <span className="text-green-500">✓</span>
+                <span className="opacity-50">✓</span>
                 <span>{item}</span>
               </li>
             ))}
@@ -93,7 +93,7 @@ export default function TermsPage() {
         {/* 3. User Responsibilities */}
         <section className="space-y-4">
           <div className="flex items-center gap-4">
-            <div className="p-2 rounded-lg bg-zinc-400/10">👥</div>
+            <div className="p-2 rounded-xl bg-zinc-400/10">👥</div>
             <h2 className="text-xl ">৩. ব্যবহারকারীর দায়িত্ব</h2>
           </div>
           <p>
@@ -119,7 +119,7 @@ export default function TermsPage() {
         {/* 4. Limitations */}
         <section className="space-y-4">
           <div className="flex items-center gap-4">
-            <div className="p-2 rounded-lg bg-amber-50 dark:bg-amber-950/30 text-amber-600">
+            <div className="p-2 rounded-xl bg-zinc-400/25 dark:bg-zinc-400/25 opacity-50">
               ⚠️
             </div>
             <h2 className="text-xl ">
@@ -165,7 +165,7 @@ export default function TermsPage() {
         {/* 5-9 */}
         <section className="space-y-4">
           <div className="flex items-center gap-4">
-            <div className="p-2 rounded-lg bg-zinc-400/10">🛡️</div>
+            <div className="p-2 rounded-xl bg-zinc-400/10">🛡️</div>
             <h2 className="text-xl ">৫. মেধা সম্পত্তি অধিকার</h2>
           </div>
           <p className="leading-relaxed">
@@ -177,7 +177,7 @@ export default function TermsPage() {
 
         <section className="space-y-4">
           <div className="flex items-center gap-4">
-            <div className="p-2 rounded-lg bg-zinc-400/10">🔗</div>
+            <div className="p-2 rounded-xl bg-zinc-400/10">🔗</div>
             <h2 className="text-xl ">৬. তৃতীয় পক্ষের লিংক</h2>
           </div>
           <p className="leading-relaxed">
@@ -190,7 +190,7 @@ export default function TermsPage() {
 
         <section className="space-y-4">
           <div className="flex items-center gap-4">
-            <div className="p-2 rounded-lg bg-zinc-400/10">⚖️</div>
+            <div className="p-2 rounded-xl bg-zinc-400/10">⚖️</div>
             <h2 className="text-xl ">৭. দায়বদ্ধতার সীমাবদ্ধতা</h2>
           </div>
           <p className="leading-relaxed">
@@ -202,7 +202,7 @@ export default function TermsPage() {
 
         <section className="space-y-4">
           <div className="flex items-center gap-4">
-            <div className="p-2 rounded-lg bg-zinc-400/10">🔄</div>
+            <div className="p-2 rounded-xl bg-zinc-400/10">🔄</div>
             <h2 className="text-xl ">৮. শর্তাবলির পরিবর্তন</h2>
           </div>
           <p className="leading-relaxed">
@@ -215,7 +215,7 @@ export default function TermsPage() {
 
         <section className="space-y-4">
           <div className="flex items-center gap-4">
-            <div className="p-2 rounded-lg bg-zinc-400/10">🏛️</div>
+            <div className="p-2 rounded-xl bg-zinc-400/10">🏛️</div>
             <h2 className="text-xl ">৯. প্রযোজ্য আইন</h2>
           </div>
           <p className="leading-relaxed">

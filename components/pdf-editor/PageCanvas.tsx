@@ -279,10 +279,10 @@ export function PageCanvas({ pageNumber }: Props) {
   };
 
   return (
-    <div className="relative shadow-2xl rounded-lg overflow-hidden bg-zinc-950 select-none">
+    <div className="relative shadow-2xl rounded-xl overflow-hidden bg-zinc-400/10 select-none">
       {isRendering && (
-        <div className="absolute inset-0 z-30 flex items-center justify-center bg-zinc-950/60">
-          <div className="size-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+        <div className="absolute inset-0 z-30 flex items-center justify-center bg-zinc-400/10">
+          <div className="size-8 border-4 border-zinc-400/25 border-t-transparent rounded-full animate-spin" />
         </div>
       )}
 
@@ -480,22 +480,22 @@ function SelectionBox({
   return (
     <>
       <div
-        className="absolute border-2 border-indigo-500 pointer-events-none"
+        className="absolute border-2 border-zinc-400/25 pointer-events-none"
         style={{ left: -2, top: -2, width: width + 4, height: height + 4 }}
       />
       <div
         onMouseDown={onResize}
-        className="absolute size-4 bg-zinc-950 border-2 border-indigo-500 rounded-sm cursor-se-resize shadow"
+        className="absolute size-4 bg-zinc-400/10 border-2 border-zinc-400/25 rounded-sm cursor-se-resize shadow"
         style={{ right: -7, bottom: -7 }}
       />
       <div
         onMouseDown={onRotate}
-        className="absolute size-4 bg-indigo-500 rounded-full cursor-grab shadow"
+        className="absolute size-4 bg-zinc-400/25 rounded-full cursor-grab shadow"
         style={{ left: width / 2 - 7, top: -30 }}
         title="Rotate"
       />
       <div
-        className="absolute w-0.5 bg-indigo-400 pointer-events-none"
+        className="absolute w-0.5 bg-zinc-400/25 pointer-events-none"
         style={{ left: width / 2 - 1, top: -24, height: 18 }}
       />
     </>

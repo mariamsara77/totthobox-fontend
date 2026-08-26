@@ -45,10 +45,10 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       <div
         ref={modalRef}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl transform transition-transform"
+        className="w-full max-w-md p-4 bg-white bg-zinc-400/10 border border-zinc-200 dark:border-zinc-400/25 rounded-2xl shadow-xl transform transition-transform"
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-zinc-100 dark:border-zinc-800">
+        <div className="flex items-center justify-between pb-4 border-b border-zinc-100 dark:border-zinc-400/25">
           <div className="flex items-center gap-2 text-lg font-medium">
             <Settings className="w-5 h-5 text-zinc-600 dark:text-zinc-400" />
             <span id="settings-modal-title">সেটিংস</span>
@@ -58,7 +58,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             ref={closeButtonRef}
             onClick={onClose}
             aria-label="সেটিংস বন্ধ করুন"
-            className="p-1.5 rounded-lg text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+            className="p-1.5 rounded-xl text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-400/10 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -71,11 +71,11 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         </div>
 
         {/* Footer */}
-        <div className="pt-4 border-t border-zinc-100 dark:border-zinc-800 flex justify-end">
+        <div className="pt-4 border-t border-zinc-100 dark:border-zinc-400/25 flex justify-end">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 rounded-xl transition-colors"
+            className="px-4 py-2 text-sm font-medium bg-zinc-100 hover:bg-zinc-200 bg-zinc-400/10 dark:hover:bg-zinc-400/25 rounded-xl transition-colors"
           >
             বন্ধ করুন
           </button>

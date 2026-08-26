@@ -31,7 +31,7 @@ export function Sidebar() {
   }, [pdfDoc, numPages]);
 
   return (
-    <div className="w-44 border-r border-zinc-400/25 overflow-y-auto bg-zinc-950 dark:bg-zinc-950 p-2 space-y-4">
+    <div className="w-44 border-r border-zinc-400/25 overflow-y-auto bg-zinc-400/10 bg-zinc-400/10 p-2 space-y-4">
       <p className="text-xs  text-zinc-400 px-1">
         Pages ({numPages})
       </p>
@@ -40,10 +40,10 @@ export function Sidebar() {
           key={idx}
           onClick={() => setCurrentPage(idx + 1)}
           className={clsx(
-            "w-full rounded-lg overflow-hidden border-2 transition",
+            "w-full rounded-xl overflow-hidden border-2 transition",
             currentPage === idx + 1
-              ? "border-indigo-500"
-              : "border-transparent hover:border-zinc-700 dark:hover:border-zinc-700"
+              ? "border-zinc-400/25"
+              : "border-transparent hover:border-zinc-400/25 dark:hover:border-zinc-400/25"
           )}
         >
           <img src={src} alt={`Page ${idx + 1}`} className="w-full" />
