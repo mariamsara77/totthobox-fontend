@@ -9,7 +9,7 @@ import {
   useRef,
   ReactNode,
 } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { ApiError } from "@/lib/api-client";
 import { User } from "@/lib/auth";
 
@@ -25,164 +25,190 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Helper Function: ব্যাকএন্ডের বিভিন্ন ফরম্যাট থেকে সঠিক User অবজেক্ট এক্সট্র্যাক্ট করা
-const extractUser = (data: any): User | null => {
+function extractUser(data: unknown): User | null {
   if (!data || typeof data !== "object") return null;
-  const u = data.user || data.data || data;
-  if (u && typeof u === "object" && (u.id || u.email || u.name)) {
-    return u as User;
-  }
-  return null;
-};
+  const value = data as Record<string, unknown>;
+  const candidate = value.user ?? value.data ?? value;
+  if (!candidate || typeof candidate !== "object") return null;
+  const user = candidate as Record<string, unknown>;
+  if (typeof user.id !== "number" && typeof user.email !== "string") return null;
+  return user as unknown as User;
+}
+
+const PROTECTED_ROUTES = [
+  "/profile",
+  "/messages",
+  "/settings",
+  "/dashboard",
+  "/admin",
+];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-  const isMounted = useRef(true);
+  const pathname = usePathname();
+  const mounted = useRef(false);
+  const requestId = useRef(0);
 
   const refreshUser = useCallback(async (): Promise<boolean> => {
+    const id = ++requestId.current;
+
     try {
       const res = await fetch("/api/auth/me", {
         method: "GET",
         headers: { Accept: "application/json" },
-        cache: "no-store",
         credentials: "include",
+        cache: "no-store",
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        const fetchedUser = extractUser(data);
-        if (fetchedUser) {
-          if (isMounted.current) setUser(fetchedUser);
-          return true;
-        }
+      if (id !== requestId.current) return false;
+
+      if (!res.ok) {
+        if (mounted.current) setUser(null);
+        return false;
       }
 
-      if (isMounted.current) setUser(null);
-      return false;
+      const data = await res.json();
+      const currentUser = extractUser(data);
+
+      if (!currentUser) {
+        if (mounted.current) setUser(null);
+        return false;
+      }
+
+      if (mounted.current) setUser(currentUser);
+      return true;
     } catch {
-      if (isMounted.current) setUser(null);
+      if (id === requestId.current && mounted.current) setUser(null);
       return false;
     }
   }, []);
 
   useEffect(() => {
-    isMounted.current = true;
+    mounted.current = true;
+
+    const bootstrap = async () => {
+      await refreshUser();
+      if (mounted.current) setLoading(false);
+    };
+
+    void bootstrap();
 
     const handleUnauthorized = () => {
-      if (isMounted.current) setUser(null);
-      const { pathname } = window.location;
-      if (pathname !== "/login" && pathname !== "/register") {
-        fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
+      if (mounted.current) setUser(null);
+      const currentPath = window.location.pathname;
+      if (currentPath !== "/login" && currentPath !== "/register") {
+        void fetch("/api/auth/logout", {
+          method: "POST",
+          credentials: "include",
+          cache: "no-store",
+        });
         window.location.replace("/login");
       }
     };
 
     window.addEventListener("auth:unauthorized", handleUnauthorized);
 
-    (async () => {
-      await refreshUser();
-      if (isMounted.current) setLoading(false);
-    })();
-
     return () => {
-      isMounted.current = false;
+      mounted.current = false;
+      requestId.current += 1;
       window.removeEventListener("auth:unauthorized", handleUnauthorized);
     };
   }, [refreshUser]);
 
-  // প্রোটেক্টেড রাউটগুলির একটি লিস্ট (যেসব পেজে লগইন ছাড়া থাকা যাবে না)
-const PROTECTED_ROUTES = ["/profile", "/messages", "/settings", "/dashboard", "/admin"];
+  // Client-side navigation can leave this provider mounted while the
+  // authenticated cookie changes during registration/login. Re-sync the
+  // canonical server-side identity after every route transition.
+  useEffect(() => {
+    if (loading) return;
+    void refreshUser();
+  }, [pathname, loading, refreshUser]);
 
-// 1. Single-page reactive login (No Full Page Reload)
-const login = useCallback(
-  async (email: string, password: string): Promise<void> => {
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({ email, password }),
-    });
+  const login = useCallback(
+    async (email: string, password: string): Promise<void> => {
+      // Clear the previous account before establishing a new session.
+      if (mounted.current) setUser(null);
 
-    const data = await res.json().catch(() => ({}));
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        credentials: "include",
+        cache: "no-store",
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (!res.ok) {
-      throw new ApiError(
-        data?.message || "লগইন ব্যর্থ হয়েছে",
-        res.status,
-        data
-      );
-    }
+      const data = await res.json().catch(() => ({}));
 
-    // ক্লায়েন্ট সাইড স্টেট আপডেট (পেজ রিফ্রেশ ছাড়া প্রোফাইল চেঞ্জ হবে)
-    const loggedInUser = extractUser(data);
-    if (loggedInUser) {
-      if (isMounted.current) setUser(loggedInUser);
-    } else {
-      await refreshUser();
-    }
+      if (!res.ok) {
+        throw new ApiError(
+          data?.message || "লগইন ব্যর্থ হয়েছে",
+          res.status,
+          data
+        );
+      }
 
-    // সার্ভার কম্পোনেন্টের ক্যাশ আপডেট (সিমলেস ব্যাকগ্রাউন্ড রিফ্রেশ)
-   window.location.href = "/";
-  },
-  []
-);
+      // Never trust the user object returned by the login response as the
+      // source of truth. The session cookie is authoritative; /api/auth/me
+      // resolves the identity attached to that exact session.
+      const authenticated = await refreshUser();
+      if (!authenticated) {
+        throw new ApiError(
+          "লগইনের পর authenticated profile পাওয়া যায়নি।",
+          401
+        );
+      }
 
-// 2. Smart Logout (Stay on Public Pages, Redirect on Protected Pages)
-const logout = useCallback(async (): Promise<void> => {
-  if (isMounted.current) setUser(null);
-
-  try {
-    await fetch("/api/auth/logout", {
-      method: "POST",
-      credentials: "include",
-      headers: { Accept: "application/json" },
-      cache: "no-store",
-    });
-  } catch {
-    // ignore
-  }
-
-  const currentPath = window.location.pathname;
-
-  // চেক করবে বর্তমান পেজটি প্রোটেক্টেড কি না
-  const isProtected = PROTECTED_ROUTES.some((route) =>
-    currentPath.startsWith(route)
+      router.refresh();
+    },
+    [refreshUser, router]
   );
 
-  router.refresh();
+  const logout = useCallback(async (): Promise<void> => {
+    if (mounted.current) setUser(null);
 
-  // যদি প্রোটেক্টেড পেজ হয় তবে লগইন পেজে পাঠাবে, অন্যথায় বর্তমান পেজেই থাকবে
-  if (isProtected) {
-    router.push("/login");
-  }
-}, [router]);
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+        headers: { Accept: "application/json" },
+        cache: "no-store",
+      });
+    } finally {
+      requestId.current += 1;
+    }
+
+    const currentPath = window.location.pathname;
+    const isProtected = PROTECTED_ROUTES.some((route) =>
+      currentPath.startsWith(route)
+    );
+
+    router.refresh();
+    if (isProtected) router.push("/login");
+  }, [router]);
 
   return (
-  <AuthContext.Provider
-    value={{
-      user,
-      loading,
-      isLoading: loading,   // ← এটা যোগ করুন
-      isLoggedIn: !!user,
-      login,
-      logout,
-      refreshUser,
-    }}
-  >
-    {children}
-  </AuthContext.Provider>
-);
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        isLoading: loading,
+        isLoggedIn: Boolean(user),
+        login,
+        logout,
+        refreshUser,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {
   const ctx = useContext(AuthContext);
-  if (!ctx) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
+  if (!ctx) throw new Error("useAuth must be used within an AuthProvider");
   return ctx;
 }
