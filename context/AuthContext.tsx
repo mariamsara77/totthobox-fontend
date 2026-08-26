@@ -32,7 +32,7 @@ const extractUser = (data: unknown): User | null => {
   const u = source.user ?? source.data ?? data;
   if (u && typeof u === "object") {
     const candidate = u as Record<string, unknown>;
-    if (candidate.id || candidate.email || candidate.name) return candidate as User;
+    if (candidate.id || candidate.email || candidate.name) return candidate as unknown as User;
   }
   return null;
 };
@@ -43,9 +43,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const isMounted = useRef(true);
-
-  // Every auth transition increments this value. Responses from an older
-  // session are ignored so a slow request for User A can never overwrite User B.
   const authGeneration = useRef(0);
   const refreshController = useRef<AbortController | null>(null);
 
@@ -76,7 +73,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signal: controller.signal,
       });
 
-      // Never let a response from a previous login/session update current state.
       if (!isMounted.current || generation !== authGeneration.current) return false;
 
       if (res.ok) {
@@ -132,8 +128,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, [refreshUser, invalidateAuthGeneration, resetClientAuthState]);
 
-  // Re-read the authenticated user after client-side navigation. The API is
-  // always no-store and derives identity from the current HttpOnly cookie.
   useEffect(() => {
     if (loading) return;
     void refreshUser();
@@ -143,8 +137,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(
     async (email: string, password: string): Promise<void> => {
-      // Start a completely new client session before authenticating. This is
-      // essential when User A logs out and User B logs in in the same browser.
       invalidateAuthGeneration();
       setUser(null);
       await resetClientAuthState();
@@ -170,8 +162,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         );
       }
 
-      // The login response is not trusted as the active identity. The
-      // HttpOnly cookie is the credential and /me is the canonical identity.
       const generation = authGeneration.current;
       const refreshed = await refreshUser();
       if (generation !== authGeneration.current) {
@@ -179,8 +169,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       if (!refreshed) {
-        // Do not leave a valid token behind when the authenticated identity
-        // cannot be established on the client.
         invalidateAuthGeneration();
         setUser(null);
         await resetClientAuthState();
@@ -196,8 +184,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const logout = useCallback(async (): Promise<void> => {
-    // Invalidate pending /me requests before clearing the identity. This
-    // prevents a late response from restoring the previous user's profile.
     invalidateAuthGeneration();
     setUser(null);
     await resetClientAuthState();
@@ -210,7 +196,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         cache: "no-store",
       });
     } catch {
-      // The local session is still cleared even if Laravel is unavailable.
+      // Local session remains cleared even if Laravel is unavailable.
     }
 
     const currentPath = window.location.pathname;
