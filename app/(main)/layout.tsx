@@ -1,5 +1,4 @@
-import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Noto_Sans_Bengali } from "next/font/google";
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Sidebar from "@/components/Sidebar";
@@ -21,23 +20,17 @@ export default function MainLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div>
-      <SidebarProvider>
-          <div className="flex min-h-screen">
-            {/* Sidebar */}
-            <Sidebar />
-
-            {/* Main content area */}
-            <div className="flex min-h-screen min-w-0 flex-1 flex-col">
-              <div className="md:hidden sticky top-0 z-50">
-                <Navbar />
-              </div>
-
-              <main className="flex-1 w-full">{children}</main>
-              <Footer />
-            </div>
+    <SidebarProvider>
+      <div className="flex min-h-screen">
+        <Sidebar />
+        <div className="flex min-h-screen min-w-0 flex-1 flex-col">
+          <div className="sticky top-0 z-50 md:hidden">
+            <Navbar />
           </div>
-      </SidebarProvider>
-    </div>
+          <main className="w-full flex-1">{children}</main>
+          <Footer />
+        </div>
+      </div>
+    </SidebarProvider>
   );
 }
