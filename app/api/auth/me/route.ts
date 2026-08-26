@@ -7,9 +7,17 @@ export const revalidate = 0;
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
+const NO_STORE_HEADERS = {
+  "Cache-Control": "private, no-store, no-cache, must-revalidate, max-age=0",
+  Pragma: "no-cache",
+  Vary: "Cookie, Authorization",
+};
+
 function clearTokenCookie(res: NextResponse) {
   res.cookies.set("laravel_token", "", {
     httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
     path: "/",
     maxAge: 0,
     expires: new Date(0),
@@ -20,47 +28,57 @@ export async function GET() {
   const cookieStore = await cookies();
   const token = cookieStore.get("laravel_token")?.value;
 
-  // No token at all — respond 401 immediately (do NOT hit Laravel)
   if (!token) {
-    return NextResponse.json(null, { status: 401 });
+    return NextResponse.json(null, { status: 401, headers: NO_STORE_HEADERS });
   }
 
   let laravelRes: Response;
   try {
     laravelRes = await fetch(`${API_BASE}/api/user`, {
+      method: "GET",
       headers: {
         Accept: "application/json",
         Authorization: `Bearer ${token}`,
+        "Cache-Control": "no-cache",
       },
       cache: "no-store",
     });
   } catch {
-    // Network failure — don't invalidate the cookie, just return 503
     return NextResponse.json(
       { message: "ব্যাকএন্ড সার্ভার অনুপলব্ধ।" },
-      { status: 503 }
+      { status: 503, headers: NO_STORE_HEADERS }
     );
   }
 
   const data = await laravelRes.json().catch(() => null);
 
-  // Token expired or invalid — clear cookie so the client stops retrying
   if (laravelRes.status === 401) {
-    const res = NextResponse.json(null, { status: 401 });
+    const res = NextResponse.json(null, {
+      status: 401,
+      headers: NO_STORE_HEADERS,
+    });
     clearTokenCookie(res);
     return res;
   }
 
   if (!laravelRes.ok) {
-    return NextResponse.json(null, { status: laravelRes.status });
+    return NextResponse.json(null, {
+      status: laravelRes.status,
+      headers: NO_STORE_HEADERS,
+    });
   }
 
-  // Sanity check — make sure we got a real user object back
-  if (!data || typeof data !== "object" || Object.keys(data).length === 0) {
-    const res = NextResponse.json(null, { status: 401 });
+  if (!data || typeof data !== "object" || !("id" in data)) {
+    const res = NextResponse.json(null, {
+      status: 401,
+      headers: NO_STORE_HEADERS,
+    });
     clearTokenCookie(res);
     return res;
   }
 
-  return NextResponse.json(data, { status: 200 });
+  return NextResponse.json(data, {
+    status: 200,
+    headers: NO_STORE_HEADERS,
+  });
 }
