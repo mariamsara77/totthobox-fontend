@@ -11,6 +11,12 @@ import { ApiError } from "@/lib/api-client";
 
 type FieldErrors = { email?: string; password?: string; general?: string };
 
+const inputClass =
+  "w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 p-4 outline-none focus:bg-zinc-400/25 disabled:opacity-50";
+
+const actionClass =
+  "flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-400/25 bg-zinc-400/10 p-4 hover:bg-zinc-400/25 disabled:opacity-50";
+
 export default function LoginContent() {
   const { login, user, isLoading: isAuthLoading } = useAuth();
   const router = useRouter();
@@ -23,16 +29,17 @@ export default function LoginContent() {
   const [formData, setFormData] = useState({ email: "", password: "" });
 
   useEffect(() => {
-    if (user && !isAuthLoading) {
-      router.replace(redirectTo);
-    }
-  }, [user, isAuthLoading, router, redirectTo]);
+    if (user && !isAuthLoading) router.replace(redirectTo);
+  }, [user, isAuthLoading, router]);
 
- 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name as keyof FieldErrors]: undefined, general: undefined }));
+    setErrors((prev) => ({
+      ...prev,
+      [name as keyof FieldErrors]: undefined,
+      general: undefined,
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -62,9 +69,7 @@ export default function LoginContent() {
             setErrors({ general: data.message || "ইমেইল বা পাসওয়ার্ড ভুল।" });
             break;
           case 429:
-            setErrors({
-              general: data.message || "অনেকবার চেষ্টা করা হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করুন।",
-            });
+            setErrors({ general: data.message || "অনেকবার চেষ্টা করা হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করুন।" });
             break;
           case 503:
             setErrors({ general: "সার্ভার সাময়িকভাবে অনুপলব্ধ। পরে আবার চেষ্টা করুন।" });
@@ -84,23 +89,20 @@ export default function LoginContent() {
 
   return (
     <div className="space-y-4">
-      {/* Heading */}
-      <div className="text-center space-y-2">
-        <h1 className="text-2xl font-bold">আপনার অ্যাকাউন্টে লগ ইন করুন</h1>
-        <p className="text-sm text-zinc-500">লগ ইন করতে নিচের ধাপগুলো অনুসরণ করুন</p>
+      <div className="space-y-2 text-center">
+        <h1 className="text-2xl">আপনার অ্যাকাউন্টে লগ ইন করুন</h1>
+        <p className="text-sm opacity-50">লগ ইন করতে নিচের ধাপগুলো অনুসরণ করুন</p>
       </div>
 
-      {/* General error banner */}
       {errors.general && (
-        <div className="p-4 text-center text-sm rounded-xl border border-red-400/30 bg-red-500/10 text-red-500">
+        <div className="rounded-xl border border-zinc-400/25 bg-zinc-400/10 p-4 text-center text-sm">
           {errors.general}
         </div>
       )}
 
       {emailLogin ? (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
-          {/* Email */}
-          <div className="space-y-1">
+        <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+          <div className="space-y-2">
             <input
               type="email"
               name="email"
@@ -109,17 +111,12 @@ export default function LoginContent() {
               autoComplete="email"
               disabled={isLoading}
               placeholder="ইমেইল অ্যাড্রেস (email@example.com)"
-              className={`w-full rounded-full py-4 px-6 bg-zinc-400/10 outline-none transition-all duration-200 disabled:opacity-60 ${
-                errors.email ? "border-2 border-red-500" : "border-2 border-transparent"
-              }`}
+              className={inputClass}
             />
-            {errors.email && (
-              <p className="text-red-500 text-xs pl-4">{errors.email}</p>
-            )}
+            {errors.email && <p className="px-4 text-xs opacity-50">{errors.email}</p>}
           </div>
 
-          {/* Password */}
-          <div className="space-y-1">
+          <div className="space-y-2">
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
@@ -129,40 +126,28 @@ export default function LoginContent() {
                 autoComplete="current-password"
                 disabled={isLoading}
                 placeholder="পাসওয়ার্ড দিন"
-                className={`w-full rounded-full py-4 pl-6 pr-12 bg-zinc-400/10 outline-none transition-all duration-200 disabled:opacity-60 ${
-                  errors.password ? "border-2 border-red-500" : "border-2 border-transparent"
-                }`}
+                className={`${inputClass} pr-12`}
               />
               <button
                 type="button"
-                onClick={() => setShowPassword((v) => !v)}
-                className="absolute inset-y-0 right-4 flex items-center text-zinc-400 hover:text-zinc-600 transition"
+                onClick={() => setShowPassword((value) => !value)}
+                className="absolute inset-y-0 right-4 flex items-center opacity-50 hover:opacity-100"
                 tabIndex={-1}
                 aria-label={showPassword ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখান"}
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
-            {errors.password && (
-              <p className="text-red-500 text-xs pl-4">{errors.password}</p>
-            )}
+            {errors.password && <p className="px-4 text-xs opacity-50">{errors.password}</p>}
           </div>
 
-          {/* Actions */}
-          <div className="space-y-4 mt-2">
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full rounded-full p-4 font-bold text-white dark:text-black bg-black dark:bg-white hover:opacity-80 transition disabled:opacity-60"
-            >
+          <div className="space-y-4">
+            <button type="submit" disabled={isLoading} className={actionClass}>
               {isLoading ? "অপেক্ষা করুন..." : "লগ ইন করুন"}
             </button>
 
-            <div className="flex justify-between items-center px-2">
-              <Link
-                href="/forgot-password"
-                className="text-xs text-zinc-400 hover:text-zinc-300 transition"
-              >
+            <div className="flex items-center justify-between gap-4 px-2">
+              <Link href="/forgot-password" className="text-xs opacity-50 hover:opacity-100">
                 পাসওয়ার্ড ভুলে গেছেন?
               </Link>
               <button
@@ -171,7 +156,7 @@ export default function LoginContent() {
                   setEmailLogin(false);
                   setErrors({});
                 }}
-                className="flex items-center gap-1 text-xs text-zinc-400 hover:text-zinc-300 transition"
+                className="flex items-center gap-2 text-xs opacity-50 hover:opacity-100"
               >
                 <ArrowLeft size={14} /> পিছনে যান
               </button>
@@ -180,27 +165,23 @@ export default function LoginContent() {
         </form>
       ) : (
         <div className="space-y-4">
-          <button
-            onClick={() => setEmailLogin(true)}
-            className="w-full flex items-center justify-center gap-4 rounded-full p-4 font-medium text-white dark:text-black bg-black dark:bg-white hover:opacity-90 transition"
-          >
+          <button type="button" onClick={() => setEmailLogin(true)} className={actionClass}>
             <MailIcon size={18} /> ইমেইল দিয়ে লগ ইন
           </button>
-
           <GoogleLoginButton />
           <FacebookLoginButton />
         </div>
       )}
 
-      <div className="flex items-center justify-center">
-        <hr className="grow border-zinc-400/25" />
-        <span className="mx-4 text-sm text-zinc-500">অথবা</span>
-        <hr className="grow border-zinc-400/25" />
+      <div className="flex items-center gap-4">
+        <hr className="flex-1 border-zinc-400/25" />
+        <span className="text-sm opacity-50">অথবা</span>
+        <hr className="flex-1 border-zinc-400/25" />
       </div>
 
       <div className="text-center text-sm">
         <span>অ্যাকাউন্ট নেই? </span>
-        <Link href="/register" className="font-bold text-blue-600 hover:opacity-60 transition">
+        <Link href="/register" className="font-bold opacity-50 hover:opacity-100">
           সাইন আপ করুন
         </Link>
       </div>
