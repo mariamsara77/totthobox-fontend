@@ -1,23 +1,21 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import {
-  Settings,
-  MessageSquare,
-  LogOut,
-  User as UserIcon,
-} from "lucide-react";
+import { LogOut, MessageSquare, Settings, User as UserIcon } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 interface SidebarProfileMenuProps {
   collapsed?: boolean;
-  onHover?: (e: React.MouseEvent<HTMLElement>, label: string) => void;
+  onHover?: (event: React.MouseEvent<HTMLElement>, label: string) => void;
   onLeave?: () => void;
 }
 
+const controlClass =
+  "flex items-center gap-2 rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/25";
+
 export default function SidebarProfileMenu({
-  collapsed,
+  collapsed = false,
   onHover,
   onLeave,
 }: SidebarProfileMenuProps) {
@@ -27,151 +25,120 @@ export default function SidebarProfileMenu({
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Loading অনেকক্ষণ ধরে true থাকলে fallback
   useEffect(() => {
-    if (loading) {
-      const timer = setTimeout(() => {
-        setShowLoginFallback(true);
-      }, 2500);
-      return () => clearTimeout(timer);
-    } else {
+    if (!loading) {
       setShowLoginFallback(false);
+      return;
     }
+
+    const timeout = window.setTimeout(() => setShowLoginFallback(true), 2500);
+    return () => window.clearTimeout(timeout);
   }, [loading]);
 
-  // Click outside
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
+    if (!isDropdownOpen) return;
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (!dropdownRef.current?.contains(event.target as Node)) {
         setIsDropdownOpen(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+
+    document.addEventListener("mousedown", handlePointerDown);
+    return () => document.removeEventListener("mousedown", handlePointerDown);
+  }, [isDropdownOpen]);
 
   const handleLogout = async () => {
-  if (isLoggingOut) return;
-  setIsLoggingOut(true);
-  setIsDropdownOpen(false);
+    if (isLoggingOut) return;
 
-  try {
-    await logout();
-  } catch (error) {
-    console.error("Logout failed:", error);
-    window.location.href = "/"; // fallback
-  } finally {
-    setIsLoggingOut(false);
-  }
-};
+    setIsLoggingOut(true);
+    setIsDropdownOpen(false);
 
-  // Loading অবস্থা
+    try {
+      await logout();
+    } catch {
+      window.location.assign("/");
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
   if (loading && !showLoginFallback) {
-    return (
-      <div className="h-10 w-full animate-pulse bg-zinc-400/10 rounded-lg"></div>
-    );
+    return <div className="h-10 w-full rounded-xl bg-zinc-400/10" aria-hidden="true" />;
   }
 
-  // Login বাটন
   if (!user) {
     return (
       <Link
         href="/login"
-        onMouseEnter={(e) => collapsed && onHover?.(e, "লগইন")}
+        onMouseEnter={(event) => collapsed && onHover?.(event, "লগইন")}
         onMouseLeave={onLeave}
-        className={`flex items-center gap-4 rounded-lg bg-emerald-600 px-3 py-2.5 text-sm text-white transition-all hover:bg-emerald-700 ${
-          collapsed ? "justify-center" : ""
-        }`}
+        className={`${controlClass} w-full text-sm ${collapsed ? "justify-center" : ""}`}
       >
-        <UserIcon size={18} />
+        <UserIcon className="h-5 w-5 shrink-0" />
         {!collapsed && <span>লগইন</span>}
       </Link>
     );
   }
 
-  // Logged in user
+  const avatarUrl =
+    user.avatar_url ||
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}`;
+
   return (
     <div className="relative w-full" ref={dropdownRef}>
       <button
-        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-        onMouseEnter={(e) => collapsed && onHover?.(e, user.name)}
+        type="button"
+        onClick={() => setIsDropdownOpen((open) => !open)}
+        onMouseEnter={(event) => collapsed && onHover?.(event, user.name)}
         onMouseLeave={onLeave}
-        className={`flex w-full items-center gap-2 rounded-lg px-2 py-2 bg-zinc-400/10 hover:bg-zinc-400/25 ${
-          collapsed ? "justify-center" : "text-left"
-        }`}
+        aria-expanded={isDropdownOpen}
+        aria-haspopup="menu"
+        className={`${controlClass} w-full ${collapsed ? "justify-center" : "text-left"}`}
       >
         <img
-          src={
-            user.avatar_url ||
-            `https://ui-avatars.com/api/?name=${encodeURIComponent(
-              user.name
-            )}&background=10b981&color=fff`
-          }
+          src={avatarUrl}
           alt={user.name}
-          className="h-8 w-8 rounded-full object-cover border border-zinc-400/25 dark:border-zinc-700 shrink-0"
+          className="h-8 w-8 shrink-0 rounded-full border border-zinc-400/25 object-cover"
         />
         {!collapsed && (
-          <div className="flex flex-col overflow-hidden">
-            <span className="truncate text-sm">{user.name}</span>
-            <span className="truncate text-xs">{user.email}</span>
+          <div className="min-w-0 space-y-2">
+            <span className="block truncate text-sm">{user.name}</span>
+            <span className="block truncate text-xs opacity-50">{user.email}</span>
           </div>
         )}
       </button>
 
       {isDropdownOpen && (
         <div
-          className={`absolute bottom-full mb-2 w-64 bg-zinc-100 dark:bg-zinc-700 rounded-2xl border border-zinc-400/25 animate-in fade-in slide-in-from-top-2 z-50 ${
-            collapsed ? "left-14" : "left-0"
-          }`}
+          role="menu"
+          className={`absolute bottom-full z-50 mb-2 w-64 rounded-2xl border border-zinc-400/25 bg-zinc-200 p-4 dark:bg-zinc-800 ${collapsed ? "left-14" : "left-0"}`}
         >
-          <div className="p-2 flex gap-2 items-center">
-            <img
-              src={
-                user.avatar_url ||
-                `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                  user.name
-                )}&background=10b981&color=fff`
-              }
-              alt={user.name}
-              className="rounded-xl size-12"
-            />
-            <div className="flex flex-col overflow-hidden">
-              <span className="truncate text-sm">{user.name}</span>
-              <span className="truncate text-xs">{user.email}</span>
+          <div className="flex items-center gap-2 border-b border-zinc-400/25 pb-4">
+            <img src={avatarUrl} alt="" className="h-10 w-10 rounded-xl object-cover" />
+            <div className="min-w-0 space-y-2">
+              <span className="block truncate text-sm">{user.name}</span>
+              <span className="block truncate text-xs opacity-50">{user.email}</span>
             </div>
           </div>
- <div className="border-b border-zinc-400/25"></div>
-          <div className="p-2 space-y-1">
-            <Link
-              href="/profile/settings"
-              className="flex items-center gap-2 p-2 hover:bg-zinc-400/25 rounded-xl"
-              onClick={() => setIsDropdownOpen(false)}
-            >
-              <Settings className="size-5" />
+
+          <div className="space-y-2 pt-4">
+            <Link href="/profile/settings" className={controlClass} onClick={() => setIsDropdownOpen(false)} role="menuitem">
+              <Settings className="h-5 w-5" />
               Settings
             </Link>
-            <Link
-              href={`/messages/${user.slug || user.id}`}
-              className="flex items-center gap-2 p-2 hover:bg-zinc-400/25 rounded-xl"
-              onClick={() => setIsDropdownOpen(false)}
-            >
-              <MessageSquare className="size-5" />
+            <Link href={`/messages/${user.slug || user.id}`} className={controlClass} onClick={() => setIsDropdownOpen(false)} role="menuitem">
+              <MessageSquare className="h-5 w-5" />
               Messages
             </Link>
-          </div>
-
-          <div className="border-b border-zinc-400/25"></div>
-
-          <div className="p-2">
             <button
+              type="button"
               onClick={handleLogout}
               disabled={isLoggingOut}
-              className="w-full flex gap-2 p-2 text-sm text-red-500 hover:bg-red-400/10 rounded-xl disabled:opacity-50"
+              className={`${controlClass} w-full disabled:opacity-50`}
+              role="menuitem"
             >
-              <LogOut className="size-5" />
+              <LogOut className="h-5 w-5" />
               {isLoggingOut ? "লগআউট হচ্ছে..." : "Log Out"}
             </button>
           </div>
