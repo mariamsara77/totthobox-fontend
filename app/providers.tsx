@@ -21,7 +21,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
             position="top-right"
             toastOptions={{
               duration: 3000,
-              style: { borderRadius: "14px", fontSize: "13px" },
+              className: "rounded-xl border border-zinc-400/25 bg-zinc-400/10",
             }}
           />
         </SettingsModalProvider>
