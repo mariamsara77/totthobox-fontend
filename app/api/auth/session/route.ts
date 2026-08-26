@@ -15,14 +15,6 @@ const COOKIE_OPTIONS = {
   maxAge: 60 * 60 * 24 * 30,
 };
 
-function clearTokenCookie(res: NextResponse) {
-  res.cookies.set("laravel_token", "", {
-    ...COOKIE_OPTIONS,
-    maxAge: 0,
-    expires: new Date(0),
-  });
-}
-
 async function revokePreviousToken(token: string | undefined) {
   if (!token) return;
 
@@ -36,20 +28,8 @@ async function revokePreviousToken(token: string | undefined) {
       cache: "no-store",
     });
   } catch {
-    // The old browser credential is still replaced by the new cookie below.
+    // The old credential is still replaced by the new cookie below.
   }
-}
-
-async function setNewSession(token: string) {
-  const cookieStore = await cookies();
-  const previousToken = cookieStore.get("laravel_token")?.value;
-  await revokePreviousToken(previousToken);
-
-  const res = NextResponse.redirect(new URL("/", "http://localhost"));
-  res.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
-  res.headers.set("Pragma", "no-cache");
-  res.cookies.set("laravel_token", token, COOKIE_OPTIONS);
-  return res;
 }
 
 // GET /api/auth/session?token=xxx — used by OAuth callback redirects.
