@@ -1,7 +1,7 @@
-// Authentication helpers shared by the frontend.
+// Single authentication contract for the frontend.
 //
-// The actual authenticated session is owned by AuthContext + the HttpOnly
-// laravel_token cookie. Browser JavaScript must never read the token.
+// The authoritative session is AuthContext + the HttpOnly `laravel_token`
+// cookie. Browser JavaScript must never read or store the Sanctum token.
 
 export interface User {
   id: number;
@@ -11,14 +11,37 @@ export interface User {
   avatar_url: string | null;
 }
 
+/**
+ * Compatibility bridge for older interactive components.
+ * AuthContext updates this value whenever the authoritative session changes.
+ * New code should prefer useAuth().user / useAuth().isLoggedIn.
+ */
+let currentUser: User | null = null;
+
+export function setAuthUser(user: User | null): void {
+  currentUser = user;
+
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(
+      new CustomEvent("auth:state-changed", {
+        detail: { user },
+      })
+    );
+  }
+}
+
+export function getAuthUser(): User | null {
+  return currentUser;
+}
+
 export const getAuthHeaders = (isPost = false): Record<string, string> => ({
   Accept: "application/json",
   ...(isPost ? { "Content-Type": "application/json" } : {}),
 });
 
 /**
- * Legacy helper kept for compatibility.
- * Do not use this as the source of truth for authentication state.
- * Use useAuth().isLoggedIn / useAuth().user instead.
+ * Backward-compatible synchronous check for legacy interactive components.
+ * It is NEVER based on localStorage/cookies/tokens.
  */
-export const isLoggedIn = (user?: User | null): boolean => Boolean(user);
+export const isLoggedIn = (user?: User | null): boolean =>
+  user !== undefined ? Boolean(user) : Boolean(currentUser);
