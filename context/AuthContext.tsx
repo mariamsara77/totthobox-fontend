@@ -12,6 +12,7 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import { ApiError } from "@/lib/api-client";
 import { User } from "@/lib/auth";
+import { clearClientAuthState, clearClientCaches } from "@/lib/auth-storage";
 
 interface AuthContextType {
   user: User | null;
@@ -25,11 +26,13 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const extractUser = (data: any): User | null => {
+const extractUser = (data: unknown): User | null => {
   if (!data || typeof data !== "object") return null;
-  const u = data.user || data.data || data;
-  if (u && typeof u === "object" && (u.id || u.email || u.name)) {
-    return u as User;
+  const source = data as Record<string, unknown>;
+  const u = source.user ?? source.data ?? data;
+  if (u && typeof u === "object") {
+    const candidate = u as Record<string, unknown>;
+    if (candidate.id || candidate.email || candidate.name) return candidate as User;
   }
   return null;
 };
@@ -41,29 +44,58 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const isMounted = useRef(true);
 
+  // Every auth transition increments this value. Responses from an older
+  // session are ignored so a slow request for User A can never overwrite User B.
+  const authGeneration = useRef(0);
+  const refreshController = useRef<AbortController | null>(null);
+
+  const invalidateAuthGeneration = useCallback(() => {
+    authGeneration.current += 1;
+    refreshController.current?.abort();
+    refreshController.current = null;
+    return authGeneration.current;
+  }, []);
+
+  const resetClientAuthState = useCallback(async () => {
+    clearClientAuthState();
+    await clearClientCaches();
+  }, []);
+
   const refreshUser = useCallback(async (): Promise<boolean> => {
+    const generation = authGeneration.current;
+    refreshController.current?.abort();
+    const controller = new AbortController();
+    refreshController.current = controller;
+
     try {
       const res = await fetch("/api/auth/me", {
         method: "GET",
         headers: { Accept: "application/json" },
         cache: "no-store",
         credentials: "include",
+        signal: controller.signal,
       });
+
+      // Never let a response from a previous login/session update current state.
+      if (!isMounted.current || generation !== authGeneration.current) return false;
 
       if (res.ok) {
         const data = await res.json();
         const fetchedUser = extractUser(data);
         if (fetchedUser) {
-          if (isMounted.current) setUser(fetchedUser);
+          setUser(fetchedUser);
           return true;
         }
       }
 
-      if (isMounted.current) setUser(null);
+      setUser(null);
       return false;
-    } catch {
-      if (isMounted.current) setUser(null);
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") return false;
+      if (isMounted.current && generation === authGeneration.current) setUser(null);
       return false;
+    } finally {
+      if (refreshController.current === controller) refreshController.current = null;
     }
   }, []);
 
@@ -71,10 +103,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isMounted.current = true;
 
     const handleUnauthorized = () => {
+      invalidateAuthGeneration();
       if (isMounted.current) setUser(null);
+      void resetClientAuthState();
+
       const { pathname: currentPath } = window.location;
       if (currentPath !== "/login" && currentPath !== "/register") {
-        fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
+        fetch("/api/auth/logout", {
+          method: "POST",
+          credentials: "include",
+          cache: "no-store",
+        }).catch(() => {});
         window.location.replace("/login");
       }
     };
@@ -88,14 +127,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     return () => {
       isMounted.current = false;
+      refreshController.current?.abort();
       window.removeEventListener("auth:unauthorized", handleUnauthorized);
     };
-  }, [refreshUser]);
+  }, [refreshUser, invalidateAuthGeneration, resetClientAuthState]);
 
-  // Re-read the authenticated user after client-side navigation. This keeps
-  // the profile synchronized immediately after OTP registration because the
-  // HttpOnly auth cookie is updated by the verify proxy while this provider
-  // remains mounted.
+  // Re-read the authenticated user after client-side navigation. The API is
+  // always no-store and derives identity from the current HttpOnly cookie.
   useEffect(() => {
     if (loading) return;
     void refreshUser();
@@ -105,6 +143,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(
     async (email: string, password: string): Promise<void> => {
+      // Start a completely new client session before authenticating. This is
+      // essential when User A logs out and User B logs in in the same browser.
+      invalidateAuthGeneration();
+      setUser(null);
+      await resetClientAuthState();
+
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
@@ -126,18 +170,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         );
       }
 
-      // /api/auth/me is the canonical source of the active account. Do not
-      // rely on a potentially stale user object returned by the login API.
+      // The login response is not trusted as the active identity. The
+      // HttpOnly cookie is the credential and /me is the canonical identity.
+      const generation = authGeneration.current;
       const refreshed = await refreshUser();
+      if (generation !== authGeneration.current) {
+        throw new ApiError("লগইন সেশন পরিবর্তিত হয়েছে। আবার চেষ্টা করুন।", 409);
+      }
+
       if (!refreshed) {
+        // Do not leave a valid token behind when the authenticated identity
+        // cannot be established on the client.
+        invalidateAuthGeneration();
+        setUser(null);
+        await resetClientAuthState();
+        await fetch("/api/auth/logout", {
+          method: "POST",
+          credentials: "include",
+          cache: "no-store",
+        }).catch(() => {});
         throw new ApiError("লগইনের পর প্রোফাইল তথ্য পাওয়া যায়নি।", 401);
       }
     },
-    [refreshUser]
+    [invalidateAuthGeneration, refreshUser, resetClientAuthState]
   );
 
   const logout = useCallback(async (): Promise<void> => {
-    if (isMounted.current) setUser(null);
+    // Invalidate pending /me requests before clearing the identity. This
+    // prevents a late response from restoring the previous user's profile.
+    invalidateAuthGeneration();
+    setUser(null);
+    await resetClientAuthState();
 
     try {
       await fetch("/api/auth/logout", {
@@ -147,7 +210,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         cache: "no-store",
       });
     } catch {
-      // ignore
+      // The local session is still cleared even if Laravel is unavailable.
     }
 
     const currentPath = window.location.pathname;
@@ -158,9 +221,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     router.refresh();
 
     if (isProtected) {
-      router.push("/login");
+      router.replace("/login");
     }
-  }, [router]);
+  }, [invalidateAuthGeneration, resetClientAuthState, router]);
 
   return (
     <AuthContext.Provider
