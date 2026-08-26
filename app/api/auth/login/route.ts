@@ -10,7 +10,7 @@ const API_BASE =
 
 const COOKIE_OPTIONS = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
+  secure: true,
   sameSite: "lax" as const,
   path: "/",
   maxAge: 60 * 60 * 24 * 30,
@@ -24,6 +24,23 @@ function clearTokenCookie(res: NextResponse) {
   });
 }
 
+async function revokePreviousToken(token: string | undefined) {
+  if (!token) return;
+
+  try {
+    await fetch(`${API_BASE}/api/v1/logout`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      cache: "no-store",
+    });
+  } catch {
+    // The browser credential is replaced below regardless.
+  }
+}
+
 export async function POST(request: Request) {
   let body: unknown;
   try {
@@ -35,30 +52,13 @@ export async function POST(request: Request) {
     );
   }
 
-  // A browser can arrive here with another account's cookie still present.
-  // Invalidate that server-side token before creating a new session so a
-  // failed/new login can never fall back to the previous account.
   const cookieStore = await cookies();
   const previousToken = cookieStore.get("laravel_token")?.value;
-
-  if (previousToken) {
-    try {
-      await fetch(`${API_BASE}/api/logout`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${previousToken}`,
-        },
-        cache: "no-store",
-      });
-    } catch {
-      // The old browser credential is cleared below regardless.
-    }
-  }
+  await revokePreviousToken(previousToken);
 
   let laravelRes: Response;
   try {
-    laravelRes = await fetch(`${API_BASE}/api/login`, {
+    laravelRes = await fetch(`${API_BASE}/api/v1/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -78,7 +78,6 @@ export async function POST(request: Request) {
 
   const data = await laravelRes.json().catch(() => ({}));
 
-  // Never return or retain the previous account's credential on failure.
   if (!laravelRes.ok) {
     const res = NextResponse.json(stripAuthTokens(data), {
       status: laravelRes.status,
@@ -103,8 +102,6 @@ export async function POST(request: Request) {
   if (token) {
     result.cookies.set("laravel_token", token, COOKIE_OPTIONS);
   } else {
-    // A successful login without a credential is not a usable authenticated
-    // session. Do not leave any previous credential in the browser.
     clearTokenCookie(result);
     console.warn("[/api/auth/login] Laravel returned 200 but no token");
   }
