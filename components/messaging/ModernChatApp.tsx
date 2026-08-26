@@ -45,7 +45,7 @@ function Avatar({
   large?: boolean;
 }) {
   const src =
-    user?.avatar || user?.avatar_url || user?.profile_photo_url || null;
+    user?.avatar || user?.avatar_url || user?.profile_photo_url || undefined;
   const size = large ? "size-10" : "size-9";
   return src ? (
     <img
@@ -110,10 +110,9 @@ function MessageBubble({
   );
 
   // parent-কে local messages থেকে full করে নাও (media সহ)
-  const parent =
-    message.parent?.id
-      ? allMessages.find((m) => m.id === message.parent!.id) || message.parent
-      : message.parent;
+  const parent = message.parent?.id
+    ? allMessages.find((m) => m.id === message.parent!.id) || message.parent
+    : message.parent;
 
   const parentMedia = parent?.media || [];
   const parentImage = parentMedia.find(
@@ -169,7 +168,8 @@ function MessageBubble({
                 src={
                   parentImage.preview_url ||
                   parentImage.url ||
-                  parentImage.original_url
+                  parentImage.original_url ||
+                  undefined
                 }
                 alt=""
                 className="size-8 shrink-0 rounded-md object-cover"
@@ -180,8 +180,7 @@ function MessageBubble({
                 {parent.sender?.name || "রিপ্লাই"}
               </span>
               <span className="line-clamp-1 opacity-60">
-                {parent.message ||
-                  (parent.media?.length ? "সংযুক্তি" : "")}
+                {parent.message || (parent.media?.length ? "সংযুক্তি" : "")}
               </span>
             </span>
           </button>
@@ -910,7 +909,10 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
                         return img ? (
                           <img
                             src={
-                              img.preview_url || img.url || img.original_url
+                              img.preview_url ||
+                              img.url ||
+                              img.original_url ||
+                              undefined
                             }
                             alt=""
                             className="size-8 shrink-0 rounded-md object-cover"
@@ -949,7 +951,7 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
                   {preview ? (
                     <div className="mb-2 flex items-center gap-2">
                       <img
-                        src={preview}
+                        src={preview ?? undefined}
                         alt="preview"
                         className="size-14 rounded-xl object-cover"
                       />
