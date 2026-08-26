@@ -13,7 +13,10 @@ function textContent(node: ReactNode): string {
   if (node == null || typeof node === "boolean") return "";
   if (typeof node === "string" || typeof node === "number") return String(node);
   if (Array.isArray(node)) return node.map(textContent).join("");
-  if (isValidElement(node)) return textContent(node.props.children);
+  if (isValidElement(node)) {
+    const props = node.props as { children?: ReactNode };
+    return textContent(props.children);
+  }
   return "";
 }
 
@@ -22,9 +25,13 @@ function CodeBlock({ children }: { children?: ReactNode }) {
   const source = textContent(children);
 
   const copy = async () => {
-    await navigator.clipboard.writeText(source);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(source);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
   };
 
   return (
