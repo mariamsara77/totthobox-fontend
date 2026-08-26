@@ -24,15 +24,20 @@ export default function LoginContent() {
 
   useEffect(() => {
     if (user && !isAuthLoading) {
-      router.replace(redirectTo);
+      // Hard navigation prevents the login page's existing RSC/client tree
+      // from surviving an account switch.
+      window.location.replace(redirectTo);
     }
-  }, [user, isAuthLoading, router, redirectTo]);
+  }, [user, isAuthLoading]);
 
- 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name as keyof FieldErrors]: undefined, general: undefined }));
+    setErrors((prev) => ({
+      ...prev,
+      [name as keyof FieldErrors]: undefined,
+      general: undefined,
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -42,7 +47,9 @@ export default function LoginContent() {
 
     try {
       await login(formData.email, formData.password);
-      router.push(redirectTo);
+      // AuthContext has already verified /api/auth/me against the newly-set
+      // HttpOnly cookie. Hard reload so the next page starts with a new tree.
+      window.location.replace(redirectTo);
     } catch (err) {
       if (err instanceof ApiError) {
         const data = (err.data ?? {}) as {
@@ -84,13 +91,11 @@ export default function LoginContent() {
 
   return (
     <div className="space-y-4">
-      {/* Heading */}
       <div className="text-center space-y-2">
         <h1 className="text-2xl font-bold">আপনার অ্যাকাউন্টে লগ ইন করুন</h1>
         <p className="text-sm text-zinc-500">লগ ইন করতে নিচের ধাপগুলো অনুসরণ করুন</p>
       </div>
 
-      {/* General error banner */}
       {errors.general && (
         <div className="p-4 text-center text-sm rounded-xl border border-red-400/30 bg-red-500/10 text-red-500">
           {errors.general}
@@ -99,7 +104,6 @@ export default function LoginContent() {
 
       {emailLogin ? (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
-          {/* Email */}
           <div className="space-y-1">
             <input
               type="email"
@@ -113,12 +117,9 @@ export default function LoginContent() {
                 errors.email ? "border-2 border-red-500" : "border-2 border-transparent"
               }`}
             />
-            {errors.email && (
-              <p className="text-red-500 text-xs pl-4">{errors.email}</p>
-            )}
+            {errors.email && <p className="text-red-500 text-xs pl-4">{errors.email}</p>}
           </div>
 
-          {/* Password */}
           <div className="space-y-1">
             <div className="relative">
               <input
@@ -143,12 +144,9 @@ export default function LoginContent() {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
-            {errors.password && (
-              <p className="text-red-500 text-xs pl-4">{errors.password}</p>
-            )}
+            {errors.password && <p className="text-red-500 text-xs pl-4">{errors.password}</p>}
           </div>
 
-          {/* Actions */}
           <div className="space-y-4 mt-2">
             <button
               type="submit"
@@ -159,10 +157,7 @@ export default function LoginContent() {
             </button>
 
             <div className="flex justify-between items-center px-2">
-              <Link
-                href="/forgot-password"
-                className="text-xs text-zinc-400 hover:text-zinc-300 transition"
-              >
+              <Link href="/forgot-password" className="text-xs text-zinc-400 hover:text-zinc-300 transition">
                 পাসওয়ার্ড ভুলে গেছেন?
               </Link>
               <button
@@ -186,7 +181,6 @@ export default function LoginContent() {
           >
             <MailIcon size={18} /> ইমেইল দিয়ে লগ ইন
           </button>
-
           <GoogleLoginButton />
           <FacebookLoginButton />
         </div>
