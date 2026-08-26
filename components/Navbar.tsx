@@ -10,38 +10,36 @@ export default function Navbar() {
   const { setIsOpen, isCollapsed, toggleCollapsed } = useSidebar();
 
   return (
-    <header className="z-60 w-full border-b border-zinc-400/25 backdrop-blur-xl">
-      <div className="flex h-16 items-center justify-between px-4 sm:px-6">
-        <div className="flex items-center gap-4">
-          {/* Mobile menu button */}
+    <header className="w-full border-b border-zinc-400/25 bg-zinc-200 dark:bg-zinc-800">
+      <div className="flex items-center justify-between gap-4 p-4">
+        <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={() => setIsOpen(true)}
             aria-label="সাইডবার খুলুন"
-            className="rounded-lg p-2 hover:opacity-50 md:hidden"
+            className="rounded-xl border border-zinc-400/25 bg-zinc-400/10 p-4 hover:bg-zinc-400/25 md:hidden"
           >
-            <Menu className="h-6 w-6" />
+            <Menu className="h-5 w-5" />
           </button>
 
-          {/* Desktop: show expand button when collapsed */}
           {isCollapsed && (
             <button
+              type="button"
               onClick={toggleCollapsed}
-              className="hidden rounded-lg p-2  hover:opacity-50 md:flex"
+              className="hidden rounded-xl border border-zinc-400/25 bg-zinc-400/10 p-4 hover:bg-zinc-400/25 md:flex"
               title="Expand sidebar"
+              aria-label="সাইডবার প্রসারিত করুন"
             >
               <PanelLeft className="h-5 w-5" />
             </button>
           )}
 
-          <Link href="/" className="text-xl font-bold">
-            <BrandIcon className="w-8 h-8" />
+          <Link href="/" aria-label="Totthobox হোম" className="rounded-xl p-4 hover:bg-zinc-400/25">
+            <BrandIcon className="h-6 w-6" />
           </Link>
         </div>
 
-        <div className="flex items-center gap-4">
-          <ProfileMenu />
-        </div>
+        <ProfileMenu />
       </div>
     </header>
   );
