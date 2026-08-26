@@ -1,3 +1,5 @@
+import { mutate } from "swr";
+
 const USER_DATA_KEY_PATTERNS = [
   /auth/i,
   /user/i,
@@ -7,7 +9,7 @@ const USER_DATA_KEY_PATTERNS = [
 ];
 
 /**
- * Remove only browser-stored authentication/user data owned by this app.
+ * Remove browser-stored authentication/user data owned by this app.
  * Non-auth application preferences are intentionally preserved.
  */
 export function clearClientAuthState(): void {
@@ -38,21 +40,29 @@ export function clearClientAuthState(): void {
     // Storage can be unavailable in privacy-restricted browser contexts.
   }
 
-  // Notify any user-scoped client caches/stores that do not live in storage.
+  // Notify custom user-scoped stores that do not live in browser storage.
   window.dispatchEvent(new CustomEvent("auth:session-reset"));
 }
 
 /**
- * Best-effort cleanup of browser Cache Storage entries created by the app.
- * Next.js server/data cache is handled server-side and is never shared here.
+ * Clear client-side data caches so a new account cannot inherit the previous
+ * account's in-memory response data. Server-side Next.js authenticated fetches
+ * use no-store and are therefore not shared through this cache.
  */
 export async function clearClientCaches(): Promise<void> {
+  try {
+    // SWR's default global cache is process-local to the browser tab.
+    await mutate(() => true, undefined, { revalidate: false });
+  } catch {
+    // SWR cache may be backed by a custom provider or be unavailable.
+  }
+
   if (typeof window === "undefined" || !("caches" in window)) return;
 
   try {
     const cacheNames = await window.caches.keys();
     await Promise.all(cacheNames.map((cacheName) => window.caches.delete(cacheName)));
   } catch {
-    // Cache Storage may be unavailable or restricted; auth remains cookie-scoped.
+    // Cache Storage may be unavailable or restricted.
   }
 }
