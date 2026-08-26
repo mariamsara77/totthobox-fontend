@@ -2,17 +2,17 @@
 
 import { useState } from "react";
 import {
-  Clipboard,
   Check,
-  Pencil,
   ChevronDown,
   ChevronUp,
+  Clipboard,
+  Pencil,
   RotateCcw,
   Sparkles,
 } from "lucide-react";
-import MarkdownRenderer from "./MarkdownRenderer";
+import { useAuth } from "@/context/AuthContext";
 import type { ChatMessage } from "./ChatPanel";
-import { useAuth } from "@/context/AuthContext"; // AuthContext ইম্পোর্ট করা হয়েছে
+import MarkdownRenderer from "./MarkdownRenderer";
 
 type Props = {
   msg: ChatMessage;
@@ -29,10 +29,8 @@ export default function MessageBubble({
   onRegenerate,
   onEditRegenerate,
 }: Props) {
-  // হুক থেকে ভ্যালু নেওয়া হচ্ছে
   const { isLoggedIn } = useAuth();
   const isGuest = !isLoggedIn;
-
   const isUser = msg.role === "user";
   const [copied, setCopied] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -48,19 +46,16 @@ export default function MessageBubble({
   };
 
   return (
-    <div
-      className={`flex group ${isUser ? "justify-end" : "justify-start"} ai-msg-pop`}
-    >
+    <div className={`group flex ${isUser ? "justify-end" : "justify-start"}`}>
       {!isUser && (
-        <div className="flex items-start pt-3 pr-2 shrink-0">
-          <div className="p-1.5 rounded-lg bg-zinc-9000/10">
-            <Sparkles className="w-3.5 h-3.5 text-zinc-300" />
+        <div className="flex shrink-0 items-start pt-3 pr-2">
+          <div className="rounded-xl bg-zinc-400/10 p-1.5">
+            <Sparkles aria-hidden="true" className="h-3.5 w-3.5 opacity-50" />
           </div>
         </div>
       )}
 
-      <div className="max-w-[90%] md:max-w-[78%] lg:max-w-[70%] relative">
-        {/* Edit (user, auth only) */}
+      <div className="relative max-w-[90%] md:max-w-[78%] lg:max-w-[70%]">
         {isUser && !isGuest && typeof msg.id === "number" && (
           <button
             type="button"
@@ -68,20 +63,15 @@ export default function MessageBubble({
               setNewContent(msg.content);
               setEditing(true);
             }}
-            className="absolute -left-8 top-3 p-1  opacity-0 group-hover:opacity-100 rounded-md hover:bg-zinc-700 "
+            className="absolute top-3 -left-8 rounded-xl p-1 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-zinc-400/25"
             title="সম্পাদনা"
+            aria-label="বার্তা সম্পাদনা করুন"
           >
-            <Pencil className="w-3.5 h-3.5" />
+            <Pencil aria-hidden="true" className="h-3.5 w-3.5" />
           </button>
         )}
 
-        <div
-          className={`mb-4 ${
-            isUser
-              ? "bg-zinc-400/10 px-4 py-2.5 rounded-2xl rounded-tr-md "
-              : "py-1"
-          }`}
-        >
+        <div className={`mb-4 ${isUser ? "rounded-2xl rounded-tr-xl bg-zinc-400/10 px-4 py-2.5" : "py-1"}`}>
           {!editing ? (
             <>
               {msg.image_path && (
@@ -89,7 +79,7 @@ export default function MessageBubble({
                   <img
                     src={msg.image_path}
                     alt="uploaded"
-                    className="max-h-48 rounded-xl object-cover border border-zinc-700"
+                    className="max-h-48 rounded-xl border border-zinc-400/25 object-cover"
                   />
                 </div>
               )}
@@ -98,27 +88,27 @@ export default function MessageBubble({
                 <div className="relative text-sm leading-relaxed">
                   {collapsed && isLong ? (
                     <div className="flex items-center gap-2">
-                      <p className="truncate max-w-[calc(100%-1.75rem)]">
-                        {msg.content}
-                      </p>
+                      <p className="max-w-[calc(100%-1.75rem)] truncate">{msg.content}</p>
                       <button
                         type="button"
                         onClick={() => setCollapsed(false)}
-                        className="shrink-0 p-0.5 rounded-full  hover:bg-zinc-400/25 "
+                        className="shrink-0 rounded-xl p-0.5 hover:bg-zinc-400/25"
+                        aria-label="বার্তা দেখুন"
                       >
-                        <ChevronDown className="w-3.5 h-3.5" />
+                        <ChevronDown aria-hidden="true" className="h-3.5 w-3.5" />
                       </button>
                     </div>
                   ) : (
                     <>
                       {isLong && (
-                        <div className="flex justify-end mb-1">
+                        <div className="mb-1 flex justify-end">
                           <button
                             type="button"
                             onClick={() => setCollapsed(true)}
-                            className="p-0.5 rounded-full  hover:bg-zinc-400/25 "
+                            className="rounded-xl p-0.5 hover:bg-zinc-400/25"
+                            aria-label="বার্তা সংক্ষিপ্ত করুন"
                           >
-                            <ChevronUp className="w-3.5 h-3.5" />
+                            <ChevronUp aria-hidden="true" className="h-3.5 w-3.5" />
                           </button>
                         </div>
                       )}
@@ -128,30 +118,23 @@ export default function MessageBubble({
                 </div>
               ) : (
                 <>
-                  <MarkdownRenderer
-                    content={msg.content}
-                    animate={shouldAnimate}
-                  />
-                  <div className="flex items-center gap-1 pt-2 mt-1 border-t border-zinc-700/50 opacity-0 group-hover:opacity-100 transition">
+                  <MarkdownRenderer content={msg.content} animate={shouldAnimate} />
+                  <div className="mt-1 flex items-center gap-1 border-t border-zinc-400/25 pt-2 opacity-0 transition-opacity group-hover:opacity-100">
                     <button
                       type="button"
                       onClick={copy}
-                      className="flex items-center gap-2 px-2 py-1 text-xs  hover:bg-zinc-400/25/50 rounded-lg "
+                      className="flex items-center gap-2 rounded-xl px-2 py-1 text-xs hover:bg-zinc-400/25"
                     >
-                      {copied ? (
-                        <Check className="wx-4 py-2" />
-                      ) : (
-                        <Clipboard className="wx-4 py-2" />
-                      )}
+                      {copied ? <Check aria-hidden="true" className="h-4 w-4" /> : <Clipboard aria-hidden="true" className="h-4 w-4" />}
                       <span>{copied ? "কপি হয়েছে" : "কপি"}</span>
                     </button>
                     {isLastAi && (
                       <button
                         type="button"
                         onClick={onRegenerate}
-                        className="flex items-center gap-2 px-2 py-1 text-xs  hover:bg-zinc-400/25/50 rounded-lg "
+                        className="flex items-center gap-2 rounded-xl px-2 py-1 text-xs hover:bg-zinc-400/25"
                       >
-                        <RotateCcw className="wx-4 py-2" />
+                        <RotateCcw aria-hidden="true" className="h-4 w-4" />
                         পুনরায় তৈরি
                       </button>
                     )}
@@ -160,12 +143,12 @@ export default function MessageBubble({
               )}
             </>
           ) : (
-            <div className="flex flex-col gap-2 min-w-50">
+            <div className="flex min-w-50 flex-col gap-2">
               <textarea
                 value={newContent}
                 onChange={(e) => setNewContent(e.target.value)}
                 rows={3}
-                className="w-full text-sm bg-zinc-400/10 rounded-lg p-2 outline-none resize-none"
+                className="w-full resize-none rounded-xl bg-zinc-400/10 p-2 text-sm outline-none"
                 onKeyDown={(e) => {
                   if (e.key === "Escape") setEditing(false);
                   if (e.key === "Enter" && e.ctrlKey) {
@@ -177,14 +160,10 @@ export default function MessageBubble({
                   }
                 }}
               />
-              <div className="flex justify-between items-center">
-                <p className="text-xs ">Ctrl+Enter এ পাঠান</p>
+              <div className="flex items-center justify-between">
+                <p className="text-xs opacity-50">Ctrl+Enter এ পাঠান</p>
                 <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setEditing(false)}
-                    className="text-xs px-2 py-1 rounded-lg"
-                  >
+                  <button type="button" onClick={() => setEditing(false)} className="rounded-xl px-2 py-1 text-xs hover:bg-zinc-400/25">
                     বাতিল
                   </button>
                   <button
@@ -195,7 +174,7 @@ export default function MessageBubble({
                         setEditing(false);
                       }
                     }}
-                    className="text-xs px-2 py-1 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 "
+                    className="rounded-xl bg-zinc-400/25 px-2 py-1 text-xs hover:bg-zinc-400/25"
                   >
                     আপডেট ও পাঠান
                   </button>
