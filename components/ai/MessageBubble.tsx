@@ -25,7 +25,6 @@ type Props = {
 export default function MessageBubble({
   msg,
   isLastAi,
-  shouldAnimate,
   onRegenerate,
   onEditRegenerate,
 }: Props) {
@@ -118,7 +117,7 @@ export default function MessageBubble({
                 </div>
               ) : (
                 <>
-                  <MarkdownRenderer content={msg.content} animate={shouldAnimate} />
+                  <MarkdownRenderer content={msg.content} />
                   <div className="mt-1 flex items-center gap-1 border-t border-zinc-400/25 pt-2 opacity-0 transition-opacity group-hover:opacity-100">
                     <button
                       type="button"
