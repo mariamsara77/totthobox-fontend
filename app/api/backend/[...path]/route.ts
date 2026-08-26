@@ -36,10 +36,11 @@ async function forward(
     headers.set("Pragma", "no-cache");
   }
 
-  // Never let an upstream cache/proxy treat authenticated requests as one
-  // shared GET response. The raw token is never placed in the URL.
   const paramsForUpstream = new URLSearchParams(reqUrl.searchParams);
-  if (token) {
+
+  // Only GET/HEAD responses can be incorrectly reused by an upstream cache.
+  // Isolate those requests by the current token without exposing the token.
+  if (token && NO_BODY_METHODS.has(request.method)) {
     const sessionKey = createHash("sha256")
       .update(token)
       .digest("hex")
