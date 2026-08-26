@@ -7,15 +7,15 @@ import remarkGfm from "remark-gfm";
 
 type Props = {
   content: string;
+  animate?: boolean;
 };
 
 function textContent(node: ReactNode): string {
   if (node == null || typeof node === "boolean") return "";
   if (typeof node === "string" || typeof node === "number") return String(node);
   if (Array.isArray(node)) return node.map(textContent).join("");
-  if (isValidElement(node)) {
-    const props = node.props as { children?: ReactNode };
-    return textContent(props.children);
+  if (isValidElement<{ children?: ReactNode }>(node)) {
+    return textContent(node.props.children);
   }
   return "";
 }
