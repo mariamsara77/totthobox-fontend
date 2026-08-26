@@ -244,7 +244,7 @@ export default function BasicIslamClient() {
 
       {/* Error Message */}
       {error && (
-        <div className="rounded-xl bg-zinc-400/25 dark:bg-zinc-400/25 border border-zinc-400/25 dark:border-zinc-400/25 p-4 text-sm opacity-50 dark:opacity-50">
+        <div className="rounded-xl bg-zinc-400/25 bg-zinc-400/10 border border-zinc-400/25 dark:border-zinc-400/25 p-4 text-sm opacity-50 dark:opacity-50">
           <p className="">ডেটা লোড করতে সমস্যা হয়েছে</p>
           <p className="mt-1 text-xs opacity-80">{error}</p>
           <button

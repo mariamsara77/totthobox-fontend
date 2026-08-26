@@ -134,7 +134,7 @@ export default async function HolidayShowPage({
 
       {/* Date Card */}
       <div className="flex gap-4 p-4 rounded-2xl border border-zinc-400/25 bg-zinc-400/10 ">
-        <div className="flex flex-col items-center justify-center w-16 h-16 rounded-xl bg-zinc-400/25 dark:bg-zinc-400/25 shrink-0">
+        <div className="flex flex-col items-center justify-center w-16 h-16 rounded-xl bg-zinc-400/25 bg-zinc-400/10 shrink-0">
           <span className="text-xs uppercase font-black opacity-50 dark:opacity-50">
             {holiday.month_short}
           </span>

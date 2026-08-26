@@ -283,9 +283,9 @@ export default function ZodiacCalculator() {
 
   const statusColor = {
     excellent: " bg-zinc-400/10 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800",
-    good: "opacity-50 dark:opacity-50 bg-zinc-400/25 dark:bg-zinc-400/25 border-zinc-400/25 dark:border-zinc-400/25",
-    average: "opacity-50 dark:opacity-50 bg-zinc-400/25 dark:bg-zinc-400/25 border-zinc-400/25 dark:border-zinc-400/25",
-    medium: "opacity-50 dark:opacity-50 bg-zinc-400/25 dark:bg-zinc-400/25 border-zinc-400/25 dark:border-zinc-400/25",
+    good: "opacity-50 dark:opacity-50 bg-zinc-400/25 bg-zinc-400/10 border-zinc-400/25 dark:border-zinc-400/25",
+    average: "opacity-50 dark:opacity-50 bg-zinc-400/25 bg-zinc-400/10 border-zinc-400/25 dark:border-zinc-400/25",
+    medium: "opacity-50 dark:opacity-50 bg-zinc-400/25 bg-zinc-400/10 border-zinc-400/25 dark:border-zinc-400/25",
     poor: "text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800",
   };
 
@@ -404,7 +404,7 @@ export default function ZodiacCalculator() {
                     </div>
 
                     {/* Trait */}
-                    <div className="p-4 rounded-xl bg-zinc-400/25 dark:bg-zinc-400/25 border border-zinc-400/25 dark:border-zinc-400/25 text-center">
+                    <div className="p-4 rounded-xl bg-zinc-400/25 bg-zinc-400/10 border border-zinc-400/25 dark:border-zinc-400/25 text-center">
                       <div className="text-sm  opacity-50 dark:opacity-50 mb-2">
                         ব্যক্তিত্ব ও বৈশিষ্ট্য
                       </div>

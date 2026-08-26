@@ -133,7 +133,7 @@ export default async function AppShowPage({
             </h1>
 
             <div className="flex items-center gap-2 flex-wrap">
-              <div className="inline-flex items-center gap-2 rounded-xl bg-zinc-400/25 dark:bg-zinc-400/25 px-2.5 py-1 text-xs  opacity-50 dark:opacity-50">
+              <div className="inline-flex items-center gap-2 rounded-xl bg-zinc-400/25 bg-zinc-400/10 px-2.5 py-1 text-xs  opacity-50 dark:opacity-50">
                 <Download className="w-3.5 h-3.5" />
                 {app.download_count ?? 0}+ Downloads
               </div>
@@ -200,7 +200,7 @@ export default async function AppShowPage({
 
       {/* Archive Password */}
       {app.download_password && (
-        <section className="bg-zinc-400/25 dark:bg-zinc-400/25 p-4 rounded-2xl border border-zinc-400/25 dark:border-zinc-400/25 flex items-center gap-4">
+        <section className="bg-zinc-400/25 bg-zinc-400/10 p-4 rounded-2xl border border-zinc-400/25 dark:border-zinc-400/25 flex items-center gap-4">
           <div className="bg-zinc-400/25 p-2 rounded-xl text-white shrink-0">
             <svg
               xmlns="http://www.w3.org/2000/svg"

@@ -532,7 +532,7 @@ function StatusBadge({ status }: { status: ConversionStatus }) {
     converting: {
       label: "Converting",
       color:
-        "bg-zinc-400/25 opacity-50 dark:bg-zinc-400/25 dark:opacity-50",
+        "bg-zinc-400/25 opacity-50 bg-zinc-400/10 dark:opacity-50",
     },
     completed: {
       label: "Completed",
@@ -540,7 +540,7 @@ function StatusBadge({ status }: { status: ConversionStatus }) {
     },
     failed: {
       label: "Failed",
-      color: "bg-zinc-400/25 opacity-50 dark:bg-zinc-400/25 dark:opacity-50",
+      color: "bg-zinc-400/25 opacity-50 bg-zinc-400/10 dark:opacity-50",
     },
   };
   const item = map[status] || {

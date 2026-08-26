@@ -328,7 +328,7 @@ export default function ContactClient({ category }: Props) {
                         {contact.name}
                       </h3>
                       {contact.type && (
-                        <span className="px-2 py-0.5 rounded-xl text-xs  bg-zinc-400/25 opacity-50 dark:bg-zinc-400/25 dark:opacity-50">
+                        <span className="px-2 py-0.5 rounded-xl text-xs  bg-zinc-400/25 opacity-50 bg-zinc-400/10 dark:opacity-50">
                           {contact.type}
                         </span>
                       )}

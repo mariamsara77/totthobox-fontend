@@ -113,7 +113,7 @@ export default function InteractiveActions({
             disabled={loading}
             className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm transition disabled:opacity-50 ${
               liked
-                ? "opacity-50 bg-zinc-400/25 dark:bg-zinc-400/25"
+                ? "opacity-50 bg-zinc-400/25 bg-zinc-400/10"
                 : " hover:bg-zinc-400/10 hover:bg-zinc-400/10"
             }`}
           >
@@ -125,7 +125,7 @@ export default function InteractiveActions({
             disabled={loading}
             className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm transition disabled:opacity-50 ${
               disliked
-                ? "opacity-50 bg-zinc-400/25 dark:bg-zinc-400/25"
+                ? "opacity-50 bg-zinc-400/25 bg-zinc-400/10"
                 : " hover:bg-zinc-400/10 hover:bg-zinc-400/10"
             }`}
           >
@@ -166,7 +166,7 @@ export default function InteractiveActions({
             message.includes("লগইন") ||
             message.includes("ব্যর্থ") ||
             message.includes("সংযোগ")
-              ? "bg-zinc-400/25 opacity-50 dark:bg-zinc-400/25"
+              ? "bg-zinc-400/25 opacity-50 bg-zinc-400/10"
               : "bg-zinc-400/10 text-zinc-200 dark:bg-emerald-900/20"
           }`}
         >

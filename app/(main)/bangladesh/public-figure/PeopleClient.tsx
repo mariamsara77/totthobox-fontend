@@ -229,7 +229,7 @@ export default function PeopleClient() {
                       {person.name}
                     </h2>
                     {person.is_current && (
-                      <span className="text-xs px-2 py-0.5 rounded-xl bg-zinc-400/25 opacity-50 dark:bg-zinc-400/25 dark:opacity-50">
+                      <span className="text-xs px-2 py-0.5 rounded-xl bg-zinc-400/25 opacity-50 bg-zinc-400/10 dark:opacity-50">
                         বর্তমান
                       </span>
                     )}

@@ -166,7 +166,7 @@ export default function InteractiveActions({
           disabled={loading || statusLoading}
           className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm   disabled:opacity-50 ${
             reactions.user_has_liked
-              ? "bg-zinc-400/25 opacity-50 dark:bg-zinc-400/25 dark:opacity-50"
+              ? "bg-zinc-400/25 opacity-50 bg-zinc-400/10 dark:opacity-50"
               : "bg-zinc-400/10  hover:bg-zinc-400/10 hover:bg-zinc-400/25"
           }`}
         >
@@ -180,7 +180,7 @@ export default function InteractiveActions({
           disabled={loading || statusLoading}
           className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm   disabled:opacity-50 ${
             reactions.user_has_disliked
-              ? "bg-zinc-400/25 opacity-50 dark:bg-zinc-400/25 dark:opacity-50"
+              ? "bg-zinc-400/25 opacity-50 bg-zinc-400/10 dark:opacity-50"
               : "bg-zinc-400/10  hover:bg-zinc-400/10 hover:bg-zinc-400/25"
           }`}
         >

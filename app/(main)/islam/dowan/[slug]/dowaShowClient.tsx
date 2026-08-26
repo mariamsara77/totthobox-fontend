@@ -63,7 +63,7 @@ export default function DowaShowClient({ initialData, slug }: Props) {
       {/* Header badges */}
       <div className="flex flex-wrap items-center gap-2">
         {item.is_featured && (
-          <span className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-zinc-400/25 opacity-50 dark:bg-zinc-400/25 dark:opacity-50">
+          <span className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-zinc-400/25 opacity-50 bg-zinc-400/10 dark:opacity-50">
             <Star className="w-3.5 h-3.5" /> বিশেষ আমল
           </span>
         )}
@@ -161,7 +161,7 @@ export default function DowaShowClient({ initialData, slug }: Props) {
         )}
 
         {item.bangla_fojilot && (
-          <div className="rounded-2xl bg-zinc-400/25 dark:bg-zinc-400/25 border border-zinc-400/25 dark:border-zinc-400/25 p-4">
+          <div className="rounded-2xl bg-zinc-400/25 bg-zinc-400/10 border border-zinc-400/25 dark:border-zinc-400/25 p-4">
             <h3 className="text-sm font-bold opacity-50 dark:opacity-50 mb-4 tracking-wide flex items-center gap-2">
               <span className="opacity-50">ℹ</span> ফজিলত ও আমল
             </h3>

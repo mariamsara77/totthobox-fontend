@@ -68,7 +68,7 @@ export default function ForgotPasswordPage() {
         {success ? (
           <div className="text-center space-y-4">
             <div className="flex justify-center">
-              <div className="w-16 h-16 rounded-full bg-zinc-400/25 dark:bg-zinc-400/25 flex items-center justify-center">
+              <div className="w-16 h-16 rounded-full bg-zinc-400/25 bg-zinc-400/10 flex items-center justify-center">
                 <CheckCircle2 className="w-8 h-8 opacity-50" />
               </div>
             </div>
@@ -104,7 +104,7 @@ export default function ForgotPasswordPage() {
                 className={clsx(
                   "w-full rounded-full py-3.5 px-6 border bg-zinc-400/10 focus:outline-none   dark: transition",
                   error
-                    ? "border-zinc-400/25 bg-zinc-400/25 dark:bg-zinc-400/25"
+                    ? "border-zinc-400/25 bg-zinc-400/25 bg-zinc-400/10"
                     : "border-transparent",
                 )}
               />

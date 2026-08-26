@@ -410,7 +410,7 @@ export default function QRGenerator() {
       </div>
 
       {libFailed && (
-        <div className="rounded-xl border border-zinc-400/25 dark:border-zinc-400/25 bg-zinc-400/25 dark:bg-zinc-400/25 px-4 py-2 flex items-center justify-between gap-4">
+        <div className="rounded-xl border border-zinc-400/25 dark:border-zinc-400/25 bg-zinc-400/25 bg-zinc-400/10 px-4 py-2 flex items-center justify-between gap-4">
           <p className="text-sm opacity-50 dark:opacity-50">
             QR লাইব্রেরি লোড হয়নি। ইন্টারনেট সংযোগ পরীক্ষা করুন।
           </p>

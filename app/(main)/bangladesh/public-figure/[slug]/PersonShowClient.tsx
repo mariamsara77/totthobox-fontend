@@ -125,7 +125,7 @@ export default function PersonShowClient({ person }: Props) {
                 </span>
               ))}
               {person.current_role && (
-                <span className="inline-block px-2.5 py-0.5 rounded-xl text-xs  bg-zinc-400/25 opacity-50 dark:bg-zinc-400/25 dark:opacity-50">
+                <span className="inline-block px-2.5 py-0.5 rounded-xl text-xs  bg-zinc-400/25 opacity-50 bg-zinc-400/10 dark:opacity-50">
                   বর্তমানে কর্মরত
                 </span>
               )}
@@ -259,7 +259,7 @@ export default function PersonShowClient({ person }: Props) {
               >
                 <div className="flex items-center gap-2 min-w-0">
                   {h.is_current && (
-                    <span className="text-xs px-1.5 py-0.5 rounded bg-zinc-400/25 opacity-50 dark:bg-zinc-400/25 dark:opacity-50 shrink-0">
+                    <span className="text-xs px-1.5 py-0.5 rounded bg-zinc-400/25 opacity-50 bg-zinc-400/10 dark:opacity-50 shrink-0">
                       বর্তমান
                     </span>
                   )}

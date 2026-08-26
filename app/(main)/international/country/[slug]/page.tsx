@@ -239,7 +239,7 @@ export default async function CountryPage({ params }: Props) {
                 className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs  ${
                   country.un_member.includes("সদস্য নয়")
                     ? "bg-zinc-400/10 "
-                    : "bg-zinc-400/25 dark:bg-zinc-400/25 opacity-50 dark:opacity-50"
+                    : "bg-zinc-400/25 bg-zinc-400/10 opacity-50 dark:opacity-50"
                 }`}
               >
                 {country.un_member}
@@ -247,14 +247,14 @@ export default async function CountryPage({ params }: Props) {
               <span
                 className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs  ${
                   country.independent.includes("অধীনস্থ")
-                    ? "bg-zinc-400/25 dark:bg-zinc-400/25 opacity-50 dark:opacity-50"
-                    : "bg-zinc-400/25 dark:bg-zinc-400/25 opacity-50 dark:opacity-50"
+                    ? "bg-zinc-400/25 bg-zinc-400/10 opacity-50 dark:opacity-50"
+                    : "bg-zinc-400/25 bg-zinc-400/10 opacity-50 dark:opacity-50"
                 }`}
               >
                 {country.independent}
               </span>
               {country.landlocked === "স্থলবেষ্টিত" ? (
-                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs  bg-zinc-400/25 dark:bg-zinc-400/25 opacity-50 dark:opacity-50">
+                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs  bg-zinc-400/25 bg-zinc-400/10 opacity-50 dark:opacity-50">
                   স্থলবেষ্টিত দেশ
                 </span>
               ) : (
@@ -419,7 +419,7 @@ export default async function CountryPage({ params }: Props) {
                   {country.languages.map((lang) => (
                     <span
                       key={lang}
-                      className="px-2.5 py-1 rounded-full bg-zinc-400/25 dark:bg-zinc-400/25 opacity-50 dark:opacity-50 text-xs "
+                      className="px-2.5 py-1 rounded-full bg-zinc-400/25 bg-zinc-400/10 opacity-50 dark:opacity-50 text-xs "
                     >
                       {lang}
                     </span>
@@ -442,7 +442,7 @@ export default async function CountryPage({ params }: Props) {
                     className="flex justify-between items-center px-4 py-3"
                   >
                     <div className="flex items-center gap-2">
-                      <span className="px-2 py-0.5 rounded bg-zinc-400/25 dark:bg-zinc-400/25 opacity-50 dark:opacity-50 text-xs font-mono font-bold">
+                      <span className="px-2 py-0.5 rounded bg-zinc-400/25 bg-zinc-400/10 opacity-50 dark:opacity-50 text-xs font-mono font-bold">
                         {cur.code}
                       </span>
                       <span className="text-sm ">{cur.name}</span>
@@ -520,7 +520,7 @@ export default async function CountryPage({ params }: Props) {
                 <Link
                   key={nb.cca3}
                   href={`/international/${nb.slug}`}
-                  className="flex items-center gap-2 p-2 rounded-xl bg-zinc-400/10/50 bg-zinc-400/25 dark:bg-zinc-400/25 border border-transparent border-zinc-400/25 dark:border-zinc-400/25 transition-all group"
+                  className="flex items-center gap-2 p-2 rounded-xl bg-zinc-400/10/50 bg-zinc-400/25 bg-zinc-400/10 border border-transparent border-zinc-400/25 dark:border-zinc-400/25 transition-all group"
                 >
                   {nb.flag && (
                     <FlagImage

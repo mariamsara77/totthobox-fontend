@@ -191,7 +191,7 @@ export default function RegisterContent() {
               className={clsx(
                 "w-full rounded-full py-3.5 px-6 border bg-zinc-400/10 focus:outline-none   dark: transition",
                 errors.name
-                  ? "border-zinc-400/25 bg-zinc-400/25 dark:bg-zinc-400/25"
+                  ? "border-zinc-400/25 bg-zinc-400/25 bg-zinc-400/10"
                   : "border-transparent",
               )}
             />
@@ -215,7 +215,7 @@ export default function RegisterContent() {
               className={clsx(
                 "w-full rounded-full py-3.5 px-6 border bg-zinc-400/10 focus:outline-none   dark: transition",
                 errors.email
-                  ? "border-zinc-400/25 bg-zinc-400/25 dark:bg-zinc-400/25"
+                  ? "border-zinc-400/25 bg-zinc-400/25 bg-zinc-400/10"
                   : "border-transparent",
               )}
             />
@@ -239,7 +239,7 @@ export default function RegisterContent() {
               className={clsx(
                 "w-full rounded-full py-3.5 px-6 border bg-zinc-400/10 focus:outline-none   dark: transition pr-20",
                 errors.password
-                  ? "border-zinc-400/25 bg-zinc-400/25 dark:bg-zinc-400/25"
+                  ? "border-zinc-400/25 bg-zinc-400/25 bg-zinc-400/10"
                   : "border-transparent",
               )}
             />
@@ -272,7 +272,7 @@ export default function RegisterContent() {
               className={clsx(
                 "w-full rounded-full py-3.5 px-6 border bg-zinc-400/10 focus:outline-none   dark: transition pr-20",
                 errors.password_confirmation
-                  ? "border-zinc-400/25 bg-zinc-400/25 dark:bg-zinc-400/25"
+                  ? "border-zinc-400/25 bg-zinc-400/25 bg-zinc-400/10"
                   : "border-transparent",
               )}
             />

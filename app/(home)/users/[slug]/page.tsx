@@ -100,7 +100,7 @@ export default async function UserProfilePage({
                                     {profile.name}
                                 </h1>
                                 {profile.is_verified_admin && (
-                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-zinc-400/25 dark:bg-zinc-400/25 opacity-50 dark:opacity-50">
+                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-zinc-400/25 bg-zinc-400/10 opacity-50 dark:opacity-50">
                                         ভেরিফাইড এডমিন
                                     </span>
                                 )}
@@ -167,7 +167,7 @@ export default async function UserProfilePage({
             {/* Published Content */}
             <section className="space-y-8">
                 <div className="flex items-center gap-4">
-                    <div className="p-2 bg-zinc-400/25 dark:bg-zinc-400/25 rounded-xl">
+                    <div className="p-2 bg-zinc-400/25 bg-zinc-400/10 rounded-xl">
                         <svg className="size-6 opacity-50 dark:opacity-50" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6 6.878V6a2.25 2.25 0 0 1 2.25-2.25h7.5A2.25 2.25 0 0 1 18 6v.878m-12 0c.235-.083.487-.128.75-.128h10.5c.263 0 .515.045.75.128m-12 0A2.25 2.25 0 0 0 4.5 9v9.75A2.25 2.25 0 0 0 6.75 21h10.5a2.25 2.25 0 0 0 2.25-2.25V9a2.25 2.25 0 0 0-1.5-2.122M12 11.25v4.5m-2.25-2.25h4.5" /></svg>
                     </div>
                     <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-200">
@@ -187,7 +187,7 @@ export default async function UserProfilePage({
                                     )}
                                     <div className="flex-1">
                                         <div className="flex justify-between items-start gap-4">
-                                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-zinc-400/25 dark:bg-zinc-400/25 opacity-50 dark:opacity-50">
+                                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-zinc-400/25 bg-zinc-400/10 opacity-50 dark:opacity-50">
                                                 {item.type_label}
                                             </span>
                                             <time className="text-xs text-zinc-500 font-medium shrink-0">

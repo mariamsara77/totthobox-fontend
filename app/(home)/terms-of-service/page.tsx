@@ -119,7 +119,7 @@ export default function TermsPage() {
         {/* 4. Limitations */}
         <section className="space-y-4">
           <div className="flex items-center gap-4">
-            <div className="p-2 rounded-xl bg-zinc-400/25 dark:bg-zinc-400/25 opacity-50">
+            <div className="p-2 rounded-xl bg-zinc-400/25 bg-zinc-400/10 opacity-50">
               ⚠️
             </div>
             <h2 className="text-xl ">
