@@ -4,6 +4,9 @@ import { useState, useEffect } from "react";
 import { ThumbsUp, ThumbsDown, Share2 } from "lucide-react";
 import { getAuthHeaders, isLoggedIn } from "@/lib/auth";
 
+const actionClass =
+  "inline-flex items-center gap-2 p-4 rounded-xl border border-zinc-400/25 bg-zinc-400/10 hover:bg-zinc-400/25 disabled:opacity-50";
+
 export default function InteractiveActions({
   appId,
   initialData,
@@ -22,36 +25,41 @@ export default function InteractiveActions({
 }) {
   const [likes, setLikes] = useState(initialData.reactions.like_count);
   const [dislikes, setDislikes] = useState(initialData.reactions.dislike_count);
-  const [liked, setLiked] = useState(false);
-  const [disliked, setDisliked] = useState(false);
+  const [liked, setLiked] = useState(initialData.reactions.user_has_liked);
+  const [disliked, setDisliked] = useState(initialData.reactions.user_has_disliked);
   const [loadingStatus, setLoadingStatus] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  // পেজ লোড হওয়ার পর ইউজারের আসল রিয়্যাকশন স্ট্যাটাস আনো
   useEffect(() => {
+    let cancelled = false;
+
     async function fetchUserReaction() {
       if (!isLoggedIn()) {
-        setLoadingStatus(false);
+        if (!cancelled) setLoadingStatus(false);
         return;
       }
 
       try {
         const res = await fetch(`/api/backend/apps/${appId}/reaction-status`, {
-          headers: getAuthHeaders(),
+          headers: { ...getAuthHeaders(), Accept: "application/json" },
         });
 
-        if (res.ok) {
+        if (res.ok && !cancelled) {
           const data = await res.json();
-          setLiked(data.has_like);
-          setDisliked(data.has_dislike);
+          setLiked(data.has_like ?? false);
+          setDisliked(data.has_dislike ?? false);
         }
       } catch (error) {
         console.error("Failed to fetch reaction status", error);
       } finally {
-        setLoadingStatus(false);
+        if (!cancelled) setLoadingStatus(false);
       }
     }
 
     fetchUserReaction();
+    return () => {
+      cancelled = true;
+    };
   }, [appId]);
 
   const react = async (type: "like" | "dislike") => {
@@ -61,10 +69,17 @@ export default function InteractiveActions({
       return;
     }
 
+    if (loading) return;
+    setLoading(true);
+
     try {
       const res = await fetch(`/api/backend/apps/${appId}/react`, {
         method: "POST",
-        headers: getAuthHeaders(),
+        headers: {
+          ...getAuthHeaders(),
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
         body: JSON.stringify({ type }),
       });
 
@@ -77,60 +92,57 @@ export default function InteractiveActions({
       if (!res.ok) throw new Error("Failed");
 
       const data = await res.json();
-      setLikes(data.like_count);
-      setDislikes(data.dislike_count);
-      setLiked(data.has_like);
-      setDisliked(data.has_dislike);
+      setLikes(data.like_count ?? 0);
+      setDislikes(data.dislike_count ?? 0);
+      setLiked(data.has_like ?? false);
+      setDisliked(data.has_dislike ?? false);
     } catch (error) {
       console.error(error);
       alert("রিয়্যাকশন ব্যর্থ হয়েছে");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const share = () => {
+  const share = async () => {
     const url = `${window.location.origin}/software/${initialData.slug}`;
-    if (navigator.share) {
-      navigator.share({ title: initialData.title, url });
-    } else {
-      navigator.clipboard.writeText(url);
-      alert("লিংক কপি করা হয়েছে");
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: initialData.title, url });
+      } else {
+        await navigator.clipboard.writeText(url);
+        alert("লিংক কপি করা হয়েছে");
+      }
+    } catch {
+      // cancelled
     }
   };
 
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex gap-4">
+    <div className="flex items-center justify-between gap-4">
+      <div className="flex gap-2">
         <button
+          type="button"
           onClick={() => react("like")}
-          disabled={loadingStatus}
-          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm   ${
-            liked
-              ? "bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
-              : "bg-zinc-900 text-zinc-300 bg-zinc-800 text-zinc-400"
-          }`}
+          disabled={loadingStatus || loading}
+          className={actionClass}
         >
           <ThumbsUp className="w-4 h-4" />
           {likes}
         </button>
 
         <button
+          type="button"
           onClick={() => react("dislike")}
-          disabled={loadingStatus}
-          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm   ${
-            disliked
-              ? "bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400"
-              : "bg-zinc-900 text-zinc-300 bg-zinc-800 text-zinc-400"
-          }`}
+          disabled={loadingStatus || loading}
+          className={actionClass}
         >
           <ThumbsDown className="w-4 h-4" />
           {dislikes}
         </button>
       </div>
 
-      <button
-        onClick={share}
-        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm  bg-zinc-900 text-zinc-300 bg-zinc-800 text-zinc-400"
-      >
+      <button type="button" onClick={share} className={actionClass}>
         <Share2 className="w-4 h-4" />
         শেয়ার
       </button>
