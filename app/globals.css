@@ -6,123 +6,364 @@
   --font-sans: var(--font-noto-bengali), var(--font-geist-sans), sans-serif;
   --font-mono: var(--font-geist-mono);
   --color-zinc-50: #fafafa;
-    --color-zinc-100: #f5f5f5;
-    --color-zinc-200: #e5e5e5;
-    --color-zinc-300: #d4d4d4;
-    --color-zinc-400: #a3a3a3;
-    --color-zinc-500: #737373;
-    --color-zinc-600: #525252;
-    --color-zinc-700: #404040;
-    --color-zinc-800: #262626;
-    --color-zinc-900: #171717;
-    --color-zinc-950: #0a0a0a;
-
-    --color-accent: var(--color-neutral-800);
-    --color-accent-content: var(--color-neutral-800);
-    --color-accent-foreground: var(--color-white);
+  --color-zinc-100: #f5f5f5;
+  --color-zinc-200: #e5e5e5;
+  --color-zinc-300: #d4d4d4;
+  --color-zinc-400: #a3a3a3;
+  --color-zinc-500: #737373;
+  --color-zinc-600: #525252;
+  --color-zinc-700: #404040;
+  --color-zinc-800: #262626;
+  --color-zinc-900: #171717;
+  --color-zinc-950: #0a0a0a;
+  --color-accent: var(--color-neutral-800);
+  --color-accent-content: var(--color-neutral-800);
+  --color-accent-foreground: var(--color-white);
 }
 
 @layer theme {
-    .dark {
-        --color-accent: var(--color-white);
-        --color-accent-content: var(--color-white);
-        --color-accent-foreground: var(--color-neutral-800);
-    }
+  .dark {
+    --color-accent: var(--color-white);
+    --color-accent-content: var(--color-white);
+    --color-accent-foreground: var(--color-neutral-800);
+  }
 }
 
 @font-face {
-  font-family: 'Adorsholipi Exp';
-  src: url('/fonts/adorsholipi-exp.woff2') format('woff2');
+  font-family: "Adorsholipi Exp";
+  src: url("/fonts/adorsholipi-exp.woff2") format("woff2");
   font-weight: 400;
-  font-display: swap; 
+  font-display: swap;
 }
-/* =========================================
-   Scrollbar (lightweight)
-   ========================================= */
-/* ২. শুধুমাত্র ডেস্কটপ/মাউস ডিভাইসের জন্য */
+
+@layer base {
+  html,
+  body {
+    min-height: 100%;
+  }
+
+  body {
+    top: 0 !important;
+    position: static !important;
+  }
+}
+
+@layer components {
+  /* Shared page primitives. Keep page markup on these primitives instead of
+     creating one-off layout/color classes for individual screens. */
+  .app-shell {
+    width: 100%;
+    max-width: 80rem;
+    margin-inline: auto;
+    padding: 1rem;
+  }
+
+  .app-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .app-section {
+    width: 100%;
+  }
+
+  .app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+  }
+
+  .app-title {
+    font-size: 1.5rem;
+    line-height: 1.25;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+
+  .app-subtitle,
+  .app-muted {
+    opacity: 0.5;
+  }
+
+  .app-subtitle {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+
+  .app-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .app-card {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    padding: 1rem;
+    text-align: center;
+    border-radius: 1.5rem;
+    background: color-mix(in srgb, currentColor 7%, transparent);
+    transition: background-color 180ms ease, transform 180ms ease;
+  }
+
+  .app-card:hover {
+    background: color-mix(in srgb, currentColor 12%, transparent);
+  }
+
+  .app-divider {
+    margin-block: 3rem;
+    border: 0;
+    border-top: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+  }
+
+  .app-content {
+    width: 100%;
+    line-height: 1.7;
+  }
+
+  .app-content > :where(h1, h2, h3, h4) {
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .app-content > :where(p, ul, ol) {
+    margin-top: 1rem;
+  }
+
+  .app-content ul,
+  .app-content ol {
+    padding-inline-start: 1.25rem;
+  }
+
+  .app-content li + li {
+    margin-top: 0.5rem;
+  }
+
+  .app-icon {
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 1rem;
+    transition: transform 180ms ease;
+  }
+
+  .app-card:hover .app-icon {
+    transform: scale(1.08);
+  }
+
+  .app-badge {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 0.25rem 0.875rem;
+    border: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    letter-spacing: 0.025em;
+    opacity: 0.75;
+  }
+}
+
+/* Text should use the inherited theme color. Low-information utility colors
+   are intentionally neutralized; status/brand surfaces can still use icons,
+   borders, backgrounds, or dedicated semantic components when needed. */
+@layer utilities {
+  .text-zinc-50,
+  .text-zinc-100,
+  .text-zinc-200,
+  .text-zinc-300,
+  .text-zinc-400,
+  .text-zinc-500,
+  .text-zinc-600,
+  .text-zinc-700,
+  .text-zinc-800,
+  .text-zinc-900,
+  .text-zinc-950,
+  .text-neutral-50,
+  .text-neutral-100,
+  .text-neutral-200,
+  .text-neutral-300,
+  .text-neutral-400,
+  .text-neutral-500,
+  .text-neutral-600,
+  .text-neutral-700,
+  .text-neutral-800,
+  .text-neutral-900,
+  .text-neutral-950,
+  .text-white,
+  .text-black,
+  .text-gray-50,
+  .text-gray-100,
+  .text-gray-200,
+  .text-gray-300,
+  .text-gray-400,
+  .text-gray-500,
+  .text-gray-600,
+  .text-gray-700,
+  .text-gray-800,
+  .text-gray-900,
+  .text-gray-950,
+  .text-red-500,
+  .text-red-600,
+  .text-orange-500,
+  .text-orange-600,
+  .text-amber-500,
+  .text-amber-600,
+  .text-yellow-500,
+  .text-yellow-600,
+  .text-lime-500,
+  .text-green-500,
+  .text-green-600,
+  .text-emerald-500,
+  .text-emerald-600,
+  .text-teal-500,
+  .text-teal-600,
+  .text-cyan-500,
+  .text-cyan-600,
+  .text-sky-500,
+  .text-sky-600,
+  .text-blue-500,
+  .text-blue-600,
+  .text-indigo-500,
+  .text-indigo-600,
+  .text-violet-500,
+  .text-violet-600,
+  .text-purple-500,
+  .text-purple-600,
+  .text-fuchsia-500,
+  .text-fuchsia-600,
+  .text-pink-500,
+  .text-pink-600,
+  .text-rose-500,
+  .text-rose-600 {
+    color: inherit !important;
+  }
+}
+
+@media (min-width: 640px) {
+  .app-shell {
+    padding-inline: 1.5rem;
+  }
+
+  .app-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 768px) {
+  .app-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
 @media (hover: hover) and (pointer: fine) {
-    /* গ্লোবাল স্ক্রলবার উইডথ */
-    ::-webkit-scrollbar {
-        width: 5px;
-        height: 5px;
-    }
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
 
-    /* ডিফল্ট অবস্থায় ট্র্যাক ও থাম্ব ইনভিজিবল থাকবে */
-    ::-webkit-scrollbar-track {
-        background: transparent;
-    }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
 
-    ::-webkit-scrollbar-thumb {
-        background-color: transparent;
-        border-radius: 20px;
-        border: 2px solid transparent;
-        background-clip: padding-box;
-    }
+  ::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 999px;
+  }
 
-    /* ম্যাজিক পার্ট */
-    *:hover::-webkit-scrollbar-thumb {
-        background-color: rgba(150, 150, 150, 0.3);
-    }
+  *:hover::-webkit-scrollbar-thumb {
+    background: rgb(150 150 150 / 30%);
+  }
 
-    /* থাম্বের ওপর সরাসরি মাউস নিলে আরও গাঢ় হবে */
-    ::-webkit-scrollbar-thumb:hover {
-        background-color: rgba(150, 150, 150, 0.6) !important;
-    }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgb(150 150 150 / 60%) !important;
+  }
 
-    /* ডার্ক মোড সাপোর্ট */
-    .dark *:hover::-webkit-scrollbar-thumb {
-        background-color: rgba(255, 255, 255, 0.2);
-    }
-    
-    /* Firefox সাপোর্ট */
-    * {
-        scrollbar-width: thin;
-        scrollbar-color: transparent transparent;
-    }
-    
-    *:hover {
-        scrollbar-color: rgba(150, 150, 150, 0.3) transparent;
-    }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+
+  *:hover {
+    scrollbar-color: rgb(150 150 150 / 30%) transparent;
+  }
 }
 
-/* ৩. স্মল স্ক্রিনের জন্য (৭৬৮ পিক্সেল বা তার ছোট স্ক্রিন) */
 @media screen and (max-width: 768px) {
-    /* Firefox, IE, Edge এর জন্য */
-    *, html, body {
-        scrollbar-width: none !important;
-        -ms-overflow-style: none !important;
-    }
+  *,
+  html,
+  body {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
 
-    /* Chrome, Safari, Opera এর জন্য সঠিক সিলেক্টর */
-    ::-webkit-scrollbar {
-        display: none !important;
-        width: 0 !important;
-        height: 0 !important;
-    }
+  ::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
 }
 
 .adorsholipi-exp {
-  font-family: 'Adorsholipi Exp', serif;
+  font-family: "Adorsholipi Exp", serif;
 }
 
-
-/* =========================================
-   Google Translate (optional – delete if not used)
-   ========================================= */
+/* Google Translate chrome */
 .goog-te-banner-frame,
 .goog-te-balloon-frame,
 #goog-gt-tt,
 .skiptranslate,
 .goog-te-gadget-icon {
-    display: none !important;
-}
-
-body {
-    top: 0 !important;
-    position: static !important;
+  display: none !important;
 }
 
 .goog-text-highlight {
-    background-color: transparent !important;
-    box-shadow: none !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* AI-only behavior; kept global so the project has one stylesheet entry. */
+@keyframes aiBlockIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes aiPopIn {
+  from { opacity: 0; transform: translateY(6px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.ai-response-new > * {
+  opacity: 0;
+  animation: aiBlockIn 0.3s ease forwards;
+}
+
+.ai-response-new > *:nth-child(1) { animation-delay: 0ms; }
+.ai-response-new > *:nth-child(2) { animation-delay: 60ms; }
+.ai-response-new > *:nth-child(3) { animation-delay: 120ms; }
+.ai-response-new > *:nth-child(4) { animation-delay: 180ms; }
+.ai-response-new > *:nth-child(n + 5) { animation-delay: 240ms; }
+
+.ai-msg-pop {
+  animation: aiPopIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.ai-prose pre code.hljs {
+  padding: 0.9rem 1.1rem !important;
+  font-size: 0.79rem !important;
+  line-height: 1.65 !important;
+  border-radius: 0 !important;
 }
