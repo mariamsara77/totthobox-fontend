@@ -1,4 +1,7 @@
-// lib/auth.ts
+// Authentication helpers shared by the frontend.
+//
+// The actual authenticated session is owned by AuthContext + the HttpOnly
+// laravel_token cookie. Browser JavaScript must never read the token.
 
 export interface User {
   id: number;
@@ -13,6 +16,9 @@ export const getAuthHeaders = (isPost = false): Record<string, string> => ({
   ...(isPost ? { "Content-Type": "application/json" } : {}),
 });
 
-// The HttpOnly cookie is intentionally invisible to browser JavaScript.
-// Protected requests are authenticated by the same-origin backend proxy.
-export const isLoggedIn = (): boolean => true;
+/**
+ * Legacy helper kept for compatibility.
+ * Do not use this as the source of truth for authentication state.
+ * Use useAuth().isLoggedIn / useAuth().user instead.
+ */
+export const isLoggedIn = (user?: User | null): boolean => Boolean(user);
