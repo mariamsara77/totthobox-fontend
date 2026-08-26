@@ -5,6 +5,7 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "@/context/AuthContext";
 import { SettingsModalProvider } from "@/context/SettingsModalContext";
+import { AuthStateBridge } from "@/components/auth/AuthStateBridge";
 
 export function AppProviders({ children }: { children: ReactNode }) {
   return (
@@ -15,6 +16,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
       disableTransitionOnChange
     >
       <AuthProvider>
+        <AuthStateBridge />
         <SettingsModalProvider>
           {children}
           <Toaster
