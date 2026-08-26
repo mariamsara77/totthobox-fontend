@@ -84,7 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return false;
       }
 
-      if (!response.ok) return !!user;
+      if (!response.ok) return false;
 
       const data = await response.json().catch(() => null);
       const nextUser = extractUser(data);
@@ -104,7 +104,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         refreshControllerRef.current = null;
       }
     }
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -142,8 +142,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const generation = invalidate();
 
       try {
-        // Remove every client-side trace of the previous account before the
-        // new authentication transaction starts.
         setUser(null);
         await clearAllClientState();
 
@@ -168,8 +166,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           throw new ApiError("লগইন সেশন পরিবর্তিত হয়েছে। আবার চেষ্টা করুন।", 409);
         }
 
-        // Login response data is deliberately ignored as the profile source.
-        // /api/auth/me must resolve the user from the newly-set HttpOnly cookie.
+        // The login response is never used as the profile source. The current
+        // user is always resolved from the newly-created HttpOnly cookie.
         const authenticated = await refreshUser();
 
         if (!authenticated || generation !== generationRef.current) {
@@ -208,8 +206,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await clearAllClientState();
     }
 
-    // Hard navigation intentionally destroys the current React/Next.js client
-    // tree and its RSC/router state before the next account is loaded.
+    // Hard navigation destroys the current React tree and Next.js client/RSC
+    // router state, preventing the previous account from being reused.
     if (typeof window !== "undefined") {
       window.location.replace("/login");
     } else {
