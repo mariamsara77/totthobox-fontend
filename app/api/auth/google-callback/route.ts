@@ -17,7 +17,7 @@ export async function GET(request: Request) {
   const token = searchParams.get("token")?.trim();
 
   if (!token) {
-    return NextResponse.redirect(new URL("/login?error=missing-token", origin));
+    return NextResponse.redirect(new URL("/login?error=missing-google-token", origin));
   }
 
   let laravelResponse: Response;
@@ -29,6 +29,8 @@ export async function GET(request: Request) {
       headers: {
         Accept: "application/json",
         Authorization: `Bearer ${token}`,
+        "Cache-Control": "no-store",
+        Pragma: "no-cache",
       },
       cache: "no-store",
     });
@@ -43,10 +45,21 @@ export async function GET(request: Request) {
     return NextResponse.redirect(new URL("/login?error=auth-backend-unavailable", origin));
   }
 
-  const user = laravelResponse.ok ? extractUser(payload) : null;
-  if (!laravelResponse.ok || !user) {
+  if (laravelResponse.status === 401) {
+    const response = NextResponse.redirect(new URL("/login?error=invalid-google-token", origin));
+    clearAuthCookie(response);
+    return response;
+  }
+
+  if (!laravelResponse.ok) {
     const response = NextResponse.redirect(new URL("/login?error=google-session-failed", origin));
     response.headers.set("Cache-Control", "no-store");
+    return response;
+  }
+
+  const user = extractUser(payload);
+  if (!user) {
+    const response = NextResponse.redirect(new URL("/login?error=invalid-google-user", origin));
     clearAuthCookie(response);
     return response;
   }
@@ -65,7 +78,7 @@ export async function GET(request: Request) {
         cache: "no-store",
       });
     } catch {
-      // Session replacement is independent of stale-token revocation.
+      // Stale-token revocation is best-effort and must not block login.
     }
   }
 
@@ -73,6 +86,7 @@ export async function GET(request: Request) {
     status: 303,
     headers: NO_STORE_HEADERS,
   });
+
   response.cookies.set(AUTH_COOKIE, token, AUTH_COOKIE_OPTIONS);
   return response;
 }
