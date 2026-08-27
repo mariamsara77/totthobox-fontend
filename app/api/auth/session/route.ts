@@ -1,41 +1,15 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import {
+  AUTH_COOKIE_NAME,
+  AUTH_COOKIE_OPTIONS,
+  NO_STORE_HEADERS,
+  revokeToken,
+  verifyToken,
+} from "@/lib/server/auth";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
-
-const COOKIE_OPTIONS = {
-  httpOnly: true,
-  secure: true,
-  sameSite: "lax" as const,
-  path: "/",
-  maxAge: 60 * 60 * 24 * 30,
-};
-
-const NO_STORE_HEADERS = {
-  "Cache-Control": "private, no-store, no-cache, must-revalidate, max-age=0",
-  Pragma: "no-cache",
-};
-
-async function revokePreviousToken(token: string | undefined) {
-  if (!token) return;
-
-  try {
-    await fetch(`${API_BASE}/api/v1/logout`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      cache: "no-store",
-    });
-  } catch {
-    // The new credential replaces the browser credential regardless.
-  }
-}
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}));
@@ -43,22 +17,14 @@ export async function POST(request: Request) {
 
   if (!token) {
     return NextResponse.json(
-      { message: "Google authentication token অনুপস্থিত।" },
+      { message: "Authentication token অনুপস্থিত।" },
       { status: 400, headers: NO_STORE_HEADERS }
     );
   }
 
   let verifyResponse: Response;
   try {
-    verifyResponse = await fetch(`${API_BASE}/api/v1/me`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-        "Cache-Control": "no-store",
-      },
-      cache: "no-store",
-    });
+    verifyResponse = await verifyToken(token);
   } catch {
     return NextResponse.json(
       { message: "ব্যাকএন্ড সার্ভারের সাথে সংযোগ করা যায়নি।" },
@@ -70,20 +36,22 @@ export async function POST(request: Request) {
 
   if (!verifyResponse.ok || !user || typeof user !== "object" || !("id" in user)) {
     return NextResponse.json(
-      { message: "Google authentication token অবৈধ বা মেয়াদ শেষ হয়েছে।" },
+      { message: "Authentication token অবৈধ বা মেয়াদ শেষ হয়েছে।" },
       { status: 401, headers: NO_STORE_HEADERS }
     );
   }
 
   const cookieStore = await cookies();
-  const previousToken = cookieStore.get("laravel_token")?.value;
-  await revokePreviousToken(previousToken);
+  const previousToken = cookieStore.get(AUTH_COOKIE_NAME)?.value;
+  if (previousToken && previousToken !== token) {
+    await revokeToken(previousToken);
+  }
 
   const response = NextResponse.json(
-    { success: true },
+    { success: true, user },
     { status: 200, headers: NO_STORE_HEADERS }
   );
-  response.cookies.set("laravel_token", token, COOKIE_OPTIONS);
+  response.cookies.set(AUTH_COOKIE_NAME, token, AUTH_COOKIE_OPTIONS);
   return response;
 }
 
@@ -95,20 +63,7 @@ export async function GET(request: Request) {
     return NextResponse.redirect(new URL("/login?error=missing-token", origin));
   }
 
-  const response = await POST(
-    new Request(request.url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token }),
-    })
+  return NextResponse.redirect(
+    new URL(`/auth/callback?token=${encodeURIComponent(token)}`, origin)
   );
-
-  if (!response.ok) {
-    return NextResponse.redirect(new URL("/login?error=google-session-failed", origin));
-  }
-
-  const redirect = NextResponse.redirect(new URL("/", origin));
-  const setCookie = response.headers.get("set-cookie");
-  if (setCookie) redirect.headers.set("set-cookie", setCookie);
-  return redirect;
 }
