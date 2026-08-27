@@ -1,28 +1,17 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { stripAuthTokens } from "@/lib/auth-response";
+import {
+  API_BASE,
+  AUTH_COOKIE,
+  AUTH_COOKIE_OPTIONS,
+  NO_STORE_HEADERS,
+  clearAuthCookie,
+  extractUser,
+} from "@/lib/auth-server";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
-
-const COOKIE_OPTIONS = {
-  httpOnly: true,
-  secure: true,
-  sameSite: "lax" as const,
-  path: "/",
-  maxAge: 60 * 60 * 24 * 30,
-};
-
-function clearTokenCookie(res: NextResponse) {
-  res.cookies.set("laravel_token", "", {
-    ...COOKIE_OPTIONS,
-    maxAge: 0,
-    expires: new Date(0),
-  });
-}
 
 async function revokePreviousToken(token: string | undefined) {
   if (!token) return;
@@ -37,7 +26,7 @@ async function revokePreviousToken(token: string | undefined) {
       cache: "no-store",
     });
   } catch {
-    // The browser credential is replaced below regardless.
+    // Replacing the credential is independent of stale-token revocation.
   }
 }
 
@@ -48,13 +37,9 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json(
       { message: "অবৈধ রিকোয়েস্ট বডি।" },
-      { status: 400, headers: { "Cache-Control": "no-store" } }
+      { status: 400, headers: NO_STORE_HEADERS }
     );
   }
-
-  const cookieStore = await cookies();
-  const previousToken = cookieStore.get("laravel_token")?.value;
-  await revokePreviousToken(previousToken);
 
   let laravelRes: Response;
   try {
@@ -68,23 +53,21 @@ export async function POST(request: Request) {
       cache: "no-store",
     });
   } catch {
-    const res = NextResponse.json(
+    return NextResponse.json(
       { message: "সার্ভারে সংযোগ স্থাপন করতে সমস্যা হচ্ছে।" },
-      { status: 503, headers: { "Cache-Control": "no-store" } }
+      { status: 503, headers: NO_STORE_HEADERS }
     );
-    clearTokenCookie(res);
-    return res;
   }
 
   const data = await laravelRes.json().catch(() => ({}));
 
   if (!laravelRes.ok) {
-    const res = NextResponse.json(stripAuthTokens(data), {
+    const response = NextResponse.json(stripAuthTokens(data), {
       status: laravelRes.status,
-      headers: { "Cache-Control": "no-store" },
+      headers: NO_STORE_HEADERS,
     });
-    clearTokenCookie(res);
-    return res;
+    clearAuthCookie(response);
+    return response;
   }
 
   const token: string | undefined =
@@ -93,18 +76,61 @@ export async function POST(request: Request) {
     data?.data?.token ??
     data?.data?.access_token;
 
-  const safeData = stripAuthTokens(data) as Record<string, unknown>;
-  const result = NextResponse.json(
-    { ...safeData, token_received: !!token },
-    { status: 200, headers: { "Cache-Control": "no-store" } }
-  );
-
-  if (token) {
-    result.cookies.set("laravel_token", token, COOKIE_OPTIONS);
-  } else {
-    clearTokenCookie(result);
-    console.warn("[/api/auth/login] Laravel returned 200 but no token");
+  if (!token) {
+    const response = NextResponse.json(
+      { message: "লগইন সার্ভার কোনো authentication token দেয়নি।" },
+      { status: 502, headers: NO_STORE_HEADERS }
+    );
+    clearAuthCookie(response);
+    return response;
   }
 
-  return result;
+  // Never trust a token merely because /login returned 200. Verify it against
+  // the canonical Laravel /me endpoint before exposing a session to the app.
+  let verifyResponse: Response;
+  let verifyPayload: unknown = null;
+  try {
+    verifyResponse = await fetch(`${API_BASE}/api/v1/me`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      cache: "no-store",
+    });
+    const text = await verifyResponse.text();
+    try {
+      verifyPayload = text ? JSON.parse(text) : null;
+    } catch {
+      verifyPayload = null;
+    }
+  } catch {
+    const response = NextResponse.json(
+      { message: "লগইন token যাচাই করা যায়নি।" },
+      { status: 503, headers: NO_STORE_HEADERS }
+    );
+    clearAuthCookie(response);
+    return response;
+  }
+
+  const user = verifyResponse.ok ? extractUser(verifyPayload) : null;
+  if (!verifyResponse.ok || !user) {
+    const response = NextResponse.json(
+      { message: "লগইন সেশন যাচাই করা যায়নি।" },
+      { status: 502, headers: NO_STORE_HEADERS }
+    );
+    clearAuthCookie(response);
+    return response;
+  }
+
+  const cookieStore = await cookies();
+  const previousToken = cookieStore.get(AUTH_COOKIE)?.value;
+  await revokePreviousToken(previousToken);
+
+  const response = NextResponse.json(
+    { success: true, user },
+    { status: 200, headers: NO_STORE_HEADERS }
+  );
+  response.cookies.set(AUTH_COOKIE, token, AUTH_COOKIE_OPTIONS);
+  return response;
 }
