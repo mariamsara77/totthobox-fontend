@@ -1,23 +1,20 @@
-// proxy.ts  (project root — app/ এর পাশে)
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function proxy(request: NextRequest) {
-  const token = request.cookies.get("laravel_token")?.value;
-  const { pathname } = request.nextUrl;
+const AUTH_COOKIE = "laravel_token";
 
-  const isAuthRoute = pathname === "/login" || pathname === "/register";
+export function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const hasSessionCookie = Boolean(request.cookies.get(AUTH_COOKIE)?.value);
 
   const isProtectedRoute =
     pathname.startsWith("/profile") ||
     pathname.startsWith("/settings") ||
     pathname.startsWith("/messages");
 
-  if (isAuthRoute && token) {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
-
-  if (isProtectedRoute && !token) {
+  // Proxy performs only an optimistic cookie check. The real session is
+  // always verified by /api/auth/me and protected server/API operations.
+  if (isProtectedRoute && !hasSessionCookie) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);
@@ -28,8 +25,6 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/login",
-    "/register",
     "/profile/:path*",
     "/settings/:path*",
     "/messages/:path*",
