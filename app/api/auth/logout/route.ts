@@ -9,21 +9,23 @@ const API_BASE =
 
 const COOKIE_OPTIONS = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
+  secure: true,
   sameSite: "lax" as const,
   path: "/",
+};
+
+const NO_STORE_HEADERS = {
+  "Cache-Control": "private, no-store, no-cache, must-revalidate, max-age=0",
+  Pragma: "no-cache",
 };
 
 export async function POST() {
   const cookieStore = await cookies();
   const token = cookieStore.get("laravel_token")?.value;
 
-  // Revoke the exact Sanctum personal access token represented by this
-  // browser session. This is deliberately best-effort so local logout still
-  // succeeds if Laravel is temporarily unreachable.
   if (token) {
     try {
-      await fetch(`${API_BASE}/api/logout`, {
+      await fetch(`${API_BASE}/api/v1/logout`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -32,19 +34,13 @@ export async function POST() {
         cache: "no-store",
       });
     } catch {
-      // Cookie is still cleared below.
+      // The local browser session is still revoked below.
     }
   }
 
   const response = NextResponse.json(
     { success: true },
-    {
-      status: 200,
-      headers: {
-        "Cache-Control": "private, no-store, no-cache, must-revalidate, max-age=0",
-        Pragma: "no-cache",
-      },
-    }
+    { status: 200, headers: NO_STORE_HEADERS }
   );
 
   response.cookies.set("laravel_token", "", {
