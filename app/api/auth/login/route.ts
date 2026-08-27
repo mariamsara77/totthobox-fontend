@@ -1,64 +1,33 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { stripAuthTokens } from "@/lib/auth-response";
+import {
+  AUTH_COOKIE_NAME,
+  AUTH_COOKIE_OPTIONS,
+  NO_STORE_HEADERS,
+  apiUrl,
+  revokeToken,
+} from "@/lib/server/auth";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
-
-const COOKIE_OPTIONS = {
-  httpOnly: true,
-  secure: true,
-  sameSite: "lax" as const,
-  path: "/",
-  maxAge: 60 * 60 * 24 * 30,
-};
-
-function clearTokenCookie(res: NextResponse) {
-  res.cookies.set("laravel_token", "", {
-    ...COOKIE_OPTIONS,
-    maxAge: 0,
-    expires: new Date(0),
-  });
-}
-
-async function revokePreviousToken(token: string | undefined) {
-  if (!token) return;
-
-  try {
-    await fetch(`${API_BASE}/api/v1/logout`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      cache: "no-store",
-    });
-  } catch {
-    // The browser credential is replaced below regardless.
-  }
-}
-
 export async function POST(request: Request) {
-  let body: unknown;
-  try {
-    body = await request.json();
-  } catch {
+  const body = await request.json().catch(() => null);
+  if (!body || typeof body !== "object") {
     return NextResponse.json(
       { message: "অবৈধ রিকোয়েস্ট বডি।" },
-      { status: 400, headers: { "Cache-Control": "no-store" } }
+      { status: 400, headers: NO_STORE_HEADERS }
     );
   }
 
   const cookieStore = await cookies();
-  const previousToken = cookieStore.get("laravel_token")?.value;
-  await revokePreviousToken(previousToken);
+  const previousToken = cookieStore.get(AUTH_COOKIE_NAME)?.value;
+  await revokeToken(previousToken);
 
   let laravelRes: Response;
   try {
-    laravelRes = await fetch(`${API_BASE}/api/v1/login`, {
+    laravelRes = await fetch(apiUrl("/v1/login"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -68,43 +37,44 @@ export async function POST(request: Request) {
       cache: "no-store",
     });
   } catch {
-    const res = NextResponse.json(
+    const response = NextResponse.json(
       { message: "সার্ভারে সংযোগ স্থাপন করতে সমস্যা হচ্ছে।" },
-      { status: 503, headers: { "Cache-Control": "no-store" } }
+      { status: 503, headers: NO_STORE_HEADERS }
     );
-    clearTokenCookie(res);
-    return res;
+    response.cookies.delete(AUTH_COOKIE_NAME);
+    return response;
   }
 
   const data = await laravelRes.json().catch(() => ({}));
 
   if (!laravelRes.ok) {
-    const res = NextResponse.json(stripAuthTokens(data), {
+    const response = NextResponse.json(stripAuthTokens(data), {
       status: laravelRes.status,
-      headers: { "Cache-Control": "no-store" },
+      headers: NO_STORE_HEADERS,
     });
-    clearTokenCookie(res);
-    return res;
+    response.cookies.delete(AUTH_COOKIE_NAME);
+    return response;
   }
 
-  const token: string | undefined =
+  const token =
     data?.token ??
     data?.access_token ??
     data?.data?.token ??
     data?.data?.access_token;
 
-  const safeData = stripAuthTokens(data) as Record<string, unknown>;
-  const result = NextResponse.json(
-    { ...safeData, token_received: !!token },
-    { status: 200, headers: { "Cache-Control": "no-store" } }
-  );
-
-  if (token) {
-    result.cookies.set("laravel_token", token, COOKIE_OPTIONS);
-  } else {
-    clearTokenCookie(result);
-    console.warn("[/api/auth/login] Laravel returned 200 but no token");
+  if (typeof token !== "string" || !token.trim()) {
+    const response = NextResponse.json(
+      { message: "লগইন সফল হলেও authentication session তৈরি করা যায়নি।" },
+      { status: 502, headers: NO_STORE_HEADERS }
+    );
+    response.cookies.delete(AUTH_COOKIE_NAME);
+    return response;
   }
 
-  return result;
+  const response = NextResponse.json(
+    { ...stripAuthTokens(data), authenticated: true },
+    { status: 200, headers: NO_STORE_HEADERS }
+  );
+  response.cookies.set(AUTH_COOKIE_NAME, token.trim(), AUTH_COOKIE_OPTIONS);
+  return response;
 }
