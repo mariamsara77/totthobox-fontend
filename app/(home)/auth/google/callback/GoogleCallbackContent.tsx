@@ -18,48 +18,23 @@ export default function GoogleCallbackContent() {
 
     if (error) {
       toast.error("Google লগইন ব্যর্থ হয়েছে");
-      router.replace("/login");
+      router.replace("/login?error=google-auth-failed");
       return;
     }
 
     if (!token) {
       toast.error("Google লগইন টোকেন পাওয়া যায়নি");
-      router.replace("/login");
+      router.replace("/login?error=missing-google-token");
       return;
     }
 
-    // The Laravel OAuth callback returns a short-lived-in-URL Sanctum token.
-    // Exchange it immediately for the same HttpOnly session cookie used by
-    // normal email/password authentication. Never persist the token in
-    // localStorage/sessionStorage and never keep it in the browser URL.
-    const establishSession = async () => {
-      try {
-        const response = await fetch("/api/auth/session", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          credentials: "include",
-          cache: "no-store",
-          body: JSON.stringify({ token }),
-        });
-
-        if (!response.ok) {
-          throw new Error("session-establishment-failed");
-        }
-
-        // Replace the OAuth callback URL so the token is removed from browser
-        // history/address bars before the authenticated app is loaded.
-        toast.success("সফলভাবে লগইন হয়েছে!");
-        window.location.replace("/");
-      } catch {
-        toast.error("Google লগইন সম্পন্ন করা যায়নি");
-        router.replace("/login?error=google_session_failed");
-      }
-    };
-
-    void establishSession();
+    // Laravel currently redirects to /auth/callback?token=... . The browser
+    // never stores the token. Hand it immediately to a Next.js server route,
+    // where it is verified against Laravel and converted into an HttpOnly
+    // session cookie before the user reaches the application.
+    window.location.replace(
+      `/api/auth/google-callback?token=${encodeURIComponent(token)}`
+    );
   }, [searchParams, router]);
 
   return (
