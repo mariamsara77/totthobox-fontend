@@ -2,12 +2,12 @@
 
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
-  useState,
-  useCallback,
   useRef,
-  ReactNode,
+  useState,
+  type ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
 import { ApiError } from "@/lib/api-client";
@@ -26,14 +26,46 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+interface JsonObject {
+  [key: string]: unknown;
+}
+
+function asObject(value: unknown): JsonObject | null {
+  return typeof value === "object" && value !== null && !Array.isArray(value)
+    ? (value as JsonObject)
+    : null;
+}
+
+function messageFrom(value: unknown, fallback: string): string {
+  const object = asObject(value);
+  const message = object?.message;
+  return typeof message === "string" && message.trim() ? message : fallback;
+}
+
 function extractUser(data: unknown): User | null {
-  if (!data || typeof data !== "object") return null;
-  const source = data as Record<string, unknown>;
+  const source = asObject(data);
+  if (!source) return null;
+
   const candidateValue = source.user ?? source.data ?? data;
-  if (!candidateValue || typeof candidateValue !== "object") return null;
-  const candidate = candidateValue as Record<string, unknown>;
-  if (!candidate.id || !candidate.email || !candidate.name) return null;
-  return candidate as unknown as User;
+  const candidate = asObject(candidateValue);
+  if (!candidate) return null;
+
+  const id = candidate.id;
+  const email = candidate.email;
+  const name = candidate.name;
+
+  if (
+    (typeof id !== "number" && typeof id !== "string") ||
+    typeof email !== "string" ||
+    typeof name !== "string"
+  ) {
+    return null;
+  }
+
+  const numericId = Number(id);
+  if (!Number.isSafeInteger(numericId) || numericId <= 0) return null;
+
+  return { ...candidate, id: numericId, email, name } as User;
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -67,6 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const refreshUser = useCallback(async (): Promise<boolean> => {
     const generation = generationRef.current;
     refreshControllerRef.current?.abort();
+
     const controller = new AbortController();
     refreshControllerRef.current = controller;
 
@@ -79,7 +112,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signal: controller.signal,
       });
 
-      if (!mountedRef.current || generation !== generationRef.current) return false;
+      if (!mountedRef.current || generation !== generationRef.current) {
+        return false;
+      }
 
       if (response.status === 401) {
         applyUser(null);
@@ -88,8 +123,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (!response.ok) return false;
 
-      const data = await response.json().catch(() => null);
+      const data: unknown = await response.json().catch(() => null);
       const nextUser = extractUser(data);
+
       if (!nextUser) {
         applyUser(null);
         return false;
@@ -97,8 +133,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       applyUser(nextUser);
       return true;
-    } catch (error) {
-      if (error instanceof DOMException && error.name === "AbortError") return false;
+    } catch (error: unknown) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        return false;
+      }
       return false;
     } finally {
       if (refreshControllerRef.current === controller) {
@@ -109,6 +147,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     mountedRef.current = true;
+
     void (async () => {
       await refreshUser();
       if (mountedRef.current) setLoading(false);
@@ -128,7 +167,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     window.addEventListener("auth:unauthorized", handleUnauthorized);
-    return () => window.removeEventListener("auth:unauthorized", handleUnauthorized);
+    return () => {
+      window.removeEventListener("auth:unauthorized", handleUnauthorized);
+    };
   }, [clearAllClientState, invalidate]);
 
   const login = useCallback(
@@ -154,9 +195,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           body: JSON.stringify({ email, password }),
         });
 
-        const data = await response.json().catch(() => ({}));
+        const data: unknown = await response.json().catch(() => null);
+
         if (!response.ok) {
-          throw new ApiError(data?.message || "লগইন ব্যর্থ হয়েছে", response.status, data);
+          throw new ApiError(
+            messageFrom(data, "লগইন ব্যর্থ হয়েছে"),
+            response.status,
+            data,
+          );
         }
 
         if (generation !== generationRef.current) {
@@ -169,14 +215,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             method: "POST",
             credentials: "include",
             cache: "no-store",
-          }).catch(() => {});
-          throw new ApiError("লগইনের পর বর্তমান ব্যবহারকারীর তথ্য পাওয়া যায়নি।", 401);
+          }).catch(() => undefined);
+          throw new ApiError(
+            "লগইনের পর বর্তমান ব্যবহারকারীর তথ্য পাওয়া যায়নি।",
+            401,
+          );
         }
       } finally {
         loginInProgressRef.current = false;
       }
     },
-    [clearAllClientState, invalidate, refreshUser]
+    [clearAllClientState, invalidate, refreshUser],
   );
 
   const logout = useCallback(async (): Promise<void> => {
@@ -192,7 +241,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         keepalive: true,
       });
     } catch {
-      // Local state is cleared even if the network is unavailable.
+      // Local state is cleared even when the network is unavailable.
     } finally {
       await clearAllClientState();
     }
