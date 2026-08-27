@@ -28,24 +28,6 @@ export async function getAuthToken() {
   return (await cookies()).get(AUTH_COOKIE_NAME)?.value;
 }
 
-export function setAuthCookie(response: Response, token: string) {
-  if (!(response instanceof Response)) return;
-  const headers = new Headers(response.headers);
-  headers.append(
-    "Set-Cookie",
-    `${AUTH_COOKIE_NAME}=${encodeURIComponent(token)}; Path=/; Max-Age=${AUTH_COOKIE_OPTIONS.maxAge}; HttpOnly; Secure; SameSite=Lax`
-  );
-}
-
-export function clearAuthCookie(response: Response) {
-  const headers = new Headers(response.headers);
-  headers.append(
-    "Set-Cookie",
-    `${AUTH_COOKIE_NAME}=; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Secure; SameSite=Lax`
-  );
-  return headers;
-}
-
 export async function verifyToken(token: string) {
   return fetch(apiUrl("/v1/me"), {
     method: "GET",
@@ -61,6 +43,7 @@ export async function verifyToken(token: string) {
 
 export async function revokeToken(token?: string) {
   if (!token) return;
+
   try {
     await fetch(apiUrl("/v1/logout"), {
       method: "POST",
@@ -73,8 +56,4 @@ export async function revokeToken(token?: string) {
   } catch {
     // Local session replacement/logout remains authoritative.
   }
-}
-
-export async function readJson<T = unknown>(response: Response): Promise<T | null> {
-  return response.json().catch(() => null) as Promise<T | null>;
 }
