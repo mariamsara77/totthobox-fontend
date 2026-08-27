@@ -1,32 +1,17 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import {
+  API_BASE,
+  NO_STORE_HEADERS,
+  clearAuthCookie,
+  extractUser,
+  getServerToken,
+} from "@/lib/auth-server";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
-
-const NO_STORE_HEADERS = {
-  "Cache-Control": "private, no-store, no-cache, must-revalidate, max-age=0",
-  Pragma: "no-cache",
-  Vary: "Cookie, Authorization",
-};
-
-function clearTokenCookie(res: NextResponse) {
-  res.cookies.set("laravel_token", "", {
-    httpOnly: true,
-    secure: true,
-    sameSite: "lax",
-    path: "/",
-    maxAge: 0,
-    expires: new Date(0),
-  });
-}
-
 export async function GET() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("laravel_token")?.value;
+  const token = await getServerToken();
 
   if (!token) {
     return NextResponse.json(null, { status: 401, headers: NO_STORE_HEADERS });
@@ -39,7 +24,7 @@ export async function GET() {
       headers: {
         Accept: "application/json",
         Authorization: `Bearer ${token}`,
-        "Cache-Control": "no-store, no-cache, max-age=0",
+        "Cache-Control": "no-store",
         Pragma: "no-cache",
       },
       cache: "no-store",
@@ -51,34 +36,41 @@ export async function GET() {
     );
   }
 
-  const data = await laravelRes.json().catch(() => null);
+  const text = await laravelRes.text();
+  let payload: unknown = null;
+  try {
+    payload = text ? JSON.parse(text) : null;
+  } catch {
+    payload = null;
+  }
 
   if (laravelRes.status === 401) {
-    const res = NextResponse.json(null, {
+    const response = NextResponse.json(null, {
       status: 401,
       headers: NO_STORE_HEADERS,
     });
-    clearTokenCookie(res);
-    return res;
+    clearAuthCookie(response);
+    return response;
   }
 
   if (!laravelRes.ok) {
     return NextResponse.json(null, {
-      status: laravelRes.status,
+      status: 502,
       headers: NO_STORE_HEADERS,
     });
   }
 
-  if (!data || typeof data !== "object" || !("id" in data)) {
-    const res = NextResponse.json(null, {
-      status: 401,
+  const user = extractUser(payload);
+  if (!user) {
+    const response = NextResponse.json(null, {
+      status: 502,
       headers: NO_STORE_HEADERS,
     });
-    clearTokenCookie(res);
-    return res;
+    clearAuthCookie(response);
+    return response;
   }
 
-  return NextResponse.json(data, {
+  return NextResponse.json(user, {
     status: 200,
     headers: NO_STORE_HEADERS,
   });
