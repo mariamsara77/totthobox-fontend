@@ -11,7 +11,7 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import { ApiError } from "@/lib/api-client";
-import { User } from "@/lib/auth";
+import { User, setAuthUser } from "@/lib/auth";
 import { clearClientAuthState, clearClientCaches } from "@/lib/auth-storage";
 
 interface AuthContextType {
@@ -28,14 +28,11 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 function extractUser(data: unknown): User | null {
   if (!data || typeof data !== "object") return null;
-
   const source = data as Record<string, unknown>;
   const candidateValue = source.user ?? source.data ?? data;
   if (!candidateValue || typeof candidateValue !== "object") return null;
-
   const candidate = candidateValue as Record<string, unknown>;
   if (!candidate.id || !candidate.email || !candidate.name) return null;
-
   return candidate as unknown as User;
 }
 
@@ -49,6 +46,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const refreshControllerRef = useRef<AbortController | null>(null);
   const loginInProgressRef = useRef(false);
 
+  const applyUser = useCallback((nextUser: User | null) => {
+    setUser(nextUser);
+    setAuthUser(nextUser);
+  }, []);
+
   const invalidate = useCallback(() => {
     generationRef.current += 1;
     refreshControllerRef.current?.abort();
@@ -57,13 +59,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const clearAllClientState = useCallback(async () => {
+    applyUser(null);
     clearClientAuthState();
     await clearClientCaches();
-  }, []);
+  }, [applyUser]);
 
   const refreshUser = useCallback(async (): Promise<boolean> => {
     const generation = generationRef.current;
-
     refreshControllerRef.current?.abort();
     const controller = new AbortController();
     refreshControllerRef.current = controller;
@@ -80,7 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!mountedRef.current || generation !== generationRef.current) return false;
 
       if (response.status === 401) {
-        setUser(null);
+        applyUser(null);
         return false;
       }
 
@@ -88,13 +90,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       const data = await response.json().catch(() => null);
       const nextUser = extractUser(data);
-
       if (!nextUser) {
-        setUser(null);
+        applyUser(null);
         return false;
       }
 
-      setUser(nextUser);
+      applyUser(nextUser);
       return true;
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") return false;
@@ -104,11 +105,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         refreshControllerRef.current = null;
       }
     }
-  }, []);
+  }, [applyUser]);
 
   useEffect(() => {
     mountedRef.current = true;
-
     void (async () => {
       await refreshUser();
       if (mountedRef.current) setLoading(false);
@@ -123,7 +123,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const handleUnauthorized = async () => {
       invalidate();
-      setUser(null);
       await clearAllClientState();
       window.location.replace("/login");
     };
@@ -142,7 +141,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const generation = invalidate();
 
       try {
-        setUser(null);
         await clearAllClientState();
 
         const response = await fetch("/api/auth/login", {
@@ -157,7 +155,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         });
 
         const data = await response.json().catch(() => ({}));
-
         if (!response.ok) {
           throw new ApiError(data?.message || "লগইন ব্যর্থ হয়েছে", response.status, data);
         }
@@ -166,20 +163,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           throw new ApiError("লগইন সেশন পরিবর্তিত হয়েছে। আবার চেষ্টা করুন।", 409);
         }
 
-        // The login response is never used as the profile source. The current
-        // user is always resolved from the newly-created HttpOnly cookie.
-        const authenticated = await refreshUser();
-
-        if (!authenticated || generation !== generationRef.current) {
+        if (!(await refreshUser())) {
           invalidate();
-          setUser(null);
-          await clearAllClientState();
           await fetch("/api/auth/logout", {
             method: "POST",
             credentials: "include",
             cache: "no-store",
           }).catch(() => {});
-          throw new ApiError("লগইনের পর বর্তমান ব্যবহারকারীর তথ্য পাওয়া যায়নি।", 401);
+          throw new ApiError("লগইনের পর বর্তমান ব্যবহারকারীর তথ্য পাওয়া যায়নি।", 401);
         }
       } finally {
         loginInProgressRef.current = false;
@@ -190,7 +181,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(async (): Promise<void> => {
     invalidate();
-    setUser(null);
+    applyUser(null);
 
     try {
       await fetch("/api/auth/logout", {
@@ -201,19 +192,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         keepalive: true,
       });
     } catch {
-      // Local state is still cleared below.
+      // Local state is cleared even if the network is unavailable.
     } finally {
       await clearAllClientState();
     }
 
-    // Hard navigation destroys the current React tree and Next.js client/RSC
-    // router state, preventing the previous account from being reused.
     if (typeof window !== "undefined") {
       window.location.replace("/login");
     } else {
       router.replace("/login");
     }
-  }, [clearAllClientState, invalidate, router]);
+  }, [applyUser, clearAllClientState, invalidate, router]);
 
   return (
     <AuthContext.Provider
