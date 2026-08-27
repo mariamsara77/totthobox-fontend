@@ -18,7 +18,7 @@ export default function GoogleCallbackContent() {
 
     if (error) {
       toast.error("Google লগইন ব্যর্থ হয়েছে");
-      router.replace("/login?error=google-auth-failed");
+      router.replace(`/login?error=${encodeURIComponent(error)}`);
       return;
     }
 
@@ -28,10 +28,6 @@ export default function GoogleCallbackContent() {
       return;
     }
 
-    // Laravel currently redirects to /auth/callback?token=... . The browser
-    // never stores the token. Hand it immediately to a Next.js server route,
-    // where it is verified against Laravel and converted into an HttpOnly
-    // session cookie before the user reaches the application.
     window.location.replace(
       `/api/auth/google-callback?token=${encodeURIComponent(token)}`
     );
