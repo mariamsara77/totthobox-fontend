@@ -12,10 +12,64 @@ import {
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-function errorMessage(payload: unknown, fallback: string): string {
-  if (!payload || typeof payload !== "object") return fallback;
-  const message = (payload as Record<string, unknown>).message;
+interface JsonObject {
+  [key: string]: unknown;
+}
+
+function asObject(value: unknown): JsonObject | null {
+  return typeof value === "object" && value !== null && !Array.isArray(value)
+    ? (value as JsonObject)
+    : null;
+}
+
+function messageFrom(value: unknown, fallback: string): string {
+  const object = asObject(value);
+  const message = object?.message;
   return typeof message === "string" && message.trim() ? message : fallback;
+}
+
+function tokenFrom(value: unknown): string | null {
+  const object = asObject(value);
+  const direct = object?.token;
+  if (typeof direct === "string" && direct.trim()) return direct.trim();
+
+  const accessToken = object?.access_token;
+  if (typeof accessToken === "string" && accessToken.trim()) {
+    return accessToken.trim();
+  }
+
+  const data = asObject(object?.data);
+  const nestedToken = data?.token;
+  if (typeof nestedToken === "string" && nestedToken.trim()) {
+    return nestedToken.trim();
+  }
+
+  const nestedAccessToken = data?.access_token;
+  if (typeof nestedAccessToken === "string" && nestedAccessToken.trim()) {
+    return nestedAccessToken.trim();
+  }
+
+  return null;
+}
+
+async function readJson(response: Response): Promise<unknown> {
+  const text = await response.text();
+  if (!text) return null;
+
+  try {
+    return JSON.parse(text) as unknown;
+  } catch {
+    return null;
+  }
+}
+
+function failure(message: string, status: number) {
+  const response = NextResponse.json(
+    { success: false, message },
+    { status, headers: NO_STORE_HEADERS },
+  );
+  clearAuthCookie(response);
+  return response;
 }
 
 export async function POST(request: Request) {
@@ -24,23 +78,15 @@ export async function POST(request: Request) {
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json(
-      { message: "অবৈধ authentication request।" },
-      { status: 400, headers: NO_STORE_HEADERS },
-    );
+    return failure("অবৈধ authentication request।", 400);
   }
 
-  const code =
-    body && typeof body === "object" &&
-    typeof (body as Record<string, unknown>).code === "string"
-      ? (body as Record<string, unknown>).code.trim()
-      : "";
+  const bodyObject = asObject(body);
+  const rawCode = bodyObject?.code;
+  const code = typeof rawCode === "string" ? rawCode.trim() : "";
 
   if (!code || code.length > 128) {
-    return NextResponse.json(
-      { message: "অবৈধ বা অনুপস্থিত Google authentication code।" },
-      { status: 400, headers: NO_STORE_HEADERS },
-    );
+    return failure("অবৈধ বা অনুপস্থিত Google authentication code।", 400);
   }
 
   let exchangeResponse: Response;
@@ -56,56 +102,25 @@ export async function POST(request: Request) {
       cache: "no-store",
     });
   } catch {
-    return NextResponse.json(
-      { message: "Authentication সার্ভারের সাথে সংযোগ করা যায়নি।" },
-      { status: 503, headers: NO_STORE_HEADERS },
-    );
+    return failure("Authentication সার্ভারের সাথে সংযোগ করা যায়নি।", 503);
   }
 
-  const exchangePayload: unknown = await exchangeResponse
-    .json()
-    .catch(() => null);
+  const exchangePayload = await readJson(exchangeResponse);
 
   if (!exchangeResponse.ok) {
-    const result = NextResponse.json(
-      {
-        message: errorMessage(
-          exchangePayload,
-          "Google authentication সম্পন্ন করা যায়নি।",
-        ),
-      },
-      {
-        status: exchangeResponse.status,
-        headers: NO_STORE_HEADERS,
-      },
+    return failure(
+      messageFrom(exchangePayload, "Google authentication সম্পন্ন করা যায়নি।"),
+      exchangeResponse.status,
     );
-    clearAuthCookie(result);
-    return result;
   }
 
-  const payload =
-    exchangePayload && typeof exchangePayload === "object"
-      ? (exchangePayload as Record<string, unknown>)
-      : null;
-
-  const token =
-    typeof payload?.token === "string"
-      ? payload.token
-      : typeof payload?.access_token === "string"
-        ? payload.access_token
-        : null;
+  const token = tokenFrom(exchangePayload);
 
   if (!token) {
-    const result = NextResponse.json(
-      { message: "Authentication সার্ভার token দেয়নি।" },
-      { status: 502, headers: NO_STORE_HEADERS },
-    );
-    clearAuthCookie(result);
-    return result;
+    return failure("Authentication সার্ভার token দেয়নি।", 502);
   }
 
   let userResponse: Response;
-  let userPayload: unknown = null;
 
   try {
     userResponse = await fetch(`${API_BASE}/api/user`, {
@@ -118,49 +133,24 @@ export async function POST(request: Request) {
       },
       cache: "no-store",
     });
-
-    const text = await userResponse.text();
-    try {
-      userPayload = text ? JSON.parse(text) : null;
-    } catch {
-      userPayload = null;
-    }
   } catch {
-    const result = NextResponse.json(
-      { message: "Authentication token যাচাই করা যায়নি।" },
-      { status: 503, headers: NO_STORE_HEADERS },
-    );
-    clearAuthCookie(result);
-    return result;
+    return failure("Authentication token যাচাই করা যায়নি।", 503);
   }
 
+  const userPayload = await readJson(userResponse);
+
   if (userResponse.status === 401) {
-    const result = NextResponse.json(
-      { message: "Google authentication session অবৈধ।" },
-      { status: 401, headers: NO_STORE_HEADERS },
-    );
-    clearAuthCookie(result);
-    return result;
+    return failure("Google authentication session অবৈধ।", 401);
   }
 
   if (!userResponse.ok) {
-    const result = NextResponse.json(
-      { message: "Google authentication session যাচাই করা যায়নি।" },
-      { status: 502, headers: NO_STORE_HEADERS },
-    );
-    clearAuthCookie(result);
-    return result;
+    return failure("Google authentication session যাচাই করা যায়নি।", 502);
   }
 
   const user = extractUser(userPayload);
 
   if (!user) {
-    const result = NextResponse.json(
-      { message: "Google account information পাওয়া যায়নি।" },
-      { status: 502, headers: NO_STORE_HEADERS },
-    );
-    clearAuthCookie(result);
-    return result;
+    return failure("Google account information পাওয়া যায়নি।", 502);
   }
 
   const cookieStore = await cookies();
@@ -177,16 +167,16 @@ export async function POST(request: Request) {
         cache: "no-store",
       });
     } catch {
-      // The new session remains valid if revoking the old session fails.
+      // Keep the newly authenticated session even if old-token revocation fails.
     }
   }
 
-  const result = NextResponse.json(
+  const response = NextResponse.json(
     { success: true, user },
     { status: 200, headers: NO_STORE_HEADERS },
   );
 
-  result.cookies.set(AUTH_COOKIE, token, AUTH_COOKIE_OPTIONS);
+  response.cookies.set(AUTH_COOKIE, token, AUTH_COOKIE_OPTIONS);
 
-  return result;
+  return response;
 }
