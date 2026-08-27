@@ -15,24 +15,24 @@ function CallbackHandler() {
     if (processedRef.current) return;
     processedRef.current = true;
 
-    const token = searchParams.get("token");
+    const code = searchParams.get("code");
     const error = searchParams.get("error");
 
     if (error) {
       toast.error("Google লগইন ব্যর্থ হয়েছে");
-      router.replace("/login?error=google-auth-failed");
+      router.replace(`/login?error=${encodeURIComponent(error)}`);
       return;
     }
 
-    if (!token) {
-      toast.error("Google লগইন টোকেন পাওয়া যায়নি");
-      router.replace("/login?error=missing-google-token");
+    if (!code || code.length > 128) {
+      toast.error("Google authentication code পাওয়া যায়নি");
+      router.replace("/login?error=google-code-missing");
       return;
     }
 
     const establishSession = async () => {
       try {
-        const response = await fetch("/api/auth/session", {
+        const response = await fetch("/api/auth/google/exchange", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -40,20 +40,34 @@ function CallbackHandler() {
           },
           credentials: "include",
           cache: "no-store",
-          body: JSON.stringify({ token }),
+          body: JSON.stringify({ code }),
         });
 
+        const payload: unknown = await response.json().catch(() => null);
+
         if (!response.ok) {
-          throw new Error("google-session-failed");
+          const message =
+            payload &&
+            typeof payload === "object" &&
+            payload !== null &&
+            "message" in payload &&
+            typeof (payload as { message?: unknown }).message === "string"
+              ? (payload as { message: string }).message
+              : "Google লগইন সম্পন্ন করা যায়নি";
+
+          throw new Error(message);
         }
 
         toast.success("সফলভাবে লগইন হয়েছে!");
 
-        // Replace the callback URL so the Sanctum token is removed from the
-        // address bar and browser history before the authenticated app loads.
+        // Remove the one-time code from the address bar and browser history.
         window.location.replace("/");
-      } catch {
-        toast.error("Google লগইন সম্পন্ন করা যায়নি");
+      } catch (error) {
+        toast.error(
+          error instanceof Error
+            ? error.message
+            : "Google লগইন সম্পন্ন করা যায়নি",
+        );
         router.replace("/login?error=google-session-failed");
       }
     };
