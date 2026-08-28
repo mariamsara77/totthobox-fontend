@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
+import Link from "next/link";
+import toast from "react-hot-toast";
 import {
   Eye,
   EyeOff,
@@ -12,150 +12,129 @@ import {
   Mail,
   ExternalLink,
 } from "lucide-react";
-import Link from "next/link";
 import clsx from "clsx";
 import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
-import FacebookLoginButton from "@/components/auth/FacebookLoginButton";
 
-const api = axios.create({
-  baseURL:
-    process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com",
-  headers: {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-  },
-});
+type FieldErrors = Record<string, string>;
 
-const authApi = axios.create({
-  headers: {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-  },
-});
+function responseMessage(data: unknown, fallback: string): string {
+  if (!data || typeof data !== "object") return fallback;
+  const message = (data as { message?: unknown }).message;
+  return typeof message === "string" && message.trim() ? message : fallback;
+}
+
+function validationErrors(data: unknown): FieldErrors {
+  if (!data || typeof data !== "object") return {};
+  const errors = (data as { errors?: unknown }).errors;
+  if (!errors || typeof errors !== "object") return {};
+
+  return Object.fromEntries(
+    Object.entries(errors as Record<string, unknown>).map(([key, value]) => [
+      key,
+      Array.isArray(value) && typeof value[0] === "string"
+        ? value[0]
+        : typeof value === "string"
+          ? value
+          : "অবৈধ তথ্য।",
+    ]),
+  );
+}
 
 export default function RegisterContent() {
   const router = useRouter();
-
   const [step, setStep] = useState<"form" | "otp">("form");
   const [loading, setLoading] = useState(false);
-
-  // Form states
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [otp, setOtp] = useState("");
-
-  // UI states
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<FieldErrors>({});
 
-  // Real-time validation helpers
   const isNameValid = name.length >= 3 && name.length <= 50;
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const isPasswordValid = password.length >= 8;
-  const isConfirmValid =
-    passwordConfirmation === password && passwordConfirmation.length > 0;
+  const isConfirmValid = passwordConfirmation === password && passwordConfirmation.length > 0;
 
-  const getEmailDashboardUrl = () => {
+  const emailUrl = (() => {
     const domain = email.split("@")[1]?.toLowerCase();
-    switch (domain) {
-      case "gmail.com":
-        return "https://mail.google.com/";
-      case "yahoo.com":
-        return "https://mail.yahoo.com/";
-      case "outlook.com":
-      case "hotmail.com":
-      case "live.com":
-        return "https://outlook.live.com/";
-      case "icloud.com":
-        return "https://www.icloud.com/mail";
-      default:
-        return `mailto:${email}`;
+    if (domain === "gmail.com") return "https://mail.google.com/";
+    if (domain === "yahoo.com") return "https://mail.yahoo.com/";
+    if (["outlook.com", "hotmail.com", "live.com"].includes(domain ?? "")) {
+      return "https://outlook.live.com/";
     }
-  };
+    if (domain === "icloud.com") return "https://www.icloud.com/mail";
+    return `mailto:${email}`;
+  })();
 
-  const handleSendOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSendOtp = async (event: React.FormEvent) => {
+    event.preventDefault();
     setErrors({});
     setLoading(true);
 
     try {
-      const res = await api.post("/api/auth/register/send-otp", {
-        name,
-        email,
-        password,
-        password_confirmation: passwordConfirmation,
+      const response = await fetch("/api/backend/auth/register/send-otp", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        cache: "no-store",
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          password_confirmation: passwordConfirmation,
+        }),
       });
 
-      toast.success(res.data.message);
-      setStep("otp");
-    } catch (err: any) {
-      if (err.response?.status === 422) {
-        const validationErrors = err.response.data.errors || {};
-        const mapped: Record<string, string> = {};
-        Object.keys(validationErrors).forEach((key) => {
-          mapped[key] = validationErrors[key][0];
-        });
-        setErrors(mapped);
-      } else {
-        toast.error(err.response?.data?.message || "কিছু একটা ভুল হয়েছে");
+      const data = await response.json().catch(() => null);
+      if (!response.ok) {
+        if (response.status === 422) setErrors(validationErrors(data));
+        else toast.error(responseMessage(data, "কিছু একটা ভুল হয়েছে।"));
+        return;
       }
+
+      toast.success(responseMessage(data, "ভেরিফিকেশন কোড পাঠানো হয়েছে।"));
+      setStep("otp");
+    } catch {
+      toast.error("সার্ভারে সংযোগ করতে সমস্যা হচ্ছে।");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleVerify = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleVerify = async (event: React.FormEvent) => {
+    event.preventDefault();
     setErrors({});
     setLoading(true);
 
     try {
-      const res = await authApi.post("/api/auth/register/verify", {
-        email,
-        otp,
+      const response = await fetch("/api/auth/register/verify", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        cache: "no-store",
+        body: JSON.stringify({ email, otp }),
       });
 
-      // Multi-account cookie logic (optional)
-      const cookieName = "saved_accounts";
-      let userIds: number[] = [];
-      try {
-        const existing = document.cookie
-          .split("; ")
-          .find((row) => row.startsWith(`${cookieName}=`))
-          ?.split("=")[1];
-        if (existing) {
-          userIds = JSON.parse(decodeURIComponent(existing)) || [];
-        }
-      } catch {}
-
-      if (!userIds.includes(res.data.user.id)) {
-        userIds.push(res.data.user.id);
+      const data = await response.json().catch(() => null);
+      if (!response.ok) {
+        if (response.status === 422) setErrors(validationErrors(data));
+        else toast.error(responseMessage(data, "ভেরিফিকেশন সম্পন্ন করা যায়নি।"));
+        return;
       }
 
-      document.cookie = `${cookieName}=${encodeURIComponent(
-        JSON.stringify(userIds),
-      )}; path=/; max-age=${60 * 60 * 24 * 365 * 5}`; // 5 years
-
-      toast.success(res.data.message);
-      router.push("/"); // home page
-    } catch (err: any) {
-      console.error("API Error:", err.response?.data || err.message);
-
-      if (err.response?.status === 422) {
-        const validationErrors = err.response.data.errors || {};
-        const mapped: Record<string, string> = {};
-        Object.keys(validationErrors).forEach((key) => {
-          mapped[key] = validationErrors[key][0];
-        });
-        setErrors(mapped);
-      } else {
-        const message =
-          err.response?.data?.message || err.message || "কিছু একটা ভুল হয়েছে";
-        toast.error(message);
-      }
+      toast.success(responseMessage(data, "অ্যাকাউন্ট তৈরি হয়েছে।"));
+      window.location.replace("/");
+    } catch {
+      toast.error("সার্ভারে সংযোগ করতে সমস্যা হচ্ছে।");
     } finally {
       setLoading(false);
     }
@@ -163,203 +142,132 @@ export default function RegisterContent() {
 
   return (
     <div className="space-y-4">
-      <Toaster position="top-center" />
-
-      {/* Header */}
       <div className="text-center">
         <h1 className="text-2xl">
-          {step === "form"
-            ? "নতুন অ্যাকাউন্ট তৈরি করুন"
-            : "ইমেইল ভেরিফাই করুন"}
+          {step === "form" ? "নতুন অ্যাকাউন্ট তৈরি করুন" : "ইমেইল ভেরিফাই করুন"}
         </h1>
         <p className="text-sm opacity-50">
           {step === "form"
-            ? "আপনার তথ্য দিয়ে রেজিস্ট্রেশন সম্পন্ন করুন"
+            ? "আপনার তথ্য দিয়ে রেজিস্ট্রেশন সম্পন্ন করুন"
             : "আপনার ইমেইলে পাঠানো ৪ ডিজিটের কোডটি দিন"}
         </p>
       </div>
 
       {step === "form" ? (
-        <form onSubmit={handleSendOtp} className="space-y-5">
-          {/* Name */}
+        <form onSubmit={handleSendOtp} className="space-y-5" noValidate>
           <div className="relative">
             <input
               type="text"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(event) => setName(event.target.value)}
               placeholder="আপনার পূর্ণ নাম"
+              autoComplete="name"
               className={clsx(
                 "w-full rounded-full py-3.5 px-6 border bg-zinc-400/10 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition",
-                errors.name
-                  ? "border-red-500 bg-red-50 dark:bg-red-950/30"
-                  : "border-transparent",
+                errors.name ? "border-red-500" : "border-transparent",
               )}
             />
             {name && isNameValid && !errors.name && (
               <CheckCircle2 className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-green-500" />
             )}
-            {errors.name && (
-              <p className="text-red-600 text-xs mt-1.5 pl-4">
-                {errors.name}
-              </p>
-            )}
+            {errors.name && <p className="text-red-500 text-xs mt-1.5 pl-4">{errors.name}</p>}
           </div>
 
-          {/* Email */}
           <div className="relative">
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(event) => setEmail(event.target.value)}
               placeholder="ইমেইল (যেমন: name@example.com)"
+              autoComplete="email"
               className={clsx(
                 "w-full rounded-full py-3.5 px-6 border bg-zinc-400/10 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition",
-                errors.email
-                  ? "border-red-500 bg-red-50 dark:bg-red-950/30"
-                  : "border-transparent",
+                errors.email ? "border-red-500" : "border-transparent",
               )}
             />
             {email && isEmailValid && !errors.email && (
               <CheckCircle2 className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-green-500" />
             )}
-            {errors.email && (
-              <p className="text-red-600 text-xs mt-1.5 pl-4">
-                {errors.email}
-              </p>
-            )}
+            {errors.email && <p className="text-red-500 text-xs mt-1.5 pl-4">{errors.email}</p>}
           </div>
 
-          {/* Password */}
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(event) => setPassword(event.target.value)}
               placeholder="পাসওয়ার্ড দিন"
+              autoComplete="new-password"
               className={clsx(
-                "w-full rounded-full py-3.5 px-6 border bg-zinc-400/10 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition pr-20",
-                errors.password
-                  ? "border-red-500 bg-red-50 dark:bg-red-950/30"
-                  : "border-transparent",
+                "w-full rounded-full py-3.5 px-6 pr-20 border bg-zinc-400/10 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition",
+                errors.password ? "border-red-500" : "border-transparent",
               )}
             />
             <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3">
-              {password && isPasswordValid && !errors.password && (
-                <CheckCircle2 className="w-5 h-5 text-green-500" />
-              )}
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="text-zinc-400 hover:text-zinc-600"
-              >
+              {password && isPasswordValid && !errors.password && <CheckCircle2 className="w-5 h-5 text-green-500" />}
+              <button type="button" onClick={() => setShowPassword((value) => !value)} className="text-zinc-400 hover:text-zinc-600" aria-label={showPassword ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখান"}>
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
-            {errors.password && (
-              <p className="text-red-600 text-xs mt-1.5 pl-4">
-                {errors.password}
-              </p>
-            )}
+            {errors.password && <p className="text-red-500 text-xs mt-1.5 pl-4">{errors.password}</p>}
           </div>
 
-          {/* Confirm Password */}
           <div className="relative">
             <input
               type={showConfirm ? "text" : "password"}
               value={passwordConfirmation}
-              onChange={(e) => setPasswordConfirmation(e.target.value)}
-              placeholder="পাসওয়ার্ডটি পুনরায় লিখুন"
+              onChange={(event) => setPasswordConfirmation(event.target.value)}
+              placeholder="পাসওয়ার্ডটি পুনরায় লিখুন"
+              autoComplete="new-password"
               className={clsx(
-                "w-full rounded-full py-3.5 px-6 border bg-zinc-400/10 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition pr-20",
-                errors.password_confirmation
-                  ? "border-red-500 bg-red-50 dark:bg-red-950/30"
-                  : "border-transparent",
+                "w-full rounded-full py-3.5 px-6 pr-20 border bg-zinc-400/10 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition",
+                errors.password_confirmation ? "border-red-500" : "border-transparent",
               )}
             />
             <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3">
-              {passwordConfirmation &&
-                (isConfirmValid ? (
-                  <CheckCircle2 className="w-5 h-5 text-green-500" />
-                ) : (
-                  <XCircle className="w-5 h-5 text-red-400" />
-                ))}
-              <button
-                type="button"
-                onClick={() => setShowConfirm(!showConfirm)}
-                className="text-zinc-400 hover:text-zinc-600"
-              >
+              {passwordConfirmation && (isConfirmValid ? <CheckCircle2 className="w-5 h-5 text-green-500" /> : <XCircle className="w-5 h-5 text-red-400" />)}
+              <button type="button" onClick={() => setShowConfirm((value) => !value)} className="text-zinc-400 hover:text-zinc-600" aria-label={showConfirm ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখান"}>
                 {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
-            {errors.password_confirmation && (
-              <p className="text-red-600 text-xs mt-1.5 pl-4">
-                {errors.password_confirmation}
-              </p>
-            )}
+            {errors.password_confirmation && <p className="text-red-500 text-xs mt-1.5 pl-4">{errors.password_confirmation}</p>}
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-full transition disabled:opacity-60"
-          >
+          <button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-full transition disabled:opacity-60">
             {loading ? "পাঠানো হচ্ছে..." : "ভেরিফিকেশন কোড পাঠান"}
           </button>
         </form>
       ) : (
         <form onSubmit={handleVerify} className="space-y-6">
-          {/* Email info */}
           <div className="text-center space-y-2">
             <div className="flex items-center justify-center gap-2 text-zinc-500 text-sm">
-              <Mail size={16} />
-              <span>আমরা কোডটি পাঠিয়েছি:</span>
+              <Mail size={16} /> <span>আমরা কোডটি পাঠিয়েছি:</span>
             </div>
-            <a
-              href={getEmailDashboardUrl()}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-blue-600 hover:underline font-medium"
-            >
-              {email}
-              <ExternalLink size={14} className="opacity-60" />
+            <a href={emailUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-blue-600 hover:underline font-medium">
+              {email} <ExternalLink size={14} className="opacity-60" />
             </a>
-            <p className="text-xs text-zinc-400 italic">
-              ইনবক্স না পেলে স্প্যাম ফোল্ডার চেক করুন।
-            </p>
+            <p className="text-xs text-zinc-400 italic">ইনবক্স না পেলে স্প্যাম ফোল্ডার চেক করুন।</p>
           </div>
 
-          {/* OTP Input */}
           <div className="flex justify-center">
             <input
               type="text"
+              inputMode="numeric"
+              autoComplete="one-time-code"
               maxLength={4}
               value={otp}
-              onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
+              onChange={(event) => setOtp(event.target.value.replace(/\D/g, ""))}
               placeholder="••••"
               className="w-48 text-center text-3xl tracking-[0.5em] font-bold rounded-2xl py-4 border-2 border-zinc-200 dark:border-zinc-700 bg-zinc-400/10 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"
             />
           </div>
-          {errors.otp && (
-            <p className="text-center text-red-500 text-sm">{errors.otp}</p>
-          )}
+          {errors.otp && <p className="text-center text-red-500 text-sm">{errors.otp}</p>}
 
-          <button
-            type="submit"
-            disabled={loading || otp.length !== 4}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-full transition disabled:opacity-60"
-          >
+          <button type="submit" disabled={loading || otp.length !== 4} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-full transition disabled:opacity-60">
             {loading ? "যাচাই করা হচ্ছে..." : "যাচাই ও অ্যাকাউন্ট তৈরি"}
           </button>
 
-          <button
-            type="button"
-            onClick={() => {
-              setStep("form");
-              setOtp("");
-              setErrors({});
-            }}
-            className="w-full text-center text-sm text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300"
-          >
+          <button type="button" onClick={() => { setStep("form"); setOtp(""); setErrors({}); }} className="w-full text-center text-sm text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300">
             ভুল ইমেইল? তথ্য পরিবর্তন করুন
           </button>
         </form>
@@ -369,25 +277,13 @@ export default function RegisterContent() {
         <>
           <div className="my-4 flex items-center justify-center">
             <hr className="grow border-zinc-400/25" />
-            <span className="mx-4 text-sm text-zinc-600 dark:text-zinc-400">
-              অথবা
-            </span>
+            <span className="mx-4 text-sm opacity-50">অথবা</span>
             <hr className="grow border-zinc-400/25" />
           </div>
-
-          <div className="space-y-3">
-            <GoogleLoginButton />
-            <FacebookLoginButton />
-          </div>
-
-          <p className="text-center text-sm text-zinc-600 dark:text-zinc-400 mt-8">
+          <GoogleLoginButton />
+          <p className="text-center text-sm opacity-50 mt-8">
             অ্যাকাউন্ট আছে?{" "}
-            <Link
-              href="/login"
-              className="font-bold text-blue-600 hover:underline"
-            >
-              লগ ইন করুন
-            </Link>
+            <Link href="/login" className="font-bold text-blue-600 hover:underline">লগ ইন করুন</Link>
           </p>
         </>
       )}
