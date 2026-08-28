@@ -1,5 +1,6 @@
 "use client";
 
+<<<<<<< HEAD
 // components/GoogleLoginButton.tsx
 // ─────────────────────────────────────────────────────────────────
 // Google Login Button — যেকোনো জায়গায় use করো
@@ -83,5 +84,32 @@ export function GoogleLoginButton({
         <p className="mt-2 text-sm text-red-600 text-center">{error}</p>
       )}
     </div>
+=======
+import { useState } from "react";
+
+export default function GoogleLoginButton() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLogin = () => {
+    if (isLoading) return;
+
+    setIsLoading(true);
+    window.location.assign("/api/auth/google/redirect");
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={handleLogin}
+      disabled={isLoading}
+      aria-busy={isLoading}
+      className="w-full flex items-center justify-center gap-4 rounded-full p-4 hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed bg-orange-400"
+    >
+      <span className="text-xl font-bold" aria-hidden="true">
+        G
+      </span>
+      {isLoading ? "Google লগইন শুরু হচ্ছে..." : "গুগল দিয়ে লগইন করুন"}
+    </button>
+>>>>>>> ac9bbca3285e829fe73ff75e9576e5cefa7f0200
   );
 }

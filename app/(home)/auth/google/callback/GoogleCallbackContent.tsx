@@ -13,53 +13,44 @@ export default function GoogleCallbackContent() {
     if (processedRef.current) return;
     processedRef.current = true;
 
-    const token = searchParams.get("token");
+    const code = searchParams.get("code");
     const error = searchParams.get("error");
 
     if (error) {
       toast.error("Google লগইন ব্যর্থ হয়েছে");
-      router.replace("/login");
+      router.replace(`/login?error=${encodeURIComponent(error)}`);
       return;
     }
 
-    if (!token) {
-      toast.error("Google লগইন টোকেন পাওয়া যায়নি");
-      router.replace("/login");
+    if (!code) {
+      toast.error("Google authentication code পাওয়া যায়নি");
+      router.replace("/login?error=missing-google-code");
       return;
     }
 
-    // The Laravel OAuth callback returns a short-lived-in-URL Sanctum token.
-    // Exchange it immediately for the same HttpOnly session cookie used by
-    // normal email/password authentication. Never persist the token in
-    // localStorage/sessionStorage and never keep it in the browser URL.
-    const establishSession = async () => {
-      try {
-        const response = await fetch("/api/auth/session", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          credentials: "include",
-          cache: "no-store",
-          body: JSON.stringify({ token }),
-        });
-
-        if (!response.ok) {
-          throw new Error("session-establishment-failed");
+    // The browser only carries a short-lived, one-time code here.
+    // The real Sanctum token is obtained and stored by the Next.js server.
+    void fetch("/api/auth/google/exchange", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({ code }),
+      credentials: "same-origin",
+      cache: "no-store",
+    })
+      .then(async (response) => {
+        if (response.ok) {
+          window.location.replace("/");
+          return;
         }
 
-        // Replace the OAuth callback URL so the token is removed from browser
-        // history/address bars before the authenticated app is loaded.
-        toast.success("সফলভাবে লগইন হয়েছে!");
-        window.location.replace("/");
-      } catch {
-        toast.error("Google লগইন সম্পন্ন করা যায়নি");
-        router.replace("/login?error=google_session_failed");
-      }
-    };
-
-    void establishSession();
+        const data = await response.json().catch(() => null);
+        const message = typeof data?.message === "string" ? data.message : "Google লগইন ব্যর্থ হয়েছে";
+        throw new Error(message);
+      })
+      .catch((error: unknown) => {
+        toast.error(error instanceof Error ? error.message : "Google লগইন ব্যর্থ হয়েছে");
+        router.replace("/login?error=google-session-failed");
+      });
   }, [searchParams, router]);
 
   return (
