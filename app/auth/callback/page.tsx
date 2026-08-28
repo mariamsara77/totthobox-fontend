@@ -1,30 +1,62 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect } from "react";
+// app/auth/callback/page.tsx
+// ─────────────────────────────────────────────────────────────────
+// Google OAuth Callback Handler
+// Laravel এখানে redirect করে: /auth/callback?token=xxxxx
+// ─────────────────────────────────────────────────────────────────
 
-// ✅ Separate handler component
-function CallbackHandler() {
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useRef } from "react";
+import { useAuth } from "@/lib/AuthContext";
+
+function CallbackContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const { setUserFromToken } = useAuth();
+  const processed = useRef(false); // double-call guard
 
   useEffect(() => {
+    if (processed.current) return;
+    processed.current = true;
+
     const token = searchParams.get("token");
-    if (token) {
-      // এখানে আপনার লগইন বা টোকেন হ্যান্ডেল করার লজিক বসান
+    const error = searchParams.get("message");
+
+    if (error || !token) {
+      console.error("Google auth failed:", error);
+      router.replace("/login?error=google_auth_failed");
+      return;
     }
-  }, [searchParams]);
 
-  return <div>লগইন ভেরিফাই করা হচ্ছে...</div>;
-}
+    setUserFromToken(token)
+      .then(() => {
+        router.replace("/dashboard");
+      })
+      .catch((err) => {
+        console.error("Token validation failed:", err);
+        router.replace("/login?error=token_invalid");
+      });
+  }, [searchParams, router, setUserFromToken]);
 
-// ✅ Main page component with Suspense
-export default function AuthCallbackPage() {
   return (
-    <Suspense fallback={<div>লোডিং...</div>}>
-      <CallbackHandler />
-    </Suspense>
+    <div className="min-h-screen flex flex-col items-center justify-center gap-4">
+      <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+      <p className="text-gray-600 text-sm">Google দিয়ে লগইন হচ্ছে…</p>
+    </div>
   );
 }
 
-// ✅ Prevent Next.js from prerendering this page at build time
-export const dynamic = "force-dynamic";
+export default function AuthCallbackPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+        </div>
+      }
+    >
+      <CallbackContent />
+    </Suspense>
+  );
+}
