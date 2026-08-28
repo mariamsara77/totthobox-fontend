@@ -9,12 +9,10 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { useRouter } from "next/navigation";
 import { ApiError } from "@/lib/api-client";
 import { User, setAuthUser } from "@/lib/auth";
-import { clearClientAuthState, clearClientCaches } from "@/lib/auth-storage";
 
-interface AuthContextType {
+interface AuthContextValue {
   user: User | null;
   loading: boolean;
   isLoading: boolean;
@@ -24,7 +22,7 @@ interface AuthContextType {
   refreshUser: () => Promise<boolean>;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 interface JsonObject {
   [key: string]: unknown;
@@ -38,70 +36,54 @@ function asObject(value: unknown): JsonObject | null {
 
 function messageFrom(value: unknown, fallback: string): string {
   const object = asObject(value);
-  const message = object?.message;
-  return typeof message === "string" && message.trim() ? message : fallback;
+  return typeof object?.message === "string" && object.message.trim()
+    ? object.message
+    : fallback;
 }
 
-function extractUser(data: unknown): User | null {
-  const source = asObject(data);
+function extractUser(value: unknown): User | null {
+  const source = asObject(value);
   if (!source) return null;
 
-  const candidateValue = source.user ?? source.data ?? data;
-  const candidate = asObject(candidateValue);
+  const candidate = asObject(source.user ?? source.data ?? value);
   if (!candidate) return null;
 
-  const id = candidate.id;
-  const email = candidate.email;
-  const name = candidate.name;
-
+  const id = Number(candidate.id);
   if (
-    (typeof id !== "number" && typeof id !== "string") ||
-    typeof email !== "string" ||
-    typeof name !== "string"
+    !Number.isSafeInteger(id) ||
+    id <= 0 ||
+    typeof candidate.name !== "string" ||
+    typeof candidate.email !== "string"
   ) {
     return null;
   }
 
-  const numericId = Number(id);
-  if (!Number.isSafeInteger(numericId) || numericId <= 0) return null;
-
-  return { ...candidate, id: numericId, email, name } as User;
+  return {
+    id,
+    name: candidate.name,
+    email: candidate.email,
+    slug: typeof candidate.slug === "string" ? candidate.slug : "",
+    avatar_url:
+      typeof candidate.avatar_url === "string" ? candidate.avatar_url : null,
+  };
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
-
   const mountedRef = useRef(false);
-  const generationRef = useRef(0);
-  const refreshControllerRef = useRef<AbortController | null>(null);
-  const loginInProgressRef = useRef(false);
+  const requestRef = useRef<AbortController | null>(null);
+  const loginRef = useRef(false);
 
   const applyUser = useCallback((nextUser: User | null) => {
     setUser(nextUser);
     setAuthUser(nextUser);
   }, []);
 
-  const invalidate = useCallback(() => {
-    generationRef.current += 1;
-    refreshControllerRef.current?.abort();
-    refreshControllerRef.current = null;
-    return generationRef.current;
-  }, []);
-
-  const clearAllClientState = useCallback(async () => {
-    applyUser(null);
-    clearClientAuthState();
-    await clearClientCaches();
-  }, [applyUser]);
-
   const refreshUser = useCallback(async (): Promise<boolean> => {
-    const generation = generationRef.current;
-    refreshControllerRef.current?.abort();
-
+    requestRef.current?.abort();
     const controller = new AbortController();
-    refreshControllerRef.current = controller;
+    requestRef.current = controller;
 
     try {
       const response = await fetch("/api/auth/me", {
@@ -112,9 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signal: controller.signal,
       });
 
-      if (!mountedRef.current || generation !== generationRef.current) {
-        return false;
-      }
+      if (!mountedRef.current) return false;
 
       if (response.status === 401) {
         applyUser(null);
@@ -123,8 +103,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (!response.ok) return false;
 
-      const data: unknown = await response.json().catch(() => null);
-      const nextUser = extractUser(data);
+      const payload = await response.json().catch(() => null);
+      const nextUser = extractUser(payload);
 
       if (!nextUser) {
         applyUser(null);
@@ -133,125 +113,100 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       applyUser(nextUser);
       return true;
-    } catch (error: unknown) {
+    } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") {
         return false;
       }
       return false;
     } finally {
-      if (refreshControllerRef.current === controller) {
-        refreshControllerRef.current = null;
-      }
+      if (requestRef.current === controller) requestRef.current = null;
     }
   }, [applyUser]);
 
   useEffect(() => {
     mountedRef.current = true;
-
-    void (async () => {
-      await refreshUser();
+    void refreshUser().finally(() => {
       if (mountedRef.current) setLoading(false);
-    })();
+    });
 
     return () => {
       mountedRef.current = false;
-      refreshControllerRef.current?.abort();
+      requestRef.current?.abort();
     };
   }, [refreshUser]);
 
   useEffect(() => {
-    const handleUnauthorized = async () => {
-      invalidate();
-      await clearAllClientState();
+    const handleUnauthorized = () => {
+      applyUser(null);
       window.location.replace("/login");
     };
 
     window.addEventListener("auth:unauthorized", handleUnauthorized);
-    return () => {
+    return () =>
       window.removeEventListener("auth:unauthorized", handleUnauthorized);
-    };
-  }, [clearAllClientState, invalidate]);
+  }, [applyUser]);
 
   const login = useCallback(
-    async (email: string, password: string): Promise<void> => {
-      if (loginInProgressRef.current) {
+    async (email: string, password: string) => {
+      if (loginRef.current) {
         throw new ApiError("লগইন ইতিমধ্যে প্রক্রিয়াধীন।", 409);
       }
 
-      loginInProgressRef.current = true;
-      const generation = invalidate();
-
+      loginRef.current = true;
       try {
-        await clearAllClientState();
-
         const response = await fetch("/api/auth/login", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
             Accept: "application/json",
+            "Content-Type": "application/json",
           },
           credentials: "include",
           cache: "no-store",
           body: JSON.stringify({ email, password }),
         });
 
-        const data: unknown = await response.json().catch(() => null);
-
+        const payload = await response.json().catch(() => null);
         if (!response.ok) {
           throw new ApiError(
-            messageFrom(data, "লগইন ব্যর্থ হয়েছে"),
+            messageFrom(payload, "লগইন ব্যর্থ হয়েছে।"),
             response.status,
-            data,
+            payload,
           );
         }
 
-        if (generation !== generationRef.current) {
-          throw new ApiError("লগইন সেশন পরিবর্তিত হয়েছে। আবার চেষ্টা করুন।", 409);
-        }
-
         if (!(await refreshUser())) {
-          invalidate();
           await fetch("/api/auth/logout", {
             method: "POST",
             credentials: "include",
             cache: "no-store",
           }).catch(() => undefined);
           throw new ApiError(
-            "লগইনের পর বর্তমান ব্যবহারকারীর তথ্য পাওয়া যায়নি।",
-            401,
+            "লগইনের পর ব্যবহারকারীর তথ্য যাচাই করা যায়নি।",
+            502,
           );
         }
       } finally {
-        loginInProgressRef.current = false;
+        loginRef.current = false;
       }
     },
-    [clearAllClientState, invalidate, refreshUser],
+    [refreshUser],
   );
 
-  const logout = useCallback(async (): Promise<void> => {
-    invalidate();
+  const logout = useCallback(async () => {
     applyUser(null);
 
     try {
       await fetch("/api/auth/logout", {
         method: "POST",
-        credentials: "include",
         headers: { Accept: "application/json" },
+        credentials: "include",
         cache: "no-store",
         keepalive: true,
       });
-    } catch {
-      // Local state is cleared even when the network is unavailable.
     } finally {
-      await clearAllClientState();
-    }
-
-    if (typeof window !== "undefined") {
       window.location.replace("/login");
-    } else {
-      router.replace("/login");
     }
-  }, [applyUser, clearAllClientState, invalidate, router]);
+  }, [applyUser]);
 
   return (
     <AuthContext.Provider
@@ -259,7 +214,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         loading,
         isLoading: loading,
-        isLoggedIn: !!user,
+        isLoggedIn: Boolean(user),
         login,
         logout,
         refreshUser,
@@ -270,7 +225,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useAuth() {
+export function useAuth(): AuthContextValue {
   const context = useContext(AuthContext);
   if (!context) throw new Error("useAuth must be used within AuthProvider");
   return context;
