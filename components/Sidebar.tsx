@@ -51,6 +51,9 @@ import {
   ShoppingCart,
   Plus,
   Newspaper,
+  User,
+  Lock,
+  Trash2,
 } from "lucide-react";
 
 import { useSettingsModal } from "@/context/SettingsModalContext";
@@ -85,17 +88,8 @@ function SidebarItem({
 }: SidebarItemProps) {
   const content = (
     <>
-      <Icon
-        className={cn(
-          "h-5 w-5 shrink-0",
-          isActive
-            ? ""
-            : ""
-        )}
-      />
-      {!collapsed && (
-        <span className="truncate flex-1 text-left">{label}</span>
-      )}
+      <Icon className={cn("h-5 w-5 shrink-0", isActive ? "" : "")} />
+      {!collapsed && <span className="truncate flex-1 text-left">{label}</span>}
       {!collapsed && badge !== undefined && (
         <span className="ml-auto rounded-full bg-zinc-800 px-2 py-0.5 text-xs text-zinc-200">
           {badge}
@@ -106,10 +100,8 @@ function SidebarItem({
 
   const className = cn(
     "group flex w-full items-center gap-4 rounded-lg p-2 text-sm",
-    isActive
-      ? "bg-zinc-400/25"
-      : "hover:bg-zinc-400/25", 
-    collapsed && "justify-center px-2"
+    isActive ? "bg-zinc-400/25" : "hover:bg-zinc-400/25",
+    collapsed && "justify-center px-2",
   );
 
   if (href) {
@@ -145,11 +137,15 @@ export default function Sidebar() {
   const { isOpen, setIsOpen, isCollapsed, toggleCollapsed } = useSidebar();
 
   // Tooltip
-  const [tooltip, setTooltip] = useState<{ label: string; top: number } | null>(null);
+  const [tooltip, setTooltip] = useState<{ label: string; top: number } | null>(
+    null,
+  );
   const [isExtraConvertersOpen, setIsExtraConvertersOpen] = useState(false);
 
   // ========== Dynamic Data States ==========
-  const [newsSources, setNewsSources] = useState<{ bn?: any[]; en?: any[] }>({});
+  const [newsSources, setNewsSources] = useState<{ bn?: any[]; en?: any[] }>(
+    {},
+  );
   const [buysellCategories, setBuysellCategories] = useState<any[]>([]);
   const [contactCategories, setContactCategories] = useState<any[]>([]);
   const [signCategories, setSignCategories] = useState<any[]>([]);
@@ -157,7 +153,8 @@ export default function Sidebar() {
   const [softwarePlatforms, setSoftwarePlatforms] = useState<string[]>([]);
 
   // API Base URL
-  const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+  const API_URL =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
   // Mobile scroll lock
   useEffect(() => {
@@ -185,7 +182,6 @@ export default function Sidebar() {
 
     const fetchData = async () => {
       try {
-
         if (pathname.startsWith("/contact")) {
           const res = await fetch(`${API_URL}/api/sidebar/contact-categories`, {
             signal: controller.signal,
@@ -240,7 +236,10 @@ export default function Sidebar() {
   const collapsed = isCollapsed;
 
   // Tooltip handlers
-  const handleMouseEnter = (e: React.MouseEvent<HTMLElement>, label: string) => {
+  const handleMouseEnter = (
+    e: React.MouseEvent<HTMLElement>,
+    label: string,
+  ) => {
     if (!collapsed) return;
     const rect = e.currentTarget.getBoundingClientRect();
     setTooltip({ label, top: rect.top + rect.height / 2 });
@@ -255,7 +254,7 @@ export default function Sidebar() {
       {/* Mobile overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden"
+          className="fixed inset-0 z-90 backdrop-blur-xs md:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
@@ -263,11 +262,11 @@ export default function Sidebar() {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed top-0 left-0 z-50 flex h-screen flex-col bg-zinc-100 dark:bg-zinc-900 transition-all duration-300 ease-in-out",
+          "fixed top-0 left-0 z-100 flex h-screen flex-col bg-zinc-100 dark:bg-zinc-900 transition-all duration-300 ease-in-out",
           isOpen ? "translate-x-0" : "-translate-x-full",
           "md:sticky md:top-0 md:translate-x-0",
           collapsed ? "md:w-16" : "md:w-64",
-          "w-64"
+          "w-64",
         )}
         onMouseLeave={handleMouseLeave}
       >
@@ -285,7 +284,7 @@ export default function Sidebar() {
         <div
           className={cn(
             "flex h-16 items-center",
-            collapsed ? "justify-center" : "justify-between px-4"
+            collapsed ? "justify-center" : "justify-between px-4",
           )}
         >
           {!collapsed && (
@@ -329,19 +328,15 @@ export default function Sidebar() {
             type="button"
             onClick={() => setIsOpen(false)}
             aria-label="সাইডবার বন্ধ করুন"
-            className="rounded-lg p-2 text-zinc-400 hover:bg-rose-50 hover:text-rose-500 md:hidden"
+            className="rounded-lg p-2 text-zinc-400 hover:bg-zinc-400/25 md:hidden"
           >
-            <X className="h-5 w-5" />
+            <X className="size-4" />
           </button>
         </div>
 
         {/* Navigation */}
-        <div
-          className="flex-1 overflow-y-auto p-2"
-          onScroll={handleMouseLeave}
-        >
+        <div className="flex-1 overflow-y-auto p-2" onScroll={handleMouseLeave}>
           <div className="space-y-4">
-
             {/* ===================== CALENDAR ===================== */}
             {pathname.startsWith("/bangla/") && (
               <div className="space-y-1">
@@ -446,13 +441,17 @@ export default function Sidebar() {
                 {/* Collapsible Extra Converters */}
                 <button
                   type="button"
-                  onClick={() => setIsExtraConvertersOpen(!isExtraConvertersOpen)}
-                  onMouseEnter={(e) => collapsed && handleMouseEnter(e, "অন্যান্য কনভার্টার")}
+                  onClick={() =>
+                    setIsExtraConvertersOpen(!isExtraConvertersOpen)
+                  }
+                  onMouseEnter={(e) =>
+                    collapsed && handleMouseEnter(e, "অন্যান্য কনভার্টার")
+                  }
                   onMouseLeave={handleMouseLeave}
                   className={cn(
                     "group flex w-full items-center gap-4 rounded-lg px-3 py-2.5 text-sm  transition-all duration-200 text-left",
                     "text-zinc-300 hover:bg-zinc-900 text-zinc-300 hover:bg-zinc-800",
-                    collapsed && "justify-center px-2"
+                    collapsed && "justify-center px-2",
                   )}
                 >
                   <Layers className="h-5 w-5 shrink-0 text-zinc-400 group-hover:text-zinc-200 dark:group-hover:text-zinc-200" />
@@ -472,19 +471,100 @@ export default function Sidebar() {
                   <div
                     className={cn(
                       "mt-1 space-y-1 overflow-hidden transition-all",
-                      !collapsed && "pl-4 border-l border-zinc-400/25 ml-4 dark:border-zinc-700"
+                      !collapsed &&
+                        "pl-4 border-l border-zinc-400/25 ml-4 dark:border-zinc-700",
                     )}
                   >
-                    <SidebarItem href="/converter/length" icon={FaRulerCombined} label="দৈর্ঘ্য কনভার্টার" isActive={pathname === "/converter/length"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
-                    <SidebarItem href="/converter/weight" icon={FaWeightHanging} label="ওজন কনভার্টার" isActive={pathname === "/converter/weight"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
-                    <SidebarItem href="/converter/volume" icon={FaFlask} label="পরিমাণ কনভার্টার" isActive={pathname === "/converter/volume"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
-                    <SidebarItem href="/converter/land" icon={FaMap} label="জমি কনভার্টার" isActive={pathname === "/converter/land"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
-                    <SidebarItem href="/converter/time" icon={FaRegClock} label="সময় কনভার্টার" isActive={pathname === "/converter/time"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
-                    <SidebarItem href="/converter/area" icon={FaVectorSquare} label="এলাকা কনভার্টার" isActive={pathname === "/converter/area"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
-                    <SidebarItem href="/converter/temperature" icon={FaTemperatureHigh} label="তাপমাত্রা কনভার্টার" isActive={pathname === "/converter/temperature"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
-                    <SidebarItem href="/converter/speed" icon={FaTachometerAlt} label="গতিবেগ কনভার্টার" isActive={pathname === "/converter/speed"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
-                    <SidebarItem href="/converter/data" icon={FaDatabase} label="ডেটা স্টোরেজ কনভার্টার" isActive={pathname === "/converter/data"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
-                    <SidebarItem href="/converter/energy" icon={FaBolt} label="শক্তি/পাওয়ার কনভার্টার" isActive={pathname === "/converter/energy"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
+                    <SidebarItem
+                      href="/converter/length"
+                      icon={FaRulerCombined}
+                      label="দৈর্ঘ্য কনভার্টার"
+                      isActive={pathname === "/converter/length"}
+                      collapsed={collapsed}
+                      onHover={handleMouseEnter}
+                      onLeave={handleMouseLeave}
+                    />
+                    <SidebarItem
+                      href="/converter/weight"
+                      icon={FaWeightHanging}
+                      label="ওজন কনভার্টার"
+                      isActive={pathname === "/converter/weight"}
+                      collapsed={collapsed}
+                      onHover={handleMouseEnter}
+                      onLeave={handleMouseLeave}
+                    />
+                    <SidebarItem
+                      href="/converter/volume"
+                      icon={FaFlask}
+                      label="পরিমাণ কনভার্টার"
+                      isActive={pathname === "/converter/volume"}
+                      collapsed={collapsed}
+                      onHover={handleMouseEnter}
+                      onLeave={handleMouseLeave}
+                    />
+                    <SidebarItem
+                      href="/converter/land"
+                      icon={FaMap}
+                      label="জমি কনভার্টার"
+                      isActive={pathname === "/converter/land"}
+                      collapsed={collapsed}
+                      onHover={handleMouseEnter}
+                      onLeave={handleMouseLeave}
+                    />
+                    <SidebarItem
+                      href="/converter/time"
+                      icon={FaRegClock}
+                      label="সময় কনভার্টার"
+                      isActive={pathname === "/converter/time"}
+                      collapsed={collapsed}
+                      onHover={handleMouseEnter}
+                      onLeave={handleMouseLeave}
+                    />
+                    <SidebarItem
+                      href="/converter/area"
+                      icon={FaVectorSquare}
+                      label="এলাকা কনভার্টার"
+                      isActive={pathname === "/converter/area"}
+                      collapsed={collapsed}
+                      onHover={handleMouseEnter}
+                      onLeave={handleMouseLeave}
+                    />
+                    <SidebarItem
+                      href="/converter/temperature"
+                      icon={FaTemperatureHigh}
+                      label="তাপমাত্রা কনভার্টার"
+                      isActive={pathname === "/converter/temperature"}
+                      collapsed={collapsed}
+                      onHover={handleMouseEnter}
+                      onLeave={handleMouseLeave}
+                    />
+                    <SidebarItem
+                      href="/converter/speed"
+                      icon={FaTachometerAlt}
+                      label="গতিবেগ কনভার্টার"
+                      isActive={pathname === "/converter/speed"}
+                      collapsed={collapsed}
+                      onHover={handleMouseEnter}
+                      onLeave={handleMouseLeave}
+                    />
+                    <SidebarItem
+                      href="/converter/data"
+                      icon={FaDatabase}
+                      label="ডেটা স্টোরেজ কনভার্টার"
+                      isActive={pathname === "/converter/data"}
+                      collapsed={collapsed}
+                      onHover={handleMouseEnter}
+                      onLeave={handleMouseLeave}
+                    />
+                    <SidebarItem
+                      href="/converter/energy"
+                      icon={FaBolt}
+                      label="শক্তি/পাওয়ার কনভার্টার"
+                      isActive={pathname === "/converter/energy"}
+                      collapsed={collapsed}
+                      onHover={handleMouseEnter}
+                      onLeave={handleMouseLeave}
+                    />
                   </div>
                 )}
               </div>
@@ -492,21 +572,21 @@ export default function Sidebar() {
 
             {/* ===================== BANGLADESH ===================== */}
             {pathname.startsWith("/bangladesh") && (
-  <div className="space-y-1">
-    {!collapsed && (
-      <h3 className="mb-2 px-3 text-xs  uppercase tracking-wider text-zinc-400">
-        বাংলাদেশ
-      </h3>
-    )}
-    <SidebarItem
-      href="/bangladesh/introduction"
-      icon={Flag}
-      label="পরিচিতি"
-      isActive={pathname.startsWith("/bangladesh/introduction")}
-      collapsed={collapsed}
-      onHover={handleMouseEnter}
-      onLeave={handleMouseLeave}
-    />
+              <div className="space-y-1">
+                {!collapsed && (
+                  <h3 className="mb-2 px-3 text-xs  uppercase tracking-wider text-zinc-400">
+                    বাংলাদেশ
+                  </h3>
+                )}
+                <SidebarItem
+                  href="/bangladesh/introduction"
+                  icon={Flag}
+                  label="পরিচিতি"
+                  isActive={pathname.startsWith("/bangladesh/introduction")}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
                 <SidebarItem
                   href="/bangladesh/tourism"
                   icon={LucideMap}
@@ -546,8 +626,7 @@ export default function Sidebar() {
               </div>
             )}
 
-
-              {/* ===================== CALENDAR ===================== */}
+            {/* ===================== CALENDAR ===================== */}
             {pathname.startsWith("/international/") && (
               <div className="space-y-1">
                 {!collapsed && (
@@ -566,7 +645,7 @@ export default function Sidebar() {
                 />
               </div>
             )}
-              {/* ===================== CALENDAR ===================== */}
+            {/* ===================== CALENDAR ===================== */}
             {pathname.startsWith("/islam") && (
               <div className="space-y-1">
                 {!collapsed && (
@@ -603,76 +682,132 @@ export default function Sidebar() {
                     বিভিন্ন টুলস
                   </h3>
                 )}
-                <SidebarItem href="/tools/image-resizer" icon={RiImageEditFill} label="Image Resizer" isActive={pathname === "/tools/image-resizer"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
-                <SidebarItem href="/tools/age-calculator" icon={FaCalendar} label="Age Calculator" isActive={pathname === "/tools/age-calculator"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
-                <SidebarItem href="/tools/word-and-character-counter" icon={Paperclip} label="Word & Character Counter" isActive={pathname === "/tools/word-and-character-counter"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
-                <SidebarItem href="/tools/zodiac-calculator" icon={FaCalendarMinus} label="Zodiac (রাশি) Calculator" isActive={pathname === "/tools/zodiac-calculator"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
-                <SidebarItem href="/tools/percentage-calculator" icon={FaBolt} label="Percentage (%) Calculator" isActive={pathname === "/tools/percentage-calculator"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
-                <SidebarItem href="/tools/qrcode-generator" icon={FaDatabase} label="QR Code Generator" isActive={pathname === "/tools/qrcode-generator"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
-                <SidebarItem href="/tools/writing-practice" icon={FaDatabase} label="Child Writing Practice" isActive={pathname === "/tools/writing-practice"} collapsed={collapsed} onHover={handleMouseEnter} onLeave={handleMouseLeave} />
+                <SidebarItem
+                  href="/tools/image-resizer"
+                  icon={RiImageEditFill}
+                  label="Image Resizer"
+                  isActive={pathname === "/tools/image-resizer"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SidebarItem
+                  href="/tools/age-calculator"
+                  icon={FaCalendar}
+                  label="Age Calculator"
+                  isActive={pathname === "/tools/age-calculator"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SidebarItem
+                  href="/tools/word-and-character-counter"
+                  icon={Paperclip}
+                  label="Word & Character Counter"
+                  isActive={pathname === "/tools/word-and-character-counter"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SidebarItem
+                  href="/tools/zodiac-calculator"
+                  icon={FaCalendarMinus}
+                  label="Zodiac (রাশি) Calculator"
+                  isActive={pathname === "/tools/zodiac-calculator"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SidebarItem
+                  href="/tools/percentage-calculator"
+                  icon={FaBolt}
+                  label="Percentage (%) Calculator"
+                  isActive={pathname === "/tools/percentage-calculator"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SidebarItem
+                  href="/tools/qrcode-generator"
+                  icon={FaDatabase}
+                  label="QR Code Generator"
+                  isActive={pathname === "/tools/qrcode-generator"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SidebarItem
+                  href="/tools/writing-practice"
+                  icon={FaDatabase}
+                  label="Child Writing Practice"
+                  isActive={pathname === "/tools/writing-practice"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
               </div>
             )}
 
             {/* ===================== SOFTWARE (Dynamic) ===================== */}
             {/* ===================== SOFTWARE (Dynamic) ===================== */}
-{pathname.startsWith("/software") && (
-  <div className="space-y-1">
-    {!collapsed && (
-      <h3 className="mb-2 px-3 text-xs  uppercase tracking-wider text-zinc-400">
-        সফটওয়্যার
-      </h3>
-    )}
+            {pathname.startsWith("/software") && (
+              <div className="space-y-1">
+                {!collapsed && (
+                  <h3 className="mb-2 px-3 text-xs  uppercase tracking-wider text-zinc-400">
+                    সফটওয়্যার
+                  </h3>
+                )}
 
-    {/* সব সফটওয়্যার */}
-<SidebarItem
-  href="/software/all"
-  icon={Presentation}
-  label="সব সফটওয়্যার"
-  isActive={pathname === "/software/all"}
-  collapsed={collapsed}
-  onHover={handleMouseEnter}
-  onLeave={handleMouseLeave}
-/>
+                {/* সব সফটওয়্যার */}
+                <SidebarItem
+                  href="/software/all"
+                  icon={Presentation}
+                  label="সব সফটওয়্যার"
+                  isActive={pathname === "/software/all"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
 
-{/* Dynamic Platforms */}
-{softwarePlatforms.map((platform) => (
-  <SidebarItem
-    key={platform}
-    href={`/software/all/${encodeURIComponent(platform)}`}
-    icon={SquareActivity}
-    label={platform}
-    isActive={pathname === `/software/all/${platform}`}
-    collapsed={collapsed}
-    onHover={handleMouseEnter}
-    onLeave={handleMouseLeave}
-  />
-))}
-  </div>
-)}
+                {/* Dynamic Platforms */}
+                {softwarePlatforms.map((platform) => (
+                  <SidebarItem
+                    key={platform}
+                    href={`/software/all/${encodeURIComponent(platform)}`}
+                    icon={SquareActivity}
+                    label={platform}
+                    isActive={pathname === `/software/all/${platform}`}
+                    collapsed={collapsed}
+                    onHover={handleMouseEnter}
+                    onLeave={handleMouseLeave}
+                  />
+                ))}
+              </div>
+            )}
 
             {/* ===================== CONTACT (Dynamic) ===================== */}
             {/* ===================== CONTACT (Dynamic) ===================== */}
-{pathname.startsWith("/contact") && (
-  <div className="space-y-1">
-    {!collapsed && (
-      <h3 className="mb-2 px-3 text-xs  uppercase tracking-wider text-zinc-400">
-        জরুরী নাম্বার
-      </h3>
-    )}
-    {contactCategories.map((cat) => (
-      <SidebarItem
-        key={cat.slug || cat.id}
-        href={`/contact/${cat.slug}`}
-        icon={Paperclip} // বা dynamic icon
-        label={cat.name}
-        isActive={pathname === `/contact/${cat.slug}`}
-        collapsed={collapsed}
-        onHover={handleMouseEnter}
-        onLeave={handleMouseLeave}
-      />
-    ))}
-  </div>
-)}
+            {pathname.startsWith("/contact") && (
+              <div className="space-y-1">
+                {!collapsed && (
+                  <h3 className="mb-2 px-3 text-xs  uppercase tracking-wider text-zinc-400">
+                    জরুরী নাম্বার
+                  </h3>
+                )}
+                {contactCategories.map((cat) => (
+                  <SidebarItem
+                    key={cat.slug || cat.id}
+                    href={`/contact/${cat.slug}`}
+                    icon={Paperclip} // বা dynamic icon
+                    label={cat.name}
+                    isActive={pathname === `/contact/${cat.slug}`}
+                    collapsed={collapsed}
+                    onHover={handleMouseEnter}
+                    onLeave={handleMouseLeave}
+                  />
+                ))}
+              </div>
+            )}
 
             {/* ===================== SIGNS (Dynamic) ===================== */}
             {pathname.startsWith("/signs") && (
@@ -703,6 +838,47 @@ export default function Sidebar() {
                     onLeave={handleMouseLeave}
                   />
                 ))}
+              </div>
+            )}
+
+            {/* ===================== SETTINGS ===================== */}
+            {pathname.startsWith("/settings") && (
+              <div className="space-y-1">
+                {!collapsed && (
+                  <h3 className="mb-2 px-3 text-xs uppercase tracking-wider text-zinc-400">
+                    সেটিংস
+                  </h3>
+                )}
+
+                <SidebarItem
+                  href="/settings/profile"
+                  icon={User}
+                  label="প্রোফাইল"
+                  isActive={pathname === "/settings/profile"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+
+                <SidebarItem
+                  href="/settings/password"
+                  icon={Lock}
+                  label="পাসওয়ার্ড"
+                  isActive={pathname === "/settings/password"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+
+                <SidebarItem
+                  href="/settings/delete-account"
+                  icon={Trash2}
+                  label="অ্যাকাউন্ট মুছুন"
+                  isActive={pathname === "/settings/delete-account"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
               </div>
             )}
 
@@ -742,21 +918,21 @@ export default function Sidebar() {
 
         {/* Footer */}
         {/* Footer */}
-<div className="border-t border-zinc-400/25 p-2 border-zinc-400/25">
-  <SidebarItem
-    onClick={openSettingsModal}
-    icon={Settings}
-    label="সেটিংস"
-    collapsed={collapsed}
-    onHover={handleMouseEnter}
-    onLeave={handleMouseLeave}
-  />
-  <SidebarProfileMenu
-    collapsed={collapsed}
-    onHover={handleMouseEnter}
-    onLeave={handleMouseLeave}
-  />
-</div>
+        <div className="border-t border-zinc-400/25 p-2 border-zinc-400/25">
+          <SidebarItem
+            onClick={openSettingsModal}
+            icon={Settings}
+            label="সেটিংস"
+            collapsed={collapsed}
+            onHover={handleMouseEnter}
+            onLeave={handleMouseLeave}
+          />
+          <SidebarProfileMenu
+            collapsed={collapsed}
+            onHover={handleMouseEnter}
+            onLeave={handleMouseLeave}
+          />
+        </div>
       </aside>
     </>
   );

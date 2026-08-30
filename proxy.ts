@@ -1,66 +1,22 @@
+// middleware.ts   অথবা proxy.ts (যে নামে ফাইল আছে)
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-/**
- * Route-level auth guard.
- * A cookie's presence is not treated as proof of authentication; the session
- * is verified by the same /api/auth/me endpoint used by the client.
- */
-export async function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-  const isAuthRoute = pathname === "/login" || pathname === "/register";
-  const isProtectedRoute =
-    pathname.startsWith("/profile") ||
-    pathname.startsWith("/settings") ||
-    pathname.startsWith("/messages");
+const protectedPaths = ["/dashboard", "/profile", "/settings"];
 
-  if (!isAuthRoute && !isProtectedRoute) {
-    return NextResponse.next();
-  }
+export function proxy(request: NextRequest) {
+  const token = request.cookies.get("auth_token")?.value; // ✅ সঠিক cookie নাম
+  const isProtected = protectedPaths.some((p) =>
+    request.nextUrl.pathname.startsWith(p)
+  );
 
-  const sessionCookie = request.cookies.get("__Host-totthobox_session")?.value;
-  const authenticated = sessionCookie
-    ? await verifySession(request)
-    : false;
-
-  if (isAuthRoute && authenticated) {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
-
-  if (isProtectedRoute && !authenticated) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("callbackUrl", pathname);
-    return NextResponse.redirect(loginUrl);
+  if (isProtected && !token) {
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   return NextResponse.next();
 }
 
-async function verifySession(request: NextRequest): Promise<boolean> {
-  try {
-    const url = new URL("/api/auth/me", request.url);
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        Cookie: request.headers.get("cookie") ?? "",
-      },
-      cache: "no-store",
-    });
-
-    return response.ok;
-  } catch {
-    // Fail closed for protected routes and fail open for login/register.
-    return false;
-  }
-}
-
 export const config = {
-  matcher: [
-    "/login",
-    "/register",
-    "/profile/:path*",
-    "/settings/:path*",
-    "/messages/:path*",
-  ],
+  matcher: ["/dashboard/:path*", "/profile/:path*", "/settings/:path*"],
 };

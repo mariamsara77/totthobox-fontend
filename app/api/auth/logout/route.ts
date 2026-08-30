@@ -1,25 +1,22 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { API_BASE, AUTH_COOKIE, AUTH_COOKIE_OPTIONS, NO_STORE_HEADERS } from "@/lib/auth-server";
-
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+import { laravelFetch } from "@/lib/server/laravel";
+import { getAuthToken, getRefreshToken, clearAuthCookies } from "@/lib/auth/session";
 
 export async function POST() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(AUTH_COOKIE)?.value;
+  const [accessToken, refreshToken] = await Promise.all([
+    getAuthToken(),
+    getRefreshToken(),
+  ]);
 
-  if (token) {
-    try {
-      await fetch(`${API_BASE}/api/logout`, {
-        method: "POST",
-        headers: { Accept: "application/json", Authorization: `Bearer ${token}` },
-        cache: "no-store",
-      });
-    } catch {}
+  if (accessToken) {
+    await laravelFetch("/v1/logout", {
+      method: "POST",
+      token: accessToken,
+      body: JSON.stringify({ refresh_token: refreshToken ?? "" }),
+    }).catch(() => null);
   }
 
-  const response = NextResponse.json({ success: true }, { status: 200, headers: NO_STORE_HEADERS });
-  response.cookies.set(AUTH_COOKIE, "", { ...AUTH_COOKIE_OPTIONS, maxAge: 0, expires: new Date(0) });
+  const response = NextResponse.json({ success: true });
+  clearAuthCookies(response);
   return response;
 }

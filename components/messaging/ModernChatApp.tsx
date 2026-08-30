@@ -18,6 +18,7 @@ import {
   X,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
+import { getEcho, disconnectEcho } from "@/lib/echo";
 import { useAuth } from "@/context/AuthContext";
 import { useChatLayout } from "@/context/ChatLayoutContext";
 import MediaGallery from "@/components/MediaGallery";
@@ -425,6 +426,62 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
       cancelled = true;
     };
   }, [targetSlug, users]);
+
+  // ========== LIVE CHAT (Laravel Echo) ==========
+  useEffect(() => {
+    // token না থাকলে AuthContext থেকে নিন বা localStorage থেকে
+    const token =
+      (typeof window !== "undefined" && localStorage.getItem("token")) ||
+      (me as any)?.token;
+
+    if (!me?.id || !token) {
+      console.warn("Echo: user or token missing");
+      return;
+    }
+
+    const echo = getEcho(token);
+    if (!echo) return;
+
+    console.log("✅ Echo connected, listening on chat." + me.id);
+
+    const channel = echo.private(`chat.${me.id}`);
+
+    channel.listen(".MessageSent", (payload: any) => {
+      console.log("📩 New message received:", payload);
+
+      const msg = payload.message || payload;
+
+      // বর্তমান চ্যাটের মেসেজ হলে UI-তে যোগ করুন
+      if (
+        selected &&
+        (msg.sender_id === selected.id || msg.receiver_id === selected.id)
+      ) {
+        setMessages((prev) => {
+          if (prev.some((m) => m.id === msg.id)) return prev;
+          return [...prev, msg];
+        });
+      }
+
+      // Sidebar refresh (optional)
+      getChatUsers()
+        .then(setUsers)
+        .catch(() => undefined);
+    });
+
+    channel.listen("UserTyping", (e: any) => {
+      console.log("✍️ Typing:", e);
+    });
+
+    channel.error((error: any) => {
+      console.error("❌ Echo channel error:", error);
+    });
+
+    return () => {
+      console.log("🔌 Leaving channel chat." + me.id);
+      channel.stopListening(".MessageSent");
+      channel.stopListening("UserTyping");
+    };
+  }, [me?.id, selected?.id]);
 
   const setMessageRef = (id: number, node: HTMLDivElement | null) => {
     if (node) messageRefs.current.set(id, node);
@@ -856,9 +913,10 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
                       className="flex flex-1 flex-col items-center gap-1 rounded-xl px-4 py-2 text-xs hover:bg-zinc-400/25"
                       aria-label="রিপ্লাই"
                     >
-                      <Reply className="size-5" />
+                      <Reply className="size-4" />
                       <span>রিপ্লাই</span>
                     </button>
+
                     {actionMenu.own ? (
                       <>
                         <button
@@ -871,16 +929,16 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
                           className="flex flex-1 flex-col items-center gap-1 rounded-xl px-4 py-2 text-xs hover:bg-zinc-400/25"
                           aria-label="এডিট"
                         >
-                          <Edit3 className="size-5" />
+                          <Edit3 className="size-4" />
                           <span>এডিট</span>
                         </button>
                         <button
                           type="button"
                           onClick={() => void remove(actionMenu.message.id)}
-                          className="flex flex-1 flex-col items-center gap-1 rounded-xl px-4 py-2 text-xs text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30"
+                          className="flex flex-1 flex-col items-center gap-1 rounded-xl px-4 py-2 text-xs text-red-500 hover:bg-red-500/10"
                           aria-label="মুছুন"
                         >
-                          <Trash2 className="size-5" />
+                          <Trash2 className="size-4" />
                           <span>মুছুন</span>
                         </button>
                       </>
@@ -888,162 +946,108 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
                   </div>
                 </>
               ) : null}
+
+              {/* Message Input Container & Edit / Reply UI */}
               <div className="shrink-0 border-t border-zinc-200 p-3 dark:border-zinc-800">
-                <div className="bg-zinc-400/10 rounded-2xl p-2 max-w-3xl mx-auto">
-                  {blocked ? (
-                    <div className="mb-2 rounded-xl bg-zinc-100 px-4 py-2 text-center text-xs opacity-70 dark:bg-zinc-900">
-                      এই ব্যবহারকারীকে ব্লক করা হয়েছে। মেসেজ পাঠাতে আনব্লক
-                      করুন।
-                    </div>
-                  ) : null}
-                  {replyTo ? (
-                    <div className="mb-2 flex items-center gap-2 rounded-xl bg-zinc-400/10 p-2 text-xs">
-                      <Reply className="size-4 shrink-0" />
-                      {(() => {
-                        const media = replyTo.media || [];
-                        const img = media.find(
-                          (m) =>
-                            m.mime_type?.startsWith("image/") &&
-                            (m.original_url || m.url || m.preview_url),
-                        );
-                        return img ? (
-                          <img
-                            src={
-                              img.preview_url ||
-                              img.url ||
-                              img.original_url ||
-                              undefined
-                            }
-                            alt=""
-                            className="size-8 shrink-0 rounded-md object-cover"
-                          />
-                        ) : null;
-                      })()}
-                      <span className="min-w-0 flex-1 truncate">
-                        {replyTo.message ||
-                          (replyTo.media?.length ? "সংযুক্তি" : "")}
+                {/* Reply Bar */}
+                {replyTo ? (
+                  <div className="mb-2 flex items-center justify-between rounded-xl bg-zinc-400/10 px-3 py-1.5 text-xs">
+                    <div className="min-w-0 flex-1">
+                      <span className="font-semibold block">
+                        {replyTo.sender?.name || "রিপ্লাই"}
                       </span>
-                      <button
-                        className="hover:bg-zinc-400/25 p-1 rounded-lg shrink-0"
-                        type="button"
-                        onClick={() => setReplyTo(null)}
-                        aria-label="রিপ্লাই বাতিল করুন"
-                      >
-                        <X className="size-4" />
-                      </button>
+                      <span className="truncate opacity-60 block">
+                        {replyTo.message || "সংযুক্তি"}
+                      </span>
                     </div>
-                  ) : null}
-                  {editing ? (
-                    <div className="mb-2 flex items-center gap-2 rounded-xl bg-zinc-100 px-4 py-2 text-xs dark:bg-zinc-900">
-                      <span className="flex-1">মেসেজ এডিট হচ্ছে</span>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setEditing(null);
-                          setEditText("");
-                        }}
-                        aria-label="এডিট বাতিল করুন"
-                      >
-                        <X className="size-4" />
-                      </button>
-                    </div>
-                  ) : null}
-                  {preview ? (
-                    <div className="mb-2 flex items-center gap-2">
-                      <img
-                        src={preview ?? undefined}
-                        alt="preview"
-                        className="size-14 rounded-xl object-cover"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setFile(null)}
-                        className="rounded-full bg-zinc-900 p-1 text-white"
-                        aria-label="সংযুক্তি সরান"
-                      >
-                        <X className="size-3" />
-                      </button>
-                    </div>
-                  ) : null}
-                  <div className="mx-auto flex w-full items-end gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setReplyTo(null)}
+                      className="p-1 rounded-full hover:bg-zinc-400/20"
+                    >
+                      <X className="size-4" />
+                    </button>
+                  </div>
+                ) : null}
+
+                {/* Edit Bar */}
+                {editing ? (
+                  <div className="mb-2 flex items-center justify-between gap-2 rounded-xl bg-amber-500/10 px-3 py-2 text-xs">
+                    <input
+                      type="text"
+                      value={editText}
+                      onChange={(e) => setEditText(e.target.value)}
+                      className="flex-1 bg-transparent outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => void update()}
+                      className="rounded-lg bg-amber-500 px-3 py-1 font-medium text-white"
+                    >
+                      আপডেট
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditing(null)}
+                      className="p-1"
+                    >
+                      <X className="size-4" />
+                    </button>
+                  </div>
+                ) : (
+                  /* Main Send Form */
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      void send();
+                    }}
+                    className="flex items-center gap-2"
+                  >
                     <input
                       ref={fileInputRef}
                       type="file"
-                      accept="image/*,.pdf,.doc,.docx"
                       className="hidden"
                       onChange={(e) => setFile(e.target.files?.[0] || null)}
                     />
                     <button
                       type="button"
-                      disabled={blocked}
                       onClick={() => fileInputRef.current?.click()}
-                      className="rounded-xl p-2 disabled:opacity-40 hover:bg-zinc-400/25"
-                      aria-label="ফাইল সংযুক্ত করুন"
+                      className="rounded-full p-2 hover:bg-zinc-400/20"
                     >
-                      <Paperclip className="size-5" />
+                      <Paperclip className="size-5 opacity-60" />
                     </button>
-                    <textarea
-                      value={editing ? editText : draft}
-                      onInput={(e) => {
-                        const target = e.currentTarget;
-                        target.style.height = "auto";
-                        target.style.height = `${target.scrollHeight}px`;
-                      }}
-                      onChange={(e) =>
-                        editing
-                          ? setEditText(e.target.value)
-                          : setDraft(e.target.value)
-                      }
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && !e.shiftKey) {
-                          e.preventDefault();
-                          editing ? void update() : void send();
-                          e.currentTarget.style.height = "auto";
-                        }
-                      }}
-                      disabled={blocked || sending}
-                      rows={1}
+
+                    <input
+                      type="text"
+                      value={draft}
+                      disabled={blocked}
+                      onChange={(e) => setDraft(e.target.value)}
                       placeholder={
-                        editing ? "মেসেজ আপডেট করুন..." : "মেসেজ লিখুন..."
+                        blocked
+                          ? "আপনি এই ব্যবহারকারীকে ব্লক করেছেন"
+                          : "মেসেজ লিখুন..."
                       }
-                      className="flex-1 resize-none overflow-y-auto max-h-32 min-h-7 text-sm outline-none bg-transparent"
+                      className="min-w-0 flex-1 rounded-full bg-zinc-400/10 px-4 py-2.5 text-sm outline-none disabled:opacity-50"
                     />
+
                     <button
-                      type="button"
-                      onClick={() => (editing ? void update() : void send())}
-                      disabled={
-                        blocked ||
-                        sending ||
-                        (!draft.trim() && !editText.trim() && !file)
-                      }
-                      className="rounded-xl bg-zinc-900 p-3 text-white disabled:opacity-40 dark:bg-zinc-100 dark:text-zinc-900"
-                      aria-label={editing ? "আপডেট করুন" : "মেসেজ পাঠান"}
+                      type="submit"
+                      disabled={sending || blocked || (!draft.trim() && !file)}
+                      className="rounded-full bg-zinc-900 p-2.5 text-white disabled:opacity-40 dark:bg-zinc-100 dark:text-zinc-900"
                     >
                       {sending ? (
-                        <Loader2 className="size-5 animate-spin" />
-                      ) : editing ? (
-                        "✓"
+                        <Loader2 className="size-4 animate-spin" />
                       ) : (
-                        <Send className="size-5" />
+                        <Send className="size-4" />
                       )}
                     </button>
-                  </div>
-                </div>
+                  </form>
+                )}
               </div>
             </>
           ) : (
-            <div className="flex flex-1 items-center justify-center p-8 text-center">
-              <div>
-                <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-2xl bg-zinc-100 dark:bg-zinc-900">
-                  <Send className="size-6 opacity-50" />
-                </div>
-                <h2 className="text-base font-semibold">
-                  একটি কথোপকথন নির্বাচন করুন
-                </h2>
-                <p className="mt-1 text-sm opacity-50">
-                  বাম পাশ থেকে একজন ব্যবহারকারী নির্বাচন করুন।
-                </p>
-              </div>
+            <div className="flex h-full flex-col items-center justify-center text-sm opacity-50">
+              কথোপকথন শুরু করতে তালিকা থেকে যেকোনো ব্যবহারকারী নির্বাচন করুন
             </div>
           )}
         </main>

@@ -538,7 +538,7 @@ export default function ImageResizer() {
             onDragOver={(e) => e.preventDefault()}
             onDrop={onDrop}
             onClick={() => fileInputRef.current?.click()}
-            className="border-2 border-dashed border-zinc-700 dark:border-zinc-700 rounded-2xl p-12 sm:p-16 text-center cursor-pointer hover:border-indigo-400 dark:hover:border-indigo-500  bg-zinc-900/50 bg-zinc-900/30"
+            className="border-2 border-dashed border-zinc-400/25 rounded-2xl p-4 text-center cursor-pointer hover:border-zinc-400/50  bg-zinc-400/10"
           >
             <input
               ref={fileInputRef}
@@ -547,14 +547,14 @@ export default function ImageResizer() {
               onChange={onFileChange}
               className="hidden"
             />
-            <div className="mx-auto w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center  shadow-indigo-500/25 mb-4">
-              <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="mx-auto size-14 rounded-2xl bg-zinc-400/10 flex items-center justify-center  shadow-indigo-500/25 mb-4">
+              <svg className="w-7 h-7 " fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
               </svg>
             </div>
-            <p className="text-base  ">ইমেজ আপলোড করুন</p>
-            <p className="text-sm  mt-1">ড্র্যাগ করে ছাড়ুন অথবা ক্লিক করুন</p>
-            <p className="text-xs text-zinc-400 mt-3">JPG · PNG · WebP · GIF · সর্বোচ্চ ৩০MB</p>
+            <p className="text-base">ইমেজ আপলোড করুন</p>
+            <p className="text-sm">ড্র্যাগ করে ছাড়ুন অথবা ক্লিক করুন</p>
+            <p className="text-xs opacity-50 mt-3">JPG · PNG · WebP · GIF · সর্বোচ্চ ৩০MB</p>
           </div>
         ) : (
           /* ========== EDITOR ========== */
@@ -562,10 +562,10 @@ export default function ImageResizer() {
             {/* Side by side */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Original + Crop */}
-              <div className="bg-zinc-900/80 bg-zinc-800/50 rounded-2xl overflow-hidden">
+              <div className="bg-zinc-400/10 rounded-2xl overflow-hidden">
                 <div className="px-3 py-2 border-b border-zinc-400/25 dark:border-zinc-700 flex items-center justify-between text-xs">
-                  <span className=" text-zinc-400 tracking-wider">Original</span>
-                  <span className="text-zinc-400">
+                  <span className="  tracking-wider">Original</span>
+                  <span className="">
                     {originalWidth}×{originalHeight}
                   </span>
                   <span className=" ">
@@ -575,7 +575,7 @@ export default function ImageResizer() {
 
                 <div
                   ref={containerRef}
-                  className="relative bg-zinc-800/50 bg-zinc-900 select-none"
+                  className="relative select-none"
                   style={{ minHeight: 200 }}
                   onMouseDown={startCropDrag}
                   onTouchStart={startCropDrag}
@@ -608,11 +608,11 @@ export default function ImageResizer() {
                   )}
 
                   {cropData && !cropMode && (
-                    <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between bg-black/60 text-white text-xs px-2 py-1 rounded">
+                    <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between bg-zinc-400/10  text-xs px-2 py-1 rounded">
                       <span>
                         Crop: {cropData.w}×{cropData.h}
                       </span>
-                      <button onClick={resetCrop} className="underline">
+                      <button onClick={resetCrop} className="underline opacity-50 hover:opacity-100">
                         Clear
                       </button>
                     </div>
@@ -632,7 +632,7 @@ export default function ImageResizer() {
                         }}
                         className={`px-2 py-1 text-xs rounded-md ${
                           cropMode && aspectRatio === r.value
-                            ? "bg-indigo-500 text-white"
+                            ? "bg-indigo-500 "
                             : "hover:bg-zinc-400/25 "
                         }`}
                       >
@@ -640,12 +640,12 @@ export default function ImageResizer() {
                       </button>
                     ))}
 
-                    <div className="w-px h-5 bg-zinc-700 dark:bg-zinc-600 mx-1" />
+                    <div className="w-px h-5 bg-zinc-400/10 mx-2" />
 
                     <button
                       onClick={() => rotate(-90)}
                       title="বামে ঘোরান"
-                      className="p-1.5 rounded-md hover:bg-zinc-400/25"
+                      className="p-2 rounded-md hover:bg-zinc-400/25"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
@@ -663,7 +663,7 @@ export default function ImageResizer() {
                     <button
                       onClick={toggleFlipH}
                       title="Horizontal Flip"
-                      className={`p-1.5 rounded-md ${flipH ? "bg-indigo-500 text-white" : "hover:bg-zinc-400/25"}`}
+                      className={`p-1.5 rounded-md ${flipH ? "bg-zinc-400/10 " : "hover:bg-zinc-400/25"}`}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
@@ -672,7 +672,7 @@ export default function ImageResizer() {
                     <button
                       onClick={toggleFlipV}
                       title="Vertical Flip"
-                      className={`p-1.5 rounded-md ${flipV ? "bg-indigo-500 text-white" : "hover:bg-zinc-400/25"}`}
+                      className={`p-1.5 rounded-md ${flipV ? "bg-zinc-400/10 " : "hover:bg-zinc-400/25"}`}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
@@ -683,12 +683,12 @@ export default function ImageResizer() {
                   <div className="flex items-center justify-between gap-2">
                     <button
                       onClick={resetCrop}
-                      className="px-2 py-1 text-xs rounded-md hover:bg-zinc-400/25 text-zinc-400"
+                      className="px-2 py-1 text-xs rounded-md hover:bg-zinc-400/25 "
                     >
                       Crop Clear
                     </button>
                     {cropMode ? (
-                      <span className="text-xs text-indigo-600 dark:text-indigo-400 ">
+                      <span className="text-xs">
                         ড্র্যাগ করে ক্রপ এলাকা সিলেক্ট করুন
                       </span>
                     ) : (
@@ -697,7 +697,7 @@ export default function ImageResizer() {
                           setCropMode(true);
                           setTempCrop(null);
                         }}
-                        className="px-3 py-1.5 text-xs  rounded-lg bg-indigo-500 text-white hover:bg-indigo-600"
+                        className="px-3 py-1.5 text-xs  rounded-lg bg-zinc-400/10  hover:bg-zinc-400/25"
                       >
                         Crop শুরু করুন
                       </button>
@@ -707,17 +707,17 @@ export default function ImageResizer() {
               </div>
 
               {/* Preview */}
-              <div className="bg-zinc-900/80 bg-zinc-800/50 rounded-2xl overflow-hidden">
+              <div className="bg-zinc-400/10 rounded-2xl overflow-hidden">
                 <div className="px-3 py-2 border-b border-zinc-400/25 dark:border-zinc-700 flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2">
                     <span className="relative flex h-1.5 w-1.5">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-zinc-700 opacity-75" />
                       <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-zinc-9000" />
                     </span>
-                    <span className=" text-zinc-400 tracking-wider">Edited</span>
+                    <span className="  tracking-wider">Edited</span>
                   </div>
                   {finalWidth > 0 && (
-                    <span className="text-zinc-400">
+                    <span className="">
                       {finalWidth}×{finalHeight}px
                       {savings > 0 && (
                         <span className="  ml-1">
@@ -742,7 +742,7 @@ export default function ImageResizer() {
                       style={{ maxHeight: 260, objectFit: "contain" }}
                     />
                   ) : (
-                    <span className="text-xs text-zinc-400">প্রিভিউ লোড হচ্ছে...</span>
+                    <span className="text-xs ">প্রিভিউ লোড হচ্ছে...</span>
                   )}
 
                   {isProcessing && (
@@ -769,7 +769,7 @@ export default function ImageResizer() {
                         onClick={() => setFormat(f.value)}
                         className={`flex-1 py-2.5 text-sm   ${
                           format === f.value
-                            ? "bg-indigo-500 text-white"
+                            ? "bg-indigo-500 "
                             : "bg-zinc-400/10  hover:bg-zinc-900 hover:bg-zinc-700"
                         }`}
                       >
@@ -797,7 +797,7 @@ export default function ImageResizer() {
                       onChange={(e) => setQuality(Number(e.target.value))}
                       className="w-full h-1.5 bg-zinc-400/10 rounded-full appearance-none cursor-pointer accent-indigo-500"
                     />
-                    <div className="flex justify-between text-xs text-zinc-400 mt-1">
+                    <div className="flex justify-between text-xs  mt-1">
                       <span>Low</span>
                       <span>High</span>
                     </div>
@@ -812,7 +812,7 @@ export default function ImageResizer() {
                     </label>
                     <button
                       onClick={resetSize}
-                      className="text-xs text-zinc-400 hover:text-zinc-200 dark:hover:text-zinc-300"
+                      className="text-xs  hover:text-zinc-200 dark:hover:text-zinc-300"
                     >
                       রিসেট
                     </button>
@@ -859,7 +859,7 @@ export default function ImageResizer() {
                         onClick={() => setFormat(f.value)}
                         className={`py-2 text-xs  ${
                           format === f.value
-                            ? "bg-indigo-500 text-white"
+                            ? "bg-indigo-500 "
                             : "bg-zinc-400/10 "
                         }`}
                       >
@@ -871,7 +871,7 @@ export default function ImageResizer() {
                   <button
                     onClick={download}
                     disabled={!previewUrl || isProcessing}
-                    className="shrink-0 px-5 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-600 disabled:opacity-50 text-white text-sm  flex items-center gap-2"
+                    className="shrink-0 px-5 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-600 disabled:opacity-50  text-sm  flex items-center gap-2"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />

@@ -388,21 +388,18 @@ export default function AdvancedBanglaCalendar() {
                   new Date(viewDate.getFullYear(), parseInt(e.target.value), 1),
                 );
               }}
-              className="appearance-none bg-zinc-200 dark:bg-zinc-800 hover:opacity-90 outline-none
+              className="appearance-none bg-zinc-200 dark:bg-zinc-700 hover:opacity-90 outline-none
                  rounded-xl pl-4 pr-9 py-2 cursor-pointer"
             >
               {Array.from({ length: 12 }).map((_, i) => (
-                <option
-                  key={i}
-                  value={i}
-                >
+                <option key={i} value={i}>
                   {format(new Date(2000, i, 1), "MMMM")}
                 </option>
               ))}
             </select>
             {/* Custom Arrow */}
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5">
-              <ChevronDown className="w-4 h-4 text-zinc-400" />
+              <ChevronDown className="size-4" />
             </div>
           </div>
 
@@ -416,16 +413,13 @@ export default function AdvancedBanglaCalendar() {
                   new Date(parseInt(e.target.value), viewDate.getMonth(), 1),
                 );
               }}
-              className="appearance-none bg-zinc-200 dark:bg-zinc-800 hover:opacity-90 outline-none
+              className="appearance-none bg-zinc-200 dark:bg-zinc-700 hover:opacity-90 outline-none
                  rounded-xl pl-4 pr-9 py-2 cursor-pointer"
             >
               {Array.from({ length: 121 }).map((_, i) => {
                 const y = new Date().getFullYear() - 100 + i;
                 return (
-                  <option
-                    key={y}
-                    value={y}
-                  >
+                  <option key={y} value={y}>
                     {y}
                   </option>
                 );
@@ -433,7 +427,7 @@ export default function AdvancedBanglaCalendar() {
             </select>
             {/* Custom Arrow */}
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5">
-              <ChevronDown className="w-4 h-4 text-zinc-400" />
+              <ChevronDown className="size-4" />
             </div>
           </div>
         </div>
@@ -501,9 +495,7 @@ export default function AdvancedBanglaCalendar() {
               if (isSelected)
                 cellBg =
                   "bg-emerald-600  shadow-emerald-200/50 dark:shadow-emerald-900/40 scale-[1.04] z-10";
-              else if (isToday)
-                cellBg =
-                  "ring-2 ring-green-600";
+              else if (isToday) cellBg = "ring-2 ring-green-600";
 
               return (
                 <button
@@ -631,9 +623,7 @@ export default function AdvancedBanglaCalendar() {
                 key={idx}
                 className="grid grid-cols-2 border-t border-zinc-400/25 hover:bg-zinc-400/10 p-2"
               >
-                <div>
-                  {h.title}
-                </div>
+                <div>{h.title}</div>
                 <div>{h.date}</div>
               </div>
             ))}
@@ -649,27 +639,24 @@ export default function AdvancedBanglaCalendar() {
           <Info className="size-5" />
           বাংলা ক্যালেন্ডার সম্পর্কে
         </h2>
- <div className="rounded-2xl overflow-hidden bg-zinc-400/10 p-4">
-        <p>
-          বাংলা ক্যালেন্ডার বা বঙ্গাব্দ বাংলাদেশ ও পশ্চিমবঙ্গে ব্যবহৃত একটি সৌর
-          বর্ষপঞ্জি। বাংলা সনের নতুন বছর শুরু হয় সাধারণত ১৪ এপ্রিল (পহেলা বৈশাখ)
-          থেকে। বর্তমানে চলছে{" "}
-          <strong>
-            {bnNum(getBanglaDate(new Date()).year)} বঙ্গাব্দ
-          </strong>
-          ।
-        </p>
+        <div className="rounded-2xl overflow-hidden bg-zinc-400/10 p-4">
+          <p>
+            বাংলা ক্যালেন্ডার বা বঙ্গাব্দ বাংলাদেশ ও পশ্চিমবঙ্গে ব্যবহৃত একটি
+            সৌর বর্ষপঞ্জি। বাংলা সনের নতুন বছর শুরু হয় সাধারণত ১৪ এপ্রিল (পহেলা
+            বৈশাখ) থেকে। বর্তমানে চলছে{" "}
+            <strong>{bnNum(getBanglaDate(new Date()).year)} বঙ্গাব্দ</strong>।
+          </p>
 
-        <p>
-          এই পেজে আপনি সহজেই <strong>আজকের বাংলা তারিখ</strong>, ইংরেজি তারিখের
-          সাথে তুলনা, মাসভিত্তিক ক্যালেন্ডার এবং সরকারি ছুটির তালিকা দেখতে
-          পারবেন। তারিখ সিলেক্ট করে যেকোনো দিনের বাংলা তারিখ জানা যায়।
-        </p>
+          <p>
+            এই পেজে আপনি সহজেই <strong>আজকের বাংলা তারিখ</strong>, ইংরেজি
+            তারিখের সাথে তুলনা, মাসভিত্তিক ক্যালেন্ডার এবং সরকারি ছুটির তালিকা
+            দেখতে পারবেন। তারিখ সিলেক্ট করে যেকোনো দিনের বাংলা তারিখ জানা যায়।
+          </p>
 
-        <p>
-          বাংলা মাসগুলো হলো: বৈশাখ, জ্যৈষ্ঠ, আষাঢ়, শ্রাবণ, ভাদ্র, আশ্বিন,
-          কার্তিক, অগ্রহায়ণ, পৌষ, মাঘ, ফাল্গুন ও চৈত্র।
-        </p>
+          <p>
+            বাংলা মাসগুলো হলো: বৈশাখ, জ্যৈষ্ঠ, আষাঢ়, শ্রাবণ, ভাদ্র, আশ্বিন,
+            কার্তিক, অগ্রহায়ণ, পৌষ, মাঘ, ফাল্গুন ও চৈত্র।
+          </p>
         </div>
       </section>
 
@@ -677,9 +664,7 @@ export default function AdvancedBanglaCalendar() {
           FAQ Section
       ══════════════════════════════════════ */}
       <section className="space-y-4">
-        <h2 className="text-lg">
-          প্রায়শই জিজ্ঞাসিত প্রশ্ন (FAQ)
-        </h2>
+        <h2 className="text-lg">প্রায়শই জিজ্ঞাসিত প্রশ্ন (FAQ)</h2>
 
         <div className="space-y-2">
           {[

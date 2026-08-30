@@ -1,4 +1,13 @@
 import type { NextConfig } from "next";
+import withSerwistInit from '@serwist/next'
+
+
+const withSerwist = withSerwistInit({
+  swSrc: 'app/sw.ts',          // তোমার service worker সোর্স
+  swDest: 'public/sw.js',
+  cacheOnNavigation: true,
+  disable: process.env.NODE_ENV === 'development', // dev-এ বন্ধ রাখো
+})
 
 const nextConfig: NextConfig = {
   images: {

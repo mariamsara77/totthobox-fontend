@@ -1,0 +1,106 @@
+import type { MetadataRoute } from 'next'
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    id: 'com.totthobox.ai.app',
+    name: 'Totthobox - Digital Information Hub',
+    short_name: 'Totthobox',
+    description:
+      'ইতিহাস, ইসলামি জ্ঞান, স্বাস্থ্য টিপস এবং শিক্ষামূলক টুলস এখন আপনার হাতের মুঠোয়। অফলাইনেও ব্যবহারযোগ্য একটি আধুনিক ডিজিটাল তথ্যভাণ্ডার।',
+    start_url: '/?utm_source=pwa&utm_medium=pwa_app&install=true',
+    scope: '/',
+    display: 'standalone',
+    display_override: ['window-controls-overlay'],
+    orientation: 'portrait',
+    background_color: '#ffffff',
+    theme_color: '#ffffff',
+    categories: ['education', 'books', 'utilities', 'lifestyle', 'productivity'],
+    lang: 'bn-BD',
+    dir: 'ltr',
+    prefer_related_applications: false,
+    icons: [
+      {
+        src: '/web-app-manifest-192x192.png',
+        sizes: '192x192',
+        type: 'image/png',
+        purpose: 'any',
+      },
+      {
+        src: '/web-app-manifest-512x512.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'maskable',
+      },
+      {
+        src: '/web-app-manifest-512x512.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'any',
+      },
+    ],
+    screenshots: [
+      {
+        src: '/Screenshot_light.png',
+        sizes: '1080x1920',
+        type: 'image/png',
+        form_factor: 'narrow',
+        label: 'Totthobox Home (Light)',
+      },
+      {
+        src: '/Screenshot_dark.png',
+        sizes: '1080x1920',
+        type: 'image/png',
+        form_factor: 'narrow',
+        label: 'Totthobox Home (Dark)',
+      },
+      {
+        src: '/Screenshot_light_desktop.png',
+        sizes: '1920x1080',
+        type: 'image/png',
+        form_factor: 'wide',
+        label: 'Desktop View (Light)',
+      },
+      {
+        src: '/Screenshot_dark_desktop.png',
+        sizes: '1920x1080',
+        type: 'image/png',
+        form_factor: 'wide',
+        label: 'Desktop View (Dark)',
+      },
+    ],
+    shortcuts: [
+      {
+        name: 'MCQ Practice',
+        short_name: 'MCQ',
+        url: '/mcq',
+        icons: [
+          {
+            src: '/web-app-manifest-192x192.png',
+            sizes: '192x192',
+          },
+        ],
+      },
+      {
+        name: 'Islamic Basics',
+        short_name: 'Islamic Basics',
+        url: '/islam/basicislam',
+        icons: [
+          {
+            src: '/web-app-manifest-192x192.png',
+            sizes: '192x192',
+          },
+        ],
+      },
+    ],
+    share_target: {
+      action: '/share',
+      method: 'POST',
+      enctype: 'application/x-www-form-urlencoded',
+      params: {
+        title: 'title',
+        text: 'text',
+        url: 'url',
+      },
+    },
+  }
+}

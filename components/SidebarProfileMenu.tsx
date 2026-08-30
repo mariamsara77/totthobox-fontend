@@ -54,19 +54,19 @@ export default function SidebarProfileMenu({
   }, []);
 
   const handleLogout = async () => {
-  if (isLoggingOut) return;
-  setIsLoggingOut(true);
-  setIsDropdownOpen(false);
+    if (isLoggingOut) return;
+    setIsLoggingOut(true);
+    setIsDropdownOpen(false);
 
-  try {
-    await logout();
-  } catch (error) {
-    console.error("Logout failed:", error);
-    window.location.href = "/"; // fallback
-  } finally {
-    setIsLoggingOut(false);
-  }
-};
+    try {
+      await logout();
+    } catch (error) {
+      console.error("Logout failed:", error);
+      window.location.href = "/"; // fallback
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   // Loading অবস্থা
   if (loading && !showLoginFallback) {
@@ -107,7 +107,7 @@ export default function SidebarProfileMenu({
           src={
             user.avatar_url ||
             `https://ui-avatars.com/api/?name=${encodeURIComponent(
-              user.name
+              user.name,
             )}&background=10b981&color=fff`
           }
           alt={user.name}
@@ -132,7 +132,7 @@ export default function SidebarProfileMenu({
               src={
                 user.avatar_url ||
                 `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                  user.name
+                  user.name,
                 )}&background=10b981&color=fff`
               }
               alt={user.name}
@@ -143,10 +143,10 @@ export default function SidebarProfileMenu({
               <span className="truncate text-xs">{user.email}</span>
             </div>
           </div>
- <div className="border-b border-zinc-400/25"></div>
+          <div className="border-b border-zinc-400/25"></div>
           <div className="p-2 space-y-1">
             <Link
-              href="/profile/settings"
+              href="/settings/profile"
               className="flex items-center gap-2 p-2 hover:bg-zinc-400/25 rounded-xl"
               onClick={() => setIsDropdownOpen(false)}
             >

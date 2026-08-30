@@ -1,159 +1,435 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Eye, EyeOff, ArrowLeft, MailIcon } from "lucide-react";
+import { Eye, EyeOff, X, UserRound } from "lucide-react";
 import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
 import { useAuth } from "@/context/AuthContext";
-import { ApiError } from "@/lib/api-client";
+import { useRouter } from "next/navigation";
+import {
+  getSavedProfiles,
+  removeSavedProfile,
+  type SavedProfile,
+} from "@/lib/saved-profiles";
 
-type FieldErrors = {
-  email?: string;
-  password?: string;
-  general?: string;
-};
+type ViewState =
+  | { mode: "list" } // saved profiles দেখাচ্ছি
+  | { mode: "switching"; profile: SavedProfile } // one-click চলছে
+  | { mode: "password"; profile: SavedProfile } // refresh expired → password চাই
+  | { mode: "manual" }; // সাধারণ email/password form
 
 export default function LoginContent() {
-  const { login, user, isLoading: isAuthLoading } = useAuth();
-  const redirectTo = "/";
-  const [emailLogin, setEmailLogin] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<FieldErrors>({});
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const { login, loginWithRefresh, user, isLoading: authLoading } = useAuth();
+  const router = useRouter();
+
+  const [view, setView] = useState<ViewState>({ mode: "list" });
+  const [savedProfiles, setSavedProfiles] = useState<SavedProfile[]>([]);
+
+  // manual form
+  const [showPass, setShowPass] = useState(false);
+  const [formLoading, setFormLoading] = useState(false);
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState<{
+    email?: string;
+    password?: string;
+    general?: string;
+  }>({});
+
+  // password fallback form (refresh expired)
+  const [fallbackPass, setFallbackPass] = useState("");
+  const [showFallbackPass, setShowFallbackPass] = useState(false);
+  const [fallbackLoading, setFallbackLoading] = useState(false);
+  const [fallbackError, setFallbackError] = useState("");
+  const fallbackRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (user && !isAuthLoading) window.location.replace(redirectTo);
-  }, [user, isAuthLoading]);
+    setSavedProfiles(getSavedProfiles());
+  }, []);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setFormData((current) => ({ ...current, [name]: value }));
-    setErrors((current) => ({ ...current, [name]: undefined, general: undefined }));
+  useEffect(() => {
+    if (user && !authLoading) router.push("/");
+  }, [user, authLoading, router]);
+
+  // password fallback açıldığında focus
+  useEffect(() => {
+    if (view.mode === "password") {
+      setFallbackPass("");
+      setFallbackError("");
+      requestAnimationFrame(() => fallbackRef.current?.focus());
+    }
+  }, [view]);
+
+  // ── Saved profile click → one-click refresh ──────────────────────────
+  const handlePickProfile = async (profile: SavedProfile) => {
+    setView({ mode: "switching", profile });
+
+    const ok = await loginWithRefresh();
+
+    if (ok) {
+      // applyUser সফল — AuthContext redirect করবে
+      return;
+    }
+
+    // Refresh token নেই বা expire — password চাই
+    setView({ mode: "password", profile });
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setErrors({});
-    setIsLoading(true);
+  // ── Fallback: password দিয়ে login (refresh expired) ──────────────────
+  const handleFallbackSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (view.mode !== "password") return;
+
+    if (!fallbackPass.trim()) {
+      setFallbackError("পাসওয়ার্ড দিতে হবে।");
+      return;
+    }
+
+    setFallbackLoading(true);
+    setFallbackError("");
 
     try {
-      await login(formData.email.trim(), formData.password);
-      window.location.replace(redirectTo);
-    } catch (error) {
-      if (error instanceof ApiError) {
-        const data = (error.data ?? {}) as {
-          message?: string;
-          errors?: { email?: string[]; password?: string[] };
-        };
-
-        if (error.status === 422) {
-          setErrors({
-            email: data.errors?.email?.[0],
-            password: data.errors?.password?.[0],
-            general: !data.errors ? data.message : undefined,
-          });
-        } else if (error.status === 401) {
-          setErrors({ general: data.message || "ইমেইল বা পাসওয়ার্ড ভুল।" });
-        } else if (error.status === 429) {
-          setErrors({ general: data.message || "অনেকবার চেষ্টা করা হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করুন।" });
-        } else if (error.status === 503) {
-          setErrors({ general: "সার্ভার সাময়িকভাবে অনুপলব্ধ। পরে আবার চেষ্টা করুন।" });
-        } else {
-          setErrors({ general: data.message || "লগইন করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।" });
-        }
-      } else {
-        setErrors({ general: "অপ্রত্যাশিত সমস্যা হয়েছে। পুনরায় চেষ্টা করুন।" });
-      }
+      await login(view.profile.email, fallbackPass);
+      // সফল → AuthContext-এর useEffect redirect করবে
+    } catch (err: any) {
+      setFallbackError(
+        err?.errors?.password?.[0] || err?.message || "পাসওয়ার্ড সঠিক নয়।",
+      );
     } finally {
-      setIsLoading(false);
+      setFallbackLoading(false);
     }
   };
 
-  if (isAuthLoading) return null;
+  // ── Manual email/password form ────────────────────────────────────────
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: "", general: "" });
+  };
 
+  const handleManualSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const next: typeof errors = {};
+    if (!form.email.trim()) next.email = "ইমেইল দিতে হবে।";
+    if (!form.password) next.password = "পাসওয়ার্ড দিতে হবে।";
+    if (Object.keys(next).length) {
+      setErrors(next);
+      return;
+    }
+
+    setFormLoading(true);
+    try {
+      await login(form.email.trim(), form.password);
+    } catch (err: any) {
+      if (err?.errors) {
+        setErrors({
+          email: err.errors.email?.[0],
+          password: err.errors.password?.[0],
+        });
+      } else {
+        setErrors({ general: err?.message || "লগইন করতে সমস্যা হয়েছে।" });
+      }
+    } finally {
+      setFormLoading(false);
+    }
+  };
+
+  const handleRemoveProfile = (e: React.MouseEvent, email: string) => {
+    e.stopPropagation();
+    removeSavedProfile(email);
+    setSavedProfiles((p) => p.filter((x) => x.email !== email));
+    if (view.mode === "password" && view.profile.email === email) {
+      setView({ mode: "list" });
+    }
+  };
+
+  if (authLoading) return null;
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // ── Switching overlay ─────────────────────────────────────────────────
+  if (view.mode === "switching") {
+    return (
+      <div className="max-w-md mx-auto flex flex-col items-center gap-6 py-12">
+        <div className="relative">
+          {view.profile.avatar_url ? (
+            <img
+              src={view.profile.avatar_url}
+              alt={view.profile.name}
+              referrerPolicy="no-referrer"
+              className="h-20 w-20 rounded-2xl object-cover"
+            />
+          ) : (
+            <span className="h-20 w-20 rounded-2xl bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center">
+              <UserRound size={32} className="text-zinc-400" />
+            </span>
+          )}
+          {/* spinner ring */}
+          <span className="absolute -inset-1 rounded-3xl border-2 border-zinc-300 dark:border-zinc-600 animate-pulse" />
+        </div>
+        <div className="text-center space-y-1">
+          <p className="font-semibold text-base">{view.profile.name}</p>
+          <p className="text-sm text-zinc-500">{view.profile.email}</p>
+        </div>
+        <p className="text-sm text-zinc-500">লগইন হচ্ছে…</p>
+      </div>
+    );
+  }
+
+  // ── Password fallback (refresh expired) ───────────────────────────────
+  if (view.mode === "password") {
+    return (
+      <div className="max-w-md mx-auto space-y-6">
+        {/* Profile card */}
+        <div className="flex items-center gap-3 p-4 rounded-2xl bg-zinc-100 dark:bg-zinc-800">
+          {view.profile.avatar_url ? (
+            <img
+              src={view.profile.avatar_url}
+              alt={view.profile.name}
+              referrerPolicy="no-referrer"
+              className="h-11 w-11 rounded-xl object-cover shrink-0"
+            />
+          ) : (
+            <span className="h-11 w-11 rounded-xl bg-zinc-300 dark:bg-zinc-700 flex items-center justify-center shrink-0">
+              <UserRound size={20} />
+            </span>
+          )}
+          <div className="min-w-0 grow">
+            <p className="font-semibold text-sm truncate">
+              {view.profile.name}
+            </p>
+            <p className="text-xs text-zinc-500 truncate">
+              {view.profile.email}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setView({ mode: "list" })}
+            className="text-xs text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 shrink-0 transition"
+          >
+            পরিবর্তন
+          </button>
+        </div>
+
+        <p className="text-sm text-center text-zinc-500">
+          সেশন শেষ হয়ে গেছে। পাসওয়ার্ড দিয়ে লগইন করুন।
+        </p>
+
+        {fallbackError && (
+          <p className="text-sm text-center text-red-500">{fallbackError}</p>
+        )}
+
+        <form
+          onSubmit={handleFallbackSubmit}
+          className="flex flex-col gap-4"
+          noValidate
+        >
+          <div className="relative">
+            <input
+              ref={fallbackRef}
+              type={showFallbackPass ? "text" : "password"}
+              value={fallbackPass}
+              onChange={(e) => {
+                setFallbackPass(e.target.value);
+                setFallbackError("");
+              }}
+              placeholder="পাসওয়ার্ড"
+              className="w-full rounded-full py-4 pl-6 pr-12 bg-zinc-400/10 outline-none border border-transparent focus:border-zinc-500"
+            />
+            <button
+              type="button"
+              onClick={() => setShowFallbackPass((v) => !v)}
+              className="absolute inset-y-0 right-4 flex items-center text-zinc-400 hover:text-zinc-600"
+            >
+              {showFallbackPass ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
+
+          <div className="flex justify-end px-2">
+            <Link
+              href="/forgot-password"
+              className="text-xs opacity-60 hover:opacity-100 transition"
+            >
+              পাসওয়ার্ড ভুলে গেছেন?
+            </Link>
+          </div>
+
+          <button
+            type="submit"
+            disabled={fallbackLoading}
+            className="w-full rounded-full p-4 font-bold text-white bg-black dark:text-black dark:bg-white disabled:opacity-60 transition"
+          >
+            {fallbackLoading ? "অপেক্ষা করুন…" : "লগইন করুন"}
+          </button>
+        </form>
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // ── Main: saved profiles + manual form ───────────────────────────────
   return (
-    <div className="space-y-4">
-      <div className="text-center space-y-2">
-        <h1 className="text-2xl font-bold">আপনার অ্যাকাউন্টে লগ ইন করুন</h1>
-        <p className="text-sm opacity-50">লগ ইন করতে নিচের ধাপগুলো অনুসরণ করুন</p>
+    <div className="space-y-6 max-w-md mx-auto">
+      <div className="text-center">
+        <h1 className="text-2xl font-bold">লগ ইন করুন</h1>
       </div>
 
+      {/* ── Saved profiles ─────────────────────────────────────────────── */}
+      {savedProfiles.length > 0 && (
+        <div className="space-y-3">
+          <p className="text-xs text-zinc-500 px-1">আগের অ্যাকাউন্ট</p>
+          <div className="flex flex-col gap-2">
+            {savedProfiles.map((profile) => (
+              <button
+                key={profile.email}
+                type="button"
+                onClick={() => handlePickProfile(profile)}
+                className="group flex items-center gap-3 w-full p-3 rounded-2xl bg-zinc-400/10 hover:bg-zinc-400/20 transition text-left"
+              >
+                {/* Avatar */}
+                {profile.avatar_url ? (
+                  <img
+                    src={profile.avatar_url}
+                    alt={profile.name}
+                    referrerPolicy="no-referrer"
+                    className="h-10 w-10 rounded-xl object-cover shrink-0"
+                  />
+                ) : (
+                  <span className="h-10 w-10 rounded-xl bg-zinc-300 dark:bg-zinc-700 flex items-center justify-center shrink-0">
+                    <UserRound size={18} className="text-zinc-500" />
+                  </span>
+                )}
+
+                {/* Name + email */}
+                <div className="min-w-0 grow">
+                  <p className="text-sm font-semibold truncate">
+                    {profile.name}
+                  </p>
+                  <p className="text-xs text-zinc-500 truncate">
+                    {profile.email}
+                  </p>
+                </div>
+
+                {/* Remove */}
+                <span
+                  role="button"
+                  tabIndex={0}
+                  aria-label="সরান"
+                  onClick={(e) => handleRemoveProfile(e, profile.email)}
+                  onKeyDown={(e) =>
+                    e.key === "Enter" &&
+                    handleRemoveProfile(e as any, profile.email)
+                  }
+                  className="opacity-0 group-hover:opacity-100 transition text-zinc-400 hover:text-red-500 shrink-0 p-1"
+                >
+                  <X size={14} />
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── Divider ────────────────────────────────────────────────────── */}
+      {savedProfiles.length > 0 && (
+        <div className="flex items-center gap-4">
+          <hr className="grow border-zinc-400/25" />
+          <span className="text-xs text-zinc-400">
+            অন্য অ্যাকাউন্টে লগইন করুন
+          </span>
+          <hr className="grow border-zinc-400/25" />
+        </div>
+      )}
+
+      {/* ── Error ──────────────────────────────────────────────────────── */}
       {errors.general && (
-        <div className="p-4 text-center text-sm rounded-xl border border-red-400/30 bg-red-500/10 text-red-500">
+        <div className="p-3 text-sm text-center text-red-500 bg-red-500/10 border border-red-500/20 rounded-xl">
           {errors.general}
         </div>
       )}
 
-      {emailLogin ? (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
-          <div className="space-y-1">
+      {/* ── Manual form ────────────────────────────────────────────────── */}
+      <form
+        onSubmit={handleManualSubmit}
+        className="flex flex-col gap-4"
+        noValidate
+      >
+        <div>
+          <input
+            type="email"
+            name="email"
+            value={form.email}
+            onChange={handleChange}
+            placeholder="ইমেইল অ্যাড্রেস"
+            className={`w-full rounded-full py-4 px-6 bg-zinc-400/10 outline-none border ${
+              errors.email
+                ? "border-red-500"
+                : "border-transparent focus:border-zinc-500"
+            }`}
+          />
+          {errors.email && (
+            <p className="text-red-500 text-xs mt-1 ml-4">{errors.email}</p>
+          )}
+        </div>
+
+        <div>
+          <div className="relative">
             <input
-              type="email"
-              name="email"
-              value={formData.email}
+              type={showPass ? "text" : "password"}
+              name="password"
+              value={form.password}
               onChange={handleChange}
-              autoComplete="email"
-              disabled={isLoading}
-              placeholder="ইমেইল অ্যাড্রেস (email@example.com)"
-              className={`w-full rounded-full py-4 px-6 bg-zinc-400/10 outline-none transition disabled:opacity-60 ${errors.email ? "border-2 border-red-500" : "border-2 border-transparent"}`}
+              placeholder="পাসওয়ার্ড"
+              className={`w-full rounded-full py-4 pl-6 pr-12 bg-zinc-400/10 outline-none border ${
+                errors.password
+                  ? "border-red-500"
+                  : "border-transparent focus:border-zinc-500"
+              }`}
             />
-            {errors.email && <p className="text-red-500 text-xs pl-4">{errors.email}</p>}
-          </div>
-
-          <div className="space-y-1">
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                autoComplete="current-password"
-                disabled={isLoading}
-                placeholder="পাসওয়ার্ড দিন"
-                className={`w-full rounded-full py-4 pl-6 pr-12 bg-zinc-400/10 outline-none transition disabled:opacity-60 ${errors.password ? "border-2 border-red-500" : "border-2 border-transparent"}`}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword((value) => !value)}
-                className="absolute inset-y-0 right-4 flex items-center text-zinc-400 hover:text-zinc-600"
-                aria-label={showPassword ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখান"}
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            </div>
-            {errors.password && <p className="text-red-500 text-xs pl-4">{errors.password}</p>}
-          </div>
-
-          <button type="submit" disabled={isLoading} className="w-full rounded-full p-4 font-bold text-white dark:text-black bg-black dark:bg-white hover:opacity-80 transition disabled:opacity-60">
-            {isLoading ? "অপেক্ষা করুন..." : "লগ ইন করুন"}
-          </button>
-
-          <div className="flex justify-between items-center px-2">
-            <Link href="/forgot-password" className="text-xs opacity-50 hover:opacity-80">পাসওয়ার্ড ভুলে গেছেন?</Link>
-            <button type="button" onClick={() => { setEmailLogin(false); setErrors({}); }} className="flex items-center gap-1 text-xs opacity-50 hover:opacity-80">
-              <ArrowLeft size={14} /> পিছনে যান
+            <button
+              type="button"
+              onClick={() => setShowPass((v) => !v)}
+              className="absolute inset-y-0 right-4 flex items-center text-zinc-400 hover:text-zinc-600"
+            >
+              {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
-        </form>
-      ) : (
-        <div className="space-y-4">
-          <button type="button" onClick={() => setEmailLogin(true)} className="w-full flex items-center justify-center gap-4 rounded-full p-4 font-medium text-white dark:text-black bg-black dark:bg-white hover:opacity-90 transition">
-            <MailIcon size={18} /> ইমেইল দিয়ে লগ ইন
-          </button>
-          <GoogleLoginButton />
+          {errors.password && (
+            <p className="text-red-500 text-xs mt-1 ml-4">{errors.password}</p>
+          )}
         </div>
-      )}
 
-      <div className="flex items-center justify-center">
+        <div className="flex justify-end px-2">
+          <Link
+            href="/forgot-password"
+            className="text-xs opacity-60 hover:opacity-100 transition"
+          >
+            পাসওয়ার্ড ভুলে গেছেন?
+          </Link>
+        </div>
+
+        <button
+          type="submit"
+          disabled={formLoading}
+          className="w-full rounded-full p-4 font-bold text-white bg-black dark:text-black dark:bg-white disabled:opacity-60 transition"
+        >
+          {formLoading ? "অপেক্ষা করুন…" : "লগ ইন করুন"}
+        </button>
+      </form>
+
+      <div className="flex items-center justify-center gap-4">
         <hr className="grow border-zinc-400/25" />
-        <span className="mx-4 text-sm opacity-50">অথবা</span>
+        <span className="text-sm opacity-50">অথবা</span>
         <hr className="grow border-zinc-400/25" />
       </div>
 
+      <GoogleLoginButton />
+
       <div className="text-center text-sm">
         <span>অ্যাকাউন্ট নেই? </span>
-        <Link href="/register" className="font-bold text-blue-600 hover:opacity-60 transition">সাইন আপ করুন</Link>
+        <Link
+          href="/register"
+          className="font-bold text-blue-600 hover:opacity-80 transition"
+        >
+          সাইন আপ করুন
+        </Link>
       </div>
     </div>
   );

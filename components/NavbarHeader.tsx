@@ -15,7 +15,10 @@ export default function Navbar() {
     <header className="z-60 w-full border-b border-zinc-400/25 backdrop-blur-xl">
       <div className="flex h-16 items-center justify-between px-4 sm:px-6">
         <div className="flex items-center gap-4">
-          <Link href="/" className="flex items-center gap-2 text-xl font-semibold">
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-xl font-semibold"
+          >
             <BrandIcon className="h-6 w-6" />
             Totthobox
           </Link>

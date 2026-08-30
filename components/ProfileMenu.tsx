@@ -2,20 +2,20 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   Settings,
   MessageSquare,
   LogOut,
   User as UserIcon,
+  MessageCircle,
 } from "lucide-react";
-import { useAuth } from "@/context/AuthContext"; // গ্লোবাল হুক ইম্পোর্ট করা হলো
+import { useAuth } from "@/context/AuthContext";
 
 export default function ProfileMenu() {
-  const { user, loading, logout } = useAuth(); // গ্লোবাল স্টেট থেকে ডাটা নেওয়া হচ্ছে
+  // loading এর জায়গায় isLoading ব্যবহার করা হয়েছে, যা আমাদের AuthContext এর সাথে সামঞ্জস্যপূর্ণ
+  const { user, isLoading, logout } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
 
   // ড্রপডাউনের বাইরে ক্লিক করলে বন্ধ করার লজিক
   useEffect(() => {
@@ -32,13 +32,13 @@ export default function ProfileMenu() {
   }, []);
 
   const handleLogout = async () => {
-    await logout(); // AuthContext এর logout ফাংশন কল করা হলো
     setIsDropdownOpen(false);
+    await logout();
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
-      <div className="h-10 w-10 animate-pulse bg-zinc-400/10 rounded-full"></div>
+      <div className="h-10 w-10 animate-pulse bg-zinc-400/20 rounded-full"></div>
     );
   }
 
@@ -46,7 +46,7 @@ export default function ProfileMenu() {
     return (
       <Link
         href="/login"
-        className="flex items-center gap-2 text-sm px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white  rounded-full transition-all  hover:"
+        className="flex items-center gap-2 text-sm px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full transition-all"
       >
         <UserIcon size={16} />
         লগইন
@@ -54,89 +54,93 @@ export default function ProfileMenu() {
     );
   }
 
-  return (
-  <div className="relative" ref={dropdownRef}>
-    <button
-      type="button"
-      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-      aria-label="প্রোফাইল মেনু"
-      aria-expanded={isDropdownOpen}
-      className="flex items-center"
-    >
-      <img
-        src={
-          user.avatar_url ||
-          `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=10b981&color=fff`
-        }
-        alt={user.name}
-        className="h-10 w-10 rounded-full object-cover border-2 border-zinc-400/25"
-      />
-    </button>
+  // অ্যাভাটারের URL জেনারেট করা
+  const avatarSrc =
+    user.avatar_url ||
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=10b981&color=fff`;
 
-    {/* Always render the dropdown */}
-    <div
-      className={`
-        absolute right-0 mt-2 w-64
-        bg-zinc-100 dark:bg-zinc-700
-        rounded-2xl border border-zinc-400/25 z-50
-        origin-top-right
-        transition-all duration-200 ease-out
-        ${
-          isDropdownOpen
-            ? "opacity-100 scale-100 translate-y-0 pointer-events-auto visible"
-            : "opacity-0 scale-95 -translate-y-1 pointer-events-none invisible"
-        }
-      `}
-    >
-      <div className="px-4 py-2 flex items-center gap-4">
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <button
+        type="button"
+        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+        aria-label="প্রোফাইল মেনু"
+        aria-expanded={isDropdownOpen}
+      >
         <img
-          src={
-            user.avatar_url ||
-            `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=10b981&color=fff`
-          }
+          src={avatarSrc}
           alt={user.name}
-          className="h-12 w-12 rounded-full object-cover border border-zinc-400/25"
+          referrerPolicy="no-referrer" // গুগল ইমেজের 403 এরর প্রতিরোধ করার জন্য
+          className="size-10 rounded-full object-cover hover:border-2 border-zinc-400/25"
         />
-        <div className="flex flex-col overflow-hidden">
-          <span className="truncate">{user.name}</span>
-          <span className="truncate text-xs">{user.email}</span>
+      </button>
+
+      {/* Always render the dropdown */}
+      <div
+        className={`
+          absolute right-0 mt-3 w-64
+          bg-zinc-200 dark:bg-zinc-700
+          rounded-2xl border border-zinc-400/25 z-50
+          origin-top-right
+          transition-all duration-200 ease-out
+          ${
+            isDropdownOpen
+              ? "opacity-100 scale-100 translate-y-0 pointer-events-auto visible"
+              : "opacity-0 scale-95 -translate-y-2 pointer-events-none invisible"
+          }
+        `}
+      >
+        <div className="px-4 py-3 flex items-center gap-3">
+          <img
+            src={avatarSrc}
+            alt={user.name}
+            referrerPolicy="no-referrer"
+            className="h-12 w-12 rounded-xl object-cover"
+          />
+          <div className="flex flex-col overflow-hidden">
+            <span className="font-semibold text-sm text-zinc-900 dark:text-white truncate">
+              {user.name}
+            </span>
+            <span className="text-xs text-zinc-500 dark:text-zinc-400 truncate">
+              {user.email}
+            </span>
+          </div>
+        </div>
+
+        <div className="h-px bg-zinc-400/25"></div>
+
+        <div className="p-2 space-y-1">
+          <Link
+            href="/settings/profile"
+            className="flex items-center gap-4 px-4 py-2 text-sm hover:bg-zinc-400/25 rounded-xl transition-colors"
+            onClick={() => setIsDropdownOpen(false)}
+          >
+            <Settings size={18} />
+            সেটিংস
+          </Link>
+
+          <Link
+            href={`/messages/${user.slug}`}
+            className="flex items-center gap-4 px-4 py-2 text-sm hover:bg-zinc-400/25 rounded-xl transition-colors"
+            onClick={() => setIsDropdownOpen(false)}
+          >
+            <MessageCircle size={18} />
+            মেসেজ
+          </Link>
+        </div>
+
+        <div className="h-px bg-zinc-400/25 my-1"></div>
+
+        <div className="p-2">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-4 px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors"
+          >
+            <LogOut size={18} />
+            লগআউট
+          </button>
         </div>
       </div>
-
-      <div className="h-px bg-zinc-400/25 my-1"></div>
-
-      <div className="px-2 space-y-1 mt-2">
-        <Link
-          href="/profile/settings"
-          className="flex items-center gap-4 px-3 py-2 text-sm hover:bg-zinc-400/25 rounded-xl"
-          onClick={() => setIsDropdownOpen(false)}
-        >
-          <Settings size={18} className="text-zinc-400" />
-          Settings
-        </Link>
-
-        <Link
-          href={`/messages/${user.slug}`}
-          className="flex items-center gap-4 px-3 py-2 text-sm hover:bg-zinc-400/25 rounded-xl"
-          onClick={() => setIsDropdownOpen(false)}
-        >
-          <MessageSquare size={18} className="text-zinc-400" />
-          Messages
-        </Link>
-      </div>
-
-      <div className="h-px bg-zinc-400/25 my-2"></div>
-
-      <div className="px-2 mb-1">
-        <button
-          onClick={handleLogout}
-          className="w-full flex items-center gap-4 px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl"
-        >
-          <LogOut size={18} />
-          Log Out
-        </button>
-      </div>
     </div>
-  </div>
-);
+  );
 }

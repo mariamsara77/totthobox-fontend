@@ -153,7 +153,7 @@ export default function HolidaysClient() {
             <select
               value={selectedYear}
               onChange={(e) => setSelectedYear(e.target.value)}
-              className="w-full bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-400/25 rounded-xl px-4 py-2 outline-none"
+              className="w-full bg-zinc-200 dark:bg-zinc-700 rounded-xl px-4 py-2 outline-none"
               aria-label="বছর নির্বাচন"
             >
               {years.length > 0
@@ -171,15 +171,15 @@ export default function HolidaysClient() {
                     );
                   })}
             </select>
-            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4  pointer-events-none" />
+            {/* <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4  pointer-events-none" /> */}
           </div>
 
           {/* Type */}
-          <div className="relative min-w-[8.5rem] shrink-0">
+          <div className="relative min-w-34 shrink-0">
             <select
               value={selectedType}
               onChange={(e) => setSelectedType(e.target.value)}
-              className="w-full bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-400/25 rounded-xl px-4 py-2 outline-none"
+              className="w-full bg-zinc-200 dark:bg-zinc-700 rounded-xl px-4 py-2 outline-none"
               aria-label="ধরন নির্বাচন"
             >
               <option value="">সকল ধরণ</option>
@@ -189,7 +189,7 @@ export default function HolidaysClient() {
                 </option>
               ))}
             </select>
-            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4  pointer-events-none" />
+            {/* <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4  pointer-events-none" /> */}
           </div>
 
           {/* From */}
@@ -197,7 +197,7 @@ export default function HolidaysClient() {
             type="date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
-            className="w-full bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-400/25 rounded-xl px-4 py-2 outline-none"
+            className="w-full bg-zinc-200 dark:bg-zinc-700 rounded-xl px-4 py-2 outline-none"
             aria-label="শুরুর তারিখ"
           />
 
@@ -206,7 +206,7 @@ export default function HolidaysClient() {
             type="date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
-            className="w-full bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-400/25 rounded-xl px-4 py-2 outline-none"
+            className="w-full bg-zinc-200 dark:bg-zinc-700 rounded-xl px-4 py-2 outline-none"
             aria-label="শেষের তারিখ"
           />
         </div>
@@ -225,10 +225,10 @@ export default function HolidaysClient() {
           Array.from({ length: 5 }).map((_, i) => (
             <div
               key={i}
-              className="rounded-2xl border bg-zinc-400/10 border-zinc-400/25 p-4 animate-pulse space-y-4"
+              className="rounded-2xl bg-zinc-400/10 p-4 animate-pulse space-y-4"
             >
               <div className="flex gap-4">
-                <div className="w-12 h-12 rounded-full bg-zinc-400/10 shrink-0" />
+                <div className="size-15 border border-zinc-400/10 rounded-lg bg-zinc-400/10 shrink-0" />
                 <div className="flex-1 space-y-2">
                   <div className="h-4 w-16 bg-zinc-400/10 rounded" />
                   <div className="h-5 w-full bg-zinc-400/10 rounded" />
@@ -236,11 +236,11 @@ export default function HolidaysClient() {
                   <div className="h-4 w-full bg-zinc-400/10 rounded" />
                 </div>
               </div>
-                  <hr className="border border-zinc-400/25"/>
-                  <div className="h-4 w-2/8 bg-zinc-400/10 rounded" />
+              <hr className="border border-zinc-400/25" />
+              <div className="h-4 w-2/8 bg-zinc-400/10 rounded" />
             </div>
           ))
-        )  : holidays.length === 0 ? (
+        ) : holidays.length === 0 ? (
           <div className="text-center py-16 ">
             <p className="text-lg ">কোনো ছুটি পাওয়া যায়নি</p>
             <p className="text-sm mt-1">
@@ -256,7 +256,7 @@ export default function HolidaysClient() {
             >
               <div className="flex gap-4 items-start">
                 {/* Date Box */}
-                <div className="shrink-0 flex flex-col items-center justify-center w-14 h-14 rounded-xl bg-zinc-400/10 border border-zinc-400/25">
+                <div className="shrink-0 flex flex-col items-center justify-center size-15 rounded-xl bg-zinc-400/10 border border-zinc-400/25">
                   <span className="text-[9px] uppercase font-bold ">
                     {holiday.month_short}
                   </span>
@@ -267,9 +267,7 @@ export default function HolidaysClient() {
 
                 {/* Content */}
                 <div className="flex-1 min-w-0 space-y-1.5">
-                  <h2 className="text-lg   line-clamp-1">
-                    {holiday.title}
-                  </h2>
+                  <h2 className="text-lg   line-clamp-1">{holiday.title}</h2>
 
                   <p className="flex items-center gap-2 text-xs ">
                     <span>{holiday.day_name_bn}</span>
@@ -284,7 +282,7 @@ export default function HolidaysClient() {
               </div>
 
               <div className="mt-3 pt-3 border-t border-zinc-400/25">
-                <span className="inline-flex items-center gap-1 text-sm hover:underline">
+                <span className="inline-flex items-center gap-1 text-sm opacity-50 hover:opacity-100">
                   বিস্তারিত পড়ুন
                   <ArrowRight className="w-4 h-4" />
                 </span>

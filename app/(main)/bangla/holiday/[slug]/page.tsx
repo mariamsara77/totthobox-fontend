@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { Home, Eye, ArrowLeft, ChevronDown, Share2 } from "lucide-react";
 import InteractiveActions from "./InteractiveActions";
 import CreatorsTooltip from "./CreatorsTooltip";
+import MediaGallery from "@/components/MediaGallery";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
@@ -40,7 +41,11 @@ export async function generateMetadata({
   const { slug } = await params;
   const data = await getHolidayData(slug);
 
-  if (!data) return { title: "ছুটি পাওয়া যায়নি", robots: { index: false, follow: false } };
+  if (!data)
+    return {
+      title: "ছুটি পাওয়া যায়নি",
+      robots: { index: false, follow: false },
+    };
 
   const { holiday, seo } = data;
 
@@ -73,25 +78,16 @@ export default async function HolidayShowPage({
   return (
     <div className="max-w-2xl mx-auto space-y-4 p-4 sm:p-6">
       {/* Breadcrumb */}
-      <nav
-        aria-label="Breadcrumb"
-        className="flex items-center gap-2 text-sm text-zinc-400"
-      >
-        <Link
-          href="/"
-          className="hover:text-zinc-50 hover:text-zinc-50 "
-        >
+      <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm">
+        <Link href="/" className="opacity-50 hover:opacity-100">
           <Home className="w-4 h-4" />
         </Link>
         <span>/</span>
-        <Link
-          href="/bangla/holiday"
-          className="hover:text-zinc-50 hover:text-zinc-50 "
-        >
+        <Link href="/bangla/holiday" className="opacity-50 hover:opacity-100">
           ছুটির ক্যালেন্ডার
         </Link>
         <span>/</span>
-        <span className="text-zinc-50 text-zinc-100  truncate max-w-[180px] sm:max-w-xs">
+        <span className="opacity-50 hover:opacity-100  truncate max-w-40">
           {holiday.title}
         </span>
       </nav>
@@ -106,19 +102,19 @@ export default async function HolidayShowPage({
               </span>
             )}
 
-            <h1 className="text-3xl font-bold tracking-tight text-zinc-50 text-zinc-100">
+            <h1 className="text-3xl font-bold tracking-tight">
               {holiday.title}
             </h1>
 
-            <p className="text-sm ">
-              ছুটির ক্যালেন্ডার · বিস্তারিত তথ্য
-            </p>
+            <p className="text-sm ">ছুটির ক্যালেন্ডার · বিস্তারিত তথ্য</p>
 
-            <div className="flex items-center gap-2 flex-wrap">
-              <div className="inline-flex items-center gap-2 rounded-md bg-zinc-400/10/50 px-2.5 py-1 text-xs  ">
+            <div className="">
+              {/* বাড়তি বাইরের div টি মুছে ফেলে সরাসরি এটি ব্যবহার করুন */}
+              <div className="inline-flex items-center gap-2 rounded-xl bg-zinc-400/10 p-2 text-xs">
                 <Eye className="w-3.5 h-3.5" />
-                {holiday.views_count_bn || holiday.views_count || 0} বার দেখা
-                হয়েছে
+                <span>
+                  {holiday.views_count_bn || holiday.views_count || 0}
+                </span>
               </div>
             </div>
           </div>
@@ -133,61 +129,54 @@ export default async function HolidayShowPage({
       </header>
 
       {/* Date Card */}
-      <div className="flex gap-4 p-4 rounded-2xl border border-zinc-400/25 bg-zinc-800/80 ">
-        <div className="flex flex-col items-center justify-center w-16 h-16 rounded-xl bg-amber-50 dark:bg-amber-900/20 shrink-0">
-          <span className="text-xs uppercase font-black text-amber-600 dark:text-amber-500">
+      <div className="flex gap-4 p-4 rounded-2xl bg-zinc-400/10 ">
+        <div className="flex flex-col items-center justify-center size-15 rounded-xl bg-zinc-400/10 shrink-0">
+          <span className="text-x uppercase font-bold">
             {holiday.month_short}
           </span>
-          <span className="text-2xl font-bold leading-none text-zinc-50 text-zinc-100">
+          <span className="text-2xl font-bold leading-none">
             {holiday.day_numeric}
           </span>
         </div>
 
-        <div className="space-y-0.5">
-          <p className="text-sm  ">
-            তারিখ ও বার
-          </p>
-          <p className="text-lg  text-zinc-50 text-zinc-100">
-            {holiday.date_formatted}
-          </p>
-          <p className="text-sm ">
-            {holiday.day_name_bn}
-          </p>
+        <div className="space-y-">
+          <p className="text-xs opacity-80">তারিখ ও বার</p>
+          <p className="text-">{holiday.date_formatted}</p>
+          <p className="text-xs ">{holiday.day_name_bn}</p>
         </div>
       </div>
 
-      {/* Large Image */}
-      {holiday.image_url && (
-        <div className="relative w-full h-[280px] sm:h-[400px] rounded-2xl overflow-hidden bg-zinc-400/10">
-          <Image
-            src={holiday.image_url}
-            alt={holiday.title}
-            fill
-            className="object-cover"
-            priority
-            sizes="(max-width: 768px) 100vw, 672px"
+      {/* Large Image / Media Gallery */}
+      {(holiday.images?.length > 0 || holiday.image_url) && (
+        <div className="rounded-xl overflow-hidden mb-6">
+          <MediaGallery
+            media={
+              holiday.images && holiday.images.length > 0
+                ? holiday.images.map((img: any) => ({
+                    url: img.url,
+                    caption: img.caption || holiday.title,
+                  }))
+                : [
+                    {
+                      url: holiday.image_url,
+                      caption: holiday.title,
+                    },
+                  ]
+            }
           />
         </div>
       )}
 
       {/* Details */}
       <section aria-labelledby="holiday-details-heading" className="space-y-4">
-        <h2
-          id="holiday-details-heading"
-          className="text-lg font-bold text-zinc-50 text-zinc-200"
-        >
+        <h2 id="holiday-details-heading" className="text-lg font-bold">
           বিস্তারিত বিবরণ
         </h2>
 
         {holiday.details ? (
-          <div
-            className="text-base  prose dark:prose-invert max-w-none prose-p:leading-relaxed"
-            dangerouslySetInnerHTML={{ __html: holiday.details }}
-          />
+          <div dangerouslySetInnerHTML={{ __html: holiday.details }} />
         ) : (
-          <p className="text-sm text-zinc-400">
-            এই ছুটির দিন সম্পর্কে অতিরিক্ত কোনো তথ্য পাওয়া যায়নি।
-          </p>
+          <p>এই ছুটির দিন সম্পর্কে অতিরিক্ত কোনো তথ্য পাওয়া যায়নি।</p>
         )}
       </section>
 
@@ -210,18 +199,16 @@ export default async function HolidayShowPage({
       <div>
         <Link
           href="/bangla/holiday"
-          className="inline-flex items-center gap-2 px-4 py-2 text-sm  text-zinc-300 hover:bg-zinc-900 text-zinc-300 hover:bg-zinc-800 rounded-lg "
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm rounded-lg opacity-50 hover:opacity-100"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="size-4" />
           ছুটির ক্যালেন্ডারে ফিরে যান
         </Link>
       </div>
 
       {/* About Section */}
       <section className="rounded-2xl bg-zinc-400/10/40 p-4 space-y-4">
-        <h2 className="text-lg font-bold text-zinc-50 text-zinc-200">
-          {holiday.title} সম্পর্কে
-        </h2>
+        <h2 className="text-lg font-bold">{holiday.title} সম্পর্কে</h2>
         <div className="text-sm leading-relaxed  space-y-4">
           <p>
             <strong>{holiday.title}</strong> হলো বাংলাদেশের {holiday.type || ""}{" "}
@@ -233,15 +220,13 @@ export default async function HolidayShowPage({
 
       {/* FAQ */}
       <section className="space-y-4 pt-2">
-        <h2 className="text-lg font-bold text-zinc-50 text-zinc-200">
-          প্রায়শই জিজ্ঞাসিত প্রশ্ন
-        </h2>
+        <h2 className="text-lg font-bold">প্রায়শই জিজ্ঞাসিত প্রশ্ন</h2>
 
         <div className="space-y-2">
-          <details className="group rounded-xl border border-zinc-400/25 bg-zinc-800/80 overflow-hidden">
-            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5  text-zinc-50 text-zinc-200 hover:bg-zinc-900 hover:bg-zinc-800/50 transition list-none">
+          <details className="group rounded-xl bg-zinc-400/10 overflow-hidden">
+            <summary className="flex items-center justify-between cursor-pointer p-4 hover:bg-zinc-400/25 transition list-none">
               <span>{holiday.title} কী?</span>
-              <ChevronDown className="w-4 h-4 text-zinc-400 group-open:rotate-180 transition shrink-0" />
+              <ChevronDown className="size-4 group-open:rotate-180 transition shrink-0" />
             </summary>
             <div className="px-4 pb-4 text-sm  leading-relaxed border-t border-zinc-400/25 pt-3">
               উপরের “বিস্তারিত বিবরণ” সেকশনে এই ছুটির পূর্ণাঙ্গ ব্যাখ্যা লেখা
@@ -249,8 +234,8 @@ export default async function HolidayShowPage({
             </div>
           </details>
 
-          <details className="group rounded-xl border border-zinc-400/25 bg-zinc-800/80 overflow-hidden">
-            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5  text-zinc-50 text-zinc-200 hover:bg-zinc-900 hover:bg-zinc-800/50 transition list-none">
+          <details className="group rounded-xl bg-zinc-400/10 overflow-hidden">
+            <summary className="flex items-center justify-between cursor-pointer p-4 hover:bg-zinc-400/25 transition list-none">
               <span>অন্যান্য ছুটি কোথায় পাব?</span>
               <ChevronDown className="w-4 h-4 text-zinc-400 group-open:rotate-180 transition shrink-0" />
             </summary>

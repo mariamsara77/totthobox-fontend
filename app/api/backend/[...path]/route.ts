@@ -1,88 +1,41 @@
-import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { laravelFetch } from "@/lib/server/laravel";
+import { getAuthToken, clearAuthCookie } from "@/lib/auth/session";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+async function proxy(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
+  const { path } = await context.params;
+  const token = await getAuthToken();
 
-const API_BASE =
-  process.env.BACKEND_API_URL ||
-  process.env.NEXT_PUBLIC_API_BASE_URL ||
-  "https://admin.totthobox.com";
+  const isFormData = (request.headers.get("content-type") || "").includes("multipart/form-data");
+  const body = ["GET", "HEAD"].includes(request.method)
+    ? undefined
+    : isFormData
+      ? await request.formData()
+      : await request.text();
 
-const NO_BODY_METHODS = new Set(["GET", "HEAD"]);
-const NO_STORE_HEADERS = {
-  "Cache-Control": "private, no-store, no-cache, must-revalidate, max-age=0",
-  Pragma: "no-cache",
-  Vary: "Cookie, Authorization",
-};
-
-async function forward(
-  request: Request,
-  { params }: { params: Promise<{ path: string[] }> },
-) {
-  const { path } = await params;
-  const requestUrl = new URL(request.url);
-  const token = (await cookies()).get("__Host-totthobox_session")?.value;
-
-  const headers = new Headers();
-  headers.set("Accept", "application/json");
-
-  const contentType = request.headers.get("content-type");
-  if (contentType) headers.set("Content-Type", contentType);
-
-  if (token) {
-    headers.set("Authorization", `Bearer ${token}`);
-  }
-
-  const targetUrl = `${API_BASE}/api/${path.join("/")}${requestUrl.search}`;
-
-  let upstream: Response;
+  let laravelRes: Response;
   try {
-    upstream = await fetch(targetUrl, {
+    laravelRes = await laravelFetch(`/${path.join("/")}${request.nextUrl.search}`, {
       method: request.method,
-      headers,
-      body: NO_BODY_METHODS.has(request.method)
-        ? undefined
-        : await request.arrayBuffer(),
-      cache: "no-store",
+      token,
+      body,
     });
   } catch {
-    return NextResponse.json(
-      { message: "ব্যাকএন্ড সার্ভার অনুপলব্ধ।" },
-      { status: 503, headers: NO_STORE_HEADERS },
-    );
+    return NextResponse.json({ message: "Backend সার্ভারে সংযোগ করা যায়নি।" }, { status: 502 });
   }
 
-  const responseHeaders = new Headers(upstream.headers);
-  responseHeaders.delete("content-encoding");
-  responseHeaders.delete("content-length");
-  responseHeaders.delete("transfer-encoding");
-  responseHeaders.delete("connection");
-  Object.entries(NO_STORE_HEADERS).forEach(([key, value]) => {
-    responseHeaders.set(key, value);
-  });
+  const isJson = laravelRes.headers.get("content-type")?.includes("application/json");
+  const data = isJson ? await laravelRes.json().catch(() => null) : await laravelRes.text();
 
-  const result = new NextResponse(upstream.body, {
-    status: upstream.status,
-    headers: responseHeaders,
-  });
+  const response = isJson
+    ? NextResponse.json(data, { status: laravelRes.status })
+    : new NextResponse(data, { status: laravelRes.status });
 
-  if (upstream.status === 401) {
-    result.cookies.set("__Host-totthobox_session", "", {
-      httpOnly: true,
-      secure: true,
-      sameSite: "lax",
-      path: "/",
-      maxAge: 0,
-      expires: new Date(0),
-    });
+  if (laravelRes.status === 401 && token) {
+    clearAuthCookie(response);
   }
 
-  return result;
+  return response;
 }
 
-export const GET = forward;
-export const POST = forward;
-export const PUT = forward;
-export const PATCH = forward;
-export const DELETE = forward;
+export { proxy as GET, proxy as POST, proxy as PUT, proxy as PATCH, proxy as DELETE };
