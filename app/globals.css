@@ -6,28 +6,28 @@
   --font-sans: var(--font-noto-bengali), var(--font-geist-sans), sans-serif;
   --font-mono: var(--font-geist-mono);
   --color-zinc-50: #fafafa;
-    --color-zinc-100: #f5f5f5;
-    --color-zinc-200: #e5e5e5;
-    --color-zinc-300: #d4d4d4;
-    --color-zinc-400: #a3a3a3;
-    --color-zinc-500: #737373;
-    --color-zinc-600: #525252;
-    --color-zinc-700: #404040;
-    --color-zinc-800: #262626;
-    --color-zinc-900: #171717;
-    --color-zinc-950: #0a0a0a;
+  --color-zinc-100: #f5f5f5;
+  --color-zinc-200: #e5e5e5;
+  --color-zinc-300: #d4d4d4;
+  --color-zinc-400: #a3a3a3;
+  --color-zinc-500: #737373;
+  --color-zinc-600: #525252;
+  --color-zinc-700: #404040;
+  --color-zinc-800: #262626;
+  --color-zinc-900: #171717;
+  --color-zinc-950: #0a0a0a;
 
-    --color-accent: var(--color-neutral-800);
-    --color-accent-content: var(--color-neutral-800);
-    --color-accent-foreground: var(--color-white);
+  --color-accent: var(--color-neutral-800);
+  --color-accent-content: var(--color-neutral-800);
+  --color-accent-foreground: var(--color-white);
 }
 
 @layer theme {
-    .dark {
-        --color-accent: var(--color-white);
-        --color-accent-content: var(--color-white);
-        --color-accent-foreground: var(--color-neutral-800);
-    }
+  .dark {
+    --color-accent: var(--color-white);
+    --color-accent-content: var(--color-white);
+    --color-accent-foreground: var(--color-neutral-800);
+  }
 }
 
 @font-face {
@@ -36,93 +36,110 @@
   font-weight: 400;
   font-display: swap; 
 }
+
+/* =========================================
+   Mobile & PWA Touch UX (Safe for Desktop)
+   ========================================= */
+
+/* ১. সব টাচ স্ক্রিন (মোবাইল/ট্যাবলেট) ডিভাইসের জন্য */
+@media (pointer: coarse) {
+  html, body {
+    touch-action: manipulation; /* ৩০২০ms ডাবল-ট্যাপ জুম ডিলে বন্ধ করবে */
+    -webkit-tap-highlight-color: transparent; /* ক্লিকের সময় কালচে ব্লু হাইলাইট বন্ধ */
+  }
+
+  /* শুধু UI কন্ট্রোলে সিলেকশন বন্ধ, মূল টেক্সট/আর্টিকেল সিলেক্টেবল থাকবে */
+  button, a, nav, input, select, [role="button"] {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+}
+
+/* ২. শুধু ইনস্টল করা PWA Standalone App-এর জন্য */
+@media (display-mode: standalone) {
+  body {
+    overscroll-behavior-y: none; /* PWA-তে অনাকাঙ্ক্ষিত পুল-টু-রিফ্রেশ বন্ধ করবে */
+  }
+}
+
 /* =========================================
    Scrollbar (lightweight)
    ========================================= */
-/* ২. শুধুমাত্র ডেস্কটপ/মাউস ডিভাইসের জন্য */
+/* শুধুমাত্র ডেস্কটপ/মাউস ডিভাইসের জন্য */
 @media (hover: hover) and (pointer: fine) {
-    /* গ্লোবাল স্ক্রলবার উইডথ */
-    ::-webkit-scrollbar {
-        width: 5px;
-        height: 5px;
-    }
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
 
-    /* ডিফল্ট অবস্থায় ট্র্যাক ও থাম্ব ইনভিজিবল থাকবে */
-    ::-webkit-scrollbar-track {
-        background: transparent;
-    }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
 
-    ::-webkit-scrollbar-thumb {
-        background-color: transparent;
-        border-radius: 20px;
-        border: 2px solid transparent;
-        background-clip: padding-box;
-    }
+  ::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 20px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
 
-    /* ম্যাজিক পার্ট */
-    *:hover::-webkit-scrollbar-thumb {
-        background-color: rgba(150, 150, 150, 0.3);
-    }
+  *:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(150, 150, 150, 0.3);
+  }
 
-    /* থাম্বের ওপর সরাসরি মাউস নিলে আরও গাঢ় হবে */
-    ::-webkit-scrollbar-thumb:hover {
-        background-color: rgba(150, 150, 150, 0.6) !important;
-    }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(150, 150, 150, 0.6) !important;
+  }
 
-    /* ডার্ক মোড সাপোর্ট */
-    .dark *:hover::-webkit-scrollbar-thumb {
-        background-color: rgba(255, 255, 255, 0.2);
-    }
-    
-    /* Firefox সাপোর্ট */
-    * {
-        scrollbar-width: thin;
-        scrollbar-color: transparent transparent;
-    }
-    
-    *:hover {
-        scrollbar-color: rgba(150, 150, 150, 0.3) transparent;
-    }
+  .dark *:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+  
+  *:hover {
+    scrollbar-color: rgba(150, 150, 150, 0.3) transparent;
+  }
 }
 
-/* ৩. স্মল স্ক্রিনের জন্য (৭৬৮ পিক্সেল বা তার ছোট স্ক্রিন) */
+/* স্মল স্ক্রিনের জন্য স্ক্রলবার হাইড */
 @media screen and (max-width: 768px) {
-    /* Firefox, IE, Edge এর জন্য */
-    *, html, body {
-        scrollbar-width: none !important;
-        -ms-overflow-style: none !important;
-    }
+  *, html, body {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
 
-    /* Chrome, Safari, Opera এর জন্য সঠিক সিলেক্টর */
-    ::-webkit-scrollbar {
-        display: none !important;
-        width: 0 !important;
-        height: 0 !important;
-    }
+  ::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
 }
 
 .adorsholipi-exp {
   font-family: 'Adorsholipi Exp', serif;
 }
 
-
 /* =========================================
-   Google Translate (optional – delete if not used)
+   Google Translate Fixes
    ========================================= */
 .goog-te-banner-frame,
 .goog-te-balloon-frame,
 #goog-gt-tt,
 .skiptranslate,
 .goog-te-gadget-icon {
-    display: none !important;
+  display: none !important;
 }
 
 body {
-    top: 0 !important;
-    position: static !important;
+  top: 0 !important;
+  position: static !important;
 }
 
 .goog-text-highlight {
-    background-color: transparent !important;
-    box-shadow: none !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
 }

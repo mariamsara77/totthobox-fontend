@@ -1,15 +1,16 @@
 import type { NextConfig } from "next";
-import withSerwistInit from '@serwist/next'
+import withPWAInit from "@ducanh2912/next-pwa";
 
-
-const withSerwist = withSerwistInit({
-  swSrc: 'app/sw.ts',          // তোমার service worker সোর্স
-  swDest: 'public/sw.js',
-  cacheOnNavigation: true,
-  disable: process.env.NODE_ENV === 'development', // dev-এ বন্ধ রাখো
-})
+const withPWA = withPWAInit({
+  dest: "public",
+  disable: process.env.NODE_ENV === "development", // Dev মোডে ক্যাশিং ডিজেবল থাকবে
+  cacheOnFrontEndNav: true,
+  aggressiveFrontEndNavCaching: true,
+  reloadOnOnline: true,
+});
 
 const nextConfig: NextConfig = {
+  turbopack: {},
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "totthobox.com" },
@@ -57,4 +58,5 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// withPWA র‍্যাপার দিয়ে export করা হয়েছে
+export default withPWA(nextConfig);

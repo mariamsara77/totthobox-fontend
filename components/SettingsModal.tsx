@@ -45,7 +45,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       <div
         ref={modalRef}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md p-4 bg-zinc-200 dark:bg-zinc-700 border border-zinc-400/25 rounded-2xl shadow-xl transform transition-transform"
+        className="w-full max-w-md p-4 bg-zinc-200 dark:bg-zinc-700 rounded-2xl shadow-xl transform transition-transform"
       >
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-zinc-200 dark:border-zinc-700">
@@ -58,7 +58,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             ref={closeButtonRef}
             onClick={onClose}
             aria-label="সেটিংস বন্ধ করুন"
-            className="p-1.5 rounded-lg text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+            className="p-1.5 rounded-lg opacity-50 hover:opacity-100 hover:bg-zinc-400/10 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -75,7 +75,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 rounded-xl transition-colors"
+            className="px-4 py-2 text-sm font-medium bg-zinc-400/10 hover:bg-zinc-400/25 rounded-xl transition-colors"
           >
             বন্ধ করুন
           </button>

@@ -526,7 +526,7 @@ export default function AdvancedBanglaCalendar() {
                       {bnNum(day.bnObj.day)}
                     </span>
                     {holiday && (
-                      <span className="absolute bottom-1.5 w-1.5 h-1.5 rounded-full bg-rose-500 shadow-[0_0_6px_rgba(244,63,94,0.7)]" />
+                      <span className="absolute bottom-0.5 w-1 h-1 rounded-full bg-rose-500 shadow-[0_0_6px_rgba(244,63,94,0.7)]" />
                     )}
                   </div>
 

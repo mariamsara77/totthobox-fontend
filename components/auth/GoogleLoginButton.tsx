@@ -48,7 +48,7 @@ function CustomButton() {
           setError(null);
           login();
         }}
-        className="w-full flex items-center justify-center gap-4 rounded-full p-4 hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed bg-zinc-400/50"
+        className="w-full flex items-center justify-center gap-4 rounded-full p-4 disabled:opacity-60 disabled:cursor-not-allowed bg-zinc-400/10 hover:bg-zinc-400/25"
       >
         {loading ? (
           <div className="w-5 h-5 border-2 border-gray-600 border-t-transparent rounded-full animate-spin" />

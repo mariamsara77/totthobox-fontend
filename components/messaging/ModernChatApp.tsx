@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import {
   ArrowLeft,
   Edit3,
@@ -18,7 +18,7 @@ import {
   X,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
-import { getEcho, disconnectEcho } from "@/lib/echo";
+import { getEcho } from "@/lib/echo";
 import { useAuth } from "@/context/AuthContext";
 import { useChatLayout } from "@/context/ChatLayoutContext";
 import MediaGallery from "@/components/MediaGallery";
@@ -56,7 +56,7 @@ function Avatar({
     />
   ) : (
     <div
-      className={`${size} flex shrink-0 items-center justify-center rounded-full bg-zinc-400/10 text-sm font-bold`}
+      className={`${size} flex shrink-0 items-center justify-center rounded-full bg-zinc-400/15 text-sm font-bold`}
     >
       {user?.name?.slice(0, 1)?.toUpperCase() || "?"}
     </div>
@@ -80,6 +80,15 @@ function lastMessage(user: ChatUser) {
   )[0];
 }
 
+function findImage(message?: ChatMessage | null) {
+  const media = message?.media || [];
+  return media.find(
+    (m) =>
+      m.mime_type?.startsWith("image/") &&
+      (m.original_url || m.url || m.preview_url),
+  );
+}
+
 type MessageBubbleProps = {
   message: ChatMessage;
   own: boolean;
@@ -89,7 +98,7 @@ type MessageBubbleProps = {
   onQuoteClick: () => void;
   onEdit: () => void;
   onDelete: () => void;
-  onLongPress: (event: React.PointerEvent<HTMLDivElement>) => void;
+  onOpenMenu: (el: HTMLElement) => void;
 };
 
 function MessageBubble({
@@ -101,7 +110,7 @@ function MessageBubble({
   onQuoteClick,
   onEdit,
   onDelete,
-  onLongPress,
+  onOpenMenu,
 }: MessageBubbleProps) {
   const media = message.media || [];
   const images = media.filter(
@@ -110,19 +119,14 @@ function MessageBubble({
       (m.original_url || m.url || m.preview_url),
   );
 
-  // parent-কে local messages থেকে full করে নাও (media সহ)
   const parent = message.parent?.id
     ? allMessages.find((m) => m.id === message.parent!.id) || message.parent
     : message.parent;
 
-  const parentMedia = parent?.media || [];
-  const parentImage = parentMedia.find(
-    (m) =>
-      m.mime_type?.startsWith("image/") &&
-      (m.original_url || m.url || m.preview_url),
-  );
+  const parentImage = findImage(parent);
 
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const bubbleRef = useRef<HTMLDivElement>(null);
 
   const clearLongPress = () => {
     if (longPressTimer.current) {
@@ -132,10 +136,14 @@ function MessageBubble({
   };
 
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    // Only for touch / pen
     if (event.pointerType === "mouse") return;
+    const target = event.currentTarget;
     longPressTimer.current = setTimeout(() => {
       longPressTimer.current = null;
-      onLongPress(event);
+      if (target) {
+        onOpenMenu(target);
+      }
     }, 550);
   };
 
@@ -150,18 +158,20 @@ function MessageBubble({
       onPointerCancel={clearLongPress}
       onPointerLeave={clearLongPress}
       onContextMenu={(event) => {
-        if (window.matchMedia("(pointer: coarse)").matches)
+        if (window.matchMedia("(pointer: coarse)").matches) {
           event.preventDefault();
+        }
       }}
     >
       <div
+        ref={bubbleRef}
         className={`flex max-w-[min(80%,620px)] flex-col gap-1 ${own ? "items-end" : "items-start"}`}
       >
         {parent ? (
           <button
             type="button"
             onClick={onQuoteClick}
-            className="max-w-full rounded-xl border-l-2 border-zinc-400/50 bg-zinc-100 px-3 py-1.5 text-left text-xs transition hover:bg-zinc-200 dark:bg-zinc-900 dark:hover:bg-zinc-800 flex items-center gap-2"
+            className="flex max-w-full items-center gap-2 rounded-xl bg-zinc-400/15 px-3 py-1.5 text-left text-xs transition hover:bg-zinc-400/25"
             title="রিপ্লাই করা মেসেজে যান"
           >
             {parentImage ? (
@@ -177,60 +187,82 @@ function MessageBubble({
               />
             ) : null}
             <span className="min-w-0 flex-1">
-              <span className="font-semibold block">
+              <span className="block font-semibold">
                 {parent.sender?.name || "রিপ্লাই"}
               </span>
-              <span className="line-clamp-1 opacity-60">
+              <span className="line-clamp-1 opacity-50">
                 {parent.message || (parent.media?.length ? "সংযুক্তি" : "")}
               </span>
             </span>
           </button>
         ) : null}
 
-        <div
-          className={`rounded-2xl px-4.5 py-2 shadow-sm ${own ? "rounded-br-md bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900" : "rounded-bl-md border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900"} ${highlighted ? "ring-2 ring-zinc-400 ring-offset-2 dark:ring-zinc-500 dark:ring-offset-zinc-950" : ""}`}
-        >
-          {images.length ? (
-            <MediaGallery
-              media={images.map((m) => ({
-                url: m.original_url || m.url || m.preview_url || "",
-                name: m.name || m.file_name || "image",
-              }))}
-            />
-          ) : null}
-          {message.message ? (
-            <p className="whitespace-pre-wrap break-words text-sm leading-6">
-              {message.message}
-            </p>
-          ) : null}
-          {media
-            .filter((m) => !m.mime_type?.startsWith("image/"))
-            .map((m) => (
-              <a
-                key={m.id}
-                href={m.original_url || m.url || m.preview_url || "#"}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-1 flex max-w-full items-center gap-2 rounded-xl bg-zinc-400/10 px-4 py-2 text-xs"
-              >
-                <FileText className="size-4 shrink-0" />
-                <span className="max-w-52 truncate">
-                  {m.name || m.file_name || "ফাইল"}
-                </span>
-              </a>
-            ))}
-          <div className="mt-1 text-[10px] opacity-50">
-            {formatTime(message.created_at)}
-            {message.updated_at && message.updated_at !== message.created_at
-              ? " · সম্পাদিত"
-              : ""}
+        <div className="relative">
+          <div
+            className={`rounded-2xl px-4.5 py-2 shadow-sm ${
+              own
+                ? "rounded-br-md bg-zinc-400/25"
+                : "rounded-bl-md bg-zinc-400/10"
+            } ${highlighted ? "ring-2 ring-zinc-400/40 ring-offset-2 ring-offset-transparent" : ""}`}
+          >
+            {images.length ? (
+              <MediaGallery
+                media={images.map((m) => ({
+                  url: m.original_url || m.url || m.preview_url || "",
+                  name: m.name || m.file_name || "image",
+                }))}
+              />
+            ) : null}
+            {message.message ? (
+              <p className="whitespace-pre-wrap break-words text-sm leading-6">
+                {message.message}
+              </p>
+            ) : null}
+            {media
+              .filter((m) => !m.mime_type?.startsWith("image/"))
+              .map((m) => (
+                <a
+                  key={m.id}
+                  href={m.original_url || m.url || m.preview_url || "#"}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-1 flex max-w-full items-center gap-2 rounded-xl bg-zinc-400/10 px-4 py-2 text-xs hover:bg-zinc-400/25"
+                >
+                  <FileText className="size-4 shrink-0" />
+                  <span className="max-w-52 truncate">
+                    {m.name || m.file_name || "ফাইল"}
+                  </span>
+                </a>
+              ))}
+            <div className="mt-1 text-[10px] opacity-50">
+              {formatTime(message.created_at)}
+              {message.updated_at && message.updated_at !== message.created_at
+                ? " · সম্পাদিত"
+                : ""}
+            </div>
           </div>
+
+          {/* Mobile: always visible small menu button */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              const btn = e.currentTarget;
+              if (btn) onOpenMenu(btn);
+            }}
+            className="absolute -right-2 -top-2 z-10 flex size-7 items-center justify-center rounded-full bg-zinc-400/20 text-zinc-600 shadow-sm md:hidden"
+            aria-label="অ্যাকশন"
+          >
+            <MoreVertical className="size-3.5" />
+          </button>
         </div>
+
+        {/* Desktop: hover actions */}
         <div className="hidden items-center gap-1 opacity-0 transition group-hover:opacity-100 focus-within:opacity-100 md:flex">
           <button
             type="button"
             onClick={onReply}
-            className="rounded-lg bg-zinc-400/10  p-2 hover:bg-zinc-400/25"
+            className="rounded-lg bg-zinc-400/10 p-2 hover:bg-zinc-400/25"
             aria-label="রিপ্লাই"
             title="রিপ্লাই"
           >
@@ -241,7 +273,7 @@ function MessageBubble({
               <button
                 type="button"
                 onClick={onEdit}
-                className="rounded-lg bg-zinc-400/10  p-2 hover:bg-zinc-400/25"
+                className="rounded-lg bg-zinc-400/10 p-2 hover:bg-zinc-400/25"
                 aria-label="এডিট"
                 title="এডিট"
               >
@@ -250,7 +282,7 @@ function MessageBubble({
               <button
                 type="button"
                 onClick={onDelete}
-                className="rounded-lg bg-zinc-400/10  p-2 hover:bg-zinc-400/25"
+                className="rounded-lg bg-zinc-400/10 p-2 hover:bg-zinc-400/25"
                 aria-label="মুছুন"
                 title="মুছুন"
               >
@@ -296,14 +328,31 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
     null,
   );
   const [jumping, setJumping] = useState(false);
+  const [otherTyping, setOtherTyping] = useState(false);
 
   const bottomRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messageRefs = useRef(new Map<number, HTMLDivElement>());
   const openedTargetRef = useRef<string | null>(null);
   const requestRef = useRef(0);
   const highlightTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const suppressAutoScrollRef = useRef(false);
+  const typingClearRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const typingWhisperRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isNearBottomRef = useRef(true);
+
+  const scrollToBottom = useCallback((behavior: ScrollBehavior = "smooth") => {
+    bottomRef.current?.scrollIntoView({ behavior, block: "end" });
+  }, []);
+
+  const checkNearBottom = useCallback(() => {
+    const el = messagesContainerRef.current;
+    if (!el) return true;
+    const threshold = 120;
+    return el.scrollHeight - el.scrollTop - el.clientHeight < threshold;
+  }, []);
 
   useEffect(() => {
     void getChatUsers()
@@ -312,6 +361,7 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
         toast.error(e instanceof Error ? e.message : "কথোপকথন লোড করা যায়নি"),
       );
   }, []);
+
   useEffect(() => {
     if (!file) {
       setPreview(null);
@@ -321,6 +371,7 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
     setPreview(url);
     return () => URL.revokeObjectURL(url);
   }, [file]);
+
   useEffect(() => {
     const value = query.trim();
     const id = ++requestRef.current;
@@ -345,16 +396,29 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
     }, 300);
     return () => window.clearTimeout(timer);
   }, [query]);
+
   useEffect(() => {
     if (selected) void markMessagesAsRead(selected.slug).catch(() => undefined);
   }, [selected, messages.length]);
+
+  // Auto-scroll on new messages
   useEffect(() => {
     if (suppressAutoScrollRef.current) {
       suppressAutoScrollRef.current = false;
       return;
     }
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages.length]);
+    if (isNearBottomRef.current) {
+      scrollToBottom("smooth");
+    }
+  }, [messages.length, scrollToBottom]);
+
+  // Always scroll when typing indicator appears
+  useEffect(() => {
+    if (otherTyping) {
+      scrollToBottom("smooth");
+    }
+  }, [otherTyping, scrollToBottom]);
+
   useEffect(() => {
     const close = () => setActionMenu(null);
     window.addEventListener("scroll", close, true);
@@ -364,22 +428,35 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
       window.removeEventListener("resize", close);
     };
   }, []);
+
   useEffect(
     () => () => {
       if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);
+      if (typingClearRef.current) clearTimeout(typingClearRef.current);
+      if (typingWhisperRef.current) clearTimeout(typingWhisperRef.current);
     },
     [],
   );
+
+  // textarea auto-height
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, 128)}px`;
+  }, [draft]);
 
   const loadMessages = async (slug: string) => {
     setLoadingMessages(true);
     try {
       const data = await getMessages(slug, 1, 30);
       setMessages(data.data.slice().reverse());
+      requestAnimationFrame(() => scrollToBottom("auto"));
     } finally {
       setLoadingMessages(false);
     }
   };
+
   const selectUser = async (user: ChatUser) => {
     if (!user.slug) {
       toast.error("এই ব্যবহারকারীর বৈধ slug পাওয়া যায়নি");
@@ -391,7 +468,9 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
     setActionMenu(null);
     setReplyTo(null);
     setEditing(null);
+    setOtherTyping(false);
     setMessages([]);
+    isNearBottomRef.current = true;
     try {
       const [state] = await Promise.all([
         getBlockStatus(user.slug),
@@ -402,6 +481,7 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
       toast.error(e instanceof Error ? e.message : "চ্যাট লোড করা যায়নি");
     }
   };
+
   useEffect(() => {
     if (!targetSlug || openedTargetRef.current === targetSlug) return;
     let cancelled = false;
@@ -429,29 +509,16 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
 
   // ========== LIVE CHAT (Laravel Echo) ==========
   useEffect(() => {
-    // token না থাকলে AuthContext থেকে নিন বা localStorage থেকে
-    const token =
-      (typeof window !== "undefined" && localStorage.getItem("token")) ||
-      (me as any)?.token;
+    if (!me?.id) return;
 
-    if (!me?.id || !token) {
-      console.warn("Echo: user or token missing");
-      return;
-    }
-
-    const echo = getEcho(token);
+    const echo = getEcho();
     if (!echo) return;
-
-    console.log("✅ Echo connected, listening on chat." + me.id);
 
     const channel = echo.private(`chat.${me.id}`);
 
     channel.listen(".MessageSent", (payload: any) => {
-      console.log("📩 New message received:", payload);
-
       const msg = payload.message || payload;
 
-      // বর্তমান চ্যাটের মেসেজ হলে UI-তে যোগ করুন
       if (
         selected &&
         (msg.sender_id === selected.id || msg.receiver_id === selected.id)
@@ -460,33 +527,49 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
           if (prev.some((m) => m.id === msg.id)) return prev;
           return [...prev, msg];
         });
+        setOtherTyping(false);
+        if (typingClearRef.current) clearTimeout(typingClearRef.current);
       }
 
-      // Sidebar refresh (optional)
       getChatUsers()
         .then(setUsers)
         .catch(() => undefined);
     });
 
-    channel.listen("UserTyping", (e: any) => {
-      console.log("✍️ Typing:", e);
+    channel.listenForWhisper("typing", (e: any) => {
+      if (!selected || e?.user_id !== selected.id) return;
+      setOtherTyping(true);
+      if (typingClearRef.current) clearTimeout(typingClearRef.current);
+      typingClearRef.current = setTimeout(() => setOtherTyping(false), 2500);
     });
 
     channel.error((error: any) => {
-      console.error("❌ Echo channel error:", error);
+      console.error("Echo channel error:", error);
     });
 
     return () => {
-      console.log("🔌 Leaving channel chat." + me.id);
       channel.stopListening(".MessageSent");
-      channel.stopListening("UserTyping");
+      channel.stopListeningForWhisper("typing");
     };
   }, [me?.id, selected?.id]);
+
+  // draft change → typing whisper (throttled)
+  useEffect(() => {
+    if (!draft.trim() || !selected || !me?.id) return;
+    if (typingWhisperRef.current) return;
+    const echo = getEcho();
+    if (!echo) return;
+    echo.private(`chat.${selected.id}`).whisper("typing", { user_id: me.id });
+    typingWhisperRef.current = setTimeout(() => {
+      typingWhisperRef.current = null;
+    }, 1200);
+  }, [draft, selected, me?.id]);
 
   const setMessageRef = (id: number, node: HTMLDivElement | null) => {
     if (node) messageRefs.current.set(id, node);
     else messageRefs.current.delete(id);
   };
+
   const highlightAndScroll = (id: number) => {
     const node = messageRefs.current.get(id);
     if (!node) return false;
@@ -499,6 +582,7 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
     );
     return true;
   };
+
   const loadOlderUntil = async (targetId: number) => {
     if (!selected || jumping) return false;
     setJumping(true);
@@ -531,6 +615,7 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
     }
     return false;
   };
+
   const jumpToMessage = async (messageId?: number | null) => {
     if (!messageId) return;
     setActionMenu(null);
@@ -552,6 +637,7 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
       setDraft("");
       setFile(null);
       setReplyTo(null);
+      isNearBottomRef.current = true;
       toast.success("মেসেজ পাঠানো হয়েছে");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "মেসেজ পাঠানো যায়নি");
@@ -559,6 +645,7 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
       setSending(false);
     }
   };
+
   const remove = async (id: number) => {
     if (!window.confirm("এই মেসেজটি মুছে ফেলবেন?")) return;
     try {
@@ -570,6 +657,7 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
       toast.error(e instanceof Error ? e.message : "মেসেজ মুছতে পারেনি");
     }
   };
+
   const update = async () => {
     if (!editing || !editText.trim()) return;
     try {
@@ -587,6 +675,7 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
       toast.error(e instanceof Error ? e.message : "মেসেজ আপডেট করা যায়নি");
     }
   };
+
   const block = async () => {
     if (!selected?.slug || blockLoading) return;
     setBlockLoading(true);
@@ -604,30 +693,38 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
       setBlockLoading(false);
     }
   };
+
+  // Safe openActionMenu – never touches a null currentTarget
   const openActionMenu = (
     message: ChatMessage,
     own: boolean,
-    event: React.PointerEvent<HTMLDivElement>,
+    el: HTMLElement | null,
   ) => {
-    event.preventDefault();
-    const rect = event.currentTarget.getBoundingClientRect();
+    if (!el || typeof el.getBoundingClientRect !== "function") return;
+
+    const rect = el.getBoundingClientRect();
     const menuWidth = 184;
     const menuHeight = own ? 132 : 76;
     const gap = 8;
+
     let x = own ? rect.right - menuWidth : rect.left;
     let y = rect.top - menuHeight - gap;
+
     if (x < 8) x = 8;
-    if (x + menuWidth > window.innerWidth - 8)
+    if (x + menuWidth > window.innerWidth - 8) {
       x = window.innerWidth - menuWidth - 8;
-    if (y < 8)
+    }
+    if (y < 8) {
       y = Math.min(rect.bottom + gap, window.innerHeight - menuHeight - 8);
+    }
+
     setActionMenu({ message, own, x, y });
   };
 
   if (authLoading || !me)
     return (
       <div className="flex h-screen w-full animate-pulse">
-        <div className="hidden md:flex flex-col w-85 p-4 gap-4 shrink-0 bg-zinc-200 dark:bg-zinc-900">
+        <div className="hidden md:flex flex-col w-85 p-4 gap-4 shrink-0 bg-zinc-400/10">
           <div className="flex items-center justify-between pb-2">
             <div className="h-6 w-24 bg-zinc-400/10 rounded-md" />
             <div className="h-8 w-8 bg-zinc-400/10 rounded-full" />
@@ -668,17 +765,17 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
               <div className="h-12 w-48 bg-zinc-400/10 rounded-2xl rounded-bl-none" />
             </div>
             <div className="flex items-end gap-2 max-w-[70%] self-end">
-              <div className="h-16 w-64 bg-zinc-700 rounded-2xl rounded-br-none" />
+              <div className="h-16 w-64 bg-zinc-400/25 rounded-2xl rounded-br-none" />
             </div>
             <div className="flex items-end gap-2 max-w-[70%]">
               <div className="h-8 w-8 rounded-full bg-zinc-400/10 shrink-0" />
               <div className="h-20 w-56 bg-zinc-400/10 rounded-2xl rounded-bl-none" />
             </div>
             <div className="flex items-end gap-2 max-w-[70%] self-end">
-              <div className="h-10 w-36 bg-zinc-700 rounded-2xl rounded-br-none" />
+              <div className="h-10 w-36 bg-zinc-400/25 rounded-2xl rounded-br-none" />
             </div>
           </div>
-          <div className="p-4 border-t border-zinc-800 flex items-center gap-3">
+          <div className="p-4 flex items-center gap-3">
             <div className="h-10 w-10 bg-zinc-400/10 rounded-full shrink-0" />
             <div className="h-11 flex-1 bg-zinc-400/10 rounded-xl" />
             <div className="h-10 w-10 bg-zinc-400/10 rounded-full shrink-0" />
@@ -686,15 +783,18 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
         </div>
       </div>
     );
+
   const currentPeople = query.trim() ? people : users;
+  const replyImage = findImage(replyTo);
 
   return (
     <section className="h-full w-full">
       <div className="grid h-full overflow-hidden md:grid-cols-[minmax(280px,340px)_minmax(0,1fr)]">
+        {/* Sidebar */}
         <aside
-          className={`${mobileChat ? "hidden md:flex" : "flex"} h-screen flex-col bg-zinc-200 dark:bg-zinc-900`}
+          className={`${mobileChat ? "hidden md:flex" : "flex"} h-screen flex-col bg-zinc-400/10`}
         >
-          <div className="shrink-0 border-b border-zinc-200 p-4 dark:border-zinc-800">
+          <div className="shrink-0 p-4">
             <div>
               <Link
                 href="/"
@@ -704,24 +804,25 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
                 Totthobox Chat
               </Link>
             </div>
-            <div className="mb-3 flex items-center justify-between">
+            <div className="mb-3 mt-2 flex items-center justify-between">
               <small className="opacity-50">আপনার ব্যক্তিগত কথোপকথন</small>
               <small className="opacity-50">{users.length} জন</small>
             </div>
-            <label className="flex h-12 px-4 items-center gap-2 rounded-full bg-zinc-400/10">
+            <label className="flex h-12 px-4 items-center gap-2 rounded-full bg-zinc-400/15">
               <Search className="size-4 opacity-50" />
               <input
                 value={query}
                 type="search"
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="ব্যবহারকারী খুঁজুন"
-                className="min-w-0 flex-1 text-sm outline-none"
+                className="min-w-0 flex-1 bg-transparent text-sm outline-none"
               />
               {searching ? (
                 <Loader2 className="size-4 animate-spin opacity-50" />
               ) : null}
             </label>
           </div>
+
           <div className="min-h-0 flex-1 overflow-y-auto">
             {currentPeople.length ? (
               currentPeople.map((user) => {
@@ -731,7 +832,11 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
                     key={user.id}
                     type="button"
                     onClick={() => void selectUser(user)}
-                    className={`flex w-full items-center gap-3 px-4 py-3 text-left transition ${selected?.id === user.id ? "bg-zinc-400/10" : "hover:bg-zinc-400/25"}`}
+                    className={`flex w-full items-center gap-3 px-4 py-3 text-left transition ${
+                      selected?.id === user.id
+                        ? "bg-zinc-400/15"
+                        : "hover:bg-zinc-400/20"
+                    }`}
                   >
                     <Avatar user={user} />
                     <span className="min-w-0 flex-1">
@@ -739,7 +844,7 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
                         <span className="truncate text-sm font-semibold">
                           {user.name}
                         </span>
-                        <span className="shrink-0 text-[10px] opacity-40">
+                        <span className="shrink-0 text-[10px] opacity-50">
                           {last ? formatTime(last.created_at) : ""}
                         </span>
                       </span>
@@ -761,16 +866,18 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
             )}
           </div>
         </aside>
+
+        {/* Main Chat Area */}
         <main
           className={`${mobileChat ? "flex" : "hidden md:flex"} min-h-0 min-w-0 flex-col`}
         >
           {selected ? (
             <>
-              <header className="relative flex h-15 shrink-0 items-center gap-3 border-b border-zinc-400/25 px-4">
+              <header className="relative flex h-15 shrink-0 items-center gap-3 px-4 bg-zinc-400/5">
                 <button
                   type="button"
                   onClick={() => setMobileChat(false)}
-                  className="rounded-lg p-2 md:hidden hover:bg-zinc-400/25"
+                  className="rounded-lg p-2 md:hidden hover:bg-zinc-400/20"
                   aria-label="ফিরে যান"
                 >
                   <ArrowLeft className="size-5" />
@@ -781,14 +888,16 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
                     {selected.name}
                   </p>
                   <p className="truncate text-xs opacity-50">
-                    {selected.role_label || "ব্যক্তিগত কথোপকথন"}
+                    {otherTyping
+                      ? "লিখছেন..."
+                      : selected.role_label || "ব্যক্তিগত কথোপকথন"}
                   </p>
                 </div>
                 <div className="relative">
                   <button
                     type="button"
                     onClick={() => setMenuOpen((value) => !value)}
-                    className="rounded-xl p-2 hover:bg-zinc-400/25"
+                    className="rounded-xl p-2 hover:bg-zinc-400/20"
                     aria-label="আরও অপশন"
                     aria-expanded={menuOpen}
                   >
@@ -802,7 +911,7 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
                         aria-label="মেনু বন্ধ করুন"
                         onClick={() => setMenuOpen(false)}
                       />
-                      <div className="absolute right-0 top-11 z-20 w-48 overflow-hidden rounded-xl bg-zinc-200 dark:bg-zinc-700 p-2">
+                      <div className="absolute right-0 top-11 z-20 w-48 overflow-hidden rounded-xl bg-zinc-400/15 p-2 shadow-lg backdrop-blur-md">
                         <Link
                           href={`/users/${encodeURIComponent(selected.slug)}`}
                           onClick={() => setMenuOpen(false)}
@@ -829,23 +938,31 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
                   ) : null}
                 </div>
               </header>
-              <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4">
-                <div className="">
+
+              {/* Messages */}
+              <div
+                ref={messagesContainerRef}
+                className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4"
+                onScroll={() => {
+                  isNearBottomRef.current = checkNearBottom();
+                }}
+              >
+                <div className="flex flex-col gap-3">
                   {loadingMessages ? (
-                    <div className="flex-1 flex flex-col gap-4 overflow-hidden justify-end">
+                    <div className="flex flex-1 flex-col gap-4 justify-end">
                       <div className="flex items-end gap-2 max-w-[70%]">
                         <div className="h-8 w-8 rounded-full bg-zinc-400/10 shrink-0" />
                         <div className="h-12 w-48 bg-zinc-400/10 rounded-2xl rounded-bl-none" />
                       </div>
                       <div className="flex items-end gap-2 max-w-[70%] self-end">
-                        <div className="h-16 w-64 bg-zinc-700 rounded-2xl rounded-br-none" />
+                        <div className="h-16 w-64 bg-zinc-400/25 rounded-2xl rounded-br-none" />
                       </div>
                       <div className="flex items-end gap-2 max-w-[70%]">
                         <div className="h-8 w-8 rounded-full bg-zinc-400/10 shrink-0" />
                         <div className="h-20 w-56 bg-zinc-400/10 rounded-2xl rounded-bl-none" />
                       </div>
                       <div className="flex items-end gap-2 max-w-[70%] self-end">
-                        <div className="h-10 w-36 bg-zinc-700 rounded-2xl rounded-br-none" />
+                        <div className="h-10 w-36 bg-zinc-400/25 rounded-2xl rounded-br-none" />
                       </div>
                     </div>
                   ) : messages.length ? (
@@ -866,6 +983,7 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
                             onReply={() => {
                               setActionMenu(null);
                               setReplyTo(message);
+                              textareaRef.current?.focus();
                             }}
                             onQuoteClick={() =>
                               void jumpToMessage(message.parent?.id)
@@ -876,31 +994,45 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
                               setEditText(message.message || "");
                             }}
                             onDelete={() => void remove(message.id)}
-                            onLongPress={(event) =>
-                              openActionMenu(message, own, event)
+                            onOpenMenu={(el) =>
+                              openActionMenu(message, own, el)
                             }
                           />
                         </div>
                       );
                     })
                   ) : (
-                    <div className="py-16 text-center text-sm opacity-40">
+                    <div className="py-16 text-center text-sm opacity-50">
                       এই কথোপকথনে এখনো কোনো মেসেজ নেই
                     </div>
                   )}
-                  <div ref={bottomRef} />
+
+                  {/* Typing Indicator */}
+                  {otherTyping ? (
+                    <div className="mt-1 flex justify-start">
+                      <div className="flex items-center gap-1.5 rounded-2xl rounded-bl-md bg-zinc-400/15 px-4 py-2.5">
+                        <span className="size-1.5 animate-bounce rounded-full bg-zinc-400/60 [animation-delay:-0.3s]" />
+                        <span className="size-1.5 animate-bounce rounded-full bg-zinc-400/60 [animation-delay:-0.15s]" />
+                        <span className="size-1.5 animate-bounce rounded-full bg-zinc-400/60" />
+                      </div>
+                    </div>
+                  ) : null}
+
+                  <div ref={bottomRef} className="h-1 shrink-0" />
                 </div>
               </div>
+
+              {/* Mobile / Long-press Action Menu */}
               {actionMenu ? (
                 <>
                   <button
                     type="button"
-                    className="fixed inset-0 z-[60] cursor-default md:hidden"
+                    className="fixed inset-0 z-[60] cursor-default"
                     aria-label="অ্যাকশন মেনু বন্ধ করুন"
                     onClick={() => setActionMenu(null)}
                   />
                   <div
-                    className="fixed z-[70] flex min-w-44 max-w-[calc(100vw-16px)] items-center gap-1 rounded-2xl border border-zinc-200 bg-white/95 p-1.5 shadow-2xl backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/95 md:hidden"
+                    className="fixed z-[70] flex min-w-44 max-w-[calc(100vw-16px)] items-center gap-1 rounded-2xl bg-zinc-400/15 p-1.5 shadow-xl backdrop-blur-md"
                     style={{ left: actionMenu.x, top: actionMenu.y }}
                     role="menu"
                   >
@@ -909,6 +1041,7 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
                       onClick={() => {
                         setReplyTo(actionMenu.message);
                         setActionMenu(null);
+                        textareaRef.current?.focus();
                       }}
                       className="flex flex-1 flex-col items-center gap-1 rounded-xl px-4 py-2 text-xs hover:bg-zinc-400/25"
                       aria-label="রিপ্লাই"
@@ -935,7 +1068,7 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
                         <button
                           type="button"
                           onClick={() => void remove(actionMenu.message.id)}
-                          className="flex flex-1 flex-col items-center gap-1 rounded-xl px-4 py-2 text-xs text-red-500 hover:bg-red-500/10"
+                          className="flex flex-1 flex-col items-center gap-1 rounded-xl px-4 py-2 text-xs opacity-80 hover:bg-zinc-400/25"
                           aria-label="মুছুন"
                         >
                           <Trash2 className="size-4" />
@@ -947,100 +1080,169 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
                 </>
               ) : null}
 
-              {/* Message Input Container & Edit / Reply UI */}
-              <div className="shrink-0 border-t border-zinc-200 p-3 dark:border-zinc-800">
-                {/* Reply Bar */}
-                {replyTo ? (
-                  <div className="mb-2 flex items-center justify-between rounded-xl bg-zinc-400/10 px-3 py-1.5 text-xs">
-                    <div className="min-w-0 flex-1">
-                      <span className="font-semibold block">
-                        {replyTo.sender?.name || "রিপ্লাই"}
-                      </span>
-                      <span className="truncate opacity-60 block">
-                        {replyTo.message || "সংযুক্তি"}
-                      </span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setReplyTo(null)}
-                      className="p-1 rounded-full hover:bg-zinc-400/20"
-                    >
-                      <X className="size-4" />
-                    </button>
-                  </div>
-                ) : null}
-
-                {/* Edit Bar */}
+              {/* Composer */}
+              <div className="shrink-0 p-3 bg-zinc-400/5">
                 {editing ? (
-                  <div className="mb-2 flex items-center justify-between gap-2 rounded-xl bg-amber-500/10 px-3 py-2 text-xs">
+                  <div className="flex items-center gap-2 rounded-2xl bg-zinc-400/15 px-3 py-2">
+                    <Edit3 className="size-4 shrink-0 opacity-50" />
                     <input
                       type="text"
                       value={editText}
+                      autoFocus
                       onChange={(e) => setEditText(e.target.value)}
-                      className="flex-1 bg-transparent outline-none"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") void update();
+                        if (e.key === "Escape") setEditing(null);
+                      }}
+                      className="min-w-0 flex-1 bg-transparent text-sm outline-none"
                     />
                     <button
                       type="button"
                       onClick={() => void update()}
-                      className="rounded-lg bg-amber-500 px-3 py-1 font-medium text-white"
+                      className="shrink-0 rounded-lg bg-zinc-400/25 px-3 py-1.5 text-xs font-semibold hover:bg-zinc-400/40"
                     >
                       আপডেট
                     </button>
                     <button
                       type="button"
-                      onClick={() => setEditing(null)}
-                      className="p-1"
+                      onClick={() => {
+                        setEditing(null);
+                        setEditText("");
+                      }}
+                      className="shrink-0 rounded-lg p-1.5 opacity-50 hover:bg-zinc-400/25"
                     >
                       <X className="size-4" />
                     </button>
                   </div>
                 ) : (
-                  /* Main Send Form */
                   <form
                     onSubmit={(e) => {
                       e.preventDefault();
                       void send();
                     }}
-                    className="flex items-center gap-2"
+                    className="flex flex-col gap-2 rounded-2xl bg-zinc-400/15 p-2"
                   >
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      className="hidden"
-                      onChange={(e) => setFile(e.target.files?.[0] || null)}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      className="rounded-full p-2 hover:bg-zinc-400/20"
-                    >
-                      <Paperclip className="size-5 opacity-60" />
-                    </button>
+                    {/* Reply preview */}
+                    {replyTo ? (
+                      <div className="flex items-center gap-2 rounded-xl bg-zinc-400/10 px-3 py-2">
+                        {replyImage ? (
+                          <img
+                            src={
+                              replyImage.preview_url ||
+                              replyImage.url ||
+                              replyImage.original_url ||
+                              undefined
+                            }
+                            alt=""
+                            className="size-10 shrink-0 rounded-lg object-cover"
+                          />
+                        ) : (
+                          <Reply className="size-4 shrink-0 opacity-50" />
+                        )}
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-xs font-semibold">
+                            {replyTo.sender?.name || "রিপ্লাই"}
+                          </p>
+                          <p className="truncate text-xs opacity-50">
+                            {replyTo.message ||
+                              (replyImage
+                                ? "ছবি"
+                                : replyTo.media?.length
+                                  ? "সংযুক্তি"
+                                  : "")}
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setReplyTo(null)}
+                          className="shrink-0 rounded-full p-1.5 opacity-50 hover:bg-zinc-400/25"
+                        >
+                          <X className="size-4" />
+                        </button>
+                      </div>
+                    ) : null}
 
-                    <input
-                      type="text"
-                      value={draft}
-                      disabled={blocked}
-                      onChange={(e) => setDraft(e.target.value)}
-                      placeholder={
-                        blocked
-                          ? "আপনি এই ব্যবহারকারীকে ব্লক করেছেন"
-                          : "মেসেজ লিখুন..."
-                      }
-                      className="min-w-0 flex-1 rounded-full bg-zinc-400/10 px-4 py-2.5 text-sm outline-none disabled:opacity-50"
-                    />
+                    {/* File preview */}
+                    {file ? (
+                      <div className="flex items-center gap-2 rounded-xl bg-zinc-400/10 px-3 py-2">
+                        {preview && file.type.startsWith("image/") ? (
+                          <img
+                            src={preview}
+                            alt=""
+                            className="size-10 shrink-0 rounded-lg object-cover"
+                          />
+                        ) : (
+                          <FileText className="size-5 shrink-0 opacity-50" />
+                        )}
+                        <span className="min-w-0 flex-1 truncate text-xs opacity-80">
+                          {file.name}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setFile(null)}
+                          className="shrink-0 rounded-full p-1.5 opacity-50 hover:bg-zinc-400/25"
+                        >
+                          <X className="size-4" />
+                        </button>
+                      </div>
+                    ) : null}
 
-                    <button
-                      type="submit"
-                      disabled={sending || blocked || (!draft.trim() && !file)}
-                      className="rounded-full bg-zinc-900 p-2.5 text-white disabled:opacity-40 dark:bg-zinc-100 dark:text-zinc-900"
-                    >
-                      {sending ? (
-                        <Loader2 className="size-4 animate-spin" />
-                      ) : (
-                        <Send className="size-4" />
-                      )}
-                    </button>
+                    {/* Input row */}
+                    <div className="flex items-end gap-1">
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        className="hidden"
+                        onChange={(e) => setFile(e.target.files?.[0] || null)}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={blocked}
+                        className="shrink-0 rounded-full p-2.5 opacity-50 hover:bg-zinc-400/25 disabled:opacity-25"
+                        aria-label="সংযুক্তি"
+                      >
+                        <Paperclip className="size-5" />
+                      </button>
+
+                      <textarea
+                        ref={textareaRef}
+                        value={draft}
+                        disabled={blocked}
+                        rows={1}
+                        maxLength={2000}
+                        onChange={(e) => setDraft(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && !e.shiftKey) {
+                            e.preventDefault();
+                            void send();
+                          }
+                        }}
+                        placeholder={
+                          blocked
+                            ? "আপনি এই ব্যবহারকারীকে ব্লক করেছেন"
+                            : replyTo
+                              ? "রিপ্লাই লিখুন..."
+                              : "মেসেজ লিখুন..."
+                        }
+                        className="max-h-32 min-h-10 min-w-0 flex-1 resize-none bg-transparent px-2 py-2 text-sm leading-6 outline-none disabled:opacity-50"
+                      />
+
+                      <button
+                        type="submit"
+                        disabled={
+                          sending || blocked || (!draft.trim() && !file)
+                        }
+                        className="shrink-0 rounded-full bg-zinc-400/25 p-2.5 hover:bg-zinc-400/40 disabled:opacity-25"
+                        aria-label="পাঠান"
+                      >
+                        {sending ? (
+                          <Loader2 className="size-4 animate-spin" />
+                        ) : (
+                          <Send className="size-4" />
+                        )}
+                      </button>
+                    </div>
                   </form>
                 )}
               </div>

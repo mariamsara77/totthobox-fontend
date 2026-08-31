@@ -28,7 +28,8 @@ export default function LanguageSelect() {
     setCurrentLang(targetLang);
 
     // ১. আগের সব করাপ্ট হওয়া কুকি পুরোপুরি ডিলিট করা
-    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie =
+      "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`;
 
     // ২. নতুন কুকি সেট করা (বাংলা ছাড়া অন্য ভাষার জন্য)
@@ -50,14 +51,10 @@ export default function LanguageSelect() {
       <select
         value={currentLang}
         onChange={(e) => handleLanguageChange(e.target.value)}
-        className="w-full p-4 rounded-xl border border-zinc-400/25 text-sm  focus:outline-none transition-all cursor-pointer"
+        className="w-full p-4 rounded-xl bg-zinc-300 dark:bg-zinc-600  focus:outline-none transition-all cursor-pointer"
       >
         {languages.map((lang) => (
-          <option
-            key={lang.code}
-            value={lang.code}
-            className="dark:bg-zinc-900 bg-zinc-100 p-2"
-          >
+          <option key={lang.code} value={lang.code}>
             {lang.label}
           </option>
         ))}

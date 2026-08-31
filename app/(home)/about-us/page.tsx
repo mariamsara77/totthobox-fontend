@@ -39,11 +39,8 @@ export default function AboutPage() {
         </h1>
         <p className="">
           আপনার দৈনন্দিন প্রয়োজনীয় তথ্য, টুলস ও ডিজিটাল সেবা এক জায়গায় —
-          নির্ভরযোগ্য ও সহজভাবে। ইতোমধ্যে{" "}
-          <strong>
-            {analytics.total}
-          </strong>{" "}
-          জন ব্যবহার করেছেন।
+          নির্ভরযোগ্য ও সহজভাবে। ইতোমধ্যে <strong>{analytics.total}</strong> জন
+          ব্যবহার করেছেন।
         </p>
         <div className="pt-2">
           <div className="border border-zinc-400/25" />
@@ -69,9 +66,7 @@ export default function AboutPage() {
           <div className="text-center p-4 rounded-xl bg-zinc-400/10">
             <div className="mx-auto mb-2 size-6 ">📅</div>
             <p className="text-sm ">আজকের ভিজিটর</p>
-            <p className="text-lg font-bold  mt-1">
-              {analytics.today}
-            </p>
+            <p className="text-lg font-bold  mt-1">{analytics.today}</p>
           </div>
 
           <div className="text-center p-4 rounded-xl bg-zinc-400/10 relative">
@@ -100,9 +95,7 @@ export default function AboutPage() {
       <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="p-4 rounded-xl bg-zinc-400/10">
           <div className="flex items-center gap-4 mb-4">
-            <div className="p-2 rounded-xl bg-zinc-400/10">
-              🚀
-            </div>
+            <div className="p-2 rounded-xl bg-zinc-400/10">🚀</div>
             <h2 className="text-lg ">আমাদের লক্ষ্য</h2>
           </div>
           <p className="leading-relaxed">
@@ -114,9 +107,7 @@ export default function AboutPage() {
 
         <div className="p-4 rounded-xl bg-zinc-400/10">
           <div className="flex items-center gap-4 mb-4">
-            <div className="p-2 rounded-xl bg-zinc-400/10">
-              👁️
-            </div>
+            <div className="p-2 rounded-xl bg-zinc-400/10">👁️</div>
             <h2 className="text-lg">আমাদের ভিশন</h2>
           </div>
           <p className="leading-relaxed">
@@ -157,10 +148,7 @@ export default function AboutPage() {
               desc: "আমাদের মূল সেবাগুলো সবার জন্য উন্মুক্ত এবং বিনামূল্যে ব্যবহারযোগ্য।",
             },
           ].map((item) => (
-            <div
-              key={item.title}
-              className="p-4 rounded-xl bg-zinc-400/10"
-            >
+            <div key={item.title} className="p-4 rounded-xl bg-zinc-400/10">
               <div className="flex items-start gap-4">
                 <div className={`p-2 rounded-lg bg-zinc-400/10`}>
                   {item.icon}
@@ -197,7 +185,7 @@ export default function AboutPage() {
           </p>
         </div>
         <Link
-          href="/contact"
+          href="/contact-us"
           className="items-center gap-2 px-4 py-2 rounded-lg bg-zinc-400/25 hover:bg-zinc-400/50"
         >
           যোগাযোগ করুন

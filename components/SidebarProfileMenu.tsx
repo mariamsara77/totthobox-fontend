@@ -82,7 +82,7 @@ export default function SidebarProfileMenu({
         href="/login"
         onMouseEnter={(e) => collapsed && onHover?.(e, "লগইন")}
         onMouseLeave={onLeave}
-        className={`flex items-center gap-4 rounded-lg bg-emerald-600 px-3 py-2.5 text-sm text-white transition-all hover:bg-emerald-700 ${
+        className={`flex items-center gap-4 rounded-lg  px-3 py-2.5 text-sm transition-all  hover:bg-zinc-400/25 ${
           collapsed ? "justify-center" : ""
         }`}
       >

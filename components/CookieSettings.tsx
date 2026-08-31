@@ -5,182 +5,227 @@ import { useEffect, useState } from "react";
 import { RxSwitch } from "react-icons/rx";
 
 export default function CookieSettings() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [cookieSettings, setCookieSettings] = useState({
+  const [isOpen, setIsOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [settings, setSettings] = useState({
     analytics: true,
     marketing: true,
   });
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
-      const saved = localStorage.getItem("cookie_consent");
-      if (!saved) return;
+    const saved = localStorage.getItem("cookie_consent");
+    if (!saved) return;
 
-      try {
-        const data = JSON.parse(saved);
-        setCookieSettings({
-          analytics: data.analytics ?? true,
-          marketing: data.marketing ?? true,
-        });
-      } catch {
-        if (saved === "necessary") {
-          setCookieSettings({ analytics: false, marketing: false });
-        }
+    try {
+      const data = JSON.parse(saved);
+      setSettings({
+        analytics: data.analytics ?? true,
+        marketing: data.marketing ?? true,
+      });
+    } catch {
+      if (saved === "necessary") {
+        setSettings({ analytics: false, marketing: false });
       }
-    }, 0);
-
-    return () => window.clearTimeout(timer);
+    }
   }, []);
 
   useEffect(() => {
-    if (!isModalOpen) return;
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setIsOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isOpen]);
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setIsModalOpen(false);
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isModalOpen]);
-
-  const saveConsent = (all = false, necessaryOnly = false) => {
-    const preferences = {
+  const save = (all = false, necessaryOnly = false) => {
+    const prefs = {
       necessary: true,
-      analytics: necessaryOnly ? false : all ? true : cookieSettings.analytics,
-      marketing: necessaryOnly ? false : all ? true : cookieSettings.marketing,
+      analytics: necessaryOnly ? false : all ? true : settings.analytics,
+      marketing: necessaryOnly ? false : all ? true : settings.marketing,
       timestamp: Date.now(),
     };
-
-    localStorage.setItem("cookie_consent", JSON.stringify(preferences));
-    setCookieSettings({
-      analytics: preferences.analytics,
-      marketing: preferences.marketing,
-    });
-    setIsModalOpen(false);
+    localStorage.setItem("cookie_consent", JSON.stringify(prefs));
+    setSettings({ analytics: prefs.analytics, marketing: prefs.marketing });
+    setIsOpen(false);
   };
 
   return (
     <>
+      {/* Trigger */}
       <button
         type="button"
-        onClick={() => setIsModalOpen(true)}
-        className="flex items-center gap-2 rounded-full bg-zinc-800 px-2.5 py-1 text-xs text-zinc-50 hover:bg-zinc-700"
+        onClick={() => setIsOpen(true)}
+        className="flex items-center gap-1.5 rounded-full border border-zinc-700/50 bg-zinc-900/90 px-3 py-1.5 text-[11px] font-medium text-zinc-300 backdrop-blur transition hover:border-zinc-600 hover:text-zinc-100"
       >
-        <RxSwitch className="w-4 h-4" /> কুকি সেটিংস
+        <RxSwitch className="h-3.5 w-3.5 opacity-70" />
+        কুকি
       </button>
 
-      {isModalOpen && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="cookie-settings-title"
-          className="fixed inset-0 z-50 mt-20 ml-35 flex items-center justify-center duration-200"
-        >
-          <div className="rounded-xl border border-zinc-400/25 bg-zinc-950 p-4 duration-200">
-            <div className="mb-3">
-              <h3 id="cookie-settings-title" className="text-lg text-zinc-50">কুকি সেটিংস</h3>
-              <p className="mt-1 text-xs text-zinc-400">
-                আপনার পছন্দ অনুযায়ী নিয়ন্ত্রণ করুন
+      {/* Bottom-right panel */}
+      {isOpen && (
+        <div className="fixed bottom-5 right-5 z-50">
+          <div
+            className="fixed inset-0 -z-10 bg-black/25 backdrop-blur-[1px]"
+            onClick={() => setIsOpen(false)}
+          />
+
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="cookie-title"
+            className="w-70 overflow-hidden rounded-[28px] border border-zinc-700/40 bg-zinc-950 shadow-2xl shadow-black/50"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-3.5">
+              <h3
+                id="cookie-title"
+                className="text-[14px] font-medium tracking-tight text-zinc-100"
+              >
+                কুকি সেটিংস
+              </h3>
+              <button
+                type="button"
+                onClick={() => setIsOpen(false)}
+                className="rounded-full p-1.5 text-zinc-500 transition hover:bg-zinc-800 hover:text-zinc-200"
+                aria-label="বন্ধ করুন"
+              >
+                <svg
+                  className="h-3.5 w-3.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {/* Collapse toggle */}
+            <button
+              type="button"
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="mx-3 flex w-[calc(100%-24px)] items-center justify-between rounded-full px-4 py-2.5 text-left text-[12px] font-medium text-zinc-400 transition hover:bg-zinc-900 hover:text-zinc-200"
+            >
+              <span>বিস্তারিত সেটিংস</span>
+              <svg
+                className={`h-3.5 w-3.5 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+
+            {/* Options - collapsed by default */}
+            {isExpanded && (
+              <div className="mx-3 mb-2 space-y-0 rounded-[20px] bg-zinc-900/60 px-4 py-1">
+                {/* Necessary */}
+                <div className="flex items-center justify-between py-3">
+                  <div>
+                    <p className="text-[13px] font-medium text-zinc-200">
+                      প্রয়োজনীয়
+                    </p>
+                    <p className="text-[10px] text-zinc-500">সর্বদা চালু</p>
+                  </div>
+                  <span className="rounded-full bg-zinc-800 px-2.5 py-0.5 text-[10px] font-medium text-zinc-400">
+                    On
+                  </span>
+                </div>
+
+                {/* Analytics */}
+                <div className="flex items-center justify-between py-3">
+                  <p className="text-[13px] font-medium text-zinc-200">
+                    অ্যানালিটিক্স
+                  </p>
+                  <button
+                    type="button"
+                    aria-label="অ্যানালিটিক্স"
+                    aria-pressed={settings.analytics}
+                    onClick={() =>
+                      setSettings((s) => ({ ...s, analytics: !s.analytics }))
+                    }
+                    className={`relative h-5 w-9 shrink-0 rounded-full transition-colors duration-200 ${
+                      settings.analytics ? "bg-zinc-500" : "bg-zinc-800"
+                    }`}
+                  >
+                    <span
+                      className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-200 ${
+                        settings.analytics ? "translate-x-4" : "translate-x-0"
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                {/* Marketing */}
+                <div className="flex items-center justify-between py-3">
+                  <p className="text-[13px] font-medium text-zinc-200">
+                    মার্কেটিং
+                  </p>
+                  <button
+                    type="button"
+                    aria-label="মার্কেটিং"
+                    aria-pressed={settings.marketing}
+                    onClick={() =>
+                      setSettings((s) => ({ ...s, marketing: !s.marketing }))
+                    }
+                    className={`relative h-5 w-9 shrink-0 rounded-full transition-colors duration-200 ${
+                      settings.marketing ? "bg-zinc-500" : "bg-zinc-800"
+                    }`}
+                  >
+                    <span
+                      className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-200 ${
+                        settings.marketing ? "translate-x-4" : "translate-x-0"
+                      }`}
+                    />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Footer */}
+            <div className="px-5 pb-4 pt-1">
+              <p className="mb-3 text-[10px] text-zinc-500">
+                <Link
+                  href="/privacy-policy"
+                  className="underline underline-offset-2 transition hover:text-zinc-300"
+                >
+                  গোপনীয়তা নীতি
+                </Link>
               </p>
-            </div>
 
-            <div className="mb-4 space-y-4">
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <p className="text-sm text-zinc-50">প্রয়োজনীয় কুকি</p>
-                  <p className="text-xs text-zinc-400">
-                    সাইট সঠিকভাবে চালানোর জন্য আবশ্যক
-                  </p>
-                </div>
-                <span className="rounded-md bg-zinc-800 px-2 py-1 text-xs text-zinc-300">
-                  সর্বদা চালু
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <p className="text-sm text-zinc-50">অ্যানালিটিক্স</p>
-                  <p className="text-xs text-zinc-400">
-                    সাইট ব্যবহারের পরিসংখ্যান ও উন্নতি
-                  </p>
-                </div>
+              <div className="flex gap-2">
                 <button
                   type="button"
-                  aria-label="অ্যানালিটিক্স কুকি পরিবর্তন করুন"
-                  aria-pressed={cookieSettings.analytics}
-                  onClick={() =>
-                    setCookieSettings({
-                      ...cookieSettings,
-                      analytics: !cookieSettings.analytics,
-                    })
-                  }
-                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 ${cookieSettings.analytics ? "bg-zinc-700" : "bg-zinc-800"}`}
+                  onClick={() => save(false, true)}
+                  className="flex-1 rounded-full py-2 text-[11px] font-medium text-zinc-400 transition hover:bg-zinc-800 hover:text-zinc-200"
                 >
-                  <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-zinc-900 shadow transition duration-200 ease-in-out ${cookieSettings.analytics ? "translate-x-4.5" : "translate-x-0.5"}`}
-                  />
+                  শুধু প্রয়োজনীয়
                 </button>
-              </div>
-
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <p className="text-sm text-zinc-50">মার্কেটিং / অ্যাডস</p>
-                  <p className="text-xs text-zinc-400">
-                    ব্যক্তিগতকৃত বিজ্ঞাপন দেখানোর জন্য
-                  </p>
-                </div>
                 <button
                   type="button"
-                  aria-label="মার্কেটিং কুকি পরিবর্তন করুন"
-                  aria-pressed={cookieSettings.marketing}
-                  onClick={() =>
-                    setCookieSettings({
-                      ...cookieSettings,
-                      marketing: !cookieSettings.marketing,
-                    })
-                  }
-                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 ${cookieSettings.marketing ? "bg-zinc-700" : "bg-zinc-800"}`}
+                  onClick={() => save()}
+                  className="flex-1 rounded-full bg-zinc-800 py-2 text-[11px] font-medium text-zinc-100 transition hover:bg-zinc-700"
                 >
-                  <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-zinc-900 shadow transition duration-200 ease-in-out ${cookieSettings.marketing ? "translate-x-4.5" : "translate-x-0.5"}`}
-                  />
+                  সংরক্ষণ
+                </button>
+                <button
+                  type="button"
+                  onClick={() => save(true)}
+                  className="rounded-full bg-zinc-100 px-4 py-2 text-[11px] font-medium text-zinc-900 transition hover:bg-white"
+                >
+                  সব
                 </button>
               </div>
-            </div>
-
-            <p className="mb-4 text-xs text-zinc-400">
-              বিস্তারিত জানতে{" "}
-              <Link
-                href="/privacy-policy"
-                className="underline underline-offset-2 text-zinc-300 hover:text-zinc-50"
-              >
-                গোপনীয়তা নীতি
-              </Link>{" "}
-              দেখুন।
-            </p>
-
-            <div className="flex gap-2 sm:justify-end">
-              <button
-                type="button"
-                onClick={() => saveConsent(false, true)}
-                className="w-full rounded-lg px-2 py-1 text-sm text-zinc-300 hover:bg-zinc-800 sm:w-auto"
-              >
-                শুধু প্রয়োজনীয়
-              </button>
-              <button
-                type="button"
-                onClick={() => saveConsent()}
-                className="w-full rounded-lg bg-zinc-800 px-2 py-1 text-sm text-zinc-50 hover:bg-zinc-700 sm:w-auto"
-              >
-                সংরক্ষণ করুন
-              </button>
-              <button
-                type="button"
-                onClick={() => saveConsent(true)}
-                className="rounded-lg bg-zinc-700 px-2 py-1 text-sm text-zinc-50 hover:bg-zinc-600"
-              >
-                সব গ্রহণ করুন
-              </button>
             </div>
           </div>
         </div>

@@ -13,11 +13,19 @@ async function proxy(request: NextRequest, context: { params: Promise<{ path: st
       ? await request.formData()
       : await request.text();
 
+  // Laravel Echo প্রতিটা outgoing request-এ X-Socket-ID header attach করে,
+  // যাতে broadcast(...)->toOthers() sender-কে বাদ দিয়ে বাকিদের event পাঠাতে পারে।
+  // আগে এই header প্রক্সি করার সময় হারিয়ে যাচ্ছিল।
+  const socketId = request.headers.get("x-socket-id");
+  const extraHeaders: Record<string, string> = {};
+  if (socketId) extraHeaders["X-Socket-ID"] = socketId;
+
   let laravelRes: Response;
   try {
     laravelRes = await laravelFetch(`/${path.join("/")}${request.nextUrl.search}`, {
       method: request.method,
       token,
+      headers: extraHeaders,
       body,
     });
   } catch {

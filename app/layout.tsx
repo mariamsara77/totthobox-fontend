@@ -1,13 +1,14 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono, Noto_Sans_Bengali } from "next/font/google"; // ফন্ট ইম্পোর্ট
+import type { Metadata, Viewport } from "next"; // Viewport ইম্পোর্ট করা হয়েছে
+import { Geist, Geist_Mono, Noto_Sans_Bengali } from "next/font/google";
 import "./globals.css";
 import { AppProviders } from "./providers";
 import SettingsModalWrapper from "@/components/SettingsModalWrapper";
 import TagManager from "@/components/partials/TagManager";
 import GoogleTranslate from "@/components/GoogleTranslate";
 import VisitorTracker from "@/components/VisitorTracker";
+import InstallPWA from "@/components/InstallPWA"; // PWA Install Button
+import NetworkStatus from "@/components/NetworkStatus"; // Offline Banner
 
-// ফন্টগুলোর কনফিগারেশন
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -27,6 +28,7 @@ const notoBengali = Noto_Sans_Bengali({
   display: "swap",
 });
 
+// ১. PWA Metadata আপডেট
 export const metadata: Metadata = {
   metadataBase: new URL("https://totthobox.com"),
   title: {
@@ -40,15 +42,33 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Totthobox",
     locale: "bn_BD",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
+    images: [
+      { url: "/og-image.png", width: 1200, height: 630, alt: "Totthobox" },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     images: ["/og-image.png"],
   },
+  // iOS/Safari PWA সাপোর্ট
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Totthobox",
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
 
-// app/layout.tsx
+// ২. Viewport আলাদা কনফিগারেশন (Next.js 14+ এর জন্য আবশ্যক)
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
 export default function RootLayout({
   children,
@@ -57,21 +77,23 @@ export default function RootLayout({
 }>) {
   return (
     <html
-  lang="bn"
-  suppressHydrationWarning
-  className={`${geistSans.variable} ${geistMono.variable} ${notoBengali.variable}`}
->
-  <head/>
-  <body
-    suppressHydrationWarning
-    className="min-h-screen dark:bg-zinc-800 antialiased"
-  >
-        <TagManager/>
+      lang="bn"
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${geistMono.variable} ${notoBengali.variable}`}
+    >
+      <head />
+      <body
+        suppressHydrationWarning
+        className="min-h-screen dark:bg-zinc-800 antialiased"
+      >
+        <NetworkStatus /> {/* অফলাইন এলার্ট ব্যানার */}
+        <TagManager />
         <AppProviders>
           {children}
           <VisitorTracker />
-          <SettingsModalWrapper /> 
+          <SettingsModalWrapper />
         </AppProviders>
+        <InstallPWA />
         <GoogleTranslate />
       </body>
     </html>

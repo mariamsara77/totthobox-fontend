@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Eye, EyeOff, X, UserRound } from "lucide-react";
+import { Eye, EyeOff, X, UserRound, ChevronDown } from "lucide-react";
 import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
@@ -13,10 +13,10 @@ import {
 } from "@/lib/saved-profiles";
 
 type ViewState =
-  | { mode: "list" } // saved profiles দেখাচ্ছি
-  | { mode: "switching"; profile: SavedProfile } // one-click চলছে
-  | { mode: "password"; profile: SavedProfile } // refresh expired → password চাই
-  | { mode: "manual" }; // সাধারণ email/password form
+  | { mode: "list" }
+  | { mode: "switching"; profile: SavedProfile }
+  | { mode: "password"; profile: SavedProfile }
+  | { mode: "manual" };
 
 export default function LoginContent() {
   const { login, loginWithRefresh, user, isLoading: authLoading } = useAuth();
@@ -24,6 +24,7 @@ export default function LoginContent() {
 
   const [view, setView] = useState<ViewState>({ mode: "list" });
   const [savedProfiles, setSavedProfiles] = useState<SavedProfile[]>([]);
+  const [emailExpanded, setEmailExpanded] = useState(false);
 
   // manual form
   const [showPass, setShowPass] = useState(false);
@@ -35,7 +36,7 @@ export default function LoginContent() {
     general?: string;
   }>({});
 
-  // password fallback form (refresh expired)
+  // password fallback form
   const [fallbackPass, setFallbackPass] = useState("");
   const [showFallbackPass, setShowFallbackPass] = useState(false);
   const [fallbackLoading, setFallbackLoading] = useState(false);
@@ -50,7 +51,6 @@ export default function LoginContent() {
     if (user && !authLoading) router.push("/");
   }, [user, authLoading, router]);
 
-  // password fallback açıldığında focus
   useEffect(() => {
     if (view.mode === "password") {
       setFallbackPass("");
@@ -59,22 +59,13 @@ export default function LoginContent() {
     }
   }, [view]);
 
-  // ── Saved profile click → one-click refresh ──────────────────────────
   const handlePickProfile = async (profile: SavedProfile) => {
     setView({ mode: "switching", profile });
-
     const ok = await loginWithRefresh();
-
-    if (ok) {
-      // applyUser সফল — AuthContext redirect করবে
-      return;
-    }
-
-    // Refresh token নেই বা expire — password চাই
+    if (ok) return;
     setView({ mode: "password", profile });
   };
 
-  // ── Fallback: password দিয়ে login (refresh expired) ──────────────────
   const handleFallbackSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (view.mode !== "password") return;
@@ -89,7 +80,6 @@ export default function LoginContent() {
 
     try {
       await login(view.profile.email, fallbackPass);
-      // সফল → AuthContext-এর useEffect redirect করবে
     } catch (err: any) {
       setFallbackError(
         err?.errors?.password?.[0] || err?.message || "পাসওয়ার্ড সঠিক নয়।",
@@ -99,7 +89,6 @@ export default function LoginContent() {
     }
   };
 
-  // ── Manual email/password form ────────────────────────────────────────
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: "", general: "" });
@@ -143,7 +132,6 @@ export default function LoginContent() {
 
   if (authLoading) return null;
 
-  // ═══════════════════════════════════════════════════════════════════════
   // ── Switching overlay ─────────────────────────────────────────────────
   if (view.mode === "switching") {
     return (
@@ -161,7 +149,6 @@ export default function LoginContent() {
               <UserRound size={32} className="text-zinc-400" />
             </span>
           )}
-          {/* spinner ring */}
           <span className="absolute -inset-1 rounded-3xl border-2 border-zinc-300 dark:border-zinc-600 animate-pulse" />
         </div>
         <div className="text-center space-y-1">
@@ -173,11 +160,10 @@ export default function LoginContent() {
     );
   }
 
-  // ── Password fallback (refresh expired) ───────────────────────────────
+  // ── Password fallback ─────────────────────────────────────────────────
   if (view.mode === "password") {
     return (
       <div className="max-w-md mx-auto space-y-6">
-        {/* Profile card */}
         <div className="flex items-center gap-3 p-4 rounded-2xl bg-zinc-100 dark:bg-zinc-800">
           {view.profile.avatar_url ? (
             <img
@@ -202,7 +188,7 @@ export default function LoginContent() {
           <button
             type="button"
             onClick={() => setView({ mode: "list" })}
-            className="text-xs text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 shrink-0 transition"
+            className="text-xs   shrink-0 transition"
           >
             পরিবর্তন
           </button>
@@ -263,15 +249,14 @@ export default function LoginContent() {
     );
   }
 
-  // ═══════════════════════════════════════════════════════════════════════
-  // ── Main: saved profiles + manual form ───────────────────────────────
+  // ── Main view ─────────────────────────────────────────────────────────
   return (
     <div className="space-y-6 max-w-md mx-auto">
       <div className="text-center">
         <h1 className="text-2xl font-bold">লগ ইন করুন</h1>
       </div>
 
-      {/* ── Saved profiles ─────────────────────────────────────────────── */}
+      {/* ── Saved profiles (always top, above Google) ──────────────────── */}
       {savedProfiles.length > 0 && (
         <div className="space-y-3">
           <p className="text-xs text-zinc-500 px-1">আগের অ্যাকাউন্ট</p>
@@ -283,7 +268,6 @@ export default function LoginContent() {
                 onClick={() => handlePickProfile(profile)}
                 className="group flex items-center gap-3 w-full p-3 rounded-2xl bg-zinc-400/10 hover:bg-zinc-400/20 transition text-left"
               >
-                {/* Avatar */}
                 {profile.avatar_url ? (
                   <img
                     src={profile.avatar_url}
@@ -297,7 +281,6 @@ export default function LoginContent() {
                   </span>
                 )}
 
-                {/* Name + email */}
                 <div className="min-w-0 grow">
                   <p className="text-sm font-semibold truncate">
                     {profile.name}
@@ -307,7 +290,6 @@ export default function LoginContent() {
                   </p>
                 </div>
 
-                {/* Remove */}
                 <span
                   role="button"
                   tabIndex={0}
@@ -327,101 +309,117 @@ export default function LoginContent() {
         </div>
       )}
 
-      {/* ── Divider ────────────────────────────────────────────────────── */}
-      {savedProfiles.length > 0 && (
-        <div className="flex items-center gap-4">
-          <hr className="grow border-zinc-400/25" />
-          <span className="text-xs text-zinc-400">
-            অন্য অ্যাকাউন্টে লগইন করুন
-          </span>
-          <hr className="grow border-zinc-400/25" />
-        </div>
-      )}
-
-      {/* ── Error ──────────────────────────────────────────────────────── */}
-      {errors.general && (
-        <div className="p-3 text-sm text-center text-red-500 bg-red-500/10 border border-red-500/20 rounded-xl">
-          {errors.general}
-        </div>
-      )}
-
-      {/* ── Manual form ────────────────────────────────────────────────── */}
-      <form
-        onSubmit={handleManualSubmit}
-        className="flex flex-col gap-4"
-        noValidate
-      >
-        <div>
-          <input
-            type="email"
-            name="email"
-            value={form.email}
-            onChange={handleChange}
-            placeholder="ইমেইল অ্যাড্রেস"
-            className={`w-full rounded-full py-4 px-6 bg-zinc-400/10 outline-none border ${
-              errors.email
-                ? "border-red-500"
-                : "border-transparent focus:border-zinc-500"
-            }`}
-          />
-          {errors.email && (
-            <p className="text-red-500 text-xs mt-1 ml-4">{errors.email}</p>
-          )}
-        </div>
-
-        <div>
-          <div className="relative">
-            <input
-              type={showPass ? "text" : "password"}
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-              placeholder="পাসওয়ার্ড"
-              className={`w-full rounded-full py-4 pl-6 pr-12 bg-zinc-400/10 outline-none border ${
-                errors.password
-                  ? "border-red-500"
-                  : "border-transparent focus:border-zinc-500"
-              }`}
-            />
-            <button
-              type="button"
-              onClick={() => setShowPass((v) => !v)}
-              className="absolute inset-y-0 right-4 flex items-center text-zinc-400 hover:text-zinc-600"
-            >
-              {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button>
-          </div>
-          {errors.password && (
-            <p className="text-red-500 text-xs mt-1 ml-4">{errors.password}</p>
-          )}
-        </div>
-
-        <div className="flex justify-end px-2">
-          <Link
-            href="/forgot-password"
-            className="text-xs opacity-60 hover:opacity-100 transition"
-          >
-            পাসওয়ার্ড ভুলে গেছেন?
-          </Link>
-        </div>
-
-        <button
-          type="submit"
-          disabled={formLoading}
-          className="w-full rounded-full p-4 font-bold text-white bg-black dark:text-black dark:bg-white disabled:opacity-60 transition"
-        >
-          {formLoading ? "অপেক্ষা করুন…" : "লগ ইন করুন"}
-        </button>
-      </form>
-
-      <div className="flex items-center justify-center gap-4">
-        <hr className="grow border-zinc-400/25" />
-        <span className="text-sm opacity-50">অথবা</span>
-        <hr className="grow border-zinc-400/25" />
-      </div>
-
+      {/* ── Google Login ───────────────────────────────────────────────── */}
       <GoogleLoginButton />
 
+      {/* ── Email login (collapsible) ──────────────────────────────────── */}
+      {!emailExpanded ? (
+        // Collapsed → show opener button
+        <button
+          type="button"
+          onClick={() => setEmailExpanded(true)}
+          className="w-full flex items-center justify-center gap-2 rounded-full p-4 bg-zinc-400/10 hover:bg-zinc-400/20 transition font-medium"
+        >
+          <span>ইমেইল দিয়ে লগইন করুন</span>
+          <ChevronDown size={16} className="text-zinc-500" />
+        </button>
+      ) : (
+        // Expanded → form + close button
+        <div className="space-y-4">
+          {/* Close button */}
+          <div className="flex items-center justify-center gap-4">
+            <p className="text-sm font-medium">ইমেইল দিয়ে লগইন</p>
+            <button
+              type="button"
+              onClick={() => setEmailExpanded(false)}
+              className="flex items-center gap-1 text-xs  transition opacity-50 hover:opacity-100"
+            >
+              <X size={14} />
+              <span>বন্ধ করুন</span>
+            </button>
+          </div>
+
+          {/* General error */}
+          {errors.general && (
+            <div className="p-3 text-sm text-center text-red-500 bg-red-500/10 border border-red-500/20 rounded-xl">
+              {errors.general}
+            </div>
+          )}
+
+          {/* Manual form */}
+          <form
+            onSubmit={handleManualSubmit}
+            className="flex flex-col gap-4"
+            noValidate
+          >
+            <div>
+              <input
+                type="email"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                placeholder="ইমেইল অ্যাড্রেস"
+                className={`w-full rounded-full py-4 px-6 bg-zinc-400/10 outline-none border ${
+                  errors.email
+                    ? "border-red-500"
+                    : "border-transparent focus:border-zinc-500"
+                }`}
+              />
+              {errors.email && (
+                <p className="text-red-500 text-xs mt-1 ml-4">{errors.email}</p>
+              )}
+            </div>
+
+            <div>
+              <div className="relative">
+                <input
+                  type={showPass ? "text" : "password"}
+                  name="password"
+                  value={form.password}
+                  onChange={handleChange}
+                  placeholder="পাসওয়ার্ড"
+                  className={`w-full rounded-full py-4 pl-6 pr-12 bg-zinc-400/10 outline-none border ${
+                    errors.password
+                      ? "border-red-500"
+                      : "border-transparent focus:border-zinc-500"
+                  }`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPass((v) => !v)}
+                  className="absolute inset-y-0 right-4 flex items-center text-zinc-400 hover:text-zinc-600"
+                >
+                  {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+              {errors.password && (
+                <p className="text-red-500 text-xs mt-1 ml-4">
+                  {errors.password}
+                </p>
+              )}
+            </div>
+
+            <div className="flex justify-end px-2">
+              <Link
+                href="/forgot-password"
+                className="text-xs opacity-60 hover:opacity-100 transition"
+              >
+                পাসওয়ার্ড ভুলে গেছেন?
+              </Link>
+            </div>
+
+            <button
+              type="submit"
+              disabled={formLoading}
+              className="w-full rounded-full p-4 font-bold text-white bg-black dark:text-black dark:bg-white disabled:opacity-60 transition"
+            >
+              {formLoading ? "অপেক্ষা করুন…" : "লগ ইন করুন"}
+            </button>
+          </form>
+        </div>
+      )}
+
+      {/* ── Sign up link ───────────────────────────────────────────────── */}
       <div className="text-center text-sm">
         <span>অ্যাকাউন্ট নেই? </span>
         <Link

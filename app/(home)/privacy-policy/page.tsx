@@ -66,9 +66,7 @@ export default function PrivacyPolicyPage() {
 
         {/* Services Overview */}
         <div className="p-6 rounded-xl bg-zinc-400/10/50">
-          <h3 className="mb-4 text-indigo-600 ">
-            আমাদের মূল সেবাসমূহ
-          </h3>
+          <h3 className="mb-4 text-indigo-600 ">আমাদের মূল সেবাসমূহ</h3>
           <p className="mb-5">
             Totthobox আপনার দৈনন্দিন প্রয়োজনীয় তথ্য, টুলস ও ডিজিটাল সেবা এক
             জায়গায় প্রদান করে। আমাদের প্রধান সেবাগুলো হলো:
@@ -143,9 +141,7 @@ export default function PrivacyPolicyPage() {
 
         {/* 1. Information We Collect */}
         <section className="space-y-4">
-          <h2 className="text-xl ">
-            ১. আমরা কী ধরনের তথ্য সংগ্রহ করি
-          </h2>
+          <h2 className="text-xl ">১. আমরা কী ধরনের তথ্য সংগ্রহ করি</h2>
 
           <h3 className="mt-4 ">ক. আপনার দেওয়া তথ্য</h3>
           <p>
@@ -338,7 +334,7 @@ export default function PrivacyPolicyPage() {
           </p>
           <div className="pt-2">
             <Link
-              href="/contact"
+              href="/contact-us"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition"
             >
               📧 সাপোর্ট সেন্টারে মেসেজ দিন
