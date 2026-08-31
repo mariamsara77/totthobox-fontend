@@ -39,16 +39,16 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       role="dialog"
       aria-modal="true"
       aria-labelledby="settings-modal-title"
-      className="fixed inset-0 z-100 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity duration-300"
+      className="fixed inset-0 z-100 flex items-center justify-center backdrop-blur-sm transition-opacity duration-300"
       onClick={onClose}
     >
       <div
         ref={modalRef}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl transform transition-transform"
+        className="w-full max-w-md p-4 bg-zinc-200 dark:bg-zinc-700 border border-zinc-400/25 rounded-2xl shadow-xl transform transition-transform"
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-zinc-100 dark:border-zinc-800">
+        <div className="flex items-center justify-between pb-4 border-b border-zinc-200 dark:border-zinc-700">
           <div className="flex items-center gap-2 text-lg font-medium">
             <Settings className="w-5 h-5 text-zinc-600 dark:text-zinc-400" />
             <span id="settings-modal-title">সেটিংস</span>

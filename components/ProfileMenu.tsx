@@ -46,7 +46,7 @@ export default function ProfileMenu() {
     return (
       <Link
         href="/login"
-        className="flex items-center gap-2 text-sm px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full transition-all"
+        className="flex items-center gap-2 text-sm px-4 py-2.5 bg-zinc-400/10  hover:bg-zinc-400/25 rounded-xl transition-all"
       >
         <UserIcon size={16} />
         লগইন

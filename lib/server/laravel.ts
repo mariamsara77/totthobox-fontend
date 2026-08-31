@@ -1,4 +1,4 @@
-const LARAVEL_API_URL = process.env.LARAVEL_API_URL;
+const LARAVEL_API_URL = process.env.LARAVEL_API_URL || "https://admin.totthobox.com/api";
 
 interface LaravelFetchInit extends Omit<RequestInit, "headers"> {
   token?: string | null;
