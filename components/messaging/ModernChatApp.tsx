@@ -126,25 +126,52 @@ function MessageBubble({
   const parentImage = findImage(parent);
 
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const startPos = useRef<{ x: number; y: number } | null>(null);
   const bubbleRef = useRef<HTMLDivElement>(null);
+  const [isPressing, setIsPressing] = useState(false);
 
   const clearLongPress = () => {
     if (longPressTimer.current) {
       clearTimeout(longPressTimer.current);
       longPressTimer.current = null;
     }
+    startPos.current = null;
+    setIsPressing(false);
   };
 
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     // Only for touch / pen
     if (event.pointerType === "mouse") return;
+
     const target = event.currentTarget;
+    startPos.current = { x: event.clientX, y: event.clientY };
+    setIsPressing(true);
+
     longPressTimer.current = setTimeout(() => {
       longPressTimer.current = null;
+      setIsPressing(false);
+
+      // Haptic feedback
+      if (navigator.vibrate) {
+        navigator.vibrate(12);
+      }
+
       if (target) {
         onOpenMenu(target);
       }
-    }, 550);
+    }, 480);
+  };
+
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!startPos.current || !longPressTimer.current) return;
+
+    const dx = Math.abs(event.clientX - startPos.current.x);
+    const dy = Math.abs(event.clientY - startPos.current.y);
+
+    // Cancel if user moves finger too much (scrolling)
+    if (dx > 10 || dy > 10) {
+      clearLongPress();
+    }
   };
 
   useEffect(() => () => clearLongPress(), []);
@@ -154,10 +181,12 @@ function MessageBubble({
       data-message-id={message.id}
       className={`group relative flex w-full ${own ? "justify-end" : "justify-start"} ${highlighted ? "z-10" : ""}`}
       onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
       onPointerUp={clearLongPress}
       onPointerCancel={clearLongPress}
       onPointerLeave={clearLongPress}
       onContextMenu={(event) => {
+        // Prevent native context menu on long-press devices
         if (window.matchMedia("(pointer: coarse)").matches) {
           event.preventDefault();
         }
@@ -165,7 +194,9 @@ function MessageBubble({
     >
       <div
         ref={bubbleRef}
-        className={`flex max-w-[min(80%,620px)] flex-col gap-1 ${own ? "items-end" : "items-start"}`}
+        className={`flex max-w-[min(80%,620px)] flex-col gap-1 transition-transform duration-150 ${
+          own ? "items-end" : "items-start"
+        } ${isPressing ? "scale-[0.97]" : ""}`}
       >
         {parent ? (
           <button
@@ -199,11 +230,15 @@ function MessageBubble({
 
         <div className="relative">
           <div
-            className={`rounded-2xl px-4.5 py-2 shadow-sm ${
+            className={`rounded-2xl px-4.5 py-2 shadow-sm transition-all duration-150 ${
               own
                 ? "rounded-br-md bg-zinc-400/25"
                 : "rounded-bl-md bg-zinc-400/10"
-            } ${highlighted ? "ring-2 ring-zinc-400/40 ring-offset-2 ring-offset-transparent" : ""}`}
+            } ${
+              highlighted
+                ? "ring-2 ring-zinc-400/40 ring-offset-2 ring-offset-transparent"
+                : ""
+            } ${isPressing ? "bg-zinc-400/30" : ""}`}
           >
             {images.length ? (
               <MediaGallery
@@ -241,20 +276,6 @@ function MessageBubble({
                 : ""}
             </div>
           </div>
-
-          {/* Mobile: always visible small menu button */}
-          {/* <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              const btn = e.currentTarget;
-              if (btn) onOpenMenu(btn);
-            }}
-            className="absolute -right-2 -top-2 z-10 flex size-7 items-center justify-center rounded-full bg-zinc-400/20 text-zinc-600 shadow-sm md:hidden"
-            aria-label="অ্যাকশন"
-          >
-            <MoreVertical className="size-3.5" />
-          </button> */}
         </div>
 
         {/* Desktop: hover actions */}
@@ -301,6 +322,7 @@ type ActionMenuState = {
   own: boolean;
   x: number;
   y: number;
+  isMobile: boolean;
 } | null;
 
 export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
@@ -694,7 +716,7 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
     }
   };
 
-  // Safe openActionMenu – never touches a null currentTarget
+  // Improved openActionMenu – detects mobile and positions accordingly
   const openActionMenu = (
     message: ChatMessage,
     own: boolean,
@@ -702,23 +724,35 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
   ) => {
     if (!el || typeof el.getBoundingClientRect !== "function") return;
 
+    const isMobile = window.matchMedia("(pointer: coarse)").matches;
     const rect = el.getBoundingClientRect();
-    const menuWidth = 184;
-    const menuHeight = own ? 132 : 76;
-    const gap = 8;
 
-    let x = own ? rect.right - menuWidth : rect.left;
-    let y = rect.top - menuHeight - gap;
+    let x = 0;
+    let y = 0;
 
-    if (x < 8) x = 8;
-    if (x + menuWidth > window.innerWidth - 8) {
-      x = window.innerWidth - menuWidth - 8;
+    if (isMobile) {
+      // Bottom sheet style – we don't really need x/y much
+      x = 0;
+      y = 0;
+    } else {
+      // Desktop floating menu
+      const menuWidth = 184;
+      const menuHeight = own ? 132 : 76;
+      const gap = 8;
+
+      x = own ? rect.right - menuWidth : rect.left;
+      y = rect.top - menuHeight - gap;
+
+      if (x < 8) x = 8;
+      if (x + menuWidth > window.innerWidth - 8) {
+        x = window.innerWidth - menuWidth - 8;
+      }
+      if (y < 8) {
+        y = Math.min(rect.bottom + gap, window.innerHeight - menuHeight - 8);
+      }
     }
-    if (y < 8) {
-      y = Math.min(rect.bottom + gap, window.innerHeight - menuHeight - 8);
-    }
 
-    setActionMenu({ message, own, x, y });
+    setActionMenu({ message, own, x, y, isMobile });
   };
 
   if (authLoading || !me)
@@ -1022,61 +1056,146 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
                 </div>
               </div>
 
-              {/* Mobile / Long-press Action Menu */}
+              {/* ========== ACTION MENU ========== */}
               {actionMenu ? (
                 <>
+                  {/* Backdrop */}
                   <button
                     type="button"
-                    className="fixed inset-0 z-[60] cursor-default"
+                    className="fixed inset-0 z-[60] cursor-default bg-black/30 backdrop-blur-[2px] animate-in fade-in duration-200"
                     aria-label="অ্যাকশন মেনু বন্ধ করুন"
                     onClick={() => setActionMenu(null)}
                   />
-                  <div
-                    className="fixed z-[70] flex min-w-44 max-w-[calc(100vw-16px)] items-center gap-1 rounded-2xl bg-zinc-400/10 p-1.5 shadow-xl backdrop-blur-md"
-                    style={{ left: actionMenu.x, top: actionMenu.y }}
-                    role="menu"
-                  >
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setReplyTo(actionMenu.message);
-                        setActionMenu(null);
-                        textareaRef.current?.focus();
-                      }}
-                      className="flex flex-1 flex-col items-center gap-1 rounded-xl px-4 py-2 text-xs hover:bg-zinc-400/25"
-                      aria-label="রিপ্লাই"
-                    >
-                      <Reply className="size-4" />
-                      <span>রিপ্লাই</span>
-                    </button>
 
-                    {actionMenu.own ? (
-                      <>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setEditing(actionMenu.message.id);
-                            setEditText(actionMenu.message.message || "");
-                            setActionMenu(null);
-                          }}
-                          className="flex flex-1 flex-col items-center gap-1 rounded-xl px-4 py-2 text-xs hover:bg-zinc-400/25"
-                          aria-label="এডিট"
-                        >
-                          <Edit3 className="size-4" />
-                          <span>এডিট</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => void remove(actionMenu.message.id)}
-                          className="flex flex-1 flex-col items-center gap-1 rounded-xl px-4 py-2 text-xs opacity-80 hover:bg-zinc-400/25"
-                          aria-label="মুছুন"
-                        >
-                          <Trash2 className="size-4" />
-                          <span>মুছুন</span>
-                        </button>
-                      </>
-                    ) : null}
-                  </div>
+                  {actionMenu.isMobile ? (
+                    /* ===== Mobile Bottom Sheet (Native-like) ===== */
+                    <div
+                      className="fixed inset-x-0 bottom-0 z-[70] animate-in slide-in-from-bottom duration-300"
+                      role="menu"
+                    >
+                      <div className="mx-auto max-w-lg px-3 pb-safe">
+                        <div className="overflow-hidden rounded-2xl bg-zinc-900/95 shadow-2xl backdrop-blur-xl dark:bg-zinc-800/95">
+                          {/* Handle bar */}
+                          <div className="flex justify-center pt-3 pb-1">
+                            <div className="h-1 w-10 rounded-full bg-zinc-500/40" />
+                          </div>
+
+                          <div className="p-2">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setReplyTo(actionMenu.message);
+                                setActionMenu(null);
+                                textareaRef.current?.focus();
+                              }}
+                              className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] active:bg-zinc-700/50"
+                            >
+                              <div className="flex size-9 items-center justify-center rounded-full bg-zinc-700/60">
+                                <Reply className="size-4.5" />
+                              </div>
+                              <span className="font-medium">রিপ্লাই</span>
+                            </button>
+
+                            {actionMenu.own ? (
+                              <>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setEditing(actionMenu.message.id);
+                                    setEditText(
+                                      actionMenu.message.message || "",
+                                    );
+                                    setActionMenu(null);
+                                  }}
+                                  className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] active:bg-zinc-700/50"
+                                >
+                                  <div className="flex size-9 items-center justify-center rounded-full bg-zinc-700/60">
+                                    <Edit3 className="size-4.5" />
+                                  </div>
+                                  <span className="font-medium">এডিট</span>
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    void remove(actionMenu.message.id)
+                                  }
+                                  className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] text-red-400 active:bg-zinc-700/50"
+                                >
+                                  <div className="flex size-9 items-center justify-center rounded-full bg-red-500/20">
+                                    <Trash2 className="size-4.5" />
+                                  </div>
+                                  <span className="font-medium">মুছুন</span>
+                                </button>
+                              </>
+                            ) : null}
+                          </div>
+
+                          {/* Cancel button */}
+                          <div className="border-t border-zinc-700/50 p-2">
+                            <button
+                              type="button"
+                              onClick={() => setActionMenu(null)}
+                              className="w-full rounded-xl py-3.5 text-center text-[15px] font-semibold text-zinc-300 active:bg-zinc-700/50"
+                            >
+                              বাতিল
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Extra safe area spacing */}
+                        <div className="h-3" />
+                      </div>
+                    </div>
+                  ) : (
+                    /* ===== Desktop Floating Menu ===== */
+                    <div
+                      className="fixed z-[70] flex min-w-44 max-w-[calc(100vw-16px)] items-center gap-1 rounded-2xl bg-zinc-400/15 p-1.5 shadow-xl backdrop-blur-md animate-in fade-in zoom-in-95 duration-150"
+                      style={{ left: actionMenu.x, top: actionMenu.y }}
+                      role="menu"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setReplyTo(actionMenu.message);
+                          setActionMenu(null);
+                          textareaRef.current?.focus();
+                        }}
+                        className="flex flex-1 flex-col items-center gap-1 rounded-xl px-4 py-2 text-xs hover:bg-zinc-400/25"
+                        aria-label="রিপ্লাই"
+                      >
+                        <Reply className="size-4" />
+                        <span>রিপ্লাই</span>
+                      </button>
+
+                      {actionMenu.own ? (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditing(actionMenu.message.id);
+                              setEditText(actionMenu.message.message || "");
+                              setActionMenu(null);
+                            }}
+                            className="flex flex-1 flex-col items-center gap-1 rounded-xl px-4 py-2 text-xs hover:bg-zinc-400/25"
+                            aria-label="এডিট"
+                          >
+                            <Edit3 className="size-4" />
+                            <span>এডিট</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => void remove(actionMenu.message.id)}
+                            className="flex flex-1 flex-col items-center gap-1 rounded-xl px-4 py-2 text-xs opacity-80 hover:bg-zinc-400/25"
+                            aria-label="মুছুন"
+                          >
+                            <Trash2 className="size-4" />
+                            <span>মুছুন</span>
+                          </button>
+                        </>
+                      ) : null}
+                    </div>
+                  )}
                 </>
               ) : null}
 
