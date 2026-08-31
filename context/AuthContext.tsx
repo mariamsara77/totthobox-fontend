@@ -22,9 +22,10 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
+  loading: boolean; // এটি যোগ করুন
   isLoggedIn: boolean;
   login: (email: string, password: string) => Promise<void>;
-  loginWithRefresh: () => Promise<boolean>; // one-click saved profile login
+  loginWithRefresh: () => Promise<boolean>;
   logout: () => Promise<void>;
   mutateUser: () => Promise<void>;
 }
@@ -97,8 +98,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     await fetch("/api/auth/logout", { method: "POST" }).catch(() => null);
     setUser(null);
-    router.push("/login");
-    router.refresh();
+    router.refresh(); // রিডাইরেক্ট না করে বর্তমান পেজটি রিফ্রেশ করবে
   };
 
   return (
@@ -106,6 +106,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       value={{
         user,
         isLoading,
+        loading: isLoading, // এটি যোগ করুন
         isLoggedIn: Boolean(user),
         login,
         loginWithRefresh,

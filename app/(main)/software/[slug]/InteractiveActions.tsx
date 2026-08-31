@@ -2,12 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { ThumbsUp, ThumbsDown, Share2 } from "lucide-react";
-import { getAuthHeaders, isLoggedIn } from "@/lib/auth";
+import { useAuth } from "@/context/AuthContext";
 
-export default function InteractiveActions({
-  appId,
-  initialData,
-}: {
+type Props = {
   appId: number;
   initialData: {
     reactions: {
@@ -19,81 +16,106 @@ export default function InteractiveActions({
     title: string;
     slug: string;
   };
-}) {
-  const [likes, setLikes] = useState(initialData.reactions.like_count);
-  const [dislikes, setDislikes] = useState(initialData.reactions.dislike_count);
-  const [liked, setLiked] = useState(false);
-  const [disliked, setDisliked] = useState(false);
-  const [loadingStatus, setLoadingStatus] = useState(true);
+};
 
-  // পেজ লোড হওয়ার পর ইউজারের আসল রিয়্যাকশন স্ট্যাটাস আনো
+export default function InteractiveActions({ appId, initialData }: Props) {
+  const { isLoggedIn, isLoading: authLoading } = useAuth();
+
+  const [likeCount, setLikeCount] = useState(initialData.reactions.like_count);
+  const [dislikeCount, setDislikeCount] = useState(
+    initialData.reactions.dislike_count,
+  );
+  const [userHasLiked, setUserHasLiked] = useState(false);
+  const [userHasDisliked, setUserHasDisliked] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  // লগইন থাকলে শুধুমাত্র user-এর reaction status আনা
   useEffect(() => {
-    async function fetchUserReaction() {
-      if (!isLoggedIn()) {
-        setLoadingStatus(false);
-        return;
-      }
+    if (authLoading || !isLoggedIn) return;
 
+    const fetchStatus = async () => {
       try {
         const res = await fetch(`/api/backend/apps/${appId}/reaction-status`, {
-          headers: getAuthHeaders(),
+          credentials: "include",
         });
 
         if (res.ok) {
           const data = await res.json();
-          setLiked(data.has_like);
-          setDisliked(data.has_dislike);
+          setUserHasLiked(data.user_has_liked ?? data.has_like ?? false);
+          setUserHasDisliked(
+            data.user_has_disliked ?? data.has_dislike ?? false,
+          );
+
+          if (typeof data.like_count === "number")
+            setLikeCount(data.like_count);
+          if (typeof data.dislike_count === "number")
+            setDislikeCount(data.dislike_count);
         }
-      } catch (error) {
-        console.error("Failed to fetch reaction status", error);
-      } finally {
-        setLoadingStatus(false);
+      } catch (err) {
+        console.error("Reaction status fetch failed", err);
       }
-    }
+    };
 
-    fetchUserReaction();
-  }, [appId]);
+    fetchStatus();
+  }, [appId, isLoggedIn, authLoading]);
 
-  const react = async (type: "like" | "dislike") => {
-    if (!isLoggedIn()) {
-      alert("রিয়্যাকশন করার জন্য লগইন করতে হবে।");
+  const handleReact = async (type: "like" | "dislike") => {
+    if (!isLoggedIn) {
+      alert("রিয়্যাকশন দিতে লগইন করতে হবে");
       window.location.href = "/login";
       return;
     }
 
+    if (loading) return;
+    setLoading(true);
+
     try {
       const res = await fetch(`/api/backend/apps/${appId}/react`, {
         method: "POST",
-        headers: getAuthHeaders(),
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        credentials: "include",
         body: JSON.stringify({ type }),
       });
 
       if (res.status === 401) {
-        alert("সেশন শেষ হয়ে গেছে। আবার লগইন করুন।");
+        alert("সেশন শেষ হয়ে গেছে। আবার লগইন করুন।");
         window.location.href = "/login";
         return;
       }
 
-      if (!res.ok) throw new Error("Failed");
-
       const data = await res.json();
-      setLikes(data.like_count);
-      setDislikes(data.dislike_count);
-      setLiked(data.has_like);
-      setDisliked(data.has_dislike);
-    } catch (error) {
-      console.error(error);
-      alert("রিয়্যাকশন ব্যর্থ হয়েছে");
+
+      if (res.ok && (data.success || data.like_count !== undefined)) {
+        setLikeCount(data.like_count);
+        setDislikeCount(data.dislike_count);
+        setUserHasLiked(data.user_has_liked ?? data.has_like ?? false);
+        setUserHasDisliked(data.user_has_disliked ?? data.has_dislike ?? false);
+      } else {
+        alert(data.message || "রিয়্যাকশন দিতে সমস্যা হয়েছে");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("কিছু সমস্যা হয়েছে");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const share = () => {
+  const handleShare = async () => {
     const url = `${window.location.origin}/software/${initialData.slug}`;
+
     if (navigator.share) {
-      navigator.share({ title: initialData.title, url });
+      try {
+        await navigator.share({ title: initialData.title, url });
+      } catch {
+        // user cancel করলে ignore
+      }
     } else {
-      navigator.clipboard.writeText(url);
-      alert("লিংক কপি করা হয়েছে");
+      await navigator.clipboard.writeText(url);
+      alert("লিংক কপি করা হয়েছে!");
     }
   };
 
@@ -101,35 +123,38 @@ export default function InteractiveActions({
     <div className="flex items-center justify-between">
       <div className="flex gap-4">
         <button
-          onClick={() => react("like")}
-          disabled={loadingStatus}
-          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm   ${
-            liked
+          type="button"
+          onClick={() => handleReact("like")}
+          disabled={loading}
+          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm disabled:opacity-50 ${
+            userHasLiked
               ? "bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
-              : "bg-zinc-900 text-zinc-300 bg-zinc-800 text-zinc-400"
+              : "bg-zinc-400/10 hover:bg-zinc-400/25"
           }`}
         >
           <ThumbsUp className="w-4 h-4" />
-          {likes}
+          {likeCount}
         </button>
 
         <button
-          onClick={() => react("dislike")}
-          disabled={loadingStatus}
-          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm   ${
-            disliked
+          type="button"
+          onClick={() => handleReact("dislike")}
+          disabled={loading}
+          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm disabled:opacity-50 ${
+            userHasDisliked
               ? "bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400"
-              : "bg-zinc-900 text-zinc-300 bg-zinc-800 text-zinc-400"
+              : "bg-zinc-400/10 hover:bg-zinc-400/25"
           }`}
         >
           <ThumbsDown className="w-4 h-4" />
-          {dislikes}
+          {dislikeCount}
         </button>
       </div>
 
       <button
-        onClick={share}
-        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm  bg-zinc-900 text-zinc-300 bg-zinc-800 text-zinc-400"
+        type="button"
+        onClick={handleShare}
+        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm bg-zinc-400/10 hover:bg-zinc-400/25"
       >
         <Share2 className="w-4 h-4" />
         শেয়ার

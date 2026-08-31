@@ -170,7 +170,7 @@ class VisitorTracker {
     payload: TrackPayload = {},
   ): void {
     this.scheduleSend(() => {
-      this.send(`${API_BASE}/api/tracking/event`, {
+      this.send(`${API_BASE}/tracking/event`, {
         category,
         action,
         js_visitor_id: this.visitorId,
@@ -220,7 +220,7 @@ class VisitorTracker {
       const trackedUrl = new URL(window.location.href);
       trackedUrl.searchParams.delete("token");
 
-      this.send(`${API_BASE}/api/tracking/event`, {
+      this.send(`${API_BASE}/tracking/event`, {
         category: "page",
         action: "view",
         js_visitor_id: this.visitorId,
@@ -266,7 +266,7 @@ class VisitorTracker {
         id: item.data.js_visitor_id,
       }));
 
-      this.send(`${API_BASE}/api/tracking/sync`, {
+      this.send(`${API_BASE}/tracking/sync`, {
         category: "offline",
         action: "sync",
         js_visitor_id: this.visitorId,

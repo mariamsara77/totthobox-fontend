@@ -1,94 +1,70 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { ThumbsUp, ThumbsDown, Share2 } from "lucide-react";
-import { getAuthHeaders, isLoggedIn } from "@/lib/auth";
-
-type Reactions = {
-  like_count: number;
-  dislike_count: number;
-  user_has_liked: boolean;
-  user_has_disliked: boolean;
-};
+import { useAuth } from "@/context/AuthContext";
 
 type Props = {
   tourismId: number;
   initialData: {
-    reactions: Reactions;
+    reactions: {
+      like_count: number;
+      dislike_count: number;
+      user_has_liked: boolean;
+      user_has_disliked: boolean;
+    };
     title: string;
     slug: string;
   };
 };
 
 export default function InteractiveActions({ tourismId, initialData }: Props) {
-  const router = useRouter();
-  const [reactions, setReactions] = useState<Reactions>({
-    like_count: initialData.reactions?.like_count ?? 0,
-    dislike_count: initialData.reactions?.dislike_count ?? 0,
-    user_has_liked: initialData.reactions?.user_has_liked ?? false,
-    user_has_disliked: initialData.reactions?.user_has_disliked ?? false,
-  });
+  const { isLoggedIn, isLoading: authLoading } = useAuth();
+
+  const [likeCount, setLikeCount] = useState(initialData.reactions.like_count);
+  const [dislikeCount, setDislikeCount] = useState(
+    initialData.reactions.dislike_count,
+  );
+  const [userHasLiked, setUserHasLiked] = useState(false);
+  const [userHasDisliked, setUserHasDisliked] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [statusLoading, setStatusLoading] = useState(true);
 
+  // লগইন থাকলে শুধুমাত্র user-এর reaction status আনা
   useEffect(() => {
-    let cancelled = false;
+    if (authLoading || !isLoggedIn) return;
 
-    async function fetchUserReaction() {
-      if (!isLoggedIn()) {
-        if (!cancelled) setStatusLoading(false);
-        return;
-      }
-
+    const fetchStatus = async () => {
       try {
         const res = await fetch(
           `/api/backend/tourism-bd/${tourismId}/reaction-status`,
           {
-            headers: {
-              ...getAuthHeaders(),
-              Accept: "application/json",
-            },
+            credentials: "include",
           },
         );
 
-        if (res.ok && !cancelled) {
+        if (res.ok) {
           const data = await res.json();
-          setReactions((prev) => ({
-            ...prev,
-            user_has_liked:
-              data.has_like ?? data.user_has_liked ?? prev.user_has_liked,
-            user_has_disliked:
-              data.has_dislike ??
-              data.user_has_disliked ??
-              prev.user_has_disliked,
-          }));
+          setUserHasLiked(data.user_has_liked ?? data.has_like ?? false);
+          setUserHasDisliked(
+            data.user_has_disliked ?? data.has_dislike ?? false,
+          );
+
+          if (typeof data.like_count === "number")
+            setLikeCount(data.like_count);
+          if (typeof data.dislike_count === "number")
+            setDislikeCount(data.dislike_count);
         }
-      } catch (error) {
-        console.error("Failed to fetch reaction status", error);
-      } finally {
-        if (!cancelled) setStatusLoading(false);
+      } catch (err) {
+        console.error("Reaction status fetch failed", err);
       }
-    }
-
-    fetchUserReaction();
-    return () => {
-      cancelled = true;
     };
-  }, [tourismId]);
 
-  useEffect(() => {
-    setReactions({
-      like_count: initialData.reactions?.like_count ?? 0,
-      dislike_count: initialData.reactions?.dislike_count ?? 0,
-      user_has_liked: initialData.reactions?.user_has_liked ?? false,
-      user_has_disliked: initialData.reactions?.user_has_disliked ?? false,
-    });
-  }, [initialData.reactions]);
+    fetchStatus();
+  }, [tourismId, isLoggedIn, authLoading]);
 
   const handleReact = async (type: "like" | "dislike") => {
-    if (!isLoggedIn()) {
-      alert("রিয়্যাকশন দিতে লগইন করতে হবে");
+    if (!isLoggedIn) {
+      alert("রিয়্যাকশন দিতে লগইন করতে হবে");
       window.location.href = "/login";
       return;
     }
@@ -100,38 +76,32 @@ export default function InteractiveActions({ tourismId, initialData }: Props) {
       const res = await fetch(`/api/backend/tourism-bd/${tourismId}/react`, {
         method: "POST",
         headers: {
-          ...getAuthHeaders(),
           "Content-Type": "application/json",
           Accept: "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({ type }),
       });
 
       if (res.status === 401) {
-        alert("সেশন শেষ হয়ে গেছে। আবার লগইন করুন।");
+        alert("সেশন শেষ হয়ে গেছে। আবার লগইন করুন।");
         window.location.href = "/login";
         return;
       }
 
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        alert(err.message || "রিয়্যাকশন দিতে সমস্যা হয়েছে");
-        return;
+      const data = await res.json();
+
+      if (res.ok && (data.success || data.like_count !== undefined)) {
+        setLikeCount(data.like_count);
+        setDislikeCount(data.dislike_count);
+        setUserHasLiked(data.user_has_liked ?? data.has_like ?? false);
+        setUserHasDisliked(data.user_has_disliked ?? data.has_dislike ?? false);
+      } else {
+        alert(data.message || "রিয়্যাকশন দিতে সমস্যা হয়েছে");
       }
-
-      const json = await res.json();
-
-      setReactions({
-        like_count: json.like_count ?? 0,
-        dislike_count: json.dislike_count ?? 0,
-        user_has_liked: json.has_like ?? false,
-        user_has_disliked: json.has_dislike ?? false,
-      });
-
-      router.refresh();
     } catch (err) {
       console.error(err);
-      alert("কিছু সমস্যা হয়েছে");
+      alert("কিছু সমস্যা হয়েছে");
     } finally {
       setLoading(false);
     }
@@ -139,15 +109,16 @@ export default function InteractiveActions({ tourismId, initialData }: Props) {
 
   const handleShare = async () => {
     const url = `${window.location.origin}/bangladesh/tourism/${initialData.slug}`;
-    try {
-      if (navigator.share) {
+
+    if (navigator.share) {
+      try {
         await navigator.share({ title: initialData.title, url });
-      } else {
-        await navigator.clipboard.writeText(url);
-        alert("লিংক কপি করা হয়েছে!");
+      } catch {
+        // user cancel করলে ignore
       }
-    } catch {
-      // cancelled
+    } else {
+      await navigator.clipboard.writeText(url);
+      alert("লিংক কপি করা হয়েছে!");
     }
   };
 
@@ -157,39 +128,39 @@ export default function InteractiveActions({ tourismId, initialData }: Props) {
         <button
           type="button"
           onClick={() => handleReact("like")}
-          disabled={loading || statusLoading}
-          className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm   disabled:opacity-50 ${
-            reactions.user_has_liked
+          disabled={loading}
+          className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm disabled:opacity-50 ${
+            userHasLiked
               ? "bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
-              : "bg-zinc-400/10  hover:bg-zinc-800 hover:bg-zinc-700"
+              : "bg-zinc-400/10 hover:bg-zinc-400/25"
           }`}
         >
           <ThumbsUp className="w-4 h-4" />
-          {reactions.like_count}
+          {likeCount}
         </button>
 
         <button
           type="button"
           onClick={() => handleReact("dislike")}
-          disabled={loading || statusLoading}
-          className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm   disabled:opacity-50 ${
-            reactions.user_has_disliked
+          disabled={loading}
+          className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm disabled:opacity-50 ${
+            userHasDisliked
               ? "bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400"
-              : "bg-zinc-400/10  hover:bg-zinc-800 hover:bg-zinc-700"
+              : "bg-zinc-400/10 hover:bg-zinc-400/25"
           }`}
         >
           <ThumbsDown className="w-4 h-4" />
-          {reactions.dislike_count}
+          {dislikeCount}
         </button>
       </div>
 
       <button
         type="button"
         onClick={handleShare}
-        className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm  bg-zinc-400/10  hover:bg-zinc-800 hover:bg-zinc-700 "
+        className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm bg-zinc-400/10 hover:bg-zinc-400/25"
       >
         <Share2 className="w-4 h-4" />
-        শেয়ার
+        শেয়ার
       </button>
     </div>
   );
