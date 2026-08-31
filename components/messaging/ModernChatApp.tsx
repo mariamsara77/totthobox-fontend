@@ -243,7 +243,7 @@ function MessageBubble({
           </div>
 
           {/* Mobile: always visible small menu button */}
-          <button
+          {/* <button
             type="button"
             onClick={(e) => {
               e.stopPropagation();
@@ -254,7 +254,7 @@ function MessageBubble({
             aria-label="অ্যাকশন"
           >
             <MoreVertical className="size-3.5" />
-          </button>
+          </button> */}
         </div>
 
         {/* Desktop: hover actions */}
@@ -1032,7 +1032,7 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
                     onClick={() => setActionMenu(null)}
                   />
                   <div
-                    className="fixed z-[70] flex min-w-44 max-w-[calc(100vw-16px)] items-center gap-1 rounded-2xl bg-zinc-400/15 p-1.5 shadow-xl backdrop-blur-md"
+                    className="fixed z-[70] flex min-w-44 max-w-[calc(100vw-16px)] items-center gap-1 rounded-2xl bg-zinc-400/10 p-1.5 shadow-xl backdrop-blur-md"
                     style={{ left: actionMenu.x, top: actionMenu.y }}
                     role="menu"
                   >
