@@ -1,4 +1,4 @@
-const LARAVEL_API_URL = process.env.LARAVEL_API_URL || "https://admin.totthobox.com/api";
+const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL || "https://admin.totthobox.com/api";
 
 interface LaravelFetchInit extends Omit<RequestInit, "headers"> {
   token?: string | null;
@@ -11,7 +11,7 @@ export async function laravelFetch(path: string, init: LaravelFetchInit = {}): P
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
   const isFormData = rest.body instanceof FormData;
 
-  return fetch(`${LARAVEL_API_URL}${normalizedPath}`, {
+  return fetch(`${NEXT_PUBLIC_API_URL}${normalizedPath}`, {
     ...rest,
     cache: "no-store",
     headers: {

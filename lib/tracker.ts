@@ -1,7 +1,7 @@
 // lib/tracker.ts
 
 const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL || "https://admin.totthobox.com";
+  process.env.NEXT_PUBLIC_API_URL || "https://admin.totthobox.com/api";
 
 type TrackPayload = Record<string, unknown>;
 
