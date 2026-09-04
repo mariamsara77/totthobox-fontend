@@ -111,17 +111,17 @@ export default function WordCounter() {
       <div className="space-y-8">
         {/* Header */}
         <div className="text-center space-y-2 mb-8">
-          <h1 className="text-3xl   tracking-tight text-zinc-50 dark:text-white">
+          <h1 className="text-lg font-semibold tracking-tight sm:text-xl">
             ওয়ার্ড অ্যান্ড ক্যারেক্টার কাউন্টার
           </h1>
-          <h2 className="text-lg ">
+          <h2 className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
             শব্দ, অক্ষর, বাক্য, প্যারাগ্রাফ ও পড়ার সময় এক নজরে জানুন
           </h2>
         </div>
 
         <div className="space-y-4">
           {/* Input Card */}
-          <div className="rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900/50 p-4 space-y-4">
+          <div className="space-y-4 rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 sm:p-5">
             <div className="flex flex-col gap-2">
               <label className="text-sm  ">
                 এখানে টেক্সট লিখুন বা পেস্ট করুন
@@ -131,7 +131,7 @@ export default function WordCounter() {
                 onChange={(e) => setText(e.target.value)}
                 rows={8}
                 placeholder="আপনার টেক্সট এখানে লিখুন..."
-                className="w-full p-2 rounded-lg bg-zinc-400/10 border-none outline-none font-mono text-sm resize-y min-h-[160px]"
+                className="min-h-[160px] w-full resize-y rounded-xl bg-zinc-100 p-3 font-mono text-sm outline-none dark:bg-zinc-800"
               />
             </div>
 
@@ -142,28 +142,28 @@ export default function WordCounter() {
                 disabled={!stats.hasText}
                 className="px-3 py-1.5 text-xs  rounded-lg border border-zinc-400/25 dark:border-zinc-700 hover:bg-zinc-900 hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                UPPERCASE
+                বড় হাতের অক্ষর
               </button>
               <button
                 onClick={toLowerCase}
                 disabled={!stats.hasText}
                 className="px-3 py-1.5 text-xs  rounded-lg border border-zinc-400/25 dark:border-zinc-700 hover:bg-zinc-900 hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                lowercase
+                ছোট হাতের অক্ষর
               </button>
               <button
                 onClick={toSentenceCase}
                 disabled={!stats.hasText}
                 className="px-3 py-1.5 text-xs  rounded-lg border border-zinc-400/25 dark:border-zinc-700 hover:bg-zinc-900 hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                Sentence case
+                বাক্যের ধরন
               </button>
               <button
                 onClick={toTitleCase}
                 disabled={!stats.hasText}
                 className="px-3 py-1.5 text-xs  rounded-lg border border-zinc-400/25 dark:border-zinc-700 hover:bg-zinc-900 hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                Title Case
+                শিরোনামের ধরন
               </button>
             </div>
 

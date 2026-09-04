@@ -80,7 +80,7 @@ export default function ForgotPasswordPage() {
 
     return (
       <div className="space-y-6 text-center max-w-md mx-auto">
-        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/10 text-blue-600 mx-auto">
+        <div className="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-600/15 text-emerald-600 dark:text-emerald-400">
           <Mail size={24} />
         </div>
 
@@ -94,7 +94,7 @@ export default function ForgotPasswordPage() {
               href={emailUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-blue-600 hover:underline font-medium"
+              className="inline-flex items-center gap-1.5 font-medium text-emerald-600 hover:underline dark:text-emerald-400"
             >
               <span>{email}</span>
               <ExternalLink size={14} className="opacity-60" />
@@ -107,7 +107,7 @@ export default function ForgotPasswordPage() {
 
         <Link
           href="/login"
-          className="inline-flex items-center gap-1.5 text-sm font-bold text-blue-600 hover:underline"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-600 hover:underline dark:text-emerald-400"
         >
           <ArrowLeft size={14} />
           <span>লগ ইনে ফিরে যান</span>
@@ -119,7 +119,7 @@ export default function ForgotPasswordPage() {
   return (
     <div className="space-y-6 max-w-md mx-auto">
       <div className="text-center space-y-2">
-        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/10 text-blue-600 mb-1 mx-auto">
+        <div className="mx-auto mb-1 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-600/15 text-emerald-600 dark:text-emerald-400">
           <KeyRound size={24} />
         </div>
         <h1 className="text-2xl font-bold">পাসওয়ার্ড ভুলে গেছেন?</h1>
@@ -139,8 +139,8 @@ export default function ForgotPasswordPage() {
             }}
             placeholder="ইমেইল অ্যাড্রেস"
             autoComplete="email"
-            className={`w-full rounded-full py-3.5 px-6 border bg-zinc-400/10 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition ${
-              errors.email ? "border-red-500" : "border-transparent"
+            className={`w-full rounded-xl border bg-zinc-400/10 px-4 py-3.5 outline-none transition focus:ring-2 focus:ring-emerald-600 ${
+              errors.email ? "border-rose-500" : "border-transparent"
             }`}
           />
           {errors.email && (
@@ -151,7 +151,7 @@ export default function ForgotPasswordPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-full transition disabled:opacity-60"
+          className="w-full rounded-xl bg-emerald-600 py-3.5 font-semibold text-zinc-100 transition-colors hover:bg-emerald-500 disabled:opacity-60"
         >
           {loading ? "পাঠানো হচ্ছে..." : "রিসেট লিংক পাঠান"}
         </button>

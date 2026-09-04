@@ -25,7 +25,7 @@ export default function ThemeToggle() {
   ];
 
   return (
-    <div className="flex w-full gap-2 items-center rounded-xl p-1 bg-zinc-400/10">
+    <div className="flex w-full gap-2 items-center rounded-xl p-1 backdrop-blur-sm border border-zinc-400/25 bg-zinc-400/10">
       {themes.map(({ id, label, icon: Icon }) => {
         const isActive = theme === id;
         return (

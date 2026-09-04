@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import BrandIcon from "@/components/BrandIcon";
-import SidebarProfileMenu from "./SidebarProfileMenu";
+import SearchTrigger from "@/components/search/SearchTrigger";
 
 // React Icons
 import {
@@ -58,6 +58,8 @@ import {
 
 import { useSettingsModal } from "@/context/SettingsModalContext";
 import { useSidebar } from "@/context/SidebarContext";
+import { IoSettings } from "react-icons/io5";
+import ProfileMenu from "./ProfileMenu";
 
 function cn(...classes: (string | boolean | undefined | null)[]) {
   return classes.filter(Boolean).join(" ");
@@ -262,7 +264,7 @@ export default function Sidebar() {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed top-0 left-0 z-100 flex h-screen flex-col bg-zinc-100 dark:bg-zinc-900 transition-all duration-300 ease-in-out",
+          "fixed top-0 left-0 z-100 flex h-screen flex-col backdrop-blur-xl border-r border-zinc-400/25 transition-all duration-300 ease-in-out",
           isOpen ? "translate-x-0" : "-translate-x-full",
           "md:sticky md:top-0 md:translate-x-0",
           collapsed ? "md:w-16" : "md:w-64",
@@ -337,6 +339,13 @@ export default function Sidebar() {
         {/* Navigation */}
         <div className="flex-1 overflow-y-auto p-2" onScroll={handleMouseLeave}>
           <div className="space-y-4">
+            <SearchTrigger
+              className="w-full"
+              collapsed={collapsed}
+              onHover={handleMouseEnter}
+              onLeave={handleMouseLeave}
+              showLabel={true}
+            />
             {/* ===================== CALENDAR ===================== */}
             {pathname.startsWith("/bangla/") && (
               <div className="space-y-1">
@@ -365,7 +374,6 @@ export default function Sidebar() {
                 />
               </div>
             )}
-
             {/* ===================== CONVERTER ===================== */}
             {pathname.startsWith("/converter") && (
               <div className="space-y-1">
@@ -569,7 +577,6 @@ export default function Sidebar() {
                 )}
               </div>
             )}
-
             {/* ===================== BANGLADESH ===================== */}
             {pathname.startsWith("/bangladesh") && (
               <div className="space-y-1">
@@ -625,7 +632,6 @@ export default function Sidebar() {
                 />
               </div>
             )}
-
             {/* ===================== CALENDAR ===================== */}
             {pathname.startsWith("/international/") && (
               <div className="space-y-1">
@@ -673,7 +679,6 @@ export default function Sidebar() {
                 />
               </div>
             )}
-
             {/* ===================== TOOLS ===================== */}
             {pathname.startsWith("/tools") && (
               <div className="space-y-1">
@@ -747,7 +752,6 @@ export default function Sidebar() {
                 />
               </div>
             )}
-
             {/* ===================== SOFTWARE (Dynamic) ===================== */}
             {/* ===================== SOFTWARE (Dynamic) ===================== */}
             {pathname.startsWith("/software") && (
@@ -784,7 +788,6 @@ export default function Sidebar() {
                 ))}
               </div>
             )}
-
             {/* ===================== CONTACT (Dynamic) ===================== */}
             {/* ===================== CONTACT (Dynamic) ===================== */}
             {pathname.startsWith("/contact") && (
@@ -808,7 +811,6 @@ export default function Sidebar() {
                 ))}
               </div>
             )}
-
             {/* ===================== SIGNS (Dynamic) ===================== */}
             {pathname.startsWith("/signs") && (
               <div className="space-y-1">
@@ -840,7 +842,6 @@ export default function Sidebar() {
                 ))}
               </div>
             )}
-
             {/* ===================== SETTINGS ===================== */}
             {pathname.startsWith("/settings") && (
               <div className="space-y-1">
@@ -881,7 +882,6 @@ export default function Sidebar() {
                 />
               </div>
             )}
-
             {/* ===================== EXCEL (Dynamic) ===================== */}
             {pathname.startsWith("/excel-expert") && (
               <div className="space-y-1">
@@ -918,16 +918,17 @@ export default function Sidebar() {
 
         {/* Footer */}
         {/* Footer */}
-        <div className="border-t border-zinc-400/25 p-2 border-zinc-400/25">
+        <div className="p-2 space-y-2">
           <SidebarItem
             onClick={openSettingsModal}
-            icon={Settings}
+            icon={IoSettings}
             label="সেটিংস"
             collapsed={collapsed}
             onHover={handleMouseEnter}
             onLeave={handleMouseLeave}
           />
-          <SidebarProfileMenu
+          <ProfileMenu
+            variant="sidebar"
             collapsed={collapsed}
             onHover={handleMouseEnter}
             onLeave={handleMouseLeave}

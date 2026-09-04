@@ -52,28 +52,28 @@ export default function TimeConverter() {
 
   return (
     <section className="w-full">
-      <div className="space-y-8">
+      <div className="space-y-4">
         {/* হেডার */}
-        <div className="text-center space-y-2 mb-10">
-          <h1 className="text-3xl   tracking-tight text-zinc-50 dark:text-white">
-            Time Converter
+        <div className="space-y-2 text-center">
+          <h1 className="text-lg font-semibold tracking-tight sm:text-xl">
+            সময় রূপান্তরকারী
           </h1>
-          <h2 className="text-lg ">
-            সময় রূপান্তরকারী — সেকেন্ড, মিনিট, ঘণ্টা, দিন
+          <h2 className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+            সেকেন্ড, মিনিট, ঘণ্টা ও দিন
           </h2>
         </div>
 
-        <div className="space-y-4 w-full">
+        <div className="space-y-4 rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 sm:p-5">
           {/* Input Section (From) */}
           <div className="w-full flex flex-col gap-2">
-            <label className="text-sm  ">
-              যে ইউনিট থেকে (From)
+            <label className="text-sm text-zinc-600 dark:text-zinc-400">
+              যে একক থেকে
             </label>
-            <div className="flex w-full rounded-lg overflow-hidden">
+            <div className="flex w-full flex-col gap-2 sm:flex-row">
               <select
                 value={inputUnit}
                 onChange={(e) => setInputUnit(e.target.value)}
-                className="w-full sm:w-1/2 p-2 bg-zinc-800 border-none cursor-pointer outline-none"
+                className="w-full appearance-none rounded-xl bg-zinc-100 p-2.5 outline-none dark:bg-zinc-800 sm:w-1/2"
               >
                 {unitOptions.map((unit) => (
                   <option key={unit.value} value={unit.value}>
@@ -87,7 +87,7 @@ export default function TimeConverter() {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="মান লিখুন"
-                className="w-full sm:w-1/2 p-2 bg-zinc-800/80 outline-none"
+                className="w-full rounded-xl bg-zinc-100 p-2.5 outline-none dark:bg-zinc-800 sm:w-1/2"
               />
             </div>
           </div>
@@ -97,7 +97,7 @@ export default function TimeConverter() {
             <button
               onClick={swapTimeUnits}
               title="ইউনিট অদলবদল করুন"
-              className="p-3 rounded-full hover:bg-zinc-800/80"
+              className="rounded-xl p-3 transition-colors hover:bg-zinc-400/25"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
@@ -107,14 +107,14 @@ export default function TimeConverter() {
 
           {/* Output Section (To) */}
           <div className="w-full flex flex-col gap-2">
-            <label className="text-sm  ">
-              যে ইউনিটে রূপান্তর (To)
+            <label className="text-sm text-zinc-600 dark:text-zinc-400">
+              যে এককে রূপান্তর
             </label>
-            <div className="flex w-full rounded-lg overflow-hidden">
+            <div className="flex w-full flex-col gap-2 sm:flex-row">
               <select
                 value={outputUnit}
                 onChange={(e) => setOutputUnit(e.target.value)}
-                className="w-full sm:w-1/2 p-2 bg-zinc-800 border-none cursor-pointer outline-none"
+                className="w-full appearance-none rounded-xl bg-zinc-100 p-2.5 outline-none dark:bg-zinc-800 sm:w-1/2"
               >
                 {unitOptions.map((unit) => (
                   <option key={unit.value} value={unit.value}>
@@ -128,7 +128,7 @@ export default function TimeConverter() {
                 value={outputValue}
                 readOnly
                 placeholder="ফলাফল"
-                className="w-full sm:w-1/2 p-2 bg-zinc-800/80 outline-none"
+                className="w-full rounded-xl bg-zinc-100 p-2.5 outline-none dark:bg-zinc-800 sm:w-1/2"
               />
             </div>
           </div>

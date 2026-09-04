@@ -127,8 +127,8 @@ function ResetPasswordForm() {
             placeholder="নতুন পাসওয়ার্ড (কমপক্ষে ৮ অক্ষর)"
             autoComplete="new-password"
             className={clsx(
-              "w-full rounded-full py-3.5 px-6 pr-20 border bg-zinc-400/10 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition",
-              errors.password ? "border-red-500" : "border-transparent",
+              "w-full rounded-xl border bg-zinc-400/10 px-4 py-3.5 pr-20 outline-none transition focus:ring-2 focus:ring-emerald-600",
+              errors.password ? "border-rose-500" : "border-transparent",
             )}
           />
           <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3">
@@ -164,7 +164,7 @@ function ResetPasswordForm() {
             placeholder="পাসওয়ার্ডটি পুনরায় লিখুন"
             autoComplete="new-password"
             className={clsx(
-              "w-full rounded-full py-3.5 px-6 pr-20 border bg-zinc-400/10 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition",
+              "w-full rounded-xl border bg-zinc-400/10 px-4 py-3.5 pr-20 outline-none transition focus:ring-2 focus:ring-emerald-600",
               errors.password_confirmation
                 ? "border-red-500"
                 : "border-transparent",

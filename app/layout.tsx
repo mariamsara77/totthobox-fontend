@@ -63,7 +63,7 @@ export const metadata: Metadata = {
 
 // ২. Viewport আলাদা কনফিগারেশন (Next.js 14+ এর জন্য আবশ্যক)
 export const viewport: Viewport = {
-  themeColor: "#ffffff",
+  themeColor: "#171717",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -82,10 +82,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${notoBengali.variable}`}
     >
       <head />
-      <body
-        suppressHydrationWarning
-        className="min-h-screen dark:bg-zinc-800 antialiased"
-      >
+      <body suppressHydrationWarning className="min-h-screen antialiased">
         <NetworkStatus /> {/* অফলাইন এলার্ট ব্যানার */}
         <TagManager />
         <AppProviders>

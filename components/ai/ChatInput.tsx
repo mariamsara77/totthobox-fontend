@@ -79,7 +79,7 @@ export default function ChatInput({
     <div className="text-center">
       {/* গেস্ট নোটিফিকেশন বার */}
       {isGuest && (
-        <div className="flex items-center justify-between text-xs  rounded-lg mb-2 bg-zinc-400/10 p-2">
+        <div className="mb-2 flex items-center justify-between rounded-xl bg-zinc-400/10 p-2 text-xs">
           <span>
             বিনা মূল্যে বাকি আছে: <strong>{guestRemaining}</strong> টি উত্তর
           </span>
@@ -87,7 +87,7 @@ export default function ChatInput({
             <button
               type="button"
               onClick={onLogin}
-              className="flex items-center gap-1  hover:underline"
+              className="flex items-center gap-1 text-emerald-600 hover:underline dark:text-emerald-400"
             >
               <LogIn className="w-3.5 h-3.5" />
               লগইন করুন
@@ -101,8 +101,8 @@ export default function ChatInput({
         <div className="relative inline-block mb-2">
           <img
             src={imagePreview}
-            alt="Upload preview"
-            className="w-16 h-16 object-cover rounded-lg border border-gray-700"
+            alt="আপলোডের পূর্বরূপ"
+            className="h-16 w-16 rounded-xl border border-zinc-400/25 object-cover"
           />
           <button
             type="button"
@@ -115,7 +115,7 @@ export default function ChatInput({
       )}
 
       {/* ইনপুট বক্স */}
-      <div className="flex items-end gap-2 bg-zinc-400/10 rounded-4xl  p-2 ">
+      <div className="flex items-end gap-2 rounded-2xl bg-zinc-400/10 p-2">
         <input
           type="file"
           ref={fileInputRef}
@@ -127,7 +127,7 @@ export default function ChatInput({
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={disabled}
-          className="p-2 text-gray-400 hover:text-zinc-50 disabled:opacity-50 transition"
+          className="rounded-xl p-2 text-zinc-500 transition-colors hover:bg-zinc-400/25 disabled:opacity-50 dark:text-zinc-400"
           title="ছবি যুক্ত করুন"
         >
           <ImageIcon className="w-5 h-5" />
@@ -147,12 +147,14 @@ export default function ChatInput({
           type="button"
           onClick={handleSubmit}
           disabled={disabled || (!text.trim() && !imageBase64)}
-          className="p-2 m-1 bg-zinc-400/10 rounded-lg hover:bg-zinc-400/50 disabled:opacity-50 transition"
+          className="m-1 rounded-xl bg-zinc-400/10 p-2 transition-colors hover:bg-zinc-400/25 disabled:opacity-50"
         >
           <Send className="w-4 h-4" />
         </button>
       </div>
-      <span className=" opacity-50 text-xs">Totthobox AI can mistakes please justice always.</span>
+      <span className="text-xs text-zinc-500">
+        উত্তর যাচাই করে ব্যবহার করুন।
+      </span>
     </div>
   );
 }

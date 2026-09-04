@@ -9,8 +9,8 @@ import { SiGmail } from "react-icons/si";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-zinc-400/25 py-8 mt-12">
-      <div className="container mx-auto px-4 flex flex-col items-center gap-6">
+    <footer className="mt-12 border-t border-zinc-400/25 py-8">
+      <div className="mx-auto flex max-w-2xl flex-col items-center gap-4 px-3 sm:px-4">
         {/* Navigation + Cookie Button */}
         <nav
           className="flex flex-wrap justify-center items-center gap-4 md:gap-6"
@@ -18,25 +18,25 @@ export default function Footer() {
         >
           <Link
             href="/about-us"
-            className="hover:opacity-50"
+            className="rounded-xl px-2 py-1 text-sm text-zinc-600 transition-colors hover:bg-zinc-400/25 dark:text-zinc-400"
           >
             আমাদের সম্পর্কে
           </Link>
           <Link
             href="/privacy-policy"
-            className="hover:opacity-50"
+            className="rounded-xl px-2 py-1 text-sm text-zinc-600 transition-colors hover:bg-zinc-400/25 dark:text-zinc-400"
           >
             গোপনীয়তা নীতি
           </Link>
           <Link
             href="/terms-of-service"
-            className="hover:opacity-50"
+            className="rounded-xl px-2 py-1 text-sm text-zinc-600 transition-colors hover:bg-zinc-400/25 dark:text-zinc-400"
           >
             ব্যবহারের শর্তাবলী
           </Link>
           <Link
             href="/contact-us"
-            className="hover:opacity-50"
+            className="rounded-xl px-2 py-1 text-sm text-zinc-600 transition-colors hover:bg-zinc-400/25 dark:text-zinc-400"
           >
             যোগাযোগ
           </Link>
@@ -50,7 +50,7 @@ export default function Footer() {
             href="https://facebook.com/totthobox"
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-lg p-2 text-zinc-400 transition-all hover:bg-zinc-800 hover:text-zinc-50"
+            className="rounded-xl p-2 text-zinc-500 transition-colors hover:bg-zinc-400/25 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
             aria-label="Facebook"
           >
             <FaFacebook className="w-5 h-5" />
@@ -59,7 +59,7 @@ export default function Footer() {
             href="https://x.com/totthobox"
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-lg p-2 text-zinc-400 transition-all hover:bg-zinc-800 hover:text-zinc-50"
+            className="rounded-xl p-2 text-zinc-500 transition-colors hover:bg-zinc-400/25 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
             aria-label="X"
           >
             <FaXTwitter className="w-5 h-5" />
@@ -68,14 +68,14 @@ export default function Footer() {
             href="https://t.me/totthobox"
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-lg p-2 text-zinc-400 transition-all hover:bg-zinc-800 hover:text-zinc-50"
+            className="rounded-xl p-2 text-zinc-500 transition-colors hover:bg-zinc-400/25 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
             aria-label="Telegram"
           >
             <FaTelegramPlane className="w-5 h-5" />
           </a>
           <a
             href="mailto:admin@totthobox.com"
-            className="rounded-lg p-2 text-zinc-400 transition-all hover:bg-zinc-800 hover:text-zinc-50"
+            className="rounded-xl p-2 text-zinc-500 transition-colors hover:bg-zinc-400/25 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
             aria-label="Email"
           >
             <SiGmail className="w-5 h-5" />
@@ -92,7 +92,6 @@ export default function Footer() {
           </p>
         </div>
       </div>
-
     </footer>
   );
 }

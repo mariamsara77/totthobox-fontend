@@ -23,20 +23,20 @@ export default function MainLayout({
   return (
     <div>
       <SidebarProvider>
-          <div className="flex min-h-screen">
-            {/* Sidebar */}
-            <Sidebar />
+        <div className="flex min-h-screen">
+          {/* Sidebar */}
+          <Sidebar />
 
-            {/* Main content area */}
-            <div className="flex min-h-screen min-w-0 flex-1 flex-col">
-              <div className="md:hidden sticky top-0 z-50">
-                <Navbar />
-              </div>
-
-              <main className="flex-1 w-full">{children}</main>
-              <Footer />
+          {/* Main content area */}
+          <div className="flex min-h-screen min-w-0 flex-1 flex-col">
+            <div className="md:hidden sticky top-0 z-50">
+              <Navbar />
             </div>
+
+            <main className="flex-1 w-full">{children}</main>
+            <Footer />
           </div>
+        </div>
       </SidebarProvider>
     </div>
   );

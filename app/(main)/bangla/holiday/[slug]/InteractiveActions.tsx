@@ -122,15 +122,16 @@ export default function InteractiveActions({ holidayId, initialData }: Props) {
   };
 
   return (
-    <div className="flex items-center justify-between gap-4">
-      <div className="flex gap-4">
+    <div className="flex items-center justify-between gap-3">
+      <div className="flex gap-3">
         <button
           onClick={() => handleReact("like")}
           disabled={loading}
-          className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm 
+          aria-label="পছন্দ করুন"
+          className={`inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm transition-colors active:scale-[0.98]
             ${
               userHasLiked
-                ? "bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
+                ? "bg-emerald-600/15 text-emerald-600 dark:text-emerald-400"
                 : "bg-zinc-400/10 hover:bg-zinc-400/25"
             }`}
         >
@@ -141,10 +142,11 @@ export default function InteractiveActions({ holidayId, initialData }: Props) {
         <button
           onClick={() => handleReact("dislike")}
           disabled={loading}
-          className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm 
+          aria-label="অপছন্দ করুন"
+          className={`inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm transition-colors active:scale-[0.98]
             ${
               userHasDisliked
-                ? "bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400"
+                ? "bg-rose-500/15 text-rose-500 dark:text-rose-400"
                 : "bg-zinc-400/10 hover:bg-zinc-400/25"
             }`}
         >
@@ -155,7 +157,8 @@ export default function InteractiveActions({ holidayId, initialData }: Props) {
 
       <button
         onClick={handleShare}
-        className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm bg-zinc-400/10 hover:bg-zinc-400/25"
+        aria-label="শেয়ার করুন"
+        className="inline-flex items-center gap-2 rounded-xl bg-zinc-400/10 px-3 py-2 text-sm transition-colors hover:bg-zinc-400/25 active:scale-[0.98]"
       >
         <Share2 className="w-4 h-4" />
         শেয়ার

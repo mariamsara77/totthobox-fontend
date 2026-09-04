@@ -5,6 +5,7 @@ import { Menu, PanelLeft } from "lucide-react";
 import ProfileMenu from "./ProfileMenu";
 import { useSidebar } from "@/context/SidebarContext";
 import BrandIcon from "@/components/BrandIcon";
+import { SearchTrigger } from "@/components/search";
 
 export default function Navbar() {
   const { setIsOpen, isCollapsed, toggleCollapsed } = useSidebar();
@@ -40,6 +41,7 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-4">
+          <SearchTrigger />
           <ProfileMenu />
         </div>
       </div>

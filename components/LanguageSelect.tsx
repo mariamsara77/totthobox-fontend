@@ -51,7 +51,7 @@ export default function LanguageSelect() {
       <select
         value={currentLang}
         onChange={(e) => handleLanguageChange(e.target.value)}
-        className="w-full p-4 rounded-xl bg-zinc-300 dark:bg-zinc-600  focus:outline-none transition-all cursor-pointer"
+        className="w-full p-4 rounded-xl bg-zinc-300 dark:bg-zinc-600 backdrop-blur-sm border border-zinc-400/25 focus:outline-none transition-all cursor-pointer"
       >
         {languages.map((lang) => (
           <option key={lang.code} value={lang.code}>

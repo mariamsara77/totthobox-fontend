@@ -174,7 +174,7 @@ export default function AdvancedBanglaCalendar() {
     return { ...fixedHolidays, ...dbHolidays };
   }, [apiResponse, fixedHolidays]);
 
-  // --- Current Month Holidays (সঠিক জায়গায়) ---
+  // --- Current Month Holidays ---
   const currentMonthHolidays = useMemo(() => {
     const month = viewDate.getMonth() + 1;
     const year = viewDate.getFullYear();
@@ -282,463 +282,491 @@ export default function AdvancedBanglaCalendar() {
 
   const slideVariants: Variants = {
     enter: (direction: number) => ({
-      x: direction > 0 ? 80 : -80,
+      x: direction > 0 ? 60 : -60,
       opacity: 0,
     }),
     center: {
       x: 0,
       opacity: 1,
       transition: {
-        duration: 0.28,
-        ease: [0.25, 0.1, 0.25, 1] as const,
+        duration: 0.25,
+        ease: [0.25, 0.1, 0.25, 1],
       },
     },
     exit: (direction: number) => ({
-      x: direction < 0 ? 80 : -80,
+      x: direction < 0 ? 60 : -60,
       opacity: 0,
       transition: {
-        duration: 0.28,
-        ease: [0.25, 0.1, 0.25, 1] as const,
+        duration: 0.2,
+        ease: [0.25, 0.1, 0.25, 1],
       },
     }),
   };
 
   return (
-    <div className="max-w-xl mx-auto space-y-4 select-none relative p-4 pb-12">
-      {/* Header */}
-      <header className="space-y-1.5">
-        <h1 className="text-xl">
-          আজকের বাংলা তারিখ:{" "}
-          <span className="text-green-600">
-            {bnNum(selBn.day)} {selBn.month} {bnNum(selBn.year)}
-          </span>
-        </h1>
-        <p className="text-sm">
-          ইংরেজি: <strong>{format(selectedDate, "dd MMMM yyyy")}</strong> ·
-          হিজরি: <strong>{selHijri}</strong>
-        </p>
-      </header>
-
-      {/* Selected Date Card */}
-      <section
-        onClick={() => setShowModal(true)}
-        onKeyDown={(event) => {
-          if (event.key === "Enter" || event.key === " ") {
-            event.preventDefault();
-            setShowModal(true);
-          }
-        }}
-        role="button"
-        tabIndex={0}
-        aria-label="তারিখ নির্বাচন করুন"
-        className="rounded-2xl border border-zinc-400/25 p-4"
-      >
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-xs mb-1">বাংলা তারিখ</p>
-            <p className="text-2xl">
-              {bnNum(selBn.day)} {selBn.month}
-            </p>
-          </div>
-          <div className="text-right">
-            <p className="text-xs mb-1">ইংরেজি তারিখ</p>
-            <p className="text-lg font-bold">
-              {format(selectedDate, "dd MMMM yyyy")}
-            </p>
-          </div>
-        </div>
-
-        {selHoliday && (
-          <div className="mt-3 pt-3 border-t border-zinc-400/25 flex justify-between items-center">
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 text-sm ">
-              <Sparkles className="w-3.5 h-3.5" /> {selHoliday.title}
+    <div>
+      <div className="max-w-lg mx-auto px-3 sm:px-4 py-4 sm:py-6 space-y-4">
+        {/* ========== HEADER ========== */}
+        <header className="space-y-1">
+          <h1 className="text-lg sm:text-xl font-semibold tracking-tight">
+            আজকের বাংলা তারিখ:{" "}
+            <span className="text-emerald-600 dark:text-emerald-400">
+              {bnNum(selBn.day)} {selBn.month} {bnNum(selBn.year)}
             </span>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                addToGoogleCalendar();
-              }}
-              className="text-xs flex items-center gap-1 text-zinc-400 hover:text-zinc-300 "
-            >
-              <CalendarPlus className="w-3.5 h-3.5" /> গুগলে সেভ
-            </button>
-          </div>
-        )}
-      </section>
+          </h1>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            ইংরেজি:{" "}
+            <span className="font-medium text-zinc-800 dark:text-zinc-200">
+              {format(selectedDate, "dd MMMM yyyy")}
+            </span>
+            {" · "}
+            হিজরি:{" "}
+            <span className="font-medium text-zinc-800 dark:text-zinc-200">
+              {selHijri}
+            </span>
+          </p>
+        </header>
 
-      {/* Month / Year Controls */}
-      <section className="flex items-center justify-between rounded-2xl bg-zinc-400/10 p-2">
-        <button
-          type="button"
-          onClick={() => navigateMonth(-1)}
-          aria-label="আগের মাস"
-          className="p-2 bg-zinc-400/10 hover:bg-zinc-400/25 rounded-full"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-
-        <div className="flex items-center gap-2">
-          {/* Month Dropdown */}
-          <div className="relative">
-            <select
-              value={viewDate.getMonth()}
-              onChange={(e) => {
-                setDirection(0);
-                setViewDate(
-                  new Date(viewDate.getFullYear(), parseInt(e.target.value), 1),
-                );
-              }}
-              className="appearance-none bg-zinc-200 dark:bg-zinc-700 hover:opacity-90 outline-none
-                 rounded-xl pl-4 pr-9 py-2 cursor-pointer"
-            >
-              {Array.from({ length: 12 }).map((_, i) => (
-                <option key={i} value={i}>
-                  {format(new Date(2000, i, 1), "MMMM")}
-                </option>
-              ))}
-            </select>
-            {/* Custom Arrow */}
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5">
-              <ChevronDown className="size-4" />
-            </div>
-          </div>
-
-          {/* Year Dropdown */}
-          <div className="relative">
-            <select
-              value={viewDate.getFullYear()}
-              onChange={(e) => {
-                setDirection(0);
-                setViewDate(
-                  new Date(parseInt(e.target.value), viewDate.getMonth(), 1),
-                );
-              }}
-              className="appearance-none bg-zinc-200 dark:bg-zinc-700 hover:opacity-90 outline-none
-                 rounded-xl pl-4 pr-9 py-2 cursor-pointer"
-            >
-              {Array.from({ length: 121 }).map((_, i) => {
-                const y = new Date().getFullYear() - 100 + i;
-                return (
-                  <option key={y} value={y}>
-                    {y}
-                  </option>
-                );
-              })}
-            </select>
-            {/* Custom Arrow */}
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5">
-              <ChevronDown className="size-4" />
-            </div>
-          </div>
-        </div>
-        <button
-          onClick={() => {
-            setSelectedDate(new Date());
-            setViewDate(new Date());
+        {/* ========== SELECTED DATE CARD ========== */}
+        <section
+          onClick={() => setShowModal(true)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              setShowModal(true);
+            }
           }}
-          className="text-xs p-2 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/25"
+          role="button"
+          tabIndex={0}
+          className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 sm:p-5 shadow-sm active:scale-[0.98] transition-transform cursor-pointer"
         >
-          Today
-        </button>
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-0.5">
+                বাংলা তারিখ
+              </p>
+              <p className="text-2xl sm:text-3xl font-bold tracking-tight">
+                {bnNum(selBn.day)} {selBn.month}
+              </p>
+            </div>
+            <div className="text-right">
+              <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-0.5">
+                ইংরেজি তারিখ
+              </p>
+              <p className="text-base sm:text-lg font-semibold">
+                {format(selectedDate, "dd MMM yyyy")}
+              </p>
+            </div>
+          </div>
 
-        <button
-          type="button"
-          onClick={() => navigateMonth(1)}
-          aria-label="পরের মাস"
-          className="p-2 bg-zinc-400/10 hover:bg-zinc-400/25 rounded-full"
-        >
-          <ChevronRight className="w-5 h-5" />
-        </button>
-      </section>
-
-      {/* ══════════════════════════════════════
-    Date Filter / Picker
-══════════════════════════════════════ */}
-
-      {/* Calendar Grid */}
-      <section
-        className="overflow-hidden"
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-      >
-        <div className="grid grid-cols-7 mb-2">
-          {["রবি", "সোম", "মঙ্গল", "বুধ", "বৃহঃ", "শুক্র", "শনি"].map(
-            (wd, i) => (
-              <div
-                key={wd}
-                className={`text-center py-1.5 text-xs font-bold ${
-                  i >= 5 ? "text-rose-500" : "text-zinc-400"
-                }`}
+          {selHoliday && (
+            <div className="mt-4 pt-3 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between gap-3">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 text-sm font-medium">
+                <Sparkles className="w-3.5 h-3.5" />
+                {selHoliday.title}
+              </span>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  addToGoogleCalendar();
+                }}
+                className="text-xs flex items-center gap-1 text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors"
               >
-                {wd}
-              </div>
-            ),
+                <CalendarPlus className="w-3.5 h-3.5" />
+                গুগলে সেভ
+              </button>
+            </div>
           )}
-        </div>
+        </section>
 
-        <AnimatePresence mode="popLayout" custom={direction}>
-          <motion.div
-            key={viewDate.toString()}
-            custom={direction}
-            variants={slideVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            className="grid grid-cols-7 gap-2 px-2"
+        {/* ========== MONTH / YEAR CONTROLS ========== */}
+        <section className="flex items-center justify-between gap-2 rounded-2xl bg-zinc-400/10 border border-zinc-400/25 p-2 shadow-sm">
+          <button
+            type="button"
+            onClick={() => navigateMonth(-1)}
+            aria-label="আগের মাস"
+            className="p-2.5 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
           >
-            {calendarDays.map((day, index) => {
-              if (!day)
-                return <div key={`empty-${index}`} className="aspect-square" />;
+            <ChevronLeft className="w-5 h-5" />
+          </button>
 
-              const { isSelected, isToday, holiday } = day;
-              let cellBg = "hover:bg-zinc-400/25";
-              if (isSelected)
-                cellBg =
-                  "bg-emerald-600  shadow-emerald-200/50 dark:shadow-emerald-900/40 scale-[1.04] z-10";
-              else if (isToday) cellBg = "ring-2 ring-green-600";
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-1 justify-center">
+            {/* Month */}
+            <div className="relative">
+              <select
+                value={viewDate.getMonth()}
+                onChange={(e) => {
+                  setDirection(0);
+                  setViewDate(
+                    new Date(
+                      viewDate.getFullYear(),
+                      parseInt(e.target.value),
+                      1,
+                    ),
+                  );
+                }}
+                className="appearance-none bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-xl pl-3 pr-8 py-2 text-sm font-medium outline-none cursor-pointer transition-colors"
+              >
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <option key={i} value={i}>
+                    {format(new Date(2000, i, 1), "MMM")}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-500" />
+            </div>
 
-              return (
-                <button
-                  key={format(day.dateObj, "yyyy-MM-dd")}
-                  onClick={() => {
-                    setSelectedDate(day.dateObj);
-                    setShowModal(true);
-                  }}
-                  className={`group relative aspect-square rounded-xl transition-all duration-200 ${cellBg}`}
+            {/* Year */}
+            <div className="relative">
+              <select
+                value={viewDate.getFullYear()}
+                onChange={(e) => {
+                  setDirection(0);
+                  setViewDate(
+                    new Date(parseInt(e.target.value), viewDate.getMonth(), 1),
+                  );
+                }}
+                className="appearance-none bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-xl pl-3 pr-8 py-2 text-sm font-medium outline-none cursor-pointer transition-colors"
+              >
+                {Array.from({ length: 121 }).map((_, i) => {
+                  const y = new Date().getFullYear() - 100 + i;
+                  return (
+                    <option key={y} value={y}>
+                      {y}
+                    </option>
+                  );
+                })}
+              </select>
+              <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-500" />
+            </div>
+          </div>
+
+          <button
+            onClick={() => {
+              setSelectedDate(new Date());
+              setViewDate(new Date());
+            }}
+            className="text-xs font-medium px-3 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+          >
+            আজ
+          </button>
+
+          <button
+            type="button"
+            onClick={() => navigateMonth(1)}
+            aria-label="পরের মাস"
+            className="p-2.5 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </section>
+
+        {/* ========== CALENDAR GRID ========== */}
+        <section
+          className="rounded-2xl bg-zinc-400/10 border border-zinc-400/25 p-3 sm:p-4 shadow-sm overflow-hidden"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          {/* Weekday Headers */}
+          <div className="grid grid-cols-7 mb-2">
+            {["রবি", "সোম", "মঙ্গল", "বুধ", "বৃহঃ", "শুক্র", "শনি"].map(
+              (wd, i) => (
+                <div
+                  key={wd}
+                  className={`text-center py-1.5 text-[11px] sm:text-xs font-semibold ${
+                    i >= 5
+                      ? "text-rose-500 dark:text-rose-400"
+                      : "text-zinc-400 dark:text-zinc-500"
+                  }`}
                 >
-                  <div className="flex flex-col items-center justify-center h-full">
+                  {wd}
+                </div>
+              ),
+            )}
+          </div>
+
+          <AnimatePresence mode="popLayout" custom={direction}>
+            <motion.div
+              key={viewDate.toISOString()}
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              className="grid grid-cols-7 gap-1 sm:gap-1.5"
+            >
+              {calendarDays.map((day, index) => {
+                if (!day)
+                  return (
+                    <div key={`empty-${index}`} className="aspect-square" />
+                  );
+
+                const { isSelected, isToday, holiday, isWeekend } = day;
+
+                return (
+                  <button
+                    key={format(day.dateObj, "yyyy-MM-dd")}
+                    onClick={() => {
+                      setSelectedDate(day.dateObj);
+                      setShowModal(true);
+                    }}
+                    className={`
+                      relative aspect-square rounded-xl transition-all duration-200
+                      flex flex-col items-center justify-center
+                      ${
+                        isSelected
+                          ? "bg-emerald-600 text-white shadow-md shadow-emerald-600/30 scale-[1.03] z-10"
+                          : isToday
+                            ? "ring-2 ring-emerald-500/70 bg-emerald-50 dark:bg-emerald-950/40"
+                            : "hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                      }
+                    `}
+                  >
                     <span
-                      className={`text-sm font-bold ${
+                      className={`text-sm font-semibold leading-none ${
                         isSelected
                           ? "text-white"
-                          : day.isWeekend
-                            ? "text-rose-500"
+                          : isWeekend
+                            ? "text-rose-500 dark:text-rose-400"
                             : ""
                       }`}
                     >
                       {day.engDay}
                     </span>
                     <span
-                      className={`text-xs  mt-0.5 ${
-                        isSelected ? "text-emerald-100" : ""
+                      className={`text-[10px] sm:text-xs mt-0.5 leading-none ${
+                        isSelected
+                          ? "text-emerald-100"
+                          : "text-zinc-500 dark:text-zinc-400"
                       }`}
                     >
                       {bnNum(day.bnObj.day)}
                     </span>
+
+                    {/* Holiday Dot */}
                     {holiday && (
-                      <span className="absolute bottom-0.5 w-1 h-1 rounded-full bg-rose-500 shadow-[0_0_6px_rgba(244,63,94,0.7)]" />
+                      <span
+                        className={`absolute bottom-1 w-1 h-1 rounded-full ${
+                          isSelected ? "bg-white" : "bg-rose-500"
+                        }`}
+                      />
                     )}
-                  </div>
-
-                  {holiday && !isSelected && (
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-35 px-2.5 py-1.5 bg-zinc-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 ">
-                      {holiday.title}
-                    </div>
-                  )}
-                </button>
-              );
-            })}
-          </motion.div>
-        </AnimatePresence>
-      </section>
-      <hr className="border border-zinc-400/25" />
-      {/* Modal */}
-      <AnimatePresence>
-        {showModal && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-400/10"
-            onClick={() => setShowModal(false)}
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.94, y: 12 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.94, y: 12 }}
-              onClick={(e) => e.stopPropagation()}
-              className="bg-zinc-200 dark:bg-zinc-800 rounded-3xl p-4 w-full max-w-sm relative"
-            >
-              <button
-                onClick={() => setShowModal(false)}
-                className="absolute top-4 right-4 p-2 rounded-full hover:bg-zinc-400/25 text-zinc-500"
-              >
-                <X className="w-5 h-5" />
-              </button>
-
-              <div className="text-center space-y-4">
-                <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-zinc-400/10">
-                  <Calendar className="w-7 h-7" />
-                </div>
-
-                <h3 className="text-2xl font-bold">
-                  {bnNum(selBn.day)} {selBn.month}, {bnNum(selBn.year)}
-                </h3>
-
-                <div className=" space-y-1 text-sm">
-                  <p>
-                    ইংরেজি: {format(selectedDate, "dd MMMM yyyy")} (
-                    {format(selectedDate, "EEEE")})
-                  </p>
-                  <p>হিজরি: {selHijri}</p>
-                </div>
-
-                {selHoliday && (
-                  <div className="mt-5 p-4 rounded-2xl bg-zinc-400/10">
-                    <h4 className="font-bold text-rose-600 dark:text-rose-400 flex items-center justify-center gap-2 mb-1.5">
-                      <Sparkles className="w-4 h-4" /> সরকারি ছুটি
-                    </h4>
-                    <p className="text-rose-800 dark:text-rose-300 ">
-                      {selHoliday.title}
-                    </p>
-                    <button
-                      onClick={addToGoogleCalendar}
-                      className="mt-3 w-full p-2 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/25"
-                    >
-                      ক্যালেন্ডারে সেভ করুন
-                    </button>
-                  </div>
-                )}
-              </div>
+                  </button>
+                );
+              })}
             </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+          </AnimatePresence>
+        </section>
 
-      {/* ══════════════════════════════════════
-          This Month's Official Holidays
-      ══════════════════════════════════════ */}
-      {currentMonthHolidays.length > 0 && (
-        <section className="space-y-4">
-          <h2 className="flex items-center gap-2 text-lg">
-            <CalendarDays className="size-5" />
-            এই মাসের সরকারি ছুটি
-          </h2>
+        {/* ========== THIS MONTH'S HOLIDAYS ========== */}
+        {currentMonthHolidays.length > 0 && (
+          <section className="space-y-3">
+            <h2 className="flex items-center gap-2 text-base font-semibold">
+              <CalendarDays className="w-4.5 h-4.5 text-emerald-600" />
+              এই মাসের সরকারি ছুটি
+            </h2>
 
-          <div className="rounded-2xl overflow-hidden bg-zinc-400/10">
-            <div className="grid grid-cols-2 bg-zinc-400/10/70  py-2 px-4">
-              <div>ছুটির নাম</div>
-              <div>তারিখ</div>
+            <div className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 overflow-hidden shadow-sm">
+              <div className="grid grid-cols-2 bg-zinc-50 dark:bg-zinc-800/60 py-2.5 px-4 text-xs font-semibold text-zinc-500 dark:text-zinc-400">
+                <div>ছুটির নাম</div>
+                <div className="text-right">তারিখ</div>
+              </div>
+
+              {currentMonthHolidays.map((h, idx) => (
+                <div
+                  key={idx}
+                  className="grid grid-cols-2 items-center px-4 py-3 border-t border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/40 transition-colors"
+                >
+                  <div className="text-sm font-medium">{h.title}</div>
+                  <div className="text-sm text-zinc-600 dark:text-zinc-400 text-right">
+                    {h.date}
+                  </div>
+                </div>
+              ))}
             </div>
+          </section>
+        )}
 
-            {currentMonthHolidays.map((h, idx) => (
+        {/* ========== ABOUT SECTION ========== */}
+        <section className="space-y-3">
+          <h2 className="flex items-center gap-2 text-base font-semibold">
+            <Info className="w-4.5 h-4.5 text-emerald-600" />
+            বাংলা ক্যালেন্ডার সম্পর্কে
+          </h2>
+          <div className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 sm:p-5 shadow-sm space-y-3 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
+            <p>
+              বাংলা ক্যালেন্ডার বা বঙ্গাব্দ বাংলাদেশ ও পশ্চিমবঙ্গে ব্যবহৃত একটি
+              সৌর বর্ষপঞ্জি। বাংলা সনের নতুন বছর শুরু হয় সাধারণত ১৪ এপ্রিল
+              (পহেলা বৈশাখ) থেকে। বর্তমানে চলছে{" "}
+              <strong className="text-zinc-900 dark:text-zinc-100">
+                {bnNum(getBanglaDate(new Date()).year)} বঙ্গাব্দ
+              </strong>
+              ।
+            </p>
+            <p>
+              এই পেজে আপনি সহজেই <strong>আজকের বাংলা তারিখ</strong>, ইংরেজি
+              তারিখের সাথে তুলনা, মাসভিত্তিক ক্যালেন্ডার এবং সরকারি ছুটির তালিকা
+              দেখতে পারবেন।
+            </p>
+            <p>
+              বাংলা মাসগুলো হলো: বৈশাখ, জ্যৈষ্ঠ, আষাঢ়, শ্রাবণ, ভাদ্র, আশ্বিন,
+              কার্তিক, অগ্রহায়ণ, পৌষ, মাঘ, ফাল্গুন ও চৈত্র।
+            </p>
+          </div>
+        </section>
+
+        {/* ========== FAQ ========== */}
+        <section className="space-y-3">
+          <h2 className="text-base font-semibold">প্রায়শই জিজ্ঞাসিত প্রশ্ন</h2>
+
+          <div className="space-y-2">
+            {[
+              {
+                q: "আজকের বাংলা তারিখ কত?",
+                a: (
+                  <>
+                    আজকের বাংলা তারিখ হলো{" "}
+                    <strong>
+                      {bnNum(selBn.day)} {selBn.month} {bnNum(selBn.year)}
+                    </strong>{" "}
+                    বঙ্গাব্দ। ইংরেজি তারিখ{" "}
+                    {format(selectedDate, "dd MMMM yyyy")}।
+                  </>
+                ),
+              },
+              {
+                q: "বাংলা সন কীভাবে হিসাব করা হয়?",
+                a: "বাংলা সন সাধারণত ১৪ এপ্রিল থেকে শুরু হয়। ইংরেজি বছর থেকে ৫৯৩ বা ৫৯৪ বিয়োগ করে বাংলা সন পাওয়া যায়। এপ্রিলের ১৪ তারিখের আগে হলে ৫৯৪ এবং পরে হলে ৫৯৩ বিয়োগ করা হয়।",
+              },
+              {
+                q: "সরকারি ছুটির তালিকা কোথায় পাব?",
+                a: "এই পেজেই চলতি মাসের সকল সরকারি ছুটি দেখানো হয়। নির্দিষ্ট তারিখ সিলেক্ট করলে সেই দিনের ছুটির নামও দেখা যাবে।",
+              },
+              {
+                q: "বাংলা মাস কয়টি ও কী কী?",
+                a: "বাংলা সনে মোট ১২টি মাস আছে। সেগুলো হলো: বৈশাখ, জ্যৈষ্ঠ, আষাঢ়, শ্রাবণ, ভাদ্র, আশ্বিন, কার্তিক, অগ্রহায়ণ, পৌষ, মাঘ, ফাল্গুন এবং চৈত্র।",
+              },
+              {
+                q: "এই ক্যালেন্ডার কি মোবাইলে কাজ করে?",
+                a: "হ্যাঁ, এই বাংলা ক্যালেন্ডার সম্পূর্ণ মোবাইল-ফ্রেন্ডলি। স্মার্টফোন, ট্যাবলেট ও কম্পিউটারে একইভাবে ব্যবহার করা যায়।",
+              },
+            ].map((item, idx) => (
               <div
                 key={idx}
-                className="grid grid-cols-2 border-t border-zinc-400/25 hover:bg-zinc-400/10 p-2"
+                className="rounded-xl border border-zinc-400/25 bg-zinc-400/10 overflow-hidden"
               >
-                <div>{h.title}</div>
-                <div>{h.date}</div>
+                <button
+                  onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                  className="w-full flex items-center justify-between p-4 text-left hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
+                >
+                  <span className="text-sm font-medium pr-3">{item.q}</span>
+                  <ChevronDown
+                    className={`w-4 h-4 text-zinc-400 shrink-0 transition-transform duration-200 ${
+                      openFaq === idx ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                <AnimatePresence>
+                  {openFaq === idx && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-4 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-100 dark:border-zinc-800 pt-3">
+                        {item.a}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             ))}
           </div>
         </section>
-      )}
 
-      {/* ══════════════════════════════════════
-          Informative Content
-      ══════════════════════════════════════ */}
-      <section className="space-y-4">
-        <h2 className="flex items-center gap-2 text-lg">
-          <Info className="size-5" />
-          বাংলা ক্যালেন্ডার সম্পর্কে
-        </h2>
-        <div className="rounded-2xl overflow-hidden bg-zinc-400/10 p-4">
-          <p>
-            বাংলা ক্যালেন্ডার বা বঙ্গাব্দ বাংলাদেশ ও পশ্চিমবঙ্গে ব্যবহৃত একটি
-            সৌর বর্ষপঞ্জি। বাংলা সনের নতুন বছর শুরু হয় সাধারণত ১৪ এপ্রিল (পহেলা
-            বৈশাখ) থেকে। বর্তমানে চলছে{" "}
-            <strong>{bnNum(getBanglaDate(new Date()).year)} বঙ্গাব্দ</strong>।
-          </p>
+        {/* Footer Note */}
+        <p className="text-xs text-center text-zinc-500 dark:text-zinc-500 pb-6">
+          এই পেজটি নিয়মিত আপডেট করা হয় যাতে আপনি সঠিক{" "}
+          <strong className="text-zinc-700 dark:text-zinc-300">
+            আজকের বাংলা তারিখ
+          </strong>
+          , বাংলা ক্যালেন্ডার এবং সরকারি ছুটির তথ্য পান।
+        </p>
+      </div>
 
-          <p>
-            এই পেজে আপনি সহজেই <strong>আজকের বাংলা তারিখ</strong>, ইংরেজি
-            তারিখের সাথে তুলনা, মাসভিত্তিক ক্যালেন্ডার এবং সরকারি ছুটির তালিকা
-            দেখতে পারবেন। তারিখ সিলেক্ট করে যেকোনো দিনের বাংলা তারিখ জানা যায়।
-          </p>
+      {/* ========== MODAL (Bottom Sheet on Mobile) ========== */}
+      <AnimatePresence>
+        {showModal && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowModal(false)}
+              className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm"
+            />
 
-          <p>
-            বাংলা মাসগুলো হলো: বৈশাখ, জ্যৈষ্ঠ, আষাঢ়, শ্রাবণ, ভাদ্র, আশ্বিন,
-            কার্তিক, অগ্রহায়ণ, পৌষ, মাঘ, ফাল্গুন ও চৈত্র।
-          </p>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════
-          FAQ Section
-      ══════════════════════════════════════ */}
-      <section className="space-y-4">
-        <h2 className="text-lg">প্রায়শই জিজ্ঞাসিত প্রশ্ন (FAQ)</h2>
-
-        <div className="space-y-2">
-          {[
-            {
-              q: "আজকের বাংলা তারিখ কত?",
-              a: (
-                <>
-                  আজকের বাংলা তারিখ হলো{" "}
-                  <strong>
-                    {bnNum(selBn.day)} {selBn.month} {bnNum(selBn.year)}
-                  </strong>{" "}
-                  বঙ্গাব্দ। ইংরেজি তারিখ {format(selectedDate, "dd MMMM yyyy")}।
-                </>
-              ),
-            },
-            {
-              q: "বাংলা সন কীভাবে হিসাব করা হয়?",
-              a: "বাংলা সন সাধারণত ১৪ এপ্রিল থেকে শুরু হয়। ইংরেজি বছর থেকে ৫৯৩ বা ৫৯৪ বিয়োগ করে বাংলা সন পাওয়া যায়। এপ্রিলের ১৪ তারিখের আগে হলে ৫৯৪ এবং পরে হলে ৫৯৩ বিয়োগ করা হয়।",
-            },
-            {
-              q: "সরকারি ছুটির তালিকা কোথায় পাব?",
-              a: "এই পেজেই চলতি মাসের সকল সরকারি ছুটি দেখানো হয়। নির্দিষ্ট তারিখ সিলেক্ট করলে সেই দিনের ছুটির নামও দেখা যাবে। শহীদ দিবস, স্বাধীনতা দিবস, পহেলা বৈশাখ, বিজয় দিবসসহ প্রধান ছুটিগুলো হাইলাইট করা আছে।",
-            },
-            {
-              q: "বাংলা মাস কয়টি ও কী কী?",
-              a: "বাংলা সনে মোট ১২টি মাস আছে। সেগুলো হলো: বৈশাখ, জ্যৈষ্ঠ, আষাঢ়, শ্রাবণ, ভাদ্র, আশ্বিন, কার্তিক, অগ্রহায়ণ, পৌষ, মাঘ, ফাল্গুন এবং চৈত্র।",
-            },
-            {
-              q: "এই ক্যালেন্ডার কি মোবাইলে কাজ করে?",
-              a: "হ্যাঁ, এই বাংলা ক্যালেন্ডার সম্পূর্ণ মোবাইল-ফ্রেন্ডলি। স্মার্টফোন, ট্যাবলেট ও কম্পিউটারে একইভাবে ব্যবহার করা যায়।",
-            },
-          ].map((item, idx) => (
-            <div
-              key={idx}
-              className="rounded-xl overflow-hidden bg-zinc-400/10"
+            {/* Modal Content */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 40 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="fixed inset-x-0 bottom-0 z-50 sm:inset-0 sm:flex sm:items-center sm:justify-center sm:p-4"
             >
-              <button
-                onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                className="w-full flex items-center justify-between p-4 hover:bg-zinc-400/25"
-              >
-                <span className="pr-3">{item.q}</span>
-                <ChevronDown
-                  className={`w-4 h-4 transition-transform duration-200 ${
-                    openFaq === idx ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
+              <div className="bg-zinc-400/10 rounded-t-3xl sm:rounded-3xl w-full max-w-sm mx-auto p-5 sm:p-6 shadow-2xl relative max-h-[85vh] overflow-y-auto">
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="absolute top-4 right-4 p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
 
-              <AnimatePresence>
-                {openFaq === idx && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="p-4 leading-relaxed border-t border-zinc-400/25">
-                      {item.a}
+                <div className="text-center space-y-5 pt-2">
+                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-emerald-50 dark:bg-emerald-950/50">
+                    <Calendar className="w-7 h-7 text-emerald-600 dark:text-emerald-400" />
+                  </div>
+
+                  <div>
+                    <h3 className="text-2xl font-bold tracking-tight">
+                      {bnNum(selBn.day)} {selBn.month}, {bnNum(selBn.year)}
+                    </h3>
+                    <div className="mt-2 space-y-1 text-sm text-zinc-600 dark:text-zinc-400">
+                      <p>
+                        ইংরেজি: {format(selectedDate, "dd MMMM yyyy")} (
+                        {format(selectedDate, "EEEE")})
+                      </p>
+                      <p>হিজরি: {selHijri}</p>
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          ))}
-        </div>
-      </section>
+                  </div>
 
-      {/* Extra note */}
-      <p>
-        এই পেজটি নিয়মিত আপডেট করা হয় যাতে আপনি সঠিক{" "}
-        <strong>আজকের বাংলা তারিখ</strong>, বাংলা ক্যালেন্ডার এবং সরকারি ছুটির
-        তথ্য পান। যেকোনো তারিখ সিলেক্ট করে বাংলা ও ইংরেজি তারিখ একসাথে দেখুন।
-      </p>
+                  {selHoliday && (
+                    <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/30 border border-rose-100 dark:border-rose-900/50">
+                      <h4 className="font-semibold text-rose-700 dark:text-rose-300 flex items-center justify-center gap-2 mb-1">
+                        <Sparkles className="w-4 h-4" />
+                        সরকারি ছুটি
+                      </h4>
+                      <p className="text-rose-800 dark:text-rose-200 font-medium">
+                        {selHoliday.title}
+                      </p>
+                      <button
+                        onClick={addToGoogleCalendar}
+                        className="mt-3 w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-sm font-medium transition-colors"
+                      >
+                        ক্যালেন্ডারে সেভ করুন
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

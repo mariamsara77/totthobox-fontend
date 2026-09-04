@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 import NavbarHeader from "@/components/NavbarHeader";
 import Footer from "@/components/Footer";
@@ -12,16 +12,18 @@ export default function NotFound() {
 
       {/* ২. মূল 404 কন্টেন্ট */}
       <main className="flex-1 flex flex-col items-center justify-center text-center px-4 py-16">
-        <h1 className="text-6xl font-bold text-zinc-800 dark:text-zinc-100">404</h1>
+        <h1 className="text-5xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+          ৪০৪
+        </h1>
         <h2 className="text-xl font-semibold text-zinc-600 dark:text-zinc-300 mt-4">
           পেজটি খুঁজে পাওয়া যায়নি
         </h2>
         <p className="text-sm text-zinc-500 mt-2 max-w-md">
           আপনি যে পেজটি খুঁজছেন তা হয়তো সরানো হয়েছে অথবা লিংকটি ভুল রয়েছে।
         </p>
-        <Link 
-          href="/" 
-          className="mt-6 px-4 py-2 rounded-lg text-sm font-medium bg-teal-600 text-white hover:bg-teal-700 transition"
+        <Link
+          href="/"
+          className="mt-6 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-zinc-100 transition-colors hover:bg-emerald-500"
         >
           হোম পেজে ফিরে যান
         </Link>

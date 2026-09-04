@@ -7,7 +7,7 @@ import { Plus, Trash2, MessageSquare, LogIn } from "lucide-react";
 
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api-client";
-import SidebarProfileMenu from "../SidebarProfileMenu";
+import ProfileMenu from "../ProfileMenu";
 
 type Props = {
   currentUuid: string | null;
@@ -21,52 +21,52 @@ export default function ChatSidebar({ currentUuid, onNavigate }: Props) {
   const [sessions, setSessions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-// ChatSidebar.tsx এ load function টা useCallback এ wrap করো
-const load = useCallback(async () => {
-  if (!isLoggedIn) {
-    setSessions([]);
-    setLoading(false);
-    return;
-  }
-
-  try {
-    // ↓↓↓ এখানে ?t= যোগ করুন
-    const json = await apiFetch<any>(`/ai/sessions?t=${Date.now()}`, {
-      cache: "no-store",
-      headers: {
-        "Cache-Control": "no-cache, no-store, must-revalidate",
-        Pragma: "no-cache",
-        Expires: "0",
-      },
-    });
-
-    if (json.success && Array.isArray(json.data)) {
-      setSessions(json.data);
-    } else if (Array.isArray(json)) {
-      setSessions(json);
-    } else if (json.data && Array.isArray(json.data)) {
-      setSessions(json.data);
-    } else {
+  // ChatSidebar.tsx এ load function টা useCallback এ wrap করো
+  const load = useCallback(async () => {
+    if (!isLoggedIn) {
       setSessions([]);
+      setLoading(false);
+      return;
     }
-  } catch (error) {
-    console.error("Fetch Session Error:", error);
-    setSessions([]);
-  } finally {
-    setLoading(false);
-  }
-}, [isLoggedIn]);
 
-useEffect(() => {
-  if (!authLoading) {
-    load();
-  }
-}, [currentUuid, isLoggedIn, authLoading, load]); // ✅ load যোগ করা
+    try {
+      // ↓↓↓ এখানে ?t= যোগ করুন
+      const json = await apiFetch<any>(`/ai/sessions?t=${Date.now()}`, {
+        cache: "no-store",
+        headers: {
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
+      });
 
-useEffect(() => {
-  window.addEventListener("chat:session-created", load);
-  return () => window.removeEventListener("chat:session-created", load);
-}, [load]);
+      if (json.success && Array.isArray(json.data)) {
+        setSessions(json.data);
+      } else if (Array.isArray(json)) {
+        setSessions(json);
+      } else if (json.data && Array.isArray(json.data)) {
+        setSessions(json.data);
+      } else {
+        setSessions([]);
+      }
+    } catch (error) {
+      console.error("Fetch Session Error:", error);
+      setSessions([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (!authLoading) {
+      load();
+    }
+  }, [currentUuid, isLoggedIn, authLoading, load]); // ✅ load যোগ করা
+
+  useEffect(() => {
+    window.addEventListener("chat:session-created", load);
+    return () => window.removeEventListener("chat:session-created", load);
+  }, [load]);
 
   const remove = async (id: number, uuid: string) => {
     if (!confirm("এই চ্যাটটি মুছে ফেলতে চান?")) return;
@@ -171,8 +171,9 @@ useEffect(() => {
         )}
       </div>
       {/* Profile Menu */}
+      {/* Profile Menu */}
       <div className="">
-        <SidebarProfileMenu />
+        <ProfileMenu variant="sidebar" />
       </div>
     </nav>
   );

@@ -189,12 +189,12 @@ export default function AgeCalculator() {
         </div>
 
        {/* Tabs */}
-<div className="flex border-b border-zinc-400/25 justify-left">
+<div className="flex border-b border-zinc-400/25">
   <button
     onClick={() => setTab("single")}
     className={`flex-1 py-2 text-center  font-medium transition-all border-b-2 ${
       tab === "single"
-        ? "border-black dark:border-white"
+        ? "border-emerald-600 text-emerald-600 dark:border-emerald-400 dark:text-emerald-400"
         : "border-transparent"
     }`}
   >
@@ -204,7 +204,7 @@ export default function AgeCalculator() {
     onClick={() => setTab("difference")}
     className={`flex-1 py-2 text-center  font-medium transition-all border-b-2 ${
       tab === "difference"
-        ? "border-black dark:border-white"
+        ? "border-emerald-600 text-emerald-600 dark:border-emerald-400 dark:text-emerald-400"
         : "border-transparent"
     }`}
   >
@@ -215,10 +215,10 @@ export default function AgeCalculator() {
         {/* ========== SINGLE TAB ========== */}
         {tab === "single" && (
           <div className="space-y-4">
-            <div className="rounded-2xl p-4 bg-zinc-400/10 space-y-4">
+            <div className="space-y-4 rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 sm:p-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-2">
-                  <label className="opacity-50">
+                  <label className="text-sm text-zinc-600 dark:text-zinc-400">
                     জন্মতারিখ
                   </label>
                   <input
@@ -226,7 +226,7 @@ export default function AgeCalculator() {
                     value={dob}
                     max={todayISO()}
                     onChange={(e) => setDob(e.target.value)}
-                    className="w-full p-2 rounded-lg bg-zinc-400/10 outline-none"
+                    className="w-full rounded-xl bg-zinc-100 p-2.5 outline-none dark:bg-zinc-800"
                   />
                 </div>
                 <div className="flex flex-col gap-2">
