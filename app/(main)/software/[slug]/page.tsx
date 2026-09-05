@@ -49,7 +49,11 @@ export async function generateMetadata({
   const { slug } = await params;
   const data = await getAppData(slug);
 
-  if (!data) return { title: "অ্যাপ পাওয়া যায়নি", robots: { index: false, follow: false } };
+  if (!data)
+    return {
+      title: "অ্যাপ পাওয়া যায়নি",
+      robots: { index: false, follow: false },
+    };
 
   const { app, seo } = data;
 
@@ -92,21 +96,15 @@ export default async function AppShowPage({
         aria-label="Breadcrumb"
         className="flex items-center gap-2 text-sm text-zinc-400"
       >
-        <Link
-          href="/"
-          className="hover:text-zinc-50 hover:text-zinc-50 "
-        >
+        <Link href="/" className="opacity-80 hover:opacity-100 ">
           <Home className="w-4 h-4" />
         </Link>
         <span>/</span>
-        <Link
-          href="/software"
-          className="hover:text-zinc-50 hover:text-zinc-50 "
-        >
+        <Link href="/software" className="opacity-80 hover:opacity-100 ">
           All Free Softwar
         </Link>
         <span>/</span>
-        <span className="text-zinc-50 text-zinc-100  truncate max-w-[180px] sm:max-w-xs">
+        <span className="truncate max-w-40 sm:max-w-xs">
           {app.name} {app.version ? `v${app.version}` : ""}
         </span>
       </nav>
@@ -128,9 +126,7 @@ export default async function AppShowPage({
               )}
             </div>
 
-            <h1 className="text-3xl font-bold tracking-tight text-zinc-50 text-zinc-100">
-              {app.name}
-            </h1>
+            <h1 className="text-3xl font-bold tracking-tight">{app.name}</h1>
 
             <div className="flex items-center gap-2 flex-wrap">
               <div className="inline-flex items-center gap-2 rounded-md bg-green-50 dark:bg-green-900/20 px-2.5 py-1 text-xs  text-green-700 dark:text-green-400">
@@ -179,22 +175,17 @@ export default async function AppShowPage({
 
       {/* Description / How to */}
       <section aria-labelledby="how-to-heading" className="space-y-4">
-        <h2
-          id="how-to-heading"
-          className="text-lg font-bold text-zinc-50 text-zinc-200"
-        >
+        <h2 id="how-to-heading" className="text-lg font-bold">
           How to download and install {app.name}
         </h2>
 
         {app.description ? (
           <div
-            className="text-base  prose dark:prose-invert max-w-none prose-p:leading-relaxed"
+            className="prose dark:prose-invert max-w-none prose-p:leading-relaxed"
             dangerouslySetInnerHTML={{ __html: app.description }}
           />
         ) : (
-          <p className="text-sm text-zinc-400">
-            এই অ্যাপের বিস্তারিত নির্দেশনা এখনো যোগ করা হয়নি।
-          </p>
+          <p className="">এই অ্যাপের বিস্তারিত নির্দেশনা এখনো যোগ করা হয়নি।</p>
         )}
       </section>
 
@@ -216,9 +207,7 @@ export default async function AppShowPage({
             </svg>
           </div>
           <div>
-            <h2 className="font-bold text-zinc-50 text-zinc-200">
-              Archive Password
-            </h2>
+            <h2 className="font-bold">Archive Password</h2>
             <p className="font-mono text-xl  mt-0.5">{app.download_password}</p>
           </div>
         </section>
@@ -243,7 +232,7 @@ export default async function AppShowPage({
       <div>
         <Link
           href="/software"
-          className="inline-flex items-center gap-2 px-4 py-2 text-sm  text-zinc-300 hover:bg-zinc-900 text-zinc-300 hover:bg-zinc-800 rounded-lg "
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm opacity-50 hover:opacity-100 rounded-lg "
         >
           <ArrowLeft className="w-4 h-4" />
           Digital Resource Library তে ফিরে যান
@@ -252,9 +241,7 @@ export default async function AppShowPage({
 
       {/* About Section */}
       <section className="rounded-2xl bg-zinc-400/10/40 p-4 space-y-4">
-        <h2 className="text-lg font-bold text-zinc-50 text-zinc-200">
-          {app.name} ফ্রি ডাউনলোড সম্পর্কে
-        </h2>
+        <h2 className="text-lg font-bold">{app.name} ফ্রি ডাউনলোড সম্পর্কে</h2>
         <div className="text-sm leading-relaxed  space-y-4">
           <p>
             <strong>{app.name}</strong>
@@ -272,13 +259,11 @@ export default async function AppShowPage({
 
       {/* FAQ */}
       <section className="space-y-4 pt-2">
-        <h2 className="text-lg font-bold text-zinc-50 text-zinc-200">
-          প্রায়শাই জিজ্ঞাসিত প্রশ্ন
-        </h2>
+        <h2 className="text-lg font-bold">প্রায়শাই জিজ্ঞাসিত প্রশ্ন</h2>
 
         <div className="space-y-2">
-          <details className="group rounded-xl border border-zinc-400/25 bg-zinc-800/80 overflow-hidden">
-            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5  text-zinc-50 text-zinc-200 hover:bg-zinc-900 hover:bg-zinc-800/50 transition list-none">
+          <details className="group rounded-xl border border-zinc-400/25 bg-zinc-400/10 overflow-hidden">
+            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5  hover:bg-zinc-400/25 transition list-none">
               <span>{app.name} কি ফ্রি?</span>
               <ChevronDown className="w-4 h-4 text-zinc-400 group-open:rotate-180 transition shrink-0" />
             </summary>
@@ -287,8 +272,8 @@ export default async function AppShowPage({
             </div>
           </details>
 
-          <details className="group rounded-xl border border-zinc-400/25 bg-zinc-800/80 overflow-hidden">
-            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5  text-zinc-50 text-zinc-200 hover:bg-zinc-900 hover:bg-zinc-800/50 transition list-none">
+          <details className="group rounded-xl border border-zinc-400/25 bg-zinc-400/10 overflow-hidden">
+            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5  hover:bg-zinc-400/25 transition list-none">
               <span>ডাউনলোড নিরাপদ কি?</span>
               <ChevronDown className="w-4 h-4 text-zinc-400 group-open:rotate-180 transition shrink-0" />
             </summary>
@@ -299,8 +284,8 @@ export default async function AppShowPage({
             </div>
           </details>
 
-          <details className="group rounded-xl border border-zinc-400/25 bg-zinc-800/80 overflow-hidden">
-            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5  text-zinc-50 text-zinc-200 hover:bg-zinc-900 hover:bg-zinc-800/50 transition list-none">
+          <details className="group rounded-xl border border-zinc-400/25 bg-zinc-400/10 overflow-hidden">
+            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5  hover:bg-zinc-400/25 transition list-none">
               <span>কোন প্ল্যাটফর্মের জন্য?</span>
               <ChevronDown className="w-4 h-4 text-zinc-400 group-open:rotate-180 transition shrink-0" />
             </summary>
@@ -310,8 +295,8 @@ export default async function AppShowPage({
             </div>
           </details>
 
-          <details className="group rounded-xl border border-zinc-400/25 bg-zinc-800/80 overflow-hidden">
-            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5  text-zinc-50 text-zinc-200 hover:bg-zinc-900 hover:bg-zinc-800/50 transition list-none">
+          <details className="group rounded-xl border border-zinc-400/25 bg-zinc-400/10 overflow-hidden">
+            <summary className="flex items-center justify-between cursor-pointer px-4 py-3.5  hover:bg-zinc-400/25 transition list-none">
               <span>কীভাবে ইনস্টল করব?</span>
               <ChevronDown className="w-4 h-4 text-zinc-400 group-open:rotate-180 transition shrink-0" />
             </summary>

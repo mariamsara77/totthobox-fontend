@@ -249,7 +249,7 @@ function MessageBubble({
               />
             ) : null}
             {message.message ? (
-              <p className="whitespace-pre-wrap break-words text-sm leading-6">
+              <p className="whitespace-pre-wrap wrap-break-word text-sm leading-6">
                 {message.message}
               </p>
             ) : null}
@@ -1062,7 +1062,7 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
                   {/* Backdrop */}
                   <button
                     type="button"
-                    className="fixed inset-0 z-[60] cursor-default bg-black/30 backdrop-blur-[2px] animate-in fade-in duration-200"
+                    className="fixed inset-0 z-60 cursor-default bg-black/30 backdrop-blur-[2px] animate-in fade-in duration-200"
                     aria-label="অ্যাকশন মেনু বন্ধ করুন"
                     onClick={() => setActionMenu(null)}
                   />
@@ -1070,7 +1070,7 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
                   {actionMenu.isMobile ? (
                     /* ===== Mobile Bottom Sheet (Native-like) ===== */
                     <div
-                      className="fixed inset-x-0 bottom-0 z-[70] animate-in slide-in-from-bottom duration-300"
+                      className="fixed inset-x-0 bottom-0 z-70 animate-in slide-in-from-bottom duration-300"
                       role="menu"
                     >
                       <div className="mx-auto max-w-lg px-3 pb-safe">
@@ -1150,7 +1150,7 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
                   ) : (
                     /* ===== Desktop Floating Menu ===== */
                     <div
-                      className="fixed z-[70] flex min-w-44 max-w-[calc(100vw-16px)] items-center gap-1 rounded-2xl bg-zinc-400/15 p-1.5 shadow-xl backdrop-blur-md animate-in fade-in zoom-in-95 duration-150"
+                      className="fixed z-70 flex min-w-44 max-w-[calc(100vw-16px)] items-center gap-1 rounded-2xl bg-zinc-400/15 p-1.5 shadow-xl backdrop-blur-md animate-in fade-in zoom-in-95 duration-150"
                       style={{ left: actionMenu.x, top: actionMenu.y }}
                       role="menu"
                     >
@@ -1200,7 +1200,7 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
               ) : null}
 
               {/* Composer */}
-              <div className="shrink-0 p-3 bg-zinc-400/5">
+              <div className="shrink-0 p-2">
                 {editing ? (
                   <div className="flex items-center gap-2 rounded-2xl bg-zinc-400/15 px-3 py-2">
                     <Edit3 className="size-4 shrink-0 opacity-50" />

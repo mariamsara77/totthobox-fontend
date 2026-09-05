@@ -35,7 +35,7 @@ type Props = {
 
 function AppSkeleton() {
   return (
-    <div className="rounded-2xl border border-zinc-400/25 bg-zinc-800/80 p-4 animate-pulse">
+    <div className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 animate-pulse">
       <div className="flex gap-4 items-start">
         <div className="w-16 h-16 rounded-xl bg-zinc-400/10 shrink-0" />
         <div className="flex-1 space-y-2.5">
@@ -114,7 +114,7 @@ export default function SoftwareClient({ platform = "" }: Props) {
     <div className="max-w-2xl mx-auto space-y-4 p-4 sm:p-6">
       {/* Header */}
       <header className="border-b border-zinc-400/25 pb-4">
-        <h1 className="text-2xl font-bold tracking-tight text-zinc-50 text-zinc-100 flex items-center gap-2">
+        <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
           <Puzzle className="w-6 h-6 text-amber-600 dark:text-amber-500" />
           {platform
             ? `Free ${platform} Software Download`
@@ -131,20 +131,20 @@ export default function SoftwareClient({ platform = "" }: Props) {
       <nav className="space-y-4" aria-label="অ্যাপ সার্চ ও ফিল্টার">
         <div className="flex items-center gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="অ্যাপের নামে খুঁজুন..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-400/25 bg-zinc-800/80 text-sm text-zinc-50 text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-400 dark:focus:ring-zinc-600"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-400/25 bg-zinc-400/10 text-sm  focus:outline-none focus:ring-2 focus:ring-zinc-400 dark:focus:ring-zinc-600"
             />
           </div>
 
           {hasActiveFilters && (
             <button
               onClick={resetFilters}
-              className="p-2.5 rounded-xl border border-zinc-400/25 text-zinc-400 hover:bg-zinc-900 hover:bg-zinc-800 "
+              className="p-2.5 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/25"
             >
               <X className="w-5 h-5" />
             </button>
@@ -157,7 +157,7 @@ export default function SoftwareClient({ platform = "" }: Props) {
             <select
               value={platform}
               onChange={(e) => handlePlatformChange(e.target.value)}
-              className="appearance-none w-full bg-zinc-800 border border-zinc-400/25 text-sm  text-zinc-50 text-zinc-200 rounded-xl pl-3 pr-8 py-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-zinc-400 dark:focus:ring-zinc-600"
+              className="appearance-none w-full bg-zinc-100 dark:bg-zinc-700  rounded-lg p-2 outline-none"
             >
               <option value="">All Platforms</option>
               <option value="Windows">Windows</option>
@@ -165,7 +165,7 @@ export default function SoftwareClient({ platform = "" }: Props) {
               <option value="Mac">Mac</option>
               <option value="Fonts">Fonts</option>
             </select>
-            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
+            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" />
           </div>
         </div>
       </nav>
@@ -189,7 +189,7 @@ export default function SoftwareClient({ platform = "" }: Props) {
             <AppSkeleton />
           </>
         ) : apps.length === 0 ? (
-          <div className="text-center py-16 text-zinc-400">
+          <div className="text-center py-16">
             <p className="text-lg ">কোনো অ্যাপ পাওয়া যায়নি</p>
             <p className="text-sm mt-1">
               অন্য ফিল্টার বা সার্চ দিয়ে চেষ্টা করুন
@@ -200,7 +200,7 @@ export default function SoftwareClient({ platform = "" }: Props) {
             <Link
               key={app.id}
               href={`/software/${app.slug}`}
-              className="block rounded-2xl border border-zinc-400/25 bg-zinc-800/80 p-4 hover:bg-zinc-900/50 hover:bg-zinc-800/30 "
+              className="block rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 "
             >
               <div className="flex gap-4 items-start">
                 <div className="shrink-0">
@@ -219,9 +219,7 @@ export default function SoftwareClient({ platform = "" }: Props) {
 
                 <div className="flex-1 min-w-0 space-y-1.5">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="text-lg  text-zinc-50 text-zinc-100 line-clamp-1">
-                      {app.name}
-                    </h2>
+                    <h2 className="text-lg line-clamp-1">{app.name}</h2>
                     {app.platform && (
                       <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs  border border-zinc-400/30 ">
                         {app.platform}
@@ -261,7 +259,7 @@ export default function SoftwareClient({ platform = "" }: Props) {
           <button
             onClick={() => setSize(size + 1)}
             disabled={isValidating}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-zinc-400/25 bg-zinc-800/80 text-sm   hover:bg-zinc-900 hover:bg-zinc-800  disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-zinc-400/10 text-sm   hover:bg-zinc-400/25  disabled:opacity-50"
           >
             {isValidating ? "লোড হচ্ছে..." : "আরও দেখুন"}
           </button>
@@ -270,7 +268,7 @@ export default function SoftwareClient({ platform = "" }: Props) {
 
       {/* SEO Content */}
       <section className="space-y-4 pt-8 border-t border-zinc-400/25">
-        <h2 className="text-lg font-bold text-zinc-50 text-zinc-100 flex items-center gap-2">
+        <h2 className="text-lg font-bold flex items-center gap-2">
           <Puzzle className="w-5 h-5 text-amber-600 dark:text-amber-500" />
           {platform
             ? `ফ্রি ${platform} সফটওয়্যার ও অ্যাপ ডাউনলোড`

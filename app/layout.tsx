@@ -84,7 +84,7 @@ export default function RootLayout({
       <head />
       <body
         suppressHydrationWarning
-        className="min-h-screen antialiased bg-white dark:bg-zinc-800"
+        className="antialiased bg-white dark:bg-zinc-800"
       >
         <NetworkStatus /> {/* অফলাইন এলার্ট ব্যানার */}
         <TagManager />

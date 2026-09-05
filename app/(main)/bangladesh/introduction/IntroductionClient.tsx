@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import useSWR from "swr";
 import { Map, Search, X, ArrowRight, Users, Check } from "lucide-react";
+import { TbRosetteDiscountCheckFilled } from "react-icons/tb";
+import { FaUser, FaUserPen } from "react-icons/fa6";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
@@ -33,6 +35,26 @@ export default function IntroductionClient() {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [showCreators, setShowCreators] = useState(false);
+  const creatorsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        creatorsRef.current &&
+        !creatorsRef.current.contains(e.target as Node)
+      ) {
+        setShowCreators(false);
+      }
+    };
+
+    if (showCreators) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showCreators]);
 
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(search), 400);
@@ -59,7 +81,7 @@ export default function IntroductionClient() {
       {/* Header */}
       <header className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-50 text-zinc-100 flex items-center gap-2">
+          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
             <Map className="w-6 h-6 text-amber-600 dark:text-amber-500" />
             বাংলাদেশের পরিচিতি
           </h1>
@@ -70,61 +92,57 @@ export default function IntroductionClient() {
         </div>
 
         {/* Creators Button */}
-        <div className="relative shrink-0">
+        <div className="relative shrink-0" ref={creatorsRef}>
           <button
             onClick={() => setShowCreators(!showCreators)}
-            className="p-2 rounded-lg text-zinc-400 hover:bg-zinc-900 hover:bg-zinc-800"
+            className="p-2 rounded-lg hover:bg-zinc-400/25"
             aria-label="তথ্য প্রদানকারীগণ"
           >
-            <Users className="w-5 h-5" />
+            <FaUserPen className="w-5 h-5" />
           </button>
 
           {showCreators && (
-            <div className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-y-auto rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900  p-4 z-50 space-y-4">
+            <div className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-y-auto rounded-2xl border border-zinc-400/25 backdrop-blur-xl p-4 z-50 space-y-4">
               <div>
-                <h3 className=" text-zinc-50 text-zinc-200">
-                  তথ্য প্রদানকারীগণ ({creators.length})
-                </h3>
-                <p className="text-xs text-zinc-400 mt-0.5">
+                <h3 className="">তথ্য প্রদানকারীগণ ({creators.length})</h3>
+                <p className="text-xs mt-0.5">
                   এই পেজের কন্টেন্ট তৈরি ও যাচাইকরণে যারা অবদান রেখেছেন
                 </p>
               </div>
 
               {creators.length === 0 ? (
-                <p className="text-sm text-zinc-400 text-center py-4">
+                <p className="text-sm text-center py-4">
                   এখনো কোনো কন্ট্রিবিউটর পাওয়া যায়নি।
                 </p>
               ) : (
                 creators.map((c) => (
                   <div
                     key={c.id}
-                    className="flex items-start gap-4 p-2 rounded-xl hover:bg-zinc-900 hover:bg-zinc-800"
+                    className="flex items-start gap-4 p-2 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/25 border border-zinc-400/25"
                   >
                     <div className="relative">
                       {c.avatar_url ? (
                         <img
                           src={c.avatar_url}
                           alt={c.name}
-                          className="w-10 h-10 rounded-full object-cover"
+                          className="w-12 h-12 rounded-xl object-cover"
                         />
                       ) : (
-                        <div className="w-10 h-10 rounded-full bg-zinc-400/10 flex items-center justify-center text-sm ">
+                        <div className="w-12 h-12 rounded-xl bg-zinc-400/10 flex items-center justify-center text-sm ">
                           {c.name?.charAt(0)}
                         </div>
                       )}
                       <span
-                        className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white dark:border-zinc-900 ${
-                          c.is_online ? "bg-green-500" : "bg-zinc-700"
+                        className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full ${
+                          c.is_online ? "bg-green-500" : "bg-zinc-500"
                         }`}
                       />
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1">
-                        <span className=" text-sm truncate">
-                          {c.name}
-                        </span>
+                        <span className=" text-sm truncate">{c.name}</span>
                         {c.is_verified && (
-                          <Check className="w-4 h-4 text-zinc-300 shrink-0" />
+                          <TbRosetteDiscountCheckFilled className="w-4 h-4 text-blue-600 shrink-0" />
                         )}
                       </div>
                       <p className="text-xs text-zinc-400 truncate">
@@ -145,19 +163,19 @@ export default function IntroductionClient() {
       {/* Search */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="বিভাগ, জেলা বা শিরোনাম দিয়ে খুঁজুন..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-400/25 bg-zinc-800/80 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-400"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-400/10 outline-none"
           />
         </div>
         {search && (
           <button
             onClick={() => setSearch("")}
-            className="p-2.5 rounded-xl border border-zinc-400/25 text-zinc-400 hover:bg-zinc-900 hover:bg-zinc-800"
+            className="p-2.5 rounded-lg hover:bg-zinc-400/25"
           >
             <X className="w-5 h-5" />
           </button>
@@ -177,15 +195,18 @@ export default function IntroductionClient() {
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div
                 key={i}
-                className="rounded-2xl border border-zinc-400/25 bg-zinc-800/80 p-4 animate-pulse"
+                className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 animate-pulse"
               >
                 <div className="flex gap-4">
                   <div className="w-16 h-16 rounded-xl bg-zinc-400/10" />
                   <div className="flex-1 space-y-2">
                     <div className="h-5 w-3/4 rounded bg-zinc-400/10" />
                     <div className="h-3 w-full rounded bg-zinc-400/10" />
+                    <div className="h-3 w-full rounded bg-zinc-400/10" />
                   </div>
                 </div>
+                <div className="border-t  border-zinc-400/25 my-2" />
+                <div className="h-3 w-20 rounded bg-zinc-400/10" />
               </div>
             ))}
           </div>
@@ -198,7 +219,7 @@ export default function IntroductionClient() {
           Object.entries(grouped).map(([category, items]) => (
             <div key={category} className="space-y-4">
               <div className="flex justify-center">
-                <span className="px-4 py-1 rounded-full bg-zinc-800 text-white bg-zinc-800 dark:text-zinc-50 text-xs font-bold uppercase tracking-widest">
+                <span className="px-4 py-2 rounded-full bg-zinc-400/10 text-xs font-bold uppercase tracking-widest">
                   {category}
                 </span>
               </div>
@@ -207,7 +228,7 @@ export default function IntroductionClient() {
                 <Link
                   key={item.id}
                   href={`/bangladesh/introduction/${item.slug}`}
-                  className="block rounded-2xl border border-zinc-400/25 bg-zinc-800/80 p-4 hover:bg-zinc-900/50 hover:bg-zinc-800/30 "
+                  className="block rounded-2xl border border-zinc-400/25 bg-zinc-400/40 p-4 hover:bg-zinc-400/25"
                 >
                   <div className="flex gap-4 items-start">
                     <div className="shrink-0">
@@ -224,11 +245,9 @@ export default function IntroductionClient() {
                       )}
                     </div>
                     <div className="flex-1 min-w-0 space-y-1.5">
-                      <h2 className="text-lg  text-zinc-50 text-zinc-100 line-clamp-1">
-                        {item.title}
-                      </h2>
+                      <h2 className="text-lg line-clamp-1">{item.title}</h2>
                       {item.description && (
-                        <p className="text-sm  line-clamp-2">
+                        <p className="text-sm opacity-80 line-clamp-2">
                           {item.description.replace(/<[^>]+>/g, "")}
                         </p>
                       )}
@@ -249,7 +268,7 @@ export default function IntroductionClient() {
 
       {/* About */}
       <section className="space-y-4 pt-6 border-t border-zinc-400/25">
-        <h2 className="text-lg font-bold text-zinc-50 text-zinc-100 flex items-center gap-2">
+        <h2 className="text-lg font-bold flex items-center gap-2">
           বাংলাদেশের পরিচিতি সম্পর্কে
         </h2>
         <div className="space-y-4 text-sm  leading-relaxed">

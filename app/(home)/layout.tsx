@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Noto_Sans_Bengali } from "next/font/google";
 import NavbarHeader from "@/components/NavbarHeader";
 import Footer from "@/components/Footer";
 
@@ -20,8 +19,8 @@ export default function HomeLayout({
 }>) {
   return (
     <div>
-      <div className="flex min-h-screen">
-        <div className="flex min-h-screen flex-1 flex-col">
+      <div className="flex">
+        <div className="flex flex-1 flex-col">
           <div className="sticky top-0 z-50">
             <NavbarHeader />
           </div>

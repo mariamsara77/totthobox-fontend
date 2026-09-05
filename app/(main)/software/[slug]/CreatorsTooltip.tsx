@@ -21,18 +21,19 @@ export default function CreatorsTooltip({ creators }: { creators: Creator[] }) {
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="p-2 rounded-lg hover:bg-zinc-400/10-colors"
+        className="p-2 rounded-lg bg-zinc-400/10 hover:bg-zinc-400/25"
         aria-label="তথ্য প্রদানকারীগণ"
       >
+        Creator
         <FaUser className="w-5 h-5 " />
       </button>
 
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-full mt-2 w-80 z-50 rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-700  p-4 space-y-4">
+          <div className="absolute right-0 top-full mt-2 w-80 z-50 rounded-2xl border border-zinc-400/25   p-4 space-y-4">
             <div>
-              <h3 className="font-bold text-zinc-50 text-zinc-100">
+              <h3 className="font-bold ">
                 তথ্য প্রদানকারী ({creators.length})
               </h3>
               <p className="text-xs text-zinc-400 mt-0.5">
@@ -63,9 +64,7 @@ export default function CreatorsTooltip({ creators }: { creators: Creator[] }) {
 
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <span className=" text-sm truncate">
-                        {creator.name}
-                      </span>
+                      <span className=" text-sm truncate">{creator.name}</span>
                       {creator.is_verified && (
                         <BsPatchCheckFill className="w-4 h-4 text-zinc-300 shrink-0" />
                       )}

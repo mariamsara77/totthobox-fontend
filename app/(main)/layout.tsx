@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Noto_Sans_Bengali } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Sidebar from "@/components/Sidebar";
@@ -23,12 +22,12 @@ export default function MainLayout({
   return (
     <div>
       <SidebarProvider>
-        <div className="flex min-h-screen">
+        <div className="flex">
           {/* Sidebar */}
           <Sidebar />
 
           {/* Main content area */}
-          <div className="flex min-h-screen min-w-0 flex-1 flex-col">
+          <div className="flex min-w-0 flex-1 flex-col">
             <div className="md:hidden sticky top-0 z-50">
               <Navbar />
             </div>

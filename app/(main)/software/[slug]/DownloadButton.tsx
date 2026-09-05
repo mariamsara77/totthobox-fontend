@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { Download } from "lucide-react";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
 export default function DownloadButton({
   appId,
@@ -41,7 +42,7 @@ export default function DownloadButton({
     <button
       onClick={handleDownload}
       disabled={loading}
-      className="w-full flex items-center justify-center gap-2 bg-zinc-700 hover:bg-zinc-600 disabled:opacity-60 text-white  py-3.5 px-4 rounded-xl "
+      className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white  py-3.5 px-4 rounded-xl "
     >
       <Download className="w-5 h-5" />
       {loading
