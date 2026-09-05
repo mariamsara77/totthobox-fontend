@@ -137,13 +137,6 @@
 body {
   top: 0 !important;
   position: static !important;
-  background-color: var(--color-zinc-100);
-  color: var(--color-zinc-900);
-}
-
-.dark body {
-  background-color: var(--color-zinc-900);
-  color: var(--color-zinc-100);
 }
 
 .goog-text-highlight {

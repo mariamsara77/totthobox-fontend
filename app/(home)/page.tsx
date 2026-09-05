@@ -81,11 +81,10 @@ const services = [
 export default function HomePage() {
   return (
     <div className="max-w-7xl mx-auto space-y-4 p-4 min-h-screen">
-      
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="max-w-4xl mx-auto text-center space-y-2 relative z-10">
-          <span className="inline-block px-3.5 py-1 bg-zinc-9000/30 border border-emerald-400/30 rounded-full text-xs  tracking-wide border-zinc-400/25 uppercase">
+          <span className="inline-block px-4 py-1  rounded-full text-xs  tracking-wide bg-zinc-400/10 border border-zinc-400/25 uppercase">
             ডিজিটাল তথ্য সেবা পোর্টাল
           </span>
 
@@ -94,11 +93,12 @@ export default function HomePage() {
           </h1>
 
           <p className="border-zinc-400/25 text-base max-w-2xl mx-auto">
-            আপনার দৈনন্দিন প্রয়োজনীয় তথ্য, টুলস ও ডিজিটাল সেবা — সম্পূর্ণ বিনামূল্যে ও নির্ভরযোগ্যভাবে।
+            আপনার দৈনন্দিন প্রয়োজনীয় তথ্য, টুলস ও ডিজিটাল সেবা — সম্পূর্ণ
+            বিনামূল্যে ও নির্ভরযোগ্যভাবে।
           </p>
 
           {/* Analytics Badge */}
-              <UserAnalytics />
+          <UserAnalytics />
         </div>
       </section>
 
@@ -106,9 +106,7 @@ export default function HomePage() {
       <main className="space-y-4">
         <div className="flex items-center justify-between border-b border-zinc-400/25">
           <div>
-            <h2 className="text-2xl font-bold ">
-              মূল সেবাসমূহ
-            </h2>
+            <h2 className="text-2xl font-bold ">মূল সেবাসমূহ</h2>
             <p className="text-xs  mt-1">
               নিচের তালিকা থেকে আপনার কাঙ্ক্ষিত সেবাটি নির্বাচন করুন
             </p>
@@ -118,29 +116,29 @@ export default function HomePage() {
         {/* Dynamic Services Cards */}
         <section aria-label="সকল সেবা">
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {services.map((service, index) => {
-            const Icon = service.icon;
-            return (
-              <Link
-                key={index}
-                href={service.href}
-                className="relative flex flex-col items-center h-full p-4 text-center transition-all duration-200 group rounded-3xl bg-zinc-400/10 hover:bg-zinc-400/25"
-              >
-                <div className="mb-4 transition-transform duration-200 transform group-hover:scale-110 ">
-                  <Icon className="w-12 h-12 stroke-[1.5]" />
-                </div>
+            {services.map((service, index) => {
+              const Icon = service.icon;
+              return (
+                <Link
+                  key={index}
+                  href={service.href}
+                  className="relative flex flex-col items-center h-full p-4 text-center transition-all duration-200 group rounded-3xl bg-zinc-400/10 hover:bg-zinc-400/25"
+                >
+                  <div className="mb-4 transition-transform duration-200 transform group-hover:scale-110 ">
+                    <Icon className="w-12 h-12 stroke-[1.5]" />
+                  </div>
 
-                <h3 className="text-lg    group-hover:font-bold">
-                  {service.label}
-                </h3>
+                  <h3 className="text-lg    group-hover:font-bold">
+                    {service.label}
+                  </h3>
 
-                <span className="mt-2 text-xs leading-relaxed ">
-                  {service.details}
-                </span>
-              </Link>
-            );
-          })}
-        </div>
+                  <span className="mt-2 text-xs leading-relaxed ">
+                    {service.details}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
         </section>
 
         <hr className="border-zinc-400/25 dark:border-zinc-700 my-12" />
@@ -152,18 +150,16 @@ export default function HomePage() {
           </h2>
 
           <div className="space-y-4 text-sm sm:text-base leading-relaxed">
-           <p>
-  বর্তমানে সঠিক তথ্য দ্রুত পাওয়া অত্যন্ত জরুরি।{" "}
-  <strong className="">Totthobox</strong>{" "}
-  বাংলাদেশের ব্যবহারকারীদের জন্য তৈরি একটি সমন্বিত ডিজিটাল সার্ভিস
-  পোর্টাল। এখানে দৈনন্দিন জীবনের প্রয়োজনীয় তথ্য, টুলস এবং
-  শিক্ষামূলক কনটেন্ট এক প্ল্যাটফর্মে রাখা হয়েছে।
-</p>
+            <p>
+              বর্তমানে সঠিক তথ্য দ্রুত পাওয়া অত্যন্ত জরুরি।{" "}
+              <strong className="">Totthobox</strong> বাংলাদেশের ব্যবহারকারীদের
+              জন্য তৈরি একটি সমন্বিত ডিজিটাল সার্ভিস পোর্টাল। এখানে দৈনন্দিন
+              জীবনের প্রয়োজনীয় তথ্য, টুলস এবং শিক্ষামূলক কনটেন্ট এক
+              প্ল্যাটফর্মে রাখা হয়েছে।
+            </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
               <div className="space-y-4">
-                <h3 className="text-lg font-bold ">
-                  কী কী সেবা পাবেন
-                </h3>
+                <h3 className="text-lg font-bold ">কী কী সেবা পাবেন</h3>
                 <ul className="list-disc list-inside space-y-2 text-xs sm:text-sm">
                   <li>
                     <strong>বাংলা ক্যালেন্ডার & ছুটির তালিকা:</strong> তারিখ,
@@ -182,8 +178,8 @@ export default function HomePage() {
                     ডিজিটাল মাধ্যম।
                   </li>
                   <li>
-                    <strong>টুলস & কনভার্টার:</strong> কারেন্সি, সংখ্যা থেকে শব্দ
-                    ও পিকচার রিসাইজার।
+                    <strong>টুলস & কনভার্টার:</strong> কারেন্সি, সংখ্যা থেকে
+                    শব্দ ও পিকচার রিসাইজার।
                   </li>
                 </ul>
               </div>

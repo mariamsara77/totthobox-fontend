@@ -9,7 +9,13 @@ const API_BASE_URL =
 
 export default function VisitorTracker() {
   const pathname = usePathname();
-  const lastSyncedPwa = useRef<boolean | null>(null);
+  const lastSynced = useRef<{
+    isPwa: boolean | null;
+    hasInstalled: boolean | null;
+  }>({
+    isPwa: null,
+    hasInstalled: null,
+  });
   const isSyncing = useRef(false);
 
   const getIsPwa = (): boolean => {
@@ -20,17 +26,33 @@ export default function VisitorTracker() {
     );
   };
 
+  const getHasInstalled = (): boolean => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("pwa_installed") === "true";
+  };
+
   const syncPwaStatus = async (force = false) => {
     if (isSyncing.current) return;
 
     const isPWA = getIsPwa();
-    if (!force && lastSyncedPwa.current === isPWA) return;
+    const hasInstalled = getHasInstalled();
+
+    // একই স্ট্যাটাস হলে স্কিপ
+    if (
+      !force &&
+      lastSynced.current.isPwa === isPWA &&
+      lastSynced.current.hasInstalled === hasInstalled
+    ) {
+      return;
+    }
 
     isSyncing.current = true;
 
-    console.log("[PWA] Trying to sync...", {
+    console.log("[PWA] Syncing...", {
       isPWA,
-      url: `${API_BASE_URL}/tracking/sync-pwa`,
+      hasInstalled,
+      displayMode: window.matchMedia("(display-mode: standalone)").matches,
+      navigatorStandalone: (window.navigator as any).standalone,
     });
 
     try {
@@ -42,7 +64,10 @@ export default function VisitorTracker() {
           "X-App-Mode": isPWA ? "standalone" : "browser",
         },
         credentials: "include",
-        body: JSON.stringify({ is_pwa: isPWA }),
+        body: JSON.stringify({
+          is_pwa: isPWA,
+          has_installed: hasInstalled,
+        }),
       });
 
       const data = await res.json().catch(() => null);
@@ -51,48 +76,60 @@ export default function VisitorTracker() {
         status: res.status,
         ok: res.ok,
         data,
-        headers: Object.fromEntries(res.headers.entries()),
       });
 
       if (res.ok) {
-        lastSyncedPwa.current = isPWA;
+        lastSynced.current = {
+          isPwa: isPWA,
+          hasInstalled: hasInstalled,
+        };
       } else {
-        lastSyncedPwa.current = null;
+        lastSynced.current = { isPwa: null, hasInstalled: null };
       }
     } catch (error: any) {
       console.error("[PWA] Fetch Error:", error?.message || error);
-      lastSyncedPwa.current = null;
+      lastSynced.current = { isPwa: null, hasInstalled: null };
     } finally {
       isSyncing.current = false;
     }
   };
 
-  // Initial + display-mode change
+  // ========== PWA Install + Display Mode ==========
   useEffect(() => {
-    // একটু delay দিয়ে চালাই যাতে cookie/session set হয়ে যায়
-    const timer = setTimeout(() => {
-      syncPwaStatus(true);
-    }, 300);
-
-    const mediaQuery = window.matchMedia("(display-mode: standalone)");
-    const handleChange = () => {
-      lastSyncedPwa.current = null;
+    // ইনস্টল হলে localStorage-এ ফ্ল্যাগ সেভ + সিঙ্ক
+    const handleAppInstalled = () => {
+      console.log("[PWA] App installed event fired");
+      localStorage.setItem("pwa_installed", "true");
+      lastSynced.current.hasInstalled = null; // force sync
       syncPwaStatus(true);
     };
 
+    window.addEventListener("appinstalled", handleAppInstalled);
+
+    // Initial sync (cookie/session সেট হওয়ার জন্য একটু দেরি)
+    const timer = setTimeout(() => {
+      syncPwaStatus(true);
+    }, 400);
+
+    // display-mode পরিবর্তন হলে
+    const mediaQuery = window.matchMedia("(display-mode: standalone)");
+    const handleChange = () => {
+      lastSynced.current.isPwa = null;
+      syncPwaStatus(true);
+    };
     mediaQuery.addEventListener("change", handleChange);
 
     return () => {
       clearTimeout(timer);
+      window.removeEventListener("appinstalled", handleAppInstalled);
       mediaQuery.removeEventListener("change", handleChange);
     };
   }, []);
 
-  // Pathname change হলেও একবার চেক (SPA navigation)
+  // Pathname change (SPA navigation)
   useEffect(() => {
     if (!pathname) return;
-    // হালকা delay
-    const t = setTimeout(() => syncPwaStatus(), 200);
+    const t = setTimeout(() => syncPwaStatus(), 250);
     return () => clearTimeout(t);
   }, [pathname]);
 

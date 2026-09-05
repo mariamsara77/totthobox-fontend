@@ -82,7 +82,10 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${notoBengali.variable}`}
     >
       <head />
-      <body suppressHydrationWarning className="min-h-screen antialiased">
+      <body
+        suppressHydrationWarning
+        className="min-h-screen antialiased bg-white dark:bg-zinc-800"
+      >
         <NetworkStatus /> {/* অফলাইন এলার্ট ব্যানার */}
         <TagManager />
         <AppProviders>

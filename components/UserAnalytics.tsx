@@ -34,7 +34,7 @@ export default function UserAnalytics() {
 
   return (
     <div className="flex items-center justify-center py-2">
-      <div className="items-center gap-4 rounded-full border border-zinc-400/25 p-2">
+      <div className="items-center gap-4 rounded-full border border-zinc-400/25 px-4 py-2">
         <span className="relative flex">
           <span className="absolute h-full w-full animate-ping rounded-full bg-zinc-700 opacity-75"></span>
           <span className="relative rounded-full bg-zinc-9000"></span>
@@ -42,10 +42,7 @@ export default function UserAnalytics() {
 
         <p className="text-sm  ">
           প্ল্যাটফর্মটি ব্যবহার করেছেন{" "}
-          <span className="text-base  ">
-            {totalUsers}+
-          </span>{" "}
-          জন মানুষ
+          <span className="text-base  ">{totalUsers}+</span> জন মানুষ
         </p>
       </div>
     </div>
