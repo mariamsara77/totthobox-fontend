@@ -5,6 +5,8 @@ import Link from "next/link";
 import useSWR from "swr";
 import { ArrowLeft, Eye, Users, Check, ChevronDown } from "lucide-react";
 import InteractiveActions from "./InteractiveActions";
+import { TbRosetteDiscountCheckFilled } from "react-icons/tb";
+import { FaUserPen } from "react-icons/fa6";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
@@ -67,20 +69,15 @@ export default function IntroductionShowClient({ intro }: Props) {
     <div className="max-w-2xl mx-auto space-y-4 p-4 sm:p-6">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-zinc-400">
-        <Link href="/" className="hover:text-zinc-50 hover:text-zinc-50">
+        <Link href="/" className="">
           হোম
         </Link>
         <span>/</span>
-        <Link
-          href="/bangladesh/introduction"
-          className="hover:text-zinc-50 hover:text-zinc-50"
-        >
+        <Link href="/bangladesh/introduction" className="">
           বাংলাদেশের পরিচিতি
         </Link>
         <span>/</span>
-        <span className="text-zinc-50 text-zinc-200 truncate">
-          {intro.title}
-        </span>
+        <span className=" truncate">{intro.title}</span>
       </nav>
 
       {/* Header */}
@@ -110,50 +107,66 @@ export default function IntroductionShowClient({ intro }: Props) {
           <div className="relative shrink-0">
             <button
               onClick={() => setShowCreators(!showCreators)}
-              className="p-2 rounded-lg text-zinc-400 hover:bg-zinc-900 hover:bg-zinc-800"
+              className="p-2 rounded-lg hover:bg-zinc-400/25"
+              aria-label="তথ্য প্রদানকারীগণ"
             >
-              <Users className="w-5 h-5" />
+              <FaUserPen className="w-5 h-5" />
             </button>
             {showCreators && (
               <>
-                <div
-                  className="fixed inset-0 z-40"
-                  onClick={() => setShowCreators(false)}
-                />
-                <div className="absolute right-0 top-full mt-2 w-80 max-h-80 overflow-y-auto rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900  p-4 z-50 space-y-4">
-                  <h3 className=" text-sm">তথ্য প্রদানকারী</h3>
+                <div className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-y-auto rounded-2xl border border-zinc-400/25 backdrop-blur-xl p-4 z-50 space-y-4">
+                  <div>
+                    <h3 className="">তথ্য প্রদানকারীগণ ({creators.length})</h3>
+                    <p className="text-xs mt-0.5">
+                      এই পেজের কন্টেন্ট তৈরি ও যাচাইকরণে যারা অবদান রেখেছেন
+                    </p>
+                  </div>
+
                   {creators.length === 0 ? (
-                    <p className="text-xs text-zinc-400 text-center py-2">
-                      কোনো কন্ট্রিবিউটর পাওয়া যায়নি।
+                    <p className="text-sm text-center py-4">
+                      এখনো কোনো কন্ট্রিবিউটর পাওয়া যায়নি।
                     </p>
                   ) : (
                     creators.map((c) => (
-                      <div key={c.id} className="flex items-center gap-4">
-                        {c.avatar_url ? (
-                          <img
-                            src={c.avatar_url}
-                            alt={c.name}
-                            className="w-9 h-9 rounded-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-9 h-9 rounded-full bg-zinc-800 flex items-center justify-center text-xs">
-                            {c.name?.charAt(0)}
-                          </div>
-                        )}
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-1">
-                            <span className="text-sm  truncate">
-                              {c.name}
-                            </span>
-                            {c.is_verified && (
-                              <Check className="w-3.5 h-3.5 text-zinc-300" />
+                      <Link key={c.id} href={`/users/${c.slug}`}>
+                        <div
+                          key={c.id}
+                          className="flex items-start gap-4 p-2 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/25 border border-zinc-400/25 mb-2"
+                        >
+                          <div className="relative">
+                            {c.avatar_url ? (
+                              <img
+                                src={c.avatar_url}
+                                alt={c.name}
+                                className="w-12 h-12 rounded-xl object-cover"
+                              />
+                            ) : (
+                              <div className="w-12 h-12 rounded-xl bg-zinc-400/10 flex items-center justify-center text-sm ">
+                                {c.name?.charAt(0)}
+                              </div>
                             )}
+                            <span
+                              className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full ${
+                                c.is_online ? "bg-green-500" : "bg-zinc-500"
+                              }`}
+                            />
                           </div>
-                          <p className="text-xs text-zinc-400">
-                            {c.profession || "কন্ট্রিবিউটর"}
-                          </p>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-1">
+                              <strong className="truncate">{c.name}</strong>
+                              {c.is_verified && (
+                                <TbRosetteDiscountCheckFilled className="w-4 h-4 text-blue-600 shrink-0" />
+                              )}
+                            </div>
+                            <p className="text-xs opacity-80 truncate">
+                              {c.profession || "কন্টেন্ট কন্ট্রিবিউটর"}
+                            </p>
+                            <p className="text-xs opacity-80 mt-0.5">
+                              সর্বশেষ: {c.last_active_at || "অজানা"}
+                            </p>
+                          </div>
                         </div>
-                      </div>
+                      </Link>
                     ))
                   )}
                 </div>
@@ -176,9 +189,7 @@ export default function IntroductionShowClient({ intro }: Props) {
 
       {/* Description */}
       <section className="space-y-4">
-        <h2 className="text-lg font-bold text-zinc-50 text-zinc-200">
-          বিস্তারিত বিবরণ
-        </h2>
+        <h2 className="text-lg font-bold ">বিস্তারিত বিবরণ</h2>
         {intro.description ? (
           <div
             className="prose dark:prose-invert max-w-none leading-relaxed "
@@ -208,7 +219,7 @@ export default function IntroductionShowClient({ intro }: Props) {
       {/* Back */}
       <Link
         href="/bangladesh/introduction"
-        className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-50 hover:text-zinc-50"
+        className="inline-flex items-center gap-2 text-sm text-zinc-400 "
       >
         <ArrowLeft className="w-4 h-4" />
         বাংলাদেশের পরিচিতি তালিকায় ফিরে যান
@@ -216,9 +227,7 @@ export default function IntroductionShowClient({ intro }: Props) {
 
       {/* About */}
       <section className="rounded-2xl bg-zinc-400/10/40 p-4 space-y-2">
-        <h2 className="text-lg font-bold text-zinc-50 text-zinc-200">
-          {intro.title} সম্পর্কে
-        </h2>
+        <h2 className="text-lg font-bold ">{intro.title} সম্পর্কে</h2>
         <p className="text-sm  leading-relaxed">
           <strong>{intro.title}</strong> হলো বাংলাদেশের পরিচিতির অংশ।
           {intro.intro_category && (
@@ -233,9 +242,7 @@ export default function IntroductionShowClient({ intro }: Props) {
 
       {/* FAQ */}
       <section className="space-y-4">
-        <h2 className="text-lg font-bold text-zinc-50 text-zinc-200">
-          প্রায়শই জিজ্ঞাসিত প্রশ্ন
-        </h2>
+        <h2 className="text-lg font-bold ">প্রায়শই জিজ্ঞাসিত প্রশ্ন</h2>
         <details className="group rounded-xl border border-zinc-400/25 overflow-hidden">
           <summary className="flex items-center justify-between cursor-pointer px-4 py-2 ">
             <span>{intro.title} কী?</span>

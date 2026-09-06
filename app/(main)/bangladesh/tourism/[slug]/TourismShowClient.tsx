@@ -12,6 +12,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import InteractiveActions from "./InteractiveActions";
+import { FaUserPen } from "react-icons/fa6";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
@@ -82,21 +83,16 @@ export default function TourismShowClient({ tourism }: Props) {
   return (
     <div className="max-w-2xl mx-auto space-y-4 p-4 sm:p-6">
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-sm text-zinc-400">
-        <Link href="/" className="hover:text-zinc-50 hover:text-zinc-50">
+      <nav className="flex items-center gap-2 text-sm ">
+        <Link href="/" className="">
           হোম
         </Link>
         <span>/</span>
-        <Link
-          href="/bangladesh/tourism"
-          className="hover:text-zinc-50 hover:text-zinc-50"
-        >
+        <Link href="/bangladesh/tourism" className="">
           পর্যটন কেন্দ্র
         </Link>
         <span>/</span>
-        <span className="text-zinc-50 text-zinc-200 truncate">
-          {tourism.title}
-        </span>
+        <span className=" truncate">{tourism.title}</span>
       </nav>
 
       {/* Header */}
@@ -109,12 +105,12 @@ export default function TourismShowClient({ tourism }: Props) {
               </span>
             )}
 
-            <h1 className="text-2xl  font-black tracking-tight text-zinc-50 dark:text-white">
+            <h1 className="text-2xl  font-black tracking-tight">
               {tourism.title}
             </h1>
 
             {location && (
-              <p className="text-sm text-zinc-400 flex items-center gap-2">
+              <p className="text-sm  flex items-center gap-2">
                 <MapPin className="w-4 h-4 shrink-0" />
                 {location}
               </p>
@@ -133,10 +129,10 @@ export default function TourismShowClient({ tourism }: Props) {
             <button
               type="button"
               onClick={() => setShowCreators(!showCreators)}
-              className="p-2 rounded-lg text-zinc-400 hover:bg-zinc-900 hover:bg-zinc-800"
+              className="p-2 rounded-lg hover:bg-zinc-400/25 transition-colors"
               aria-label="তথ্য প্রদানকারীগণ"
             >
-              <Users className="w-5 h-5" />
+              <FaUserPen className="w-5 h-5" />
             </button>
 
             {showCreators && (
@@ -145,17 +141,18 @@ export default function TourismShowClient({ tourism }: Props) {
                   className="fixed inset-0 z-40"
                   onClick={() => setShowCreators(false)}
                 />
-                <div className="absolute right-0 top-full mt-2 w-80 max-h-80 overflow-y-auto rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900  p-4 z-50 space-y-4">
-                  <h3 className=" text-sm text-zinc-50 text-zinc-200">
-                    তথ্য প্রদানকারী
-                  </h3>
+                <div className="absolute right-0 top-full mt-2 w-80 max-h-80 backdrop-blur-xl overflow-y-auto rounded-2xl border border-zinc-400/25   p-4 z-50 space-y-4">
+                  <h3 className=" text-sm ">তথ্য প্রদানকারী</h3>
                   {creators.length === 0 ? (
-                    <p className="text-xs text-zinc-400 text-center py-2">
+                    <p className="text-xs  text-center py-2">
                       কোনো কন্ট্রিবিউটর পাওয়া যায়নি।
                     </p>
                   ) : (
                     creators.map((c) => (
-                      <div key={c.id} className="flex items-center gap-4">
+                      <div
+                        key={c.id}
+                        className="flex items-center gap-4 border border-zinc-400/25  rounded-xl p-2 hover:bg-zinc-400/25 transition-colors"
+                      >
                         {c.avatar_url ? (
                           <img
                             src={c.avatar_url}
@@ -169,14 +166,12 @@ export default function TourismShowClient({ tourism }: Props) {
                         )}
                         <div className="min-w-0">
                           <div className="flex items-center gap-1">
-                            <span className="text-sm  truncate">
-                              {c.name}
-                            </span>
+                            <span className="text-sm  truncate">{c.name}</span>
                             {c.is_verified && (
                               <Check className="w-3.5 h-3.5 text-zinc-300 shrink-0" />
                             )}
                           </div>
-                          <p className="text-xs text-zinc-400 truncate">
+                          <p className="text-xs  truncate">
                             {c.profession || "কন্ট্রিবিউটর"}
                           </p>
                         </div>
@@ -196,23 +191,21 @@ export default function TourismShowClient({ tourism }: Props) {
           <img
             src={tourism.image_url}
             alt={tourism.title}
-            className="w-full h-auto object-cover max-h-[400px]"
+            className="w-full h-auto object-cover max-h-100px"
           />
         </div>
       )}
 
       {/* Description */}
       <section className="space-y-4">
-        <h2 className="text-lg font-bold text-zinc-50 text-zinc-200">
-          বিস্তারিত বিবরণ
-        </h2>
+        <h2 className="text-lg font-bold ">বিস্তারিত বিবরণ</h2>
         {tourism.description ? (
           <div
             className="prose dark:prose-invert max-w-none leading-relaxed "
             dangerouslySetInnerHTML={{ __html: tourism.description }}
           />
         ) : (
-          <p className="text-sm text-zinc-400">
+          <p className="text-sm ">
             এই স্থানের বিস্তারিত বিবরণ এখনো যোগ করা হয়নি।
           </p>
         )}
@@ -231,7 +224,7 @@ export default function TourismShowClient({ tourism }: Props) {
       {/* Back */}
       <Link
         href="/bangladesh/tourism"
-        className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-50 hover:text-zinc-50"
+        className="inline-flex items-center gap-2 text-sm  "
       >
         <ArrowLeft className="w-4 h-4" />
         পর্যটন কেন্দ্র তালিকায় ফিরে যান
@@ -239,9 +232,7 @@ export default function TourismShowClient({ tourism }: Props) {
 
       {/* About */}
       <section className="rounded-2xl bg-zinc-400/10/40 p-4 space-y-2">
-        <h2 className="text-lg font-bold text-zinc-50 text-zinc-200">
-          {tourism.title} সম্পর্কে
-        </h2>
+        <h2 className="text-lg font-bold ">{tourism.title} সম্পর্কে</h2>
         <p className="text-sm  leading-relaxed">
           <strong>{tourism.title}</strong> হলো বাংলাদেশের একটি দর্শনীয় স্থান।
           {tourism.type_label && (
@@ -256,14 +247,12 @@ export default function TourismShowClient({ tourism }: Props) {
 
       {/* FAQ */}
       <section className="space-y-4">
-        <h2 className="text-lg font-bold text-zinc-50 text-zinc-200">
-          প্রায়শই জিজ্ঞাসিত প্রশ্ন
-        </h2>
+        <h2 className="text-lg font-bold ">প্রায়শই জিজ্ঞাসিত প্রশ্ন</h2>
 
         <details className="group rounded-xl border border-zinc-400/25 overflow-hidden">
-          <summary className="flex items-center justify-between cursor-pointer px-4 py-2  text-zinc-50 text-zinc-200 list-none">
+          <summary className="flex items-center justify-between cursor-pointer px-4 py-2   list-none">
             <span>{tourism.title} কী?</span>
-            <ChevronDown className="w-4 h-4 text-zinc-400 group-open:rotate-180 transition shrink-0" />
+            <ChevronDown className="w-4 h-4  group-open:rotate-180 transition shrink-0" />
           </summary>
           <div className="px-4 pb-4 text-sm ">
             উপরের “বিস্তারিত বিবরণ” সেকশনে এই স্থানের পূর্ণাঙ্গ তথ্য লেখা আছে।
@@ -271,9 +260,9 @@ export default function TourismShowClient({ tourism }: Props) {
         </details>
 
         <details className="group rounded-xl border border-zinc-400/25 overflow-hidden">
-          <summary className="flex items-center justify-between cursor-pointer px-4 py-2  text-zinc-50 text-zinc-200 list-none">
+          <summary className="flex items-center justify-between cursor-pointer px-4 py-2   list-none">
             <span>অন্যান্য পর্যটন কেন্দ্র কোথায়?</span>
-            <ChevronDown className="w-4 h-4 text-zinc-400 group-open:rotate-180 transition shrink-0" />
+            <ChevronDown className="w-4 h-4  group-open:rotate-180 transition shrink-0" />
           </summary>
           <div className="px-4 pb-4 text-sm ">
             <Link

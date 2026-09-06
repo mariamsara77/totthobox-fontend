@@ -116,43 +116,45 @@ export default function IntroductionClient() {
                 </p>
               ) : (
                 creators.map((c) => (
-                  <div
-                    key={c.id}
-                    className="flex items-start gap-4 p-2 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/25 border border-zinc-400/25"
-                  >
-                    <div className="relative">
-                      {c.avatar_url ? (
-                        <img
-                          src={c.avatar_url}
-                          alt={c.name}
-                          className="w-12 h-12 rounded-xl object-cover"
-                        />
-                      ) : (
-                        <div className="w-12 h-12 rounded-xl bg-zinc-400/10 flex items-center justify-center text-sm ">
-                          {c.name?.charAt(0)}
-                        </div>
-                      )}
-                      <span
-                        className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full ${
-                          c.is_online ? "bg-green-500" : "bg-zinc-500"
-                        }`}
-                      />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-1">
-                        <span className=" text-sm truncate">{c.name}</span>
-                        {c.is_verified && (
-                          <TbRosetteDiscountCheckFilled className="w-4 h-4 text-blue-600 shrink-0" />
+                  <Link key={c.id} href={`/users/${c.slug}`}>
+                    <div
+                      key={c.id}
+                      className="flex items-start gap-4 p-2 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/25 border border-zinc-400/25 mb-2"
+                    >
+                      <div className="relative">
+                        {c.avatar_url ? (
+                          <img
+                            src={c.avatar_url}
+                            alt={c.name}
+                            className="w-12 h-12 rounded-xl object-cover"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 rounded-xl bg-zinc-400/10 flex items-center justify-center text-sm ">
+                            {c.name?.charAt(0)}
+                          </div>
                         )}
+                        <span
+                          className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full ${
+                            c.is_online ? "bg-green-500" : "bg-zinc-500"
+                          }`}
+                        />
                       </div>
-                      <p className="text-xs text-zinc-400 truncate">
-                        {c.profession || "কন্টেন্ট কন্ট্রিবিউটর"}
-                      </p>
-                      <p className="text-xs text-zinc-400 mt-0.5">
-                        সর্বশেষ: {c.last_active_at || "অজানা"}
-                      </p>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1">
+                          <strong className="truncate">{c.name}</strong>
+                          {c.is_verified && (
+                            <TbRosetteDiscountCheckFilled className="w-4 h-4 text-blue-600 shrink-0" />
+                          )}
+                        </div>
+                        <p className="text-xs opacity-80 truncate">
+                          {c.profession || "কন্টেন্ট কন্ট্রিবিউটর"}
+                        </p>
+                        <p className="text-xs opacity-80 mt-0.5">
+                          সর্বশেষ: {c.last_active_at || "অজানা"}
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                 ))
               )}
             </div>
@@ -183,7 +185,7 @@ export default function IntroductionClient() {
       </div>
 
       {debouncedSearch && (
-        <p className="text-xs  text-zinc-400">
+        <p className="text-xs  ">
           “{debouncedSearch}” এর জন্য {total}টি ফলাফল পাওয়া গেছে
         </p>
       )}
@@ -195,7 +197,7 @@ export default function IntroductionClient() {
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div
                 key={i}
-                className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 animate-pulse"
+                className="rounded-2xl bg-zinc-400/10 p-4 animate-pulse"
               >
                 <div className="flex gap-4">
                   <div className="w-16 h-16 rounded-xl bg-zinc-400/10" />
@@ -211,7 +213,7 @@ export default function IntroductionClient() {
             ))}
           </div>
         ) : Object.keys(grouped).length === 0 ? (
-          <div className="text-center py-16 text-zinc-400">
+          <div className="text-center py-16 ">
             <p className="text-lg ">কোনো তথ্য পাওয়া যায়নি</p>
             <p className="text-sm mt-1">অন্য কীওয়ার্ড দিয়ে চেষ্টা করুন</p>
           </div>
@@ -228,7 +230,7 @@ export default function IntroductionClient() {
                 <Link
                   key={item.id}
                   href={`/bangladesh/introduction/${item.slug}`}
-                  className="block rounded-2xl border border-zinc-400/25 bg-zinc-400/40 p-4 hover:bg-zinc-400/25"
+                  className="block rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 hover:bg-zinc-400/25"
                 >
                   <div className="flex gap-4 items-start">
                     <div className="shrink-0">
@@ -240,7 +242,7 @@ export default function IntroductionClient() {
                         />
                       ) : (
                         <div className="w-16 h-16 rounded-xl bg-zinc-400/10 flex items-center justify-center">
-                          <Map className="w-7 h-7 text-zinc-400" />
+                          <Map className="w-7 h-7 " />
                         </div>
                       )}
                     </div>
@@ -254,7 +256,7 @@ export default function IntroductionClient() {
                     </div>
                   </div>
                   <div className="mt-3 pt-3 border-t border-zinc-400/25">
-                    <span className="inline-flex items-center gap-2 text-xs  text-amber-600 dark:text-amber-400">
+                    <span className="inline-flex items-center gap-2 text-xs  hover:underline">
                       বিস্তারিত পড়ুন
                       <ArrowRight className="w-3.5 h-3.5" />
                     </span>
