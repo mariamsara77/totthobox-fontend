@@ -24,7 +24,7 @@ export const viewport: Viewport = {
 export default function ChatLayout({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className={`${bengali.variable} chat-layout-root h-screen min-h-0 w-full overflow-hidden overscroll-none`}
+      className={`${bengali.variable} chat-layout-root pwa-screen-height min-h-0 w-full overflow-hidden overscroll-none`}
     >
       <ChatLayoutProvider>
         <main className="flex h-full min-h-0 w-full min-w-0 overflow-hidden">

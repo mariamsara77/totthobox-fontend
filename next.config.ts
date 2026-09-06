@@ -1,13 +1,8 @@
 import type { NextConfig } from "next";
 import withPWAInit from "@ducanh2912/next-pwa";
+import type { RuntimeCaching } from "workbox-build";
 
-const withPWA = withPWAInit({
-  dest: "public",
-  disable: process.env.NODE_ENV === "development", // Dev মোডে ক্যাশিং ডিজেবল থাকবে
-  cacheOnFrontEndNav: true,
-  aggressiveFrontEndNavCaching: true,
-  reloadOnOnline: true,
-});
+const isDev = process.env.NODE_ENV === "development";
 
 const nextConfig: NextConfig = {
   turbopack: {},
@@ -22,7 +17,7 @@ const nextConfig: NextConfig = {
   },
 
   compiler: {
-    removeConsole: process.env.NODE_ENV === "production",
+    removeConsole: !isDev,
   },
 
   async headers() {
@@ -40,10 +35,15 @@ const nextConfig: NextConfig = {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=()",
           },
-          {
-            key: "Strict-Transport-Security",
-            value: "max-age=31536000; includeSubDomains",
-          },
+          // HSTS শুধুমাত্র প্রোডাকশনে সক্রিয় থাকবে
+          ...(!isDev
+            ? [
+                {
+                  key: "Strict-Transport-Security",
+                  value: "max-age=31536000; includeSubDomains",
+                },
+              ]
+            : []),
           {
             key: "Cross-Origin-Opener-Policy",
             value: "same-origin-allow-popups",
@@ -58,5 +58,27 @@ const nextConfig: NextConfig = {
   },
 };
 
-// withPWA র‍্যাপার দিয়ে export করা হয়েছে
-export default withPWA(nextConfig);
+const apiNetworkOnlyCaching: RuntimeCaching = {
+  handler: "NetworkOnly",
+  method: "GET",
+  options: {
+    cacheName: "api-network-only",
+  },
+  urlPattern: /^https?:\/\/[^/]+\/api(?:\/|$)/i,
+};
+
+const withPWA = withPWAInit({
+  dest: "public",
+  disable: isDev,
+  cacheOnFrontEndNav: true,
+  aggressiveFrontEndNavCaching: true,
+  reloadOnOnline: true,
+  extendDefaultRuntimeCaching: true,
+  workboxOptions: {
+    runtimeCaching: [apiNetworkOnlyCaching],
+  },
+});
+
+// Dev মোডে সরাসরি pure nextConfig এক্সপোর্ট হবে (Turbopack ফুল স্পিডে চলবে)
+// Production মোডে PWA প্লাগইন যুক্ত হয়ে সার্ভিস ওয়ার্কার তৈরি করবে
+export default isDev ? nextConfig : withPWA(nextConfig);

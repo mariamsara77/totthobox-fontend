@@ -137,9 +137,27 @@
 body {
   top: 0 !important;
   position: static !important;
+  min-height: 100dvh;
 }
 
 .goog-text-highlight {
   background-color: transparent !important;
   box-shadow: none !important;
+}
+
+/* Keep shell content clear of device cutouts while backgrounds remain edge-to-edge. */
+.pwa-safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+.pwa-safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.pwa-fixed-bottom {
+  bottom: calc(1rem + env(safe-area-inset-bottom));
+}
+
+.pwa-screen-height {
+  height: 100dvh;
 }

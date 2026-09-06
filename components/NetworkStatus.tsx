@@ -44,7 +44,7 @@ export default function NetworkStatus() {
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-6 left-1/2 z-9999 -translate-x-1/2 px-4">
+    <div className="pwa-fixed-bottom fixed left-1/2 z-9999 -translate-x-1/2 px-4">
       <div
         className={`
           flex items-center gap-3 rounded-2xl px-5 py-3.5 shadow-lg

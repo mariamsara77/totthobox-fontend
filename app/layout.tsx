@@ -53,7 +53,7 @@ export const metadata: Metadata = {
   // iOS/Safari PWA সাপোর্ট
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
+    statusBarStyle: "black-translucent",
     title: "Totthobox",
   },
   formatDetection: {
@@ -63,11 +63,12 @@ export const metadata: Metadata = {
 
 // ২. Viewport আলাদা কনফিগারেশন (Next.js 14+ এর জন্য আবশ্যক)
 export const viewport: Viewport = {
-  themeColor: "#171717",
+  themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

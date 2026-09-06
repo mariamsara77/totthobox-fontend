@@ -3,25 +3,25 @@ import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 
 const eslintConfig = defineConfig([
-  ...nextVitals,
-  ...nextTs,
-  
-  // Custom Rules
-  {
-    rules: {
-      "no-console": ["warn", { allow: ["warn", "error"] }], // console.log দিলে ওয়ার্নিং দেবে
-      "@typescript-eslint/no-unused-vars": "warn", // অব্যবহৃত ভ্যারিয়েবলে ওয়ার্নিং
-    },
-  },
-
-  // Files/Directories to Ignore
+  // ১. ইগনোর রুলস সবার আগে থাকবে
   globalIgnores([
     ".next/**",
     "out/**",
     "build/**",
     "next-env.d.ts",
     "node_modules/**",
+    "public/**",
   ]),
+
+  ...nextVitals,
+  ...nextTs,
+
+  {
+    rules: {
+      "no-console": ["warn", { allow: ["warn", "error"] }],
+      "@typescript-eslint/no-unused-vars": "warn",
+    },
+  },
 ]);
 
 export default eslintConfig;

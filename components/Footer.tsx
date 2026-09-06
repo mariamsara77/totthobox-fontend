@@ -9,7 +9,7 @@ import { SiGmail } from "react-icons/si";
 
 export default function Footer() {
   return (
-    <footer className="mt-12 border-t border-zinc-400/25 py-8">
+    <footer className="pwa-safe-bottom mt-12 border-t border-zinc-400/25 py-8">
       <div className="mx-auto flex max-w-2xl flex-col items-center gap-4 px-3 sm:px-4">
         {/* Navigation + Cookie Button */}
         <nav

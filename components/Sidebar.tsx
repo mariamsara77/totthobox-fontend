@@ -264,7 +264,7 @@ export default function Sidebar() {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed top-0 left-0 z-100 flex h-screen flex-col backdrop-blur-xl border-r border-zinc-400/25 transition-all duration-300 ease-in-out",
+          "pwa-safe-top fixed top-0 left-0 z-100 flex h-[100dvh] flex-col backdrop-blur-xl border-r border-zinc-400/25 transition-all duration-300 ease-in-out",
           isOpen ? "translate-x-0" : "-translate-x-full",
           "md:sticky md:top-0 md:translate-x-0",
           collapsed ? "md:w-16" : "md:w-64",

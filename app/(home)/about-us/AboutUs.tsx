@@ -1,15 +1,68 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { AiOutlineAim } from "react-icons/ai";
+import {
+  FaEye,
+  FaUsers,
+  FaCalendarDay,
+  FaWifi,
+  FaMobileAlt,
+  FaBolt,
+  FaShieldAlt,
+  FaHeart,
+} from "react-icons/fa";
 
-export default function AboutUs() {
-  // Static placeholder stats (later replace with real API data)
-  const analytics = {
-    total: "110k+",
-    today: "12.5k+",
-    online: "11.2k+",
-    pwa: "15k+",
-  };
+type Analytics = {
+  total: string;
+  today: string;
+  online: string;
+  pwa: string;
+};
+
+const FALLBACK: Analytics = {
+  total: "110k",
+  today: "12.5k",
+  online: "11.2k",
+  pwa: "15k",
+};
+
+export default function AboutUsClient() {
+  const [analytics, setAnalytics] = useState<Analytics>(FALLBACK);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchAnalytics() {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/analytics/user-count`,
+          {
+            next: { revalidate: 3600 },
+          },
+        );
+
+        if (!res.ok) throw new Error("Failed to fetch");
+
+        const json = await res.json();
+
+        if (json.status === "success" && json.data) {
+          setAnalytics({
+            total: json.data.total || FALLBACK.total,
+            today: json.data.today || FALLBACK.today,
+            online: json.data.online || FALLBACK.online,
+            pwa: json.data.pwa || FALLBACK.pwa,
+          });
+        }
+      } catch (error) {
+        console.error("Analytics fetch error:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchAnalytics();
+  }, []);
 
   return (
     <div className="max-w-2xl mx-auto space-y-12 p-4">
@@ -21,12 +74,9 @@ export default function AboutUs() {
         <p className="max-w-2xl mx-auto text-balance">
           আপনার দৈনন্দিন প্রয়োজনীয় তথ্য, টুলস ও ডিজিটাল সেবা এক জায়গায় —
           নির্ভরযোগ্য ও সহজভাবে। ইতোমধ্যে{" "}
-          <span className="font-semibold">{analytics.total}</span> জন ব্যবহার
+          <strong>{loading ? "..." : `${analytics.total}+`}</strong> জন ব্যবহার
           করেছেন।
         </p>
-        <div className="pt-2">
-          <div className="h-px border-b" />
-        </div>
       </header>
 
       {/* Stats Dashboard */}
@@ -37,41 +87,63 @@ export default function AboutUs() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center p-4 rounded-xl border transition-all">
-            <div className="mx-auto mb-2 text-xl">👥</div>
-            <p className="text-sm">মোট ব্যবহারকারী</p>
-            <p className="text-lg font-bold mt-1">{analytics.total}</p>
-          </div>
-
-          <div className="text-center p-4 rounded-xl border transition-all">
-            <div className="mx-auto mb-2 text-xl">📅</div>
-            <p className="text-sm">আজকের ভিজিটর</p>
-            <p className="text-lg font-bold mt-1">{analytics.today}</p>
-          </div>
-
-          <div className="text-center p-4 rounded-xl border transition-all relative">
-            <div className="absolute top-3 right-3 flex">
-              <span className="size-2 rounded-full animate-ping absolute" />
-              <span className="size-2 rounded-full relative" />
+          {/* Total */}
+          <div className="text-center p-4 rounded-xl bg-zinc-400/10">
+            <div className="mx-auto mb-2 text-2xl flex justify-center">
+              <FaUsers />
             </div>
-            <div className="mx-auto mb-2 text-xl">📶</div>
-            <p className="text-sm">এই মুহূর্তে লাইভ</p>
-            <p className="text-lg font-bold mt-1">{analytics.online}</p>
+            <p className="text-sm">মোট ব্যবহারকারী</p>
+            <p className="text-lg font-bold mt-1">
+              {loading ? "..." : `${analytics.total}+`}
+            </p>
           </div>
 
-          <div className="text-center p-4 rounded-xl border transition-all">
-            <div className="mx-auto mb-2 text-xl">📱</div>
+          {/* Today */}
+          <div className="text-center p-4 rounded-xl bg-zinc-400/10">
+            <div className="mx-auto mb-2 text-2xl flex justify-center">
+              <FaCalendarDay />
+            </div>
+            <p className="text-sm">আজকের ভিজিটর</p>
+            <p className="text-lg font-bold mt-1">
+              {loading ? "..." : `${analytics.today}+`}
+            </p>
+          </div>
+
+          {/* Online */}
+          <div className="text-center p-4 rounded-xl bg-zinc-400/10 relative">
+            <div className="absolute top-3 right-3 flex">
+              <span className="size-2 bg-rose-500 rounded-full animate-ping absolute" />
+              <span className="size-2 bg-rose-500 rounded-full relative" />
+            </div>
+            <div className="mx-auto mb-2 text-2xl flex justify-center">
+              <FaWifi />
+            </div>
+            <p className="text-sm">এই মুহূর্তে লাইভ</p>
+            <p className="text-lg font-bold mt-1">
+              {loading ? "..." : `${analytics.online}+`}
+            </p>
+          </div>
+
+          {/* PWA */}
+          <div className="text-center p-4 rounded-xl bg-zinc-400/10">
+            <div className="mx-auto mb-2 text-2xl flex justify-center">
+              <FaMobileAlt />
+            </div>
             <p className="text-sm">অ্যাপ ইউজার (PWA)</p>
-            <p className="text-lg font-bold mt-1">{analytics.pwa}</p>
+            <p className="text-lg font-bold mt-1">
+              {loading ? "..." : `${analytics.pwa}+`}
+            </p>
           </div>
         </div>
       </section>
 
       {/* Mission & Vision */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="p-6 rounded-xl border">
+        <div className="p-6 rounded-xl bg-zinc-400/10">
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-2.5 rounded-xl border text-xl">🚀</div>
+            <div className="p-2.5 rounded-xl bg-zinc-400/10">
+              <AiOutlineAim />
+            </div>
             <h2 className="text-lg font-bold">আমাদের লক্ষ্য</h2>
           </div>
           <p className="leading-relaxed text-sm">
@@ -81,9 +153,11 @@ export default function AboutUs() {
           </p>
         </div>
 
-        <div className="p-6 rounded-xl border">
+        <div className="p-6 rounded-xl bg-zinc-400/10">
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-2.5 rounded-xl border text-xl">👁️</div>
+            <div className="p-2.5 rounded-xl bg-zinc-400/10">
+              <FaEye />
+            </div>
             <h2 className="text-lg font-bold">আমাদের ভিশন</h2>
           </div>
           <p className="leading-relaxed text-sm">
@@ -104,32 +178,32 @@ export default function AboutUs() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[
             {
-              icon: "⚡",
+              icon: <FaBolt />,
               title: "দ্রুত ও সহজ",
               desc: "জটিল কিছু নেই। প্রয়োজনীয় তথ্য ও টুলস কয়েক সেকেন্ডেই পাবেন।",
             },
             {
-              icon: "🛡️",
+              icon: <FaShieldAlt />,
               title: "নির্ভরযোগ্য তথ্য",
               desc: "যাচাইকৃত উৎস থেকে তথ্য সংগ্রহ করে উপস্থাপন করা হয়।",
             },
             {
-              icon: "📱",
+              icon: <FaMobileAlt />,
               title: "মোবাইল ফ্রেন্ডলি + PWA",
               desc: "যেকোনো ডিভাইসে চমৎকার অভিজ্ঞতা। হোম স্ক্রিনে অ্যাপ হিসেবেও ব্যবহার করা যায়।",
             },
             {
-              icon: "❤️",
+              icon: <FaHeart />,
               title: "সম্পূর্ণ বিনামূল্যে",
               desc: "আমাদের মূল সেবাগুলো সবার জন্য উন্মুক্ত এবং বিনামূল্যে ব্যবহারযোগ্য।",
             },
           ].map((item) => (
             <div
               key={item.title}
-              className="p-4 rounded-xl border transition-all"
+              className="p-5 rounded-xl bg-zinc-400/10 transition-all hover:shadow-md"
             >
               <div className="flex items-start gap-4">
-                <div className="p-2.5 rounded-lg text-lg border">
+                <div className="p-2.5 rounded-lg text-lg bg-zinc-400/10">
                   {item.icon}
                 </div>
                 <div>
@@ -148,13 +222,13 @@ export default function AboutUs() {
           <h2 className="text-2xl font-bold">আমাদের সেবাসমূহ</h2>
           <p className="text-sm">এক নজরে Totthobox-এর মূল ফিচারগুলো</p>
         </div>
-        <div className="p-8 text-center border border-dashed rounded-xl">
+        <div className="p-8 text-center rounded-xl bg-zinc-400/10">
           Services Grid will be here
         </div>
       </section>
 
       {/* Bottom CTA */}
-      <div className="p-8 text-center space-y-4 rounded-xl border">
+      <div className="p-8 text-center space-y-4 rounded-xl bg-zinc-400/10">
         <div className="space-y-2">
           <h3 className="text-lg font-semibold">আমাদের সাথে যুক্ত হোন</h3>
           <p className="text-sm max-w-md mx-auto">
@@ -164,7 +238,7 @@ export default function AboutUs() {
         </div>
         <Link
           href="/contact-us"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border font-medium transition-colors"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium bg-zinc-400/10 hover:bg-zinc-400/20 transition-colors"
         >
           যোগাযোগ করুন
         </Link>
