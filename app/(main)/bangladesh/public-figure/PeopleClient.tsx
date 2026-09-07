@@ -3,14 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import useSWRInfinite from "swr/infinite";
-import {
-  Users,
-  Search,
-  X,
-  ArrowRight,
-  Briefcase,
-  Loader2,
-} from "lucide-react";
+import { Users, Search, X, ArrowRight, Briefcase, Loader2 } from "lucide-react";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
@@ -36,8 +29,12 @@ export default function PeopleClient() {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
 
-  const [categories, setCategories] = useState<{ id: number; name: string }[]>([]);
-  const [positions, setPositions] = useState<{ id: number; title: string }[]>([]);
+  const [categories, setCategories] = useState<{ id: number; name: string }[]>(
+    [],
+  );
+  const [positions, setPositions] = useState<{ id: number; title: string }[]>(
+    [],
+  );
 
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(search), 400);
@@ -70,7 +67,7 @@ export default function PeopleClient() {
   const { data, size, setSize, isValidating, error } = useSWRInfinite(
     getKey,
     fetcher,
-    { revalidateFirstPage: false, revalidateOnFocus: false }
+    { revalidateFirstPage: false, revalidateOnFocus: false },
   );
 
   const items: PersonItem[] = data ? data.flatMap((p) => p.data || []) : [];
@@ -106,7 +103,7 @@ export default function PeopleClient() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="নামে খুঁজুন..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-400/25 bg-zinc-800/80 text-sm"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-400/25 bg-zinc-400/10 text-sm outline-none"
             />
           </div>
           {hasFilters && (
@@ -185,9 +182,12 @@ export default function PeopleClient() {
 
       <section className="space-y-4">
         {isLoading ? (
-           <div className="space-y-4">
+          <div className="space-y-4">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="rounded-2xl border border-zinc-400/25 bg-zinc-800/80 p-4 animate-pulse">
+              <div
+                key={i}
+                className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 animate-pulse"
+              >
                 <div className="flex gap-4">
                   <div className="w-16 h-16 rounded-xl bg-zinc-400/10" />
                   <div className="flex-1 space-y-2">
@@ -207,10 +207,10 @@ export default function PeopleClient() {
             <Link
               key={person.id}
               href={`/bangladesh/public-figure/${person.slug}`}
-              className="block rounded-2xl border border-zinc-400/25 bg-zinc-800/80 p-4 hover:bg-zinc-900/50 hover:bg-zinc-800/30 transition"
+              className="block rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4  transition"
             >
               <div className="flex gap-4 items-start">
-                <div className="w-16 h-16 rounded-xl overflow-hidden bg-zinc-800 bg-zinc-800 shrink-0">
+                <div className="w-16 h-16 rounded-xl overflow-hidden  shrink-0">
                   {person.image_url ? (
                     <img
                       src={person.image_url}
@@ -225,9 +225,7 @@ export default function PeopleClient() {
                 </div>
                 <div className="flex-1 min-w-0 space-y-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="text-lg  line-clamp-1">
-                      {person.name}
-                    </h2>
+                    <h2 className="text-lg  line-clamp-1">{person.name}</h2>
                     {person.is_current && (
                       <span className="text-xs px-2 py-0.5 rounded-md bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
                         বর্তমান
