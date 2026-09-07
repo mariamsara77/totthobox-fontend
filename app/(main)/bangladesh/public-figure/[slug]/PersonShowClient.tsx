@@ -323,10 +323,7 @@ export default function PersonShowClient({ person }: Props) {
             <ChevronDown className="w-4 h-4 text-zinc-400 group-open:rotate-180 transition shrink-0" />
           </summary>
           <div className="px-4 pb-4 text-sm ">
-            <Link
-              href="/bangladesh/public-figure"
-              className="text-amber-600 hover:underline"
-            >
+            <Link href="/bangladesh/public-figure" className="hover:underline">
               প্রোফাইল আর্কাইভ
             </Link>{" "}
             তালিকায় ফিরে গিয়ে অন্যান্য ব্যক্তিদের প্রোফাইল দেখতে পারবেন।
