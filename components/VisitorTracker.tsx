@@ -37,7 +37,6 @@ export default function VisitorTracker() {
     const isPWA = getIsPwa();
     const hasInstalled = getHasInstalled();
 
-    // একই স্ট্যাটাস হলে স্কিপ
     if (
       !force &&
       lastSynced.current.isPwa === isPWA &&
@@ -47,13 +46,6 @@ export default function VisitorTracker() {
     }
 
     isSyncing.current = true;
-
-    console.log("[PWA] Syncing...", {
-      isPWA,
-      hasInstalled,
-      displayMode: window.matchMedia("(display-mode: standalone)").matches,
-      navigatorStandalone: (window.navigator as any).standalone,
-    });
 
     try {
       const res = await fetch(`${API_BASE_URL}/tracking/sync-pwa`, {
@@ -72,46 +64,36 @@ export default function VisitorTracker() {
 
       const data = await res.json().catch(() => null);
 
-      console.log("[PWA] Response:", {
-        status: res.status,
-        ok: res.ok,
-        data,
-      });
-
-      if (res.ok) {
+      if (res.ok && data?.status === "success") {
         lastSynced.current = {
           isPwa: isPWA,
           hasInstalled: hasInstalled,
         };
       } else {
+        // পরেরবার আবার চেষ্টা করতে পারবে
         lastSynced.current = { isPwa: null, hasInstalled: null };
       }
-    } catch (error: any) {
-      console.error("[PWA] Fetch Error:", error?.message || error);
+    } catch {
       lastSynced.current = { isPwa: null, hasInstalled: null };
     } finally {
       isSyncing.current = false;
     }
   };
 
-  // ========== PWA Install + Display Mode ==========
+  // PWA Install + Display Mode
   useEffect(() => {
-    // ইনস্টল হলে localStorage-এ ফ্ল্যাগ সেভ + সিঙ্ক
     const handleAppInstalled = () => {
-      console.log("[PWA] App installed event fired");
       localStorage.setItem("pwa_installed", "true");
-      lastSynced.current.hasInstalled = null; // force sync
+      lastSynced.current.hasInstalled = null;
       syncPwaStatus(true);
     };
 
     window.addEventListener("appinstalled", handleAppInstalled);
 
-    // Initial sync (cookie/session সেট হওয়ার জন্য একটু দেরি)
     const timer = setTimeout(() => {
       syncPwaStatus(true);
-    }, 400);
+    }, 500);
 
-    // display-mode পরিবর্তন হলে
     const mediaQuery = window.matchMedia("(display-mode: standalone)");
     const handleChange = () => {
       lastSynced.current.isPwa = null;
@@ -126,14 +108,14 @@ export default function VisitorTracker() {
     };
   }, []);
 
-  // Pathname change (SPA navigation)
+  // SPA navigation
   useEffect(() => {
     if (!pathname) return;
-    const t = setTimeout(() => syncPwaStatus(), 250);
+    const t = setTimeout(() => syncPwaStatus(), 300);
     return () => clearTimeout(t);
   }, [pathname]);
 
-  // ========== Existing tracker logic (অপরিবর্তিত) ==========
+  // Existing tracker
   useEffect(() => {
     getTracker().init();
   }, []);
