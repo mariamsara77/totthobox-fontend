@@ -12,6 +12,8 @@ import {
   ChevronDown,
 } from "lucide-react";
 import InteractiveActions from "./InteractiveActions";
+import { FaUserPen } from "react-icons/fa6";
+import { BsFillPatchCheckFill } from "react-icons/bs";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
@@ -94,21 +96,16 @@ export default function PersonShowClient({ person }: Props) {
   return (
     <div className="max-w-2xl mx-auto space-y-4 p-4 sm:p-6">
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-sm text-zinc-400">
-        <Link href="/" className="hover:text-zinc-50 hover:text-zinc-50">
+      <nav className="flex items-center gap-2 text-sm">
+        <Link href="/" className="hover:underline">
           হোম
         </Link>
         <span>/</span>
-        <Link
-          href="/bangladesh/public-figure"
-          className="hover:text-zinc-50 hover:text-zinc-50"
-        >
+        <Link href="/bangladesh/public-figure" className="hover:underline">
           প্রোফাইল আর্কাইভ
         </Link>
         <span>/</span>
-        <span className="text-zinc-50 text-zinc-200 truncate">
-          {person.name}
-        </span>
+        <span className="opacity-70  truncate">{person.name}</span>
       </nav>
 
       {/* Header */}
@@ -131,7 +128,7 @@ export default function PersonShowClient({ person }: Props) {
               )}
             </div>
 
-            <h1 className="text-2xl  font-black tracking-tight text-zinc-50 dark:text-white">
+            <h1 className="text-2xl  font-black tracking-tight">
               {person.name}
             </h1>
 
@@ -148,7 +145,7 @@ export default function PersonShowClient({ person }: Props) {
             )}
 
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs bg-zinc-400/10 text-zinc-300">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs bg-zinc-400/10">
                 <Eye className="w-3.5 h-3.5" />
                 {person.views_count?.toLocaleString("bn-BD") || 0}
               </span>
@@ -160,10 +157,10 @@ export default function PersonShowClient({ person }: Props) {
             <button
               type="button"
               onClick={() => setShowCreators(!showCreators)}
-              className="p-2 rounded-lg text-zinc-400 hover:bg-zinc-900 hover:bg-zinc-800"
+              className="p-2 rounded-lg hover:bg-zinc-400/25"
               aria-label="তথ্য প্রদানকারীগণ"
             >
-              <Users className="w-5 h-5" />
+              <FaUserPen className="w-5 h-5" />
             </button>
 
             {showCreators && (
@@ -172,42 +169,45 @@ export default function PersonShowClient({ person }: Props) {
                   className="fixed inset-0 z-40"
                   onClick={() => setShowCreators(false)}
                 />
-                <div className="absolute right-0 top-full mt-2 w-80 max-h-80 overflow-y-auto rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900  p-4 z-50 space-y-4">
-                  <h3 className=" text-sm text-zinc-50 text-zinc-200">
-                    তথ্য প্রদানকারী
-                  </h3>
+                <div className="absolute right-0 top-full mt-2 w-80 max-h-80 overflow-y-auto rounded-2xl border border-zinc-400/25 backdrop-blur-xl p-4 z-50 space-y-4">
+                  <h3 className=" text-sm">তথ্য প্রদানকারী</h3>
                   {creators.length === 0 ? (
-                    <p className="text-xs text-zinc-400 text-center py-2">
+                    <p className="text-xs text-center py-2">
                       কোনো কন্ট্রিবিউটর পাওয়া যায়নি।
                     </p>
                   ) : (
                     creators.map((c) => (
-                      <div key={c.id} className="flex items-center gap-4">
-                        {c.avatar_url ? (
-                          <img
-                            src={c.avatar_url}
-                            alt={c.name}
-                            className="w-9 h-9 rounded-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-9 h-9 rounded-full bg-zinc-400/10 flex items-center justify-center text-xs ">
-                            {c.name?.charAt(0)}
+                      <Link href={`/users/${c.slug}`} key={c.id}>
+                        <div
+                          key={c.id}
+                          className="flex items-center gap-4 border border-zinc-400/25 rounded-xl p-2  bg-zinc-400/10 hover:bg-zinc-400/25 transition cursor-pointer"
+                        >
+                          {c.avatar_url ? (
+                            <img
+                              src={c.avatar_url}
+                              alt={c.name}
+                              className="w-9 h-9 rounded-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-9 h-9 rounded-full bg-zinc-400/10 flex items-center justify-center text-xs ">
+                              {c.name?.charAt(0)}
+                            </div>
+                          )}
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-1">
+                              <span className="text-sm  truncate">
+                                {c.name}
+                              </span>
+                              {c.is_verified && (
+                                <BsFillPatchCheckFill className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+                              )}
+                            </div>
+                            <p className="text-xs truncate">
+                              {c.profession || "কন্ট্রিবিউটর"}
+                            </p>
                           </div>
-                        )}
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-1">
-                            <span className="text-sm  truncate">
-                              {c.name}
-                            </span>
-                            {c.is_verified && (
-                              <Check className="w-3.5 h-3.5 text-zinc-300 shrink-0" />
-                            )}
-                          </div>
-                          <p className="text-xs text-zinc-400 truncate">
-                            {c.profession || "কন্ট্রিবিউটর"}
-                          </p>
                         </div>
-                      </div>
+                      </Link>
                     ))
                   )}
                 </div>
@@ -223,23 +223,21 @@ export default function PersonShowClient({ person }: Props) {
           <img
             src={person.image_url}
             alt={person.name}
-            className="w-full h-auto object-cover max-h-[400px]"
+            className="w-full h-auto object-cover max-h-100"
           />
         </div>
       )}
 
       {/* Bio */}
       <section className="space-y-4">
-        <h2 className="text-lg font-bold text-zinc-50 text-zinc-200">
-          জীবন বৃত্তান্ত
-        </h2>
+        <h2 className="text-lg font-bold">জীবন বৃত্তান্ত</h2>
         {person.bio ? (
           <div
             className="prose dark:prose-invert max-w-none leading-relaxed "
             dangerouslySetInnerHTML={{ __html: person.bio }}
           />
         ) : (
-          <p className="text-sm text-zinc-400">
+          <p className="text-sm">
             এই ব্যক্তির বিস্তারিত জীবনবৃত্তান্ত এখনো যোগ করা হয়নি।
           </p>
         )}
@@ -248,9 +246,7 @@ export default function PersonShowClient({ person }: Props) {
       {/* Optional career list — API histories থাকলে */}
       {person.histories && person.histories.length > 0 && (
         <section className="space-y-4">
-          <h2 className="text-lg font-bold text-zinc-50 text-zinc-200">
-            কর্মজীবনের ইতিহাস
-          </h2>
+          <h2 className="text-lg font-bold">কর্মজীবনের ইতিহাস</h2>
           <div className="space-y-2">
             {person.histories.map((h, i) => (
               <div
@@ -263,9 +259,7 @@ export default function PersonShowClient({ person }: Props) {
                       বর্তমান
                     </span>
                   )}
-                  <span className="text-sm  text-zinc-50 text-zinc-200 truncate">
-                    {h.title}
-                  </span>
+                  <span className="text-sm   truncate">{h.title}</span>
                 </div>
                 <span className="text-xs text-zinc-400 shrink-0 ml-2">
                   {h.from_year ?? "—"}
@@ -294,7 +288,7 @@ export default function PersonShowClient({ person }: Props) {
       {/* Back */}
       <Link
         href="/bangladesh/public-figure"
-        className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-50 hover:text-zinc-50"
+        className="inline-flex items-center gap-2 text-sm hover:underline"
       >
         <ArrowLeft className="w-4 h-4" />
         প্রোফাইল আর্কাইভে ফিরে যান
@@ -302,9 +296,7 @@ export default function PersonShowClient({ person }: Props) {
 
       {/* About */}
       <section className="rounded-2xl bg-zinc-400/10/40 p-4 space-y-2">
-        <h2 className="text-lg font-bold text-zinc-50 text-zinc-200">
-          {person.name} সম্পর্কে
-        </h2>
+        <h2 className="text-lg font-bold ">{person.name} সম্পর্কে</h2>
         <p className="text-sm  leading-relaxed">
           <strong>{person.name}</strong> হলো বাংলাদেশের একজন বিশিষ্ট ব্যক্তিত্ব।
           উপরের জীবনবৃত্তান্ত ও কর্মজীবনের ইতিহাস অনুসরণ করে বিস্তারিত জানুন।
@@ -313,12 +305,10 @@ export default function PersonShowClient({ person }: Props) {
 
       {/* FAQ */}
       <section className="space-y-4">
-        <h2 className="text-lg font-bold text-zinc-50 text-zinc-200">
-          প্রায়শাই জিজ্ঞাসিত প্রশ্ন
-        </h2>
+        <h2 className="text-lg font-bold ">প্রায়শাই জিজ্ঞাসিত প্রশ্ন</h2>
 
         <details className="group rounded-xl border border-zinc-400/25 overflow-hidden">
-          <summary className="flex items-center justify-between cursor-pointer px-4 py-2  text-zinc-50 text-zinc-200 list-none">
+          <summary className="flex items-center justify-between cursor-pointer px-4 py-2   list-none">
             <span>{person.name} কী?</span>
             <ChevronDown className="w-4 h-4 text-zinc-400 group-open:rotate-180 transition shrink-0" />
           </summary>
@@ -328,7 +318,7 @@ export default function PersonShowClient({ person }: Props) {
         </details>
 
         <details className="group rounded-xl border border-zinc-400/25 overflow-hidden">
-          <summary className="flex items-center justify-between cursor-pointer px-4 py-2  text-zinc-50 text-zinc-200 list-none">
+          <summary className="flex items-center justify-between cursor-pointer px-4 py-2   list-none">
             <span>অন্যান্য প্রোফাইল কোথায়?</span>
             <ChevronDown className="w-4 h-4 text-zinc-400 group-open:rotate-180 transition shrink-0" />
           </summary>
