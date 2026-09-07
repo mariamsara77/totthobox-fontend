@@ -9,6 +9,7 @@ const API_BASE_URL =
 
 export default function VisitorTracker() {
   const pathname = usePathname();
+
   const lastSynced = useRef<{
     isPwa: boolean | null;
     hasInstalled: boolean | null;
@@ -16,14 +17,35 @@ export default function VisitorTracker() {
     isPwa: null,
     hasInstalled: null,
   });
+
   const isSyncing = useRef(false);
 
+  // ==========================================
+  // PWA Detection (সব case cover)
+  // ==========================================
   const getIsPwa = (): boolean => {
     if (typeof window === "undefined") return false;
-    return (
+
+    // display-mode: standalone / fullscreen / minimal-ui
+    const isDisplayMode =
       window.matchMedia("(display-mode: standalone)").matches ||
-      (window.navigator as any).standalone === true
-    );
+      window.matchMedia("(display-mode: fullscreen)").matches ||
+      window.matchMedia("(display-mode: minimal-ui)").matches;
+
+    // iOS Safari
+    const isIosStandalone = (window.navigator as any).standalone === true;
+
+    // Manifest start_url query
+    const params = new URLSearchParams(window.location.search);
+    const fromStartUrl =
+      params.get("install") === "true" ||
+      params.get("utm_medium") === "pwa_app" ||
+      params.get("utm_source") === "pwa";
+
+    // localStorage flag
+    const hasFlag = localStorage.getItem("pwa_installed") === "true";
+
+    return isDisplayMode || isIosStandalone || fromStartUrl || hasFlag;
   };
 
   const getHasInstalled = (): boolean => {
@@ -31,11 +53,15 @@ export default function VisitorTracker() {
     return localStorage.getItem("pwa_installed") === "true";
   };
 
+  // ==========================================
+  // Sync to Backend
+  // ==========================================
   const syncPwaStatus = async (force = false) => {
+    if (typeof window === "undefined") return;
     if (isSyncing.current) return;
 
     const isPWA = getIsPwa();
-    const hasInstalled = getHasInstalled();
+    const hasInstalled = getHasInstalled() || isPWA; // standalone হলে installed ধরে নিন
 
     if (
       !force &&
@@ -70,7 +96,6 @@ export default function VisitorTracker() {
           hasInstalled: hasInstalled,
         };
       } else {
-        // পরেরবার আবার চেষ্টা করতে পারবে
         lastSynced.current = { isPwa: null, hasInstalled: null };
       }
     } catch {
@@ -80,42 +105,75 @@ export default function VisitorTracker() {
     }
   };
 
-  // PWA Install + Display Mode
+  // ==========================================
+  // PWA Install + Display Mode listeners
+  // ==========================================
   useEffect(() => {
+    // 1) start_url দিয়ে খুললে flag সেট
+    const params = new URLSearchParams(window.location.search);
+    if (
+      params.get("install") === "true" ||
+      params.get("utm_medium") === "pwa_app" ||
+      params.get("utm_source") === "pwa"
+    ) {
+      localStorage.setItem("pwa_installed", "true");
+    }
+
+    // 2) এখনই display-mode PWA হলে flag সেট
+    if (
+      window.matchMedia("(display-mode: standalone)").matches ||
+      window.matchMedia("(display-mode: fullscreen)").matches ||
+      window.matchMedia("(display-mode: minimal-ui)").matches ||
+      (window.navigator as any).standalone === true
+    ) {
+      localStorage.setItem("pwa_installed", "true");
+    }
+
+    // 3) appinstalled event
     const handleAppInstalled = () => {
       localStorage.setItem("pwa_installed", "true");
-      lastSynced.current.hasInstalled = null;
+      lastSynced.current = { isPwa: null, hasInstalled: null };
       syncPwaStatus(true);
     };
-
     window.addEventListener("appinstalled", handleAppInstalled);
 
+    // 4) Initial sync
     const timer = setTimeout(() => {
       syncPwaStatus(true);
-    }, 500);
+    }, 400);
 
-    const mediaQuery = window.matchMedia("(display-mode: standalone)");
+    // 5) display-mode change
+    const modes = ["standalone", "fullscreen", "minimal-ui"] as const;
+    const mediaQueries = modes.map((m) =>
+      window.matchMedia(`(display-mode: ${m})`),
+    );
+
     const handleChange = () => {
       lastSynced.current.isPwa = null;
       syncPwaStatus(true);
     };
-    mediaQuery.addEventListener("change", handleChange);
+
+    mediaQueries.forEach((mq) => mq.addEventListener("change", handleChange));
 
     return () => {
       clearTimeout(timer);
       window.removeEventListener("appinstalled", handleAppInstalled);
-      mediaQuery.removeEventListener("change", handleChange);
+      mediaQueries.forEach((mq) =>
+        mq.removeEventListener("change", handleChange),
+      );
     };
   }, []);
 
-  // SPA navigation
+  // SPA navigation → light re-check
   useEffect(() => {
     if (!pathname) return;
-    const t = setTimeout(() => syncPwaStatus(), 300);
+    const t = setTimeout(() => syncPwaStatus(), 250);
     return () => clearTimeout(t);
   }, [pathname]);
 
-  // Existing tracker
+  // ==========================================
+  // Existing tracker logic
+  // ==========================================
   useEffect(() => {
     getTracker().init();
   }, []);
@@ -132,6 +190,7 @@ export default function VisitorTracker() {
     const onClick = (event: MouseEvent) => {
       const target = event.target;
       if (!(target instanceof Element)) return;
+
       const anchor = target.closest("a");
       if (!anchor) return;
 
@@ -153,6 +212,7 @@ export default function VisitorTracker() {
       capture: true,
       passive: true,
     });
+
     return () =>
       document.removeEventListener("click", onClick, { capture: true });
   }, []);
