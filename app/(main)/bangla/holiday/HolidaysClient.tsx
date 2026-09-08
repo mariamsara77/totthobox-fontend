@@ -130,7 +130,7 @@ export default function HolidaysClient() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="নাম, স্লাগ বা বিবরণ দিয়ে খুঁজুন..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-400/10 border-0 focus:ring-2 focus:ring-zinc-500 outline-none"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-400/25 bg-zinc-400/10 text-sm outline-none"
               aria-label="ছুটি অনুসন্ধান"
             />
           </div>
@@ -138,7 +138,7 @@ export default function HolidaysClient() {
           {hasActiveFilters && (
             <button
               onClick={resetFilters}
-              className="p-2.5 rounded-xl hover:bg-zinc-400/25 bg-zinc-400/10 "
+              className="p-2.5 rounded-xl hover:bg-zinc-400/25  bg-zinc-400/10 "
               aria-label="ফিল্টার মুছুন"
             >
               <X className="w-5 h-5" />
