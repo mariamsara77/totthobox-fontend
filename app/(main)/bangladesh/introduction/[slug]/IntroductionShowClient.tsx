@@ -68,7 +68,7 @@ export default function IntroductionShowClient({ intro }: Props) {
   return (
     <div className="max-w-2xl mx-auto space-y-4 p-4 sm:p-6">
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-sm text-zinc-400">
+      <nav className="flex items-center gap-2 text-sm">
         <Link href="/" className="">
           হোম
         </Link>
