@@ -299,7 +299,7 @@ export default function HolidaysClient() {
           <button
             onClick={() => setSize(size + 1)}
             disabled={isValidating}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-zinc-400/25 bg-zinc-800/80 text-sm   hover:bg-zinc-900 hover:bg-zinc-800  disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-zinc-400/25 bg-zinc-800/80 text-sm hover:bg-zinc-800  disabled:opacity-50"
           >
             {isValidating ? "লোড হচ্ছে..." : "আরও দেখুন"}
           </button>
