@@ -87,10 +87,10 @@ export default function PeopleClient() {
     <div className="max-w-2xl mx-auto space-y-4 p-4 sm:p-6">
       <header>
         <h1 className="text-2xl font-bold flex items-center gap-2">
-          <Users className="w-6 h-6 text-amber-600" />
+          <Users className="w-6 h-6" />
           প্রোফাইল আর্কাইভ
         </h1>
-        <p className="text-sm text-zinc-400 mt-1">
+        <p className="text-sm mt-1">
           বিশিষ্ট ব্যক্তিবর্গের জীবনী, কর্মজীবন ও অবদানের সম্পূর্ণ ইতিহাস
         </p>
       </header>
@@ -98,7 +98,7 @@ export default function PeopleClient() {
       <div className="space-y-4">
         <div className="flex gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -257,7 +257,7 @@ export default function PeopleClient() {
                 </div>
               </div>
               <div className="mt-3 pt-3 border-t border-zinc-400/25">
-                <span className="inline-flex items-center gap-2 text-xs  text-amber-600">
+                <span className="inline-flex items-center gap-2 text-xs">
                   বিস্তারিত পড়ুন <ArrowRight className="w-3.5 h-3.5" />
                 </span>
               </div>
