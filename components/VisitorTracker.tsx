@@ -21,7 +21,7 @@ export default function VisitorTracker() {
   const isSyncing = useRef(false);
 
   // ==========================================
-  // Actual current PWA mode
+  // Actual current PWA mode (কখনো sticky না)
   // ==========================================
   const getIsPwa = (): boolean => {
     if (typeof window === "undefined") return false;
@@ -51,6 +51,7 @@ export default function VisitorTracker() {
     const isPWA = getIsPwa();
     const hasInstalled = getHasInstalled();
 
+    // যদি already same status sync করা থাকে এবং force না হয় → স্কিপ
     if (
       !force &&
       lastSynced.current.isPwa === isPWA &&
@@ -103,60 +104,73 @@ export default function VisitorTracker() {
   };
 
   // ==========================================
-  // Install + Display Mode + Hard Refresh Handling
+  // Main Effect - সব event handle করে
   // ==========================================
   useEffect(() => {
-    // Already in PWA mode → set sticky flag
+    // 1. যদি এখনই PWA mode-এ থাকে → sticky flag সেট
     if (getIsPwa()) {
       localStorage.setItem("pwa_installed", "true");
     }
 
-    // Real install event
+    // 2. Real install event
     const handleAppInstalled = () => {
-      console.log("[PWA] App installed");
+      console.log("[PWA] App installed event");
       localStorage.setItem("pwa_installed", "true");
       lastSynced.current = { isPwa: null, hasInstalled: null };
       syncPwaStatus(true);
     };
     window.addEventListener("appinstalled", handleAppInstalled);
 
-    // Display mode change
+    // 3. Display mode change
     const modes = ["standalone", "fullscreen", "minimal-ui"] as const;
     const mediaQueries = modes.map((m) =>
       window.matchMedia(`(display-mode: ${m})`),
     );
 
-    const handleChange = () => {
+    const handleDisplayChange = () => {
       if (getIsPwa()) {
         localStorage.setItem("pwa_installed", "true");
       }
-      lastSynced.current.isPwa = null;
+      lastSynced.current = { isPwa: null, hasInstalled: null };
       syncPwaStatus(true);
     };
 
-    mediaQueries.forEach((mq) => mq.addEventListener("change", handleChange));
+    mediaQueries.forEach((mq) =>
+      mq.addEventListener("change", handleDisplayChange),
+    );
 
-    // ========== Hard Refresh / pageshow handling ==========
-    const handlePageShow = (event: PageTransitionEvent) => {
-      // Hard refresh বা bfcache থেকে ফিরে এলে force sync
-      console.log("[PWA] pageshow fired", { persisted: event.persisted });
+    // 4. pageshow (hard refresh + bfcache দুটোই কভার করে)
+    const handlePageShow = () => {
       lastSynced.current = { isPwa: null, hasInstalled: null };
-      setTimeout(() => syncPwaStatus(true), 300);
+      syncPwaStatus(true);
     };
-
     window.addEventListener("pageshow", handlePageShow);
 
-    // Initial sync (একটু বেশি delay hard refresh-এর জন্য)
-    const timer = setTimeout(() => {
-      syncPwaStatus(true);
-    }, 600);
+    // 5. visibilitychange (tab আবার visible হলে)
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") {
+        lastSynced.current = { isPwa: null, hasInstalled: null };
+        syncPwaStatus(true);
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    // 6. Immediate + Delayed sync (সবচেয়ে গুরুত্বপূর্ণ)
+    // সরাসরি একবার
+    syncPwaStatus(true);
+
+    // আরেকবার একটু পরে (কিছু ব্রাউজারে display-mode একটু দেরিতে ready হয়)
+    const timer1 = setTimeout(() => syncPwaStatus(true), 300);
+    const timer2 = setTimeout(() => syncPwaStatus(true), 1000);
 
     return () => {
-      clearTimeout(timer);
+      clearTimeout(timer1);
+      clearTimeout(timer2);
       window.removeEventListener("appinstalled", handleAppInstalled);
       window.removeEventListener("pageshow", handlePageShow);
+      document.removeEventListener("visibilitychange", handleVisibility);
       mediaQueries.forEach((mq) =>
-        mq.removeEventListener("change", handleChange),
+        mq.removeEventListener("change", handleDisplayChange),
       );
     };
   }, []);
@@ -164,7 +178,7 @@ export default function VisitorTracker() {
   // SPA navigation
   useEffect(() => {
     if (!pathname) return;
-    const t = setTimeout(() => syncPwaStatus(), 250);
+    const t = setTimeout(() => syncPwaStatus(), 200);
     return () => clearTimeout(t);
   }, [pathname]);
 
