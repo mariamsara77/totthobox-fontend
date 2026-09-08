@@ -9,7 +9,6 @@ const API_BASE_URL =
 
 export default function VisitorTracker() {
   const pathname = usePathname();
-
   const lastSynced = useRef<{
     isPwa: boolean | null;
     hasInstalled: boolean | null;
@@ -17,32 +16,28 @@ export default function VisitorTracker() {
     isPwa: null,
     hasInstalled: null,
   });
-
   const isSyncing = useRef(false);
 
   // ==========================================
-  // PWA Detection (সব case cover)
+  // PWA Detection (covers all common cases)
   // ==========================================
   const getIsPwa = (): boolean => {
     if (typeof window === "undefined") return false;
 
-    // display-mode: standalone / fullscreen / minimal-ui
     const isDisplayMode =
       window.matchMedia("(display-mode: standalone)").matches ||
       window.matchMedia("(display-mode: fullscreen)").matches ||
       window.matchMedia("(display-mode: minimal-ui)").matches;
 
-    // iOS Safari
     const isIosStandalone = (window.navigator as any).standalone === true;
 
-    // Manifest start_url query
+    // Optional: start_url query params (if you use them in manifest)
     const params = new URLSearchParams(window.location.search);
     const fromStartUrl =
       params.get("install") === "true" ||
       params.get("utm_medium") === "pwa_app" ||
       params.get("utm_source") === "pwa";
 
-    // localStorage flag
     const hasFlag = localStorage.getItem("pwa_installed") === "true";
 
     return isDisplayMode || isIosStandalone || fromStartUrl || hasFlag;
@@ -61,7 +56,8 @@ export default function VisitorTracker() {
     if (isSyncing.current) return;
 
     const isPWA = getIsPwa();
-    const hasInstalled = getHasInstalled() || isPWA; // standalone হলে installed ধরে নিন
+    // Prefer actual install flag, but treat current standalone as installed
+    const hasInstalled = getHasInstalled() || isPWA;
 
     if (
       !force &&
@@ -72,6 +68,8 @@ export default function VisitorTracker() {
     }
 
     isSyncing.current = true;
+
+    console.log("[PWA] Syncing...", { isPWA, hasInstalled });
 
     try {
       const res = await fetch(`${API_BASE_URL}/tracking/sync-pwa`, {
@@ -90,7 +88,14 @@ export default function VisitorTracker() {
 
       const data = await res.json().catch(() => null);
 
-      if (res.ok && data?.status === "success") {
+      console.log("[PWA] Response:", {
+        status: res.status,
+        ok: res.ok,
+        data,
+      });
+
+      // ← Use the old (working) success condition
+      if (res.ok) {
         lastSynced.current = {
           isPwa: isPWA,
           hasInstalled: hasInstalled,
@@ -98,7 +103,8 @@ export default function VisitorTracker() {
       } else {
         lastSynced.current = { isPwa: null, hasInstalled: null };
       }
-    } catch {
+    } catch (error: any) {
+      console.error("[PWA] Fetch Error:", error?.message || error);
       lastSynced.current = { isPwa: null, hasInstalled: null };
     } finally {
       isSyncing.current = false;
@@ -109,7 +115,7 @@ export default function VisitorTracker() {
   // PWA Install + Display Mode listeners
   // ==========================================
   useEffect(() => {
-    // 1) start_url দিয়ে খুললে flag সেট
+    // 1) start_url params → set flag
     const params = new URLSearchParams(window.location.search);
     if (
       params.get("install") === "true" ||
@@ -119,7 +125,7 @@ export default function VisitorTracker() {
       localStorage.setItem("pwa_installed", "true");
     }
 
-    // 2) এখনই display-mode PWA হলে flag সেট
+    // 2) Already running as PWA → set flag
     if (
       window.matchMedia("(display-mode: standalone)").matches ||
       window.matchMedia("(display-mode: fullscreen)").matches ||
@@ -131,18 +137,19 @@ export default function VisitorTracker() {
 
     // 3) appinstalled event
     const handleAppInstalled = () => {
+      console.log("[PWA] App installed event fired");
       localStorage.setItem("pwa_installed", "true");
-      lastSynced.current = { isPwa: null, hasInstalled: null };
+      lastSynced.current = { isPwa: null, hasInstalled: null }; // force re-sync
       syncPwaStatus(true);
     };
     window.addEventListener("appinstalled", handleAppInstalled);
 
-    // 4) Initial sync
+    // 4) Initial sync (slight delay for cookies/session)
     const timer = setTimeout(() => {
       syncPwaStatus(true);
     }, 400);
 
-    // 5) display-mode change
+    // 5) display-mode changes
     const modes = ["standalone", "fullscreen", "minimal-ui"] as const;
     const mediaQueries = modes.map((m) =>
       window.matchMedia(`(display-mode: ${m})`),
@@ -172,7 +179,7 @@ export default function VisitorTracker() {
   }, [pathname]);
 
   // ==========================================
-  // Existing tracker logic
+  // Existing tracker logic (unchanged)
   // ==========================================
   useEffect(() => {
     getTracker().init();
