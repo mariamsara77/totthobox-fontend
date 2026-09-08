@@ -79,17 +79,15 @@ export default async function HolidayShowPage({
     <div className="max-w-2xl mx-auto space-y-4 p-4 sm:p-6">
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm">
-        <Link href="/" className="opacity-50 hover:opacity-100">
-          <Home className="w-4 h-4" />
+        <Link href="/" className="hover:underline">
+          হোম
         </Link>
         <span>/</span>
-        <Link href="/bangla/holiday" className="opacity-50 hover:opacity-100">
+        <Link href="/bangla/holiday" className="hover:underline">
           ছুটির ক্যালেন্ডার
         </Link>
         <span>/</span>
-        <span className="opacity-50 hover:opacity-100  truncate max-w-40">
-          {holiday.title}
-        </span>
+        <span className="opacity-70  truncate">{holiday.title}</span>
       </nav>
 
       {/* Header */}
@@ -199,7 +197,7 @@ export default async function HolidayShowPage({
       <div>
         <Link
           href="/bangla/holiday"
-          className="inline-flex items-center gap-2 px-4 py-2 text-sm rounded-lg opacity-50 hover:opacity-100"
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm rounded-lg hover:underline"
         >
           <ArrowLeft className="size-4" />
           ছুটির ক্যালেন্ডারে ফিরে যান
