@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import useSWRInfinite from "swr/infinite";
 import { Calendar, Search, X, ArrowRight, ChevronDown } from "lucide-react";
+import { FaCalendarMinus } from "react-icons/fa";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
@@ -110,8 +111,8 @@ export default function HolidaysClient() {
     <div className="max-w-2xl mx-auto space-y-4 p-4 sm:p-6">
       {/* Header */}
       <header className="border-b border-zinc-400/25 pb-4">
-        <h1 className="text-2xl flex items-center gap-2">
-          <Calendar className="size-5" />
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          <FaCalendarMinus className="w-6 h-6" />
           ছুটির ক্যালেন্ডার
         </h1>
         <p className="text-sm  mt-1">
