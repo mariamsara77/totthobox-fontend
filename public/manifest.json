@@ -6,7 +6,6 @@
   "start_url": "/?utm_source=pwa&utm_medium=pwa_app&install=true",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["fullscreen", "minimal-ui"],
   "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
@@ -63,7 +62,7 @@
       "form_factor": "wide",
       "label": "Desktop View (Dark)"
     }
-],
+  ],
   "shortcuts": [
     {
       "name": "MCQ Practice",
