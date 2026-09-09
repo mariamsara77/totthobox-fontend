@@ -69,11 +69,11 @@ export default function IntroductionShowClient({ intro }: Props) {
     <div className="max-w-2xl mx-auto space-y-4 p-4 sm:p-6">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm">
-        <Link href="/" className="">
+        <Link href="/" className="hover:underline">
           হোম
         </Link>
         <span>/</span>
-        <Link href="/bangladesh/introduction" className="">
+        <Link href="/bangladesh/introduction" className="hover:underline">
           বাংলাদেশের পরিচিতি
         </Link>
         <span>/</span>
@@ -89,14 +89,12 @@ export default function IntroductionShowClient({ intro }: Props) {
                 {intro.intro_category}
               </span>
             )}
-            <h1 className="text-2xl  font-black tracking-tight text-zinc-50 dark:text-white">
+            <h1 className="text-2xl  font-black tracking-tight dark:text-white">
               {intro.title}
             </h1>
-            <p className="text-sm text-zinc-400">
-              বাংলাদেশের পরিচিতি · বিস্তারিত তথ্য
-            </p>
+            <p className="text-sm">বাংলাদেশের পরিচিতি · বিস্তারিত তথ্য</p>
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs bg-zinc-400/10 text-zinc-300">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs bg-zinc-400/10">
                 <Eye className="w-3.5 h-3.5" />
                 {intro.views_count?.toLocaleString("bn-BD") || 0}
               </span>
@@ -219,9 +217,9 @@ export default function IntroductionShowClient({ intro }: Props) {
       {/* Back */}
       <Link
         href="/bangladesh/introduction"
-        className="inline-flex items-center gap-2 text-sm text-zinc-400 "
+        className="inline-flex items-center gap-2 text-sm"
       >
-        <ArrowLeft className="w-4 h-4" />
+        <ArrowLeft className="w-4 h-4 hover:underline" />
         বাংলাদেশের পরিচিতি তালিকায় ফিরে যান
       </Link>
 
@@ -246,7 +244,7 @@ export default function IntroductionShowClient({ intro }: Props) {
         <details className="group rounded-xl border border-zinc-400/25 overflow-hidden">
           <summary className="flex items-center justify-between cursor-pointer px-4 py-2 ">
             <span>{intro.title} কী?</span>
-            <ChevronDown className="w-4 h-4 text-zinc-400 group-open:rotate-180 transition" />
+            <ChevronDown className="w-4 h-4 group-open:rotate-180 transition" />
           </summary>
           <div className="px-4 pb-4 text-sm ">
             উপরের “বিস্তারিত বিবরণ” সেকশনে এই তথ্যের পূর্ণাঙ্গ ব্যাখ্যা লেখা
@@ -256,13 +254,10 @@ export default function IntroductionShowClient({ intro }: Props) {
         <details className="group rounded-xl border border-zinc-400/25 overflow-hidden">
           <summary className="flex items-center justify-between cursor-pointer px-4 py-2 ">
             <span>অন্যান্য তথ্য কোথায় পাব?</span>
-            <ChevronDown className="w-4 h-4 text-zinc-400 group-open:rotate-180 transition" />
+            <ChevronDown className="w-4 h-4 group-open:rotate-180 transition" />
           </summary>
           <div className="px-4 pb-4 text-sm ">
-            <Link
-              href="/bangladesh/introduction"
-              className="text-amber-600 hover:underline"
-            >
+            <Link href="/bangladesh/introduction" className="hover:underline">
               বাংলাদেশের পরিচিতি
             </Link>{" "}
             তালিকায় ফিরে গিয়ে অন্যান্য তথ্য দেখতে পারবেন।
