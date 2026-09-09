@@ -82,7 +82,7 @@ export default function IntroductionClient() {
       <header className="flex items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-            <Map className="w-6 h-6 text-amber-600 dark:text-amber-500" />
+            <Map className="w-6 h-6" />
             বাংলাদেশের পরিচিতি
           </h1>
           <p className="text-sm  mt-1">
