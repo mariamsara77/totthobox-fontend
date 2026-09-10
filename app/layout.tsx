@@ -1,14 +1,15 @@
-import type { Metadata, Viewport } from "next"; // Viewport ইম্পোর্ট করা হয়েছে
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Noto_Sans_Bengali } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { AppProviders } from "./providers";
 import SettingsModalWrapper from "@/components/SettingsModalWrapper";
 import TagManager from "@/components/partials/TagManager";
 import GoogleTranslate from "@/components/GoogleTranslate";
 import VisitorTracker from "@/components/VisitorTracker";
-import InstallPWA from "@/components/InstallPWA"; // PWA Install Button
-import NetworkStatus from "@/components/NetworkStatus"; // Offline Banner
-import Adsense from "@/components/Adsense";
+import InstallPWA from "@/components/InstallPWA";
+import NetworkStatus from "@/components/NetworkStatus";
+// Adsense কম্পোনেন্ট আর লাগবে না, নিচে সরাসরি দিয়ে দিলাম
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,7 +30,6 @@ const notoBengali = Noto_Sans_Bengali({
   display: "swap",
 });
 
-// ১. PWA Metadata আপডেট
 export const metadata: Metadata = {
   metadataBase: new URL("https://totthobox.com"),
   title: {
@@ -51,7 +51,6 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     images: ["/og-image.png"],
   },
-  // iOS/Safari PWA সাপোর্ট
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
@@ -60,9 +59,18 @@ export const metadata: Metadata = {
   formatDetection: {
     telephone: false,
   },
+  // ========== AdSense Verification (সবচেয়ে গুরুত্বপূর্ণ) ==========
+  other: {
+    "google-adsense-account":
+      process.env.NEXT_PUBLIC_ADSENSE_ID || "ca-pub-9522604367420521",
+  },
+  // Google Site Verification (যদি আলাদা লাগে)
+  verification: {
+    google: "1-VsthqfGvXga4zKLbfjBjP6L0UFc-xBQ_aOzn1g9Ps",
+  },
+  // ================================================================
 };
 
-// ২. Viewport আলাদা কনফিগারেশন (Next.js 14+ এর জন্য আবশ্যক)
 export const viewport: Viewport = {
   themeColor: "#ffffff",
   width: "device-width",
@@ -83,13 +91,33 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} ${notoBengali.variable}`}
     >
-      <Adsense />
-      <head />
+      <head>
+        {/* অতিরিক্ত কাস্টম ট্যাগ এখানে রাখতে পারেন */}
+        <meta name="author" content="Totthobox Team" />
+        <meta name="robots" content="index, follow" />
+        <meta property="fb:app_id" content="1108131871544005" />
+        <meta
+          name="vapid-public-key"
+          content={
+            process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ||
+            "BBXFXNIJfoxxN-BC24pweOIBTZIHEmR9_XbbRyuqGyncTQnzKmhm65R4HGaZPYrdoLfkimilv3U4he7CK0_paBU"
+          }
+        />
+      </head>
       <body
         suppressHydrationWarning
         className="antialiased bg-white dark:bg-zinc-800"
       >
-        <NetworkStatus /> {/* অফলাইন এলার্ট ব্যানার */}
+        {/* ========== AdSense Script (next/script দিয়ে) ========== */}
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9522604367420521"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+        {/* ====================================================== */}
+
+        <NetworkStatus />
         <TagManager />
         <AppProviders>
           {children}
