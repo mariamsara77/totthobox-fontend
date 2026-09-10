@@ -4,21 +4,38 @@ export default function Head() {
       <meta charSet="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta name="color-scheme" content="light dark" />
-<meta name="csrf-token" content="{{ csrf_token() }}"/>
+      <meta name="csrf-token" content="{{ csrf_token() }}" />
 
       {/* অথর ও রোবটস */}
       <meta name="author" content="Totthobox Team" />
       <meta name="robots" content="index, follow" />
-<link rel="canonical" href="{{ url()->current() }}"/>
+      <link rel="canonical" href="{{ url()->current() }}" />
 
       {/* গুগল ভেরিফিকেশন ও এডসেন্স */}
-      <meta name="google-site-verification" content="1-VsthqfGvXga4zKLbfjBjP6L0UFc-xBQ_aOzn1g9Ps" />
+      <meta
+        name="google-site-verification"
+        content="1-VsthqfGvXga4zKLbfjBjP6L0UFc-xBQ_aOzn1g9Ps"
+      />
       <meta name="google-adsense-account" content="ca-pub-9522604367420521" />
 
       {/* ফেভিকন ও অ্যাপ টাইটেল */}
-      <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-      <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-      <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+      <link
+        rel="apple-touch-icon"
+        sizes="180x180"
+        href="/apple-touch-icon.png"
+      />
+      <link
+        rel="icon"
+        type="image/png"
+        sizes="32x32"
+        href="/favicon-32x32.png"
+      />
+      <link
+        rel="icon"
+        type="image/png"
+        sizes="16x16"
+        href="/favicon-16x16.png"
+      />
       <link rel="shortcut icon" href="/favicon.ico" />
       <meta name="apple-mobile-web-app-title" content="Totthobox" />
 
@@ -32,8 +49,13 @@ export default function Head() {
       <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
       {/* Vapid Key */}
-      <meta name="vapid-public-key" content={process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || 'BBXFXNIJfoxxN-BC24pweOIBTZIHEmR9_XbbRyuqGyncTQnzKmhm65R4HGaZPYrdoLfkimilv3U4he7CK0_paBU'} />
-
+      <meta
+        name="vapid-public-key"
+        content={
+          process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ||
+          "BBXFXNIJfoxxN-BC24pweOIBTZIHEmR9_XbbRyuqGyncTQnzKmhm65R4HGaZPYrdoLfkimilv3U4he7CK0_paBU"
+        }
+      />
 
       {/* Google AdSense Script */}
       <script

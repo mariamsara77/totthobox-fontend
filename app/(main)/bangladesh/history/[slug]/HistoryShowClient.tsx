@@ -61,14 +61,12 @@ export default function HistoryShowClient({ history }: { history: History }) {
 
   return (
     <div className="max-w-2xl mx-auto space-y-4 p-4 sm:p-6">
-      <nav className="flex items-center gap-2 text-sm text-zinc-400">
+      <nav className="flex items-center gap-2 text-sm">
         <Link href="/">হোম</Link>
         <span>/</span>
         <Link href="/bangladesh/history">ঐতিহাসিক স্থান</Link>
         <span>/</span>
-        <span className="text-zinc-50 text-zinc-200 truncate">
-          {history.title}
-        </span>
+        <span className="truncate">{history.title}</span>
       </nav>
 
       <header className="space-y-2">
@@ -79,7 +77,7 @@ export default function HistoryShowClient({ history }: { history: History }) {
                 ইতিহাস ও ঐতিহ্য
               </span>
               {history.is_featured && (
-                <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-md bg-amber-500 text-white">
+                <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-md">
                   <Star className="w-3 h-3" /> Featured
                 </span>
               )}
@@ -118,7 +116,7 @@ export default function HistoryShowClient({ history }: { history: History }) {
                   className="fixed inset-0 z-40"
                   onClick={() => setShowCreators(false)}
                 />
-                <div className="absolute right-0 top-full mt-2 w-80 max-h-80 overflow-y-auto rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900  p-4 z-50 space-y-4">
+                <div className="absolute right-0 top-full mt-2 w-80 max-h-80 overflow-y-auto rounded-2xl border border-zinc-400/25 backdrop-blur-xl p-4 z-50 space-y-4">
                   <h3 className=" text-sm">তথ্য প্রদানকারী</h3>
                   {creators.length === 0 ? (
                     <p className="text-xs text-zinc-400 text-center py-2">
@@ -140,9 +138,7 @@ export default function HistoryShowClient({ history }: { history: History }) {
                         )}
                         <div className="min-w-0">
                           <div className="flex items-center gap-1">
-                            <span className="text-sm  truncate">
-                              {c.name}
-                            </span>
+                            <span className="text-sm  truncate">{c.name}</span>
                             {c.is_verified && (
                               <Check className="w-3.5 h-3.5 text-zinc-300" />
                             )}
@@ -176,9 +172,7 @@ export default function HistoryShowClient({ history }: { history: History }) {
           {history.era && (
             <div>
               <p className="text-xs text-zinc-400 mb-1">যুগ / Era</p>
-              <p className=" text-zinc-50 text-zinc-200">
-                {history.era}
-              </p>
+              <p className=" text-zinc-50 text-zinc-200">{history.era}</p>
             </div>
           )}
           {(history.start_year || history.end_year) && (

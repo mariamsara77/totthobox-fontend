@@ -8,6 +8,7 @@ import GoogleTranslate from "@/components/GoogleTranslate";
 import VisitorTracker from "@/components/VisitorTracker";
 import InstallPWA from "@/components/InstallPWA"; // PWA Install Button
 import NetworkStatus from "@/components/NetworkStatus"; // Offline Banner
+import Adsense from "@/components/Adsense";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -82,6 +83,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} ${notoBengali.variable}`}
     >
+      <Adsense />
       <head />
       <body
         suppressHydrationWarning
