@@ -176,9 +176,7 @@ export default function PeopleClient() {
         </div>
       </div>
 
-      {hasFilters && !isLoading && (
-        <p className="text-xs text-zinc-400">{total}টি ফলাফল</p>
-      )}
+      {hasFilters && !isLoading && <p className="text-xs">{total}টি ফলাফল</p>}
 
       <section className="space-y-4">
         {isLoading ? (
@@ -199,9 +197,7 @@ export default function PeopleClient() {
             ))}
           </div>
         ) : items.length === 0 ? (
-          <div className="text-center py-16 text-zinc-400">
-            কোনো প্রোফাইল পাওয়া যায়নি
-          </div>
+          <div className="text-center py-16">কোনো প্রোফাইল পাওয়া যায়নি</div>
         ) : (
           items.map((person) => (
             <Link
@@ -218,7 +214,7 @@ export default function PeopleClient() {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-lg font-bold text-zinc-400">
+                    <div className="w-full h-full flex items-center justify-center text-lg font-bold">
                       {person.name?.charAt(0)}
                     </div>
                   )}
@@ -237,14 +233,14 @@ export default function PeopleClient() {
                       {person.categories.map((c) => (
                         <span
                           key={c.id}
-                          className="text-xs px-2 py-0.5 rounded border border-zinc-400/30 text-zinc-400"
+                          className="text-xs px-2 py-0.5 rounded"
                         >
                           {c.name}
                         </span>
                       ))}
                     </div>
                   )}
-                  <p className="text-xs text-zinc-400 flex items-center gap-1">
+                  <p className="text-xs flex items-center gap-1">
                     <Briefcase className="w-3.5 h-3.5" />
                     {person.current_role
                       ? `${person.current_role}${
@@ -257,7 +253,7 @@ export default function PeopleClient() {
                 </div>
               </div>
               <div className="mt-3 pt-3 border-t border-zinc-400/25">
-                <span className="inline-flex items-center gap-2 text-xs">
+                <span className="inline-flex items-center gap-2 text-xs hover:underline">
                   বিস্তারিত পড়ুন <ArrowRight className="w-3.5 h-3.5" />
                 </span>
               </div>
