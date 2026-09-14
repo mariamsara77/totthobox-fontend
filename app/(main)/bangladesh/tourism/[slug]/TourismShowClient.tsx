@@ -83,12 +83,12 @@ export default function TourismShowClient({ tourism }: Props) {
   return (
     <div className="max-w-2xl mx-auto space-y-4 p-4 sm:p-6">
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-sm ">
-        <Link href="/" className="">
+      <nav className="flex items-center gap-2 text-sm">
+        <Link href="/" className="hover:underline">
           হোম
         </Link>
         <span>/</span>
-        <Link href="/bangladesh/tourism" className="">
+        <Link href="/bangladesh/tourism" className="hover:underline">
           পর্যটন কেন্দ্র
         </Link>
         <span>/</span>
@@ -117,7 +117,7 @@ export default function TourismShowClient({ tourism }: Props) {
             )}
 
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs bg-zinc-400/10 text-zinc-300">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs bg-zinc-400/10">
                 <Eye className="w-3.5 h-3.5" />
                 {tourism.views_count?.toLocaleString("bn-BD") || 0}
               </span>
@@ -168,7 +168,7 @@ export default function TourismShowClient({ tourism }: Props) {
                           <div className="flex items-center gap-1">
                             <span className="text-sm  truncate">{c.name}</span>
                             {c.is_verified && (
-                              <Check className="w-3.5 h-3.5 text-zinc-300 shrink-0" />
+                              <Check className="w-3.5 h-3.5 shrink-0" />
                             )}
                           </div>
                           <p className="text-xs  truncate">
@@ -224,7 +224,7 @@ export default function TourismShowClient({ tourism }: Props) {
       {/* Back */}
       <Link
         href="/bangladesh/tourism"
-        className="inline-flex items-center gap-2 text-sm  "
+        className="inline-flex items-center gap-2 text-sm hover:underline"
       >
         <ArrowLeft className="w-4 h-4" />
         পর্যটন কেন্দ্র তালিকায় ফিরে যান
@@ -265,10 +265,7 @@ export default function TourismShowClient({ tourism }: Props) {
             <ChevronDown className="w-4 h-4  group-open:rotate-180 transition shrink-0" />
           </summary>
           <div className="px-4 pb-4 text-sm ">
-            <Link
-              href="/bangladesh/tourism"
-              className="text-amber-600 hover:underline"
-            >
+            <Link href="/bangladesh/tourism" className="hover:underline">
               পর্যটন কেন্দ্র
             </Link>{" "}
             তালিকায় ফিরে গিয়ে অন্যান্য স্থান দেখতে পারবেন।
