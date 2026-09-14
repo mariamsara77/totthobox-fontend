@@ -1564,23 +1564,16 @@ export default function NumberToWordConverter() {
     <main className="max-w-2xl mx-auto space-y-4 p-4">
       {/* Header */}
       <header className="text-center space-y-1">
-        <h1
-          className="text-2xl  tracking-tight "
-          
-        >
+        <h1 className="text-2xl  tracking-tight ">
           সংখ্যা → শব্দ রূপান্তরকারী
         </h1>
-        <p className="text-base " >
-          দশমিক সহ · টাকা-পয়সা · বাংলা ও ইংরেজি
-        </p>
+        <p className="text-base ">দশমিক সহ · টাকা-পয়সা · বাংলা ও ইংরেজি</p>
       </header>
 
       {/* Input */}
       <section>
         <div className="bg-zinc-400/10  rounded-xl p-4  space-y-4">
-          <label className="block text-sm  " >
-            সংখ্যা লিখুন
-          </label>
+          <label className="block text-sm  ">সংখ্যা লিখুন</label>
           <div className="relative">
             <Hash className="absolute left-3 top-1/2 -translate-y-1/2 size-5 " />
             <input
@@ -1596,7 +1589,7 @@ export default function NumberToWordConverter() {
               lang="en"
             />
           </div>
-          <p className="text-sm opacity-50" >
+          <p className="text-sm opacity-50">
             দশমিক সহ ০.০০ থেকে ৯,৯৯,৯৯,৯৯.৯৯ পর্যন্ত সমর্থিত
           </p>
         </div>
@@ -1610,14 +1603,9 @@ export default function NumberToWordConverter() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <Banknote className="size-5" />
-                <h3 className="text-base  " >
-                  মুদ্রা রূপান্তর
-                </h3>
+                <h3 className="text-base  ">মুদ্রা রূপান্তর</h3>
               </div>
-              <span
-                className="text-xs bg-zinc-400/10 p-2 rounded-full"
-                
-              >
+              <span className="text-xs bg-zinc-400/10 p-2 rounded-full">
                 টাকা ও পয়সা
               </span>
             </div>
@@ -1625,12 +1613,8 @@ export default function NumberToWordConverter() {
             <div className="space-y-4">
               {/* Bangla Unicode Currency */}
               <div className="bg-zinc-400/10 rounded-lg p-4 space-y-2">
-                <p className="text-sm " >
-                  বাংলা (ইউনিকোড)
-                </p>
-                <p className="text-2xl  text-amber-700" >
-                  {currencyBn}
-                </p>
+                <p className="text-sm ">বাংলা (ইউনিকোড)</p>
+                <p className="text-2xl">{currencyBn}</p>
                 <button
                   onClick={() => copyText(currencyBn, "cBn")}
                   className="inline-flex items-center gap-2 text-xs  "
@@ -1642,12 +1626,10 @@ export default function NumberToWordConverter() {
 
               {/* AdorshoLipi Currency */}
               <div className="bg-zinc-400/10 rounded-lg p-4 space-y-2">
-                <p className="text-sm " >
-                  টাকা-পয়সা (আদর্শলিপি আউটপুট)
-                </p>
+                <p className="text-sm ">টাকা-পয়সা (আদর্শলিপি আউটপুট)</p>
                 <p
                   ref={currencyAdarshaRef}
-                  className="text-2xl  text-orange-600 adorsholipi-exp"
+                  className="text-2xl adorsholipi-exp"
                 />
                 <button
                   onClick={() => {
@@ -1664,9 +1646,7 @@ export default function NumberToWordConverter() {
               {/* English Currency */}
               <div className="bg-zinc-400/10 rounded-lg p-4 space-y-2">
                 <p className="text-sm ">English</p>
-                <p className="text-2xl  text-amber-700">
-                  {currencyEn}
-                </p>
+                <p className="text-2xl">{currencyEn}</p>
                 <button
                   onClick={() => copyText(currencyEn, "cEn")}
                   className="inline-flex items-center gap-2 text-xs  "
@@ -1683,23 +1663,11 @@ export default function NumberToWordConverter() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <Languages className="size-4 " />
-                <h3 className=" " >
-                  ইউনিকোড বাংলা
-                </h3>
+                <h3 className=" ">ইউনিকোড বাংলা</h3>
               </div>
-              <span
-                className="text-xs  bg-green-100 text-green-800 p-2 rounded-full"
-                
-              >
-                বাংলা
-              </span>
+              <span className="text-xs p-2 rounded-full">বাংলা</span>
             </div>
-            <p
-              className="text-3xl   text-green-700 leading-snug"
-              
-            >
-              {bnUnicode}
-            </p>
+            <p className="text-3xl leading-snug">{bnUnicode}</p>
             <div className="border-t border-zinc-400/25 pt-3">
               <button
                 onClick={() => copyText(bnUnicode, "bn")}
@@ -1716,17 +1684,15 @@ export default function NumberToWordConverter() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <Printer className="size-4 " />
-                <h3 className=" " >
-                  আদর্শলিপি আউটপুট (প্রিন্টিং-এর জন্য)
-                </h3>
+                <h3 className=" ">আদর্শলিপি আউটপুট (প্রিন্টিং-এর জন্য)</h3>
               </div>
-              <span className="text-xs  bg-orange-100 text-orange-800 p-2 rounded-full">
+              <span className="text-xs p-2 rounded-full">
                 ANSI / AdorshoLipi
               </span>
             </div>
             <p
               ref={adarshaRef}
-              className="text-xl text-orange-600 leading-snug adorsholipi-exp"
+              className="text-xl leading-snug adorsholipi-exp"
             />
             <div className="border-t border-zinc-400/25 pt-3">
               <button
@@ -1747,17 +1713,11 @@ export default function NumberToWordConverter() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <Languages className="size-4 " />
-                <h3 className=" " >
-                  ইংরেজি
-                </h3>
+                <h3 className=" ">ইংরেজি</h3>
               </div>
-              <span className="text-xs  bg-sky-100 text-sky-800 p-2 rounded-full">
-                English
-              </span>
+              <span className="text-xs p-2 rounded-full">English</span>
             </div>
-            <p className="text-3xl   text-sky-700 leading-snug">
-              {enWords}
-            </p>
+            <p className="text-3xl leading-snug">{enWords}</p>
             <div className="border-t border-zinc-400/25 pt-3">
               <button
                 onClick={() => copyText(enWords, "en")}
@@ -1778,7 +1738,7 @@ export default function NumberToWordConverter() {
             onClick={() => setRefOpen(!refOpen)}
             className="w-full flex items-center justify-between p-4 hover:bg-zinc-400/10 transition"
           >
-            <span className="flex items-center gap-2" >
+            <span className="flex items-center gap-2">
               <TableCellsMerge className="size-4 " />
               {refOpen ? "রেফারেন্স লুকান" : "রেফারেন্স দেখুন"}
             </span>
@@ -1792,12 +1752,8 @@ export default function NumberToWordConverter() {
               <table className="w-full text-sm">
                 <thead className="bg-zinc-400/10 ">
                   <tr>
-                    <th className="p-4 text-left " >
-                      সংখ্যা
-                    </th>
-                    <th className="p-4 text-left " >
-                      টাকা-পয়সা
-                    </th>
+                    <th className="p-4 text-left ">সংখ্যা</th>
+                    <th className="p-4 text-left ">টাকা-পয়সা</th>
                     <th className="p-4 text-left ">English</th>
                   </tr>
                 </thead>
@@ -1819,9 +1775,7 @@ export default function NumberToWordConverter() {
                   ].map(([n, bn, en], i) => (
                     <tr key={i} className="hover:bg-zinc-400/10">
                       <td className="p-4 font-mono ">{n}</td>
-                      <td className="p-4 " >
-                        {bn}
-                      </td>
+                      <td className="p-4 ">{bn}</td>
                       <td className="p-4 ">{en}</td>
                     </tr>
                   ))}
@@ -1834,18 +1788,16 @@ export default function NumberToWordConverter() {
 
       {/* About */}
       <section className="rounded-2xl space-y-4">
-        <h2 className="text-lg" >
-          সংখ্যা থেকে শব্দ রূপান্তরকারী সম্পর্কে
-        </h2>
+        <h2 className="text-lg">সংখ্যা থেকে শব্দ রূপান্তরকারী সম্পর্কে</h2>
         <div>
-          <p >
+          <p>
             এই অনলাইন টুলটি যেকোনো সংখ্যাকে সহজেই{" "}
             <strong>বাংলা ও ইংরেজি শব্দে</strong> রূপান্তর করে। দশমিকসহ
             টাকা-পয়সা ফরম্যাটেও রূপান্তর করা যায়। ইউনিকোড বাংলা এবং আদর্শলিপি
             (ANSI) উভয় ফরম্যাট সমর্থিত, যা প্রিন্টিং ও অফিসিয়াল কাজে ব্যবহার করা
             যায়।
           </p>
-          <p >
+          <p>
             বাংলাদেশের স্ট্যান্ডার্ড অনুযায়ী ১ টাকা = ১০০ পয়সা ধরে হিসাব করা হয়।
             সর্বোচ্চ ৯,৯৯,৯৯,৯৯.৯৯ পর্যন্ত সংখ্যা সাপোর্ট করে।
           </p>
@@ -1854,9 +1806,7 @@ export default function NumberToWordConverter() {
 
       {/* FAQ */}
       <section className="space-y-4">
-        <h2 className="text-lg  " >
-          প্রায়শই জিজ্ঞাসিত প্রশ্ন
-        </h2>
+        <h2 className="text-lg  ">প্রায়শই জিজ্ঞাসিত প্রশ্ন</h2>
 
         {[
           {
@@ -1881,18 +1831,16 @@ export default function NumberToWordConverter() {
             className="group rounded-xl  overflow-hidden bg-zinc-400/10"
           >
             <summary className="flex items-center justify-between cursor-pointer p-4   hover:bg-zinc-400/10 transition list-none">
-              <span >{item.q}</span>
+              <span>{item.q}</span>
               <ChevronDown className="size-4  group-open:rotate-180 transition" />
             </summary>
             <hr className="border-zinc-400/25" />
-            <div className="p-4 leading-relaxed" >
-              {item.a}
-            </div>
+            <div className="p-4 leading-relaxed">{item.a}</div>
           </details>
         ))}
       </section>
 
-      <p className="text-center text-sm " >
+      <p className="text-center text-sm ">
         বাংলাদেশের স্ট্যান্ডার্ড: টাকা ও পয়সা (১ টাকা = ১০০ পয়সা)
       </p>
     </main>
