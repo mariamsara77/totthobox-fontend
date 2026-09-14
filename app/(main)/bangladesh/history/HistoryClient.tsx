@@ -247,7 +247,7 @@ export default function HistoryClient() {
             <Link
               key={item.id}
               href={`/bangladesh/history/${item.slug}`}
-              className="p-4"
+              className="block rounded-2xl bg-zinc-400/10 p-4 transition-all hover:bg-zinc-400/25"
             >
               <div className="flex gap-4 items-start">
                 <div className="shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-zinc-400/10">
@@ -297,7 +297,7 @@ export default function HistoryClient() {
                 </div>
               </div>
               <div className="mt-3 pt-3 border-t border-zinc-400/25">
-                <span className="inline-flex items-center gap-2 text-xs">
+                <span className="inline-flex items-center gap-2 text-xs hover:underline">
                   বিস্তারিত পড়ুন <ArrowRight className="w-3.5 h-3.5" />
                 </span>
               </div>
