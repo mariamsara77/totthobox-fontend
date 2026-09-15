@@ -86,10 +86,8 @@ export default async function InternationalAllCountryPage({
 
   return (
     <section className="max-w-2xl mx-auto space-y-4 p-4">
-      <article className="prose dark:prose-invert max-w-none text-center pb-6 border-b border-zinc-400/25">
-        <h1 className="text-3xl font-bold mb-4 text-zinc-50 text-zinc-100">
-          {h1}
-        </h1>
+      <article className="prose max-w-none text-center pb-6 border-b border-zinc-400/25">
+        <h1 className="text-3xl font-bold mb-4">{h1}</h1>
         <p className=" text-lg leading-relaxed  max-w-2xl mx-auto">{sub}</p>
       </article>
 
