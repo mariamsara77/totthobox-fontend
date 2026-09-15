@@ -111,10 +111,12 @@ export default function AboutUsClient() {
   useEffect(() => {
     async function fetchAnalytics() {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/analytics/user-count`,
-          { next: { revalidate: 3600 } },
-        );
+        const baseUrl =
+          process.env.NEXT_PUBLIC_API_URL || "https://admin.totthobox.com/api";
+
+        const res = await fetch(`${baseUrl}/analytics/user-count`, {
+          next: { revalidate: 3600 },
+        });
 
         if (!res.ok) throw new Error("Failed to fetch");
 
