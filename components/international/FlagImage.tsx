@@ -1,4 +1,6 @@
-'use client';
+"use client";
+
+import MediaGallery from "../MediaGallery";
 
 interface FlagImageProps {
   src: string;
@@ -11,27 +13,24 @@ interface FlagImageProps {
 
 export function FlagImage({
   src,
-  fallbackSrc = 'https://flagcdn.com/w640/un.png',
+  fallbackSrc = "https://flagcdn.com/w640/un.png",
   alt,
-  className = '',
+  className = "",
   width,
   height,
 }: FlagImageProps) {
   return (
-    <img
-      src={src}
-      alt={alt}
-      width={width}
-      height={height}
-      className={className}
-      loading="lazy"
-      decoding="async"
-      onError={(e) => {
-        const target = e.currentTarget;
-        if (target.src !== fallbackSrc) {
-          target.src = fallbackSrc;
-        }
-      }}
-    />
+    <div className={`rounded-xl overflow-hidden ${className}`}>
+      <MediaGallery
+        media={[
+          {
+            url: src,
+            caption: alt,
+          },
+        ]}
+        // Optional: if MediaGallery supports fallback / onError you can pass it,
+        // otherwise the gallery itself should handle broken images
+      />
+    </div>
   );
 }

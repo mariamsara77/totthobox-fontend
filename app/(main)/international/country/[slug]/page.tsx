@@ -11,6 +11,8 @@ import { FlagImage } from "@/components/international/FlagImage";
 import { CoatOfArms } from "@/components/international/CoatOfArms";
 import { FaHome } from "react-icons/fa";
 import { notFound } from "next/navigation";
+import { AiFillDollarCircle } from "react-icons/ai";
+import { IoMdArrowDropdown } from "react-icons/io";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -169,7 +171,7 @@ export default async function CountryPage({ params }: Props) {
         {/* Breadcrumb */}
         <nav
           aria-label="Breadcrumb"
-          className="flex items-center gap-2 text-sm text-zinc-400"
+          className="flex items-center gap-2 text-sm"
         >
           <Link href="/" className="hover:underline">
             <FaHome />
@@ -179,35 +181,35 @@ export default async function CountryPage({ params }: Props) {
             বিশ্বকোষ
           </Link>
           <span>/</span>
-          <span className="text-zinc-50 text-zinc-100">{country.name}</span>
+          <span className="">{country.name}</span>
         </nav>
 
         {/* HERO */}
         <div className="rounded-2xl overflow-hidden border border-zinc-400/25  hover: transition-shadow">
-          <div className="relative aspect-video w-full overflow-hidden bg-zinc-800/80">
+          <div className="relative aspect-video w-full overflow-hidden bg-zinc-400/10">
             <FlagImage
               src={country.flag_svg || country.flag}
               fallbackSrc={country.flag}
               alt={`${country.name} এর জাতীয় পতাকা — ${country.official_name}`}
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
 
             <div className="absolute top-4 left-4 flex flex-wrap gap-2">
-              <span className="px-2.5 py-1 rounded-full bg-indigo-600 text-white text-xs ">
+              <span className="px-2.5 py-1 rounded-full bg-zinc-700/10 text-white text-xs ">
                 {country.region}
               </span>
               {country.subregion && (
-                <span className="px-2.5 py-1 rounded-full bg-zinc-700/80 text-white text-xs">
+                <span className="px-2.5 py-1 rounded-full bg-zinc-700/10 text-white text-xs">
                   {country.subregion}
                 </span>
               )}
             </div>
             <div className="absolute top-4 right-4 flex flex-wrap gap-2">
-              <span className="px-2.5 py-1 rounded-full bg-zinc-800/80 text-white text-xs font-mono">
+              <span className="px-2.5 py-1 rounded-full bg-zinc-700/10 text-white text-xs font-mono">
                 {country.code}
               </span>
-              <span className="px-2.5 py-1 rounded-full bg-zinc-800/80 text-white text-xs font-mono">
+              <span className="px-2.5 py-1 rounded-full bg-zinc-700/10 text-white text-xs font-mono">
                 {country.cca3}
               </span>
             </div>
@@ -233,7 +235,7 @@ export default async function CountryPage({ params }: Props) {
             </div>
           </div>
 
-          <div className="bg-zinc-800/80 px-5 py-2 flex flex-wrap items-center justify-between gap-4 border-t border-zinc-400/25">
+          <div className="bg-zinc-400/10 px-5 py-2 flex flex-wrap items-center justify-between gap-4 border-t border-zinc-400/25">
             <div className="flex flex-wrap gap-2">
               <span
                 className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs  ${
@@ -245,20 +247,18 @@ export default async function CountryPage({ params }: Props) {
                 {country.un_member}
               </span>
               <span
-                className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs  ${
-                  country.independent.includes("অধীনস্থ")
-                    ? "bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300"
-                    : "bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300"
+                className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs bg-zinc-400/10 border border-zinc-400/25 ${
+                  country.independent.includes("অধীনস্থ") ? "" : ""
                 }`}
               >
                 {country.independent}
               </span>
               {country.landlocked === "স্থলবেষ্টিত" ? (
-                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs  bg-orange-100 dark:bg-orange-900/40 text-orange-800 dark:text-orange-300">
+                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs bg-zinc-400/10 border border-zinc-400/25">
                   স্থলবেষ্টিত দেশ
                 </span>
               ) : (
-                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs  bg-sky-100 dark:bg-sky-900/40 text-sky-800 dark:text-sky-300">
+                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs">
                   সমুদ্রসীমা আছে
                 </span>
               )}
@@ -267,9 +267,9 @@ export default async function CountryPage({ params }: Props) {
         </div>
 
         {/* Overview */}
-        <article className="bg-zinc-800/80 border border-zinc-400/25 rounded-xl p-4">
+        <article className="border border-zinc-400/25 rounded-xl p-4">
           <div className="flex items-center gap-2 mb-4">
-            <span className="text-indigo-500">📖</span>
+            <span className="">📖</span>
             <h2 className="text-sm font-bold">
               {country.name} সম্পর্কে সংক্ষিপ্ত পরিচিতি
             </h2>
@@ -303,26 +303,26 @@ export default async function CountryPage({ params }: Props) {
           ].map((stat) => (
             <div
               key={stat.label}
-              className="group bg-zinc-800/80 border border-zinc-400/25 rounded-xl p-4 text-center transition-all hover:border-indigo-400/40 hover:-translate-y-0.5"
+              className="group bg-zinc-400/10 border border-zinc-400/25 rounded-xl p-4 text-center transition-all hover:border-indigo-400/40 hover:-translate-y-0.5"
             >
               <div
                 className={`text-lg font-bold font-mono leading-tight truncate ${stat.color}`}
               >
                 {stat.value}
               </div>
-              <p className="mt-1 text-xs text-zinc-400">{stat.label}</p>
+              <p className="mt-1 text-xs">{stat.label}</p>
             </div>
           ))}
         </div>
 
         {/* Codes + Geography */}
         <div className="grid md:grid-cols-2 gap-6">
-          <div className="bg-zinc-800/80 border border-zinc-400/25 rounded-xl overflow-hidden">
+          <div className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl overflow-hidden">
             <div className="px-4 py-2 border-b border-zinc-400/25 flex items-center gap-2">
-              <span className="text-indigo-500">🆔</span>
+              <span className="">🆔</span>
               <h3 className="text-sm font-bold">আন্তর্জাতিক কোড</h3>
             </div>
-            <div className="divide-y divide-zinc-200/50 dark:divide-zinc-700/50">
+            <div className="divide-y divide-zinc-400/25">
               {[
                 ["ISO Alpha-2", country.code],
                 ["ISO Alpha-3", country.cca3],
@@ -347,21 +347,19 @@ export default async function CountryPage({ params }: Props) {
                     key={label as string}
                     className="flex justify-between px-4 py-2.5 text-sm"
                   >
-                    <span className="text-zinc-400">{label}</span>
-                    <span className="font-mono  text-right">
-                      {value}
-                    </span>
+                    <span>{label}</span>
+                    <strong className="font-mono  text-right">{value}</strong>
                   </div>
                 ))}
             </div>
           </div>
 
-          <div className="bg-zinc-800/80 border border-zinc-400/25 rounded-xl overflow-hidden">
+          <div className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl overflow-hidden">
             <div className="px-4 py-2 border-b border-zinc-400/25 flex items-center gap-2">
-              <span className="text-indigo-500">📍</span>
+              <span className="">📍</span>
               <h3 className="text-sm font-bold">ভৌগোলিক তথ্য</h3>
             </div>
-            <div className="divide-y divide-zinc-200/50 dark:divide-zinc-700/50">
+            <div className="divide-y divide-zinc-400/25">
               {[
                 ["মহাদেশ", country.continent],
                 ["অঞ্চল", country.region],
@@ -396,8 +394,8 @@ export default async function CountryPage({ params }: Props) {
                     key={label as string}
                     className="flex justify-between px-4 py-2.5 text-sm"
                   >
-                    <span className="text-zinc-400">{label}</span>
-                    <span className=" text-right">{value}</span>
+                    <span>{label}</span>
+                    <strong className=" text-right">{value}</strong>
                   </div>
                 ))}
             </div>
@@ -407,7 +405,7 @@ export default async function CountryPage({ params }: Props) {
         {/* Languages + Currencies */}
         <div className="grid md:grid-cols-2 gap-6">
           {country.languages.length > 0 && (
-            <div className="bg-zinc-800/80 border border-zinc-400/25 rounded-xl overflow-hidden">
+            <div className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl overflow-hidden">
               <div className="px-4 py-2 border-b border-zinc-400/25 flex items-center gap-2">
                 <span className="text-green-500">🗣️</span>
                 <h3 className="text-sm font-bold">
@@ -430,12 +428,12 @@ export default async function CountryPage({ params }: Props) {
           )}
 
           {country.currencies.length > 0 && (
-            <div className="bg-zinc-800/80 border border-zinc-400/25 rounded-xl overflow-hidden">
+            <div className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl overflow-hidden">
               <div className="px-4 py-2 border-b border-zinc-400/25 flex items-center gap-2">
-                <span className="text-amber-500">💰</span>
+                <AiFillDollarCircle />
                 <h3 className="text-sm font-bold">ব্যবহৃত মুদ্রা</h3>
               </div>
-              <div className="divide-y divide-zinc-200/50 dark:divide-zinc-700/50">
+              <div className="divide-y divide-zinc-400/25">
                 {country.currencies.map((cur) => (
                   <div
                     key={cur.code}
@@ -452,7 +450,7 @@ export default async function CountryPage({ params }: Props) {
                         {cur.symbol}
                       </span>
                     ) : (
-                      <span className="text-xs text-zinc-400">—</span>
+                      <span className="text-xs ">—</span>
                     )}
                   </div>
                 ))}
@@ -463,9 +461,9 @@ export default async function CountryPage({ params }: Props) {
 
         {/* Translations */}
         {translations.length > 0 && (
-          <div className="bg-zinc-800/80 border border-zinc-400/25 rounded-xl overflow-hidden">
+          <div className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl overflow-hidden">
             <div className="px-4 py-2 border-b border-zinc-400/25 flex items-center gap-2">
-              <span className="text-indigo-500">🌐</span>
+              <span>🌐</span>
               <h3 className="text-sm font-bold">বিভিন্ন ভাষায় নাম</h3>
             </div>
             <div className="p-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -474,8 +472,8 @@ export default async function CountryPage({ params }: Props) {
                   key={label}
                   className="bg-zinc-400/10/50 rounded-lg px-3 py-2.5 hover:bg-zinc-700/25 "
                 >
-                  <p className="text-xs text-zinc-400 mb-1">{label}</p>
-                  <p className="text-sm  truncate">{name}</p>
+                  <p className="text-xs  mb-1">{label}</p>
+                  <strong className="text-sm  truncate">{name}</strong>
                 </div>
               ))}
             </div>
@@ -484,7 +482,7 @@ export default async function CountryPage({ params }: Props) {
 
         {/* Timezones */}
         {country.timezones.length > 0 && (
-          <div className="bg-zinc-800/80 border border-zinc-400/25 rounded-xl overflow-hidden">
+          <div className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl overflow-hidden">
             <div className="px-4 py-2 border-b border-zinc-400/25 flex items-center gap-2">
               <span className="text-sky-500">🕒</span>
               <h3 className="text-sm font-bold">
@@ -505,7 +503,7 @@ export default async function CountryPage({ params }: Props) {
         )}
 
         {/* Neighbors */}
-        <div className="bg-zinc-800/80 border border-zinc-400/25 rounded-xl overflow-hidden">
+        <div className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl overflow-hidden">
           <div className="px-4 py-2 border-b border-zinc-400/25 flex items-center gap-2">
             <span className="text-indigo-500">🗺️</span>
             <h3 className="text-sm font-bold">
@@ -520,22 +518,20 @@ export default async function CountryPage({ params }: Props) {
                 <Link
                   key={nb.cca3}
                   href={`/international/${nb.slug}`}
-                  className="flex items-center gap-2 p-2 rounded-lg bg-zinc-400/10/50 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 border border-transparent hover:border-indigo-200 dark:hover:border-indigo-800/50 transition-all group"
+                  className="flex items-center gap-2 p-2 rounded-lg bg-zinc-400/10 hover:border hover:border-zinc-400/25 transition-all group"
                 >
                   {nb.flag && (
                     <FlagImage
                       src={nb.flag}
                       alt={nb.name}
-                      className="w-8 h-5 object-cover rounded  flex-shrink-0"
+                      className="w-8 h-5 object-cover shrink-0"
                       width={32}
                       height={20}
                     />
                   )}
                   <div className="min-w-0">
-                    <p className="text-xs  truncate group-hover:text-indigo-700 dark:group-hover:text-indigo-300">
-                      {nb.name}
-                    </p>
-                    <p className="text-xs text-zinc-400 font-mono">{nb.cca3}</p>
+                    <p className="text-xs  truncate">{nb.name}</p>
+                    <strong className="text-xs  font-mono">{nb.cca3}</strong>
                   </div>
                 </Link>
               ))}
@@ -543,16 +539,14 @@ export default async function CountryPage({ params }: Props) {
           ) : (
             <div className="p-6 text-center">
               <p className="text-blue-400 text-2xl mb-2">🛡️</p>
-              <p className="text-sm text-zinc-400 ">
-                দ্বীপ দেশ — কোনো স্থল সীমান্ত নেই
-              </p>
+              <p className="text-sm  ">দ্বীপ দেশ — কোনো স্থল সীমান্ত নেই</p>
             </div>
           )}
         </div>
 
         {/* Coat of Arms */}
         {country.coat_of_arms && (
-          <div className="bg-zinc-800/80 border border-zinc-400/25 rounded-xl overflow-hidden">
+          <div className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl overflow-hidden">
             <div className="px-4 py-2 border-b border-zinc-400/25 flex items-center gap-2">
               <span className="text-indigo-500">🛡️</span>
               <h3 className="text-sm font-bold">রাষ্ট্রীয় প্রতীক</h3>
@@ -566,7 +560,7 @@ export default async function CountryPage({ params }: Props) {
 
         {/* Maps */}
         {country.google_maps_embed ? (
-          <div className="bg-zinc-800/80 border border-zinc-400/25 rounded-xl overflow-hidden">
+          <div className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl overflow-hidden">
             <div className="px-4 py-2 border-b border-zinc-400/25 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-indigo-500">🗺️</span>
@@ -587,13 +581,13 @@ export default async function CountryPage({ params }: Props) {
                   href={country.google_maps}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs px-2.5 py-1 rounded bg-indigo-600 text-white hover:bg-indigo-700"
+                  className="text-xs px-2.5 py-1 rounded-lg bg-zinc-400/10 hover:bg-zinc-400/20"
                 >
                   Google Maps
                 </a>
               </div>
             </div>
-            <div className="aspect-video w-full bg-zinc-800/80">
+            <div className="aspect-video w-full bg-zinc-400/10">
               <iframe
                 src={country.google_maps_embed}
                 className="w-full h-full border-0"
@@ -603,7 +597,7 @@ export default async function CountryPage({ params }: Props) {
                 title={`${country.name} মানচিত্র`}
               />
             </div>
-            <div className="px-4 py-2.5 bg-zinc-800/80 border-t border-zinc-400/25 flex flex-wrap gap-4 text-xs text-zinc-400 font-mono">
+            <div className="px-4 py-2.5 bg-zinc-400/10 border-t border-zinc-400/25 flex flex-wrap gap-4 text-xs  font-mono">
               <span>📍 {country.coords}</span>
               {country.capital !== "N/A" && country.capital_lat && (
                 <span>
@@ -626,18 +620,18 @@ export default async function CountryPage({ params }: Props) {
 
         {/* FAQ */}
         {faqs.length > 0 && (
-          <div className="bg-zinc-800/80 border border-zinc-400/25 rounded-xl overflow-hidden">
+          <div className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl overflow-hidden">
             <div className="px-4 py-2 border-b border-zinc-400/25 flex items-center gap-2">
               <span className="text-indigo-500">❓</span>
               <h2 className="text-sm font-bold">প্রায়শই জিজ্ঞাসিত প্রশ্ন</h2>
             </div>
-            <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            <div className="divide-y divide-zinc-400/25">
               {faqs.map((faq) => (
                 <details key={faq.q} className="group p-4">
                   <summary className="flex items-center justify-between cursor-pointer text-sm  list-none">
                     {faq.q}
-                    <span className="text-zinc-400 group-open:rotate-180 transition-transform">
-                      ▼
+                    <span className=" group-open:rotate-180 transition-transform">
+                      <IoMdArrowDropdown />
                     </span>
                   </summary>
                   <p className="mt-2 text-sm  leading-relaxed">{faq.a}</p>
@@ -649,7 +643,7 @@ export default async function CountryPage({ params }: Props) {
 
         {/* Attribution */}
         <div className="text-center px-2">
-          <p className="text-xs text-zinc-400">
+          <p className="text-xs ">
             তথ্যসূত্র:{" "}
             <a
               href="https://github.com/mledoze/countries"
@@ -695,7 +689,7 @@ export default async function CountryPage({ params }: Props) {
                 href={country.open_street_maps}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-zinc-400 hover:underline"
+                className="text-sm  hover:underline"
               >
                 OSM
               </a>
@@ -704,7 +698,7 @@ export default async function CountryPage({ params }: Props) {
               href={country.google_maps}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-zinc-400 hover:underline"
+              className="text-sm  hover:underline"
             >
               Maps
             </a>
