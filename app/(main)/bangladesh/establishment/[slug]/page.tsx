@@ -3,22 +3,12 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 
 import EstablishmentShowClient from "./EstablishmentShowClient";
+import type { Establishment } from "@/types/establishment";
 
 type Props = {
   params: Promise<{
     slug: string;
   }>;
-};
-
-type Establishment = {
-  id?: number | string;
-  slug: string;
-  title: string;
-  description?: string | null;
-  image_url?: string | null;
-  type_label?: string | null;
-  created_at?: string | null;
-  updated_at?: string | null;
 };
 
 /*
