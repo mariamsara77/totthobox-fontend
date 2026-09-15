@@ -90,7 +90,6 @@ export default function PercentageCalculator() {
   const [history, setHistory] = useState([]);
   const [copied, setCopied] = useState(false);
 
-  // Load history from localStorage
   useEffect(() => {
     try {
       const saved = localStorage.getItem("pct_calc_history");
@@ -101,7 +100,6 @@ export default function PercentageCalculator() {
     } catch {}
   }, []);
 
-  // Save history
   useEffect(() => {
     try {
       localStorage.setItem("pct_calc_history", JSON.stringify(history));
@@ -236,7 +234,6 @@ export default function PercentageCalculator() {
     }
   }, [tab, value1, value2, percent]);
 
-  // Push to history when result changes
   useEffect(() => {
     if (!result || !value1) return;
     const label = result.value + result.suffix;
@@ -286,285 +283,258 @@ export default function PercentageCalculator() {
   const examples = EXAMPLES[tab] || [];
 
   const extraColor = {
-    emerald: "bg-zinc-400/10 ",
-    rose: "bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300",
-    violet: "bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300",
+    emerald: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400",
+    rose: "bg-rose-500/10 text-rose-700 dark:text-rose-400",
+    violet: "bg-violet-500/10 text-violet-700 dark:text-violet-400",
   };
 
   return (
-    <section className="w-full">
-      <div className="space-y-8">
-        {/* Header */}
-        <div className="text-center space-y-2 mb-8">
-          <span className="inline-block px-3 py-1 text-xs  rounded-full bg-lime-100 dark:bg-lime-900/40 text-lime-700 dark:text-lime-300 mb-2">
-            বিনামূল্যে · রেজিস্ট্রেশন লাগবে না
-          </span>
-          <h1 className="text-3xl   tracking-tight text-zinc-50 dark:text-white">
-            পার্সেন্টেজ ক্যালকুলেটর
-          </h1>
-          <p className="text-base  max-w-xl mx-auto">
-            যেকোনো শতকরা হিসাব এক জায়গায়। সংখ্যা লিখুন — সাথে সাথে সূত্র ও সহজ বাংলা ব্যাখ্যাসহ উত্তর পাবেন।
+    <section className="w-full space-y-8">
+      {/* Header */}
+      <header className="space-y-2 text-center">
+        <span className="inline-block px-3 py-1 text-xs rounded-full bg-zinc-400/10 text-zinc-600 dark:text-zinc-400">
+          বিনামূল্যে · রেজিস্ট্রেশন লাগবে না
+        </span>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+          পার্সেন্টেজ ক্যালকুলেটর
+        </h1>
+        <p className="text-sm text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">
+          যেকোনো শতকরা হিসাব এক জায়গায়। সংখ্যা লিখুন — সাথে সাথে সূত্র ও সহজ বাংলা
+          ব্যাখ্যাসহ উত্তর পাবেন।
+        </p>
+      </header>
+
+      {/* Tabs */}
+      <div className="overflow-x-auto pb-1 scrollbar-hide">
+        <div className="flex gap-1.5 min-w-max">
+          {TABS.map((t) => (
+            <button
+              key={t.id}
+              onClick={() => changeTab(t.id)}
+              className={`px-3 py-2 text-xs sm:text-sm rounded-lg whitespace-nowrap transition ${
+                tab === t.id
+                  ? "bg-zinc-700 text-white"
+                  : "bg-zinc-400/10 hover:bg-zinc-400/20"
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Input Card */}
+      <div className="rounded-2xl bg-zinc-400/10 p-4 sm:p-5 space-y-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {fields.map((f) => (
+            <div key={f.key} className="space-y-1.5">
+              <label className="text-sm text-zinc-600 dark:text-zinc-400">
+                {f.label}
+              </label>
+              <input
+                type="number"
+                step="any"
+                value={
+                  f.key === "value1"
+                    ? value1
+                    : f.key === "value2"
+                      ? value2
+                      : percent
+                }
+                onChange={(e) => {
+                  if (f.key === "value1") setValue1(e.target.value);
+                  else if (f.key === "value2") setValue2(e.target.value);
+                  else setPercent(e.target.value);
+                }}
+                placeholder={f.placeholder}
+                className="w-full rounded-xl bg-zinc-400/10 px-3 py-2.5 text-sm outline-none"
+              />
+            </div>
+          ))}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={resetAll}
+            className="px-4 py-2 text-sm rounded-xl bg-zinc-400/10 hover:bg-zinc-400/20 transition"
+          >
+            মুছে ফেলুন
+          </button>
+          {examples.map((ex) => (
+            <button
+              key={ex.label}
+              onClick={() => fillExample(ex)}
+              className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-400/20 transition"
+            >
+              {ex.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Result */}
+      {result ? (
+        <div className="rounded-2xl bg-zinc-400/10 p-5 space-y-4">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <span className="inline-block px-2.5 py-0.5 text-xs rounded-full bg-zinc-400/15">
+                {result.badge}
+              </span>
+              <div className="mt-2 text-3xl font-bold tracking-tight tabular-nums">
+                {result.value}
+                <span className="text-xl opacity-70">{result.suffix}</span>
+              </div>
+            </div>
+            <button
+              onClick={copyResult}
+              className="px-4 py-2 text-sm rounded-xl bg-zinc-400/10 hover:bg-zinc-400/20 transition shrink-0"
+            >
+              {copied ? "কপি হয়েছে!" : "কপি"}
+            </button>
+          </div>
+
+          {result.extra && (
+            <span
+              className={`inline-block px-2.5 py-1 text-xs rounded-full ${extraColor[result.extra.color] || extraColor.emerald}`}
+            >
+              {result.extra.title}: {result.extra.value}
+            </span>
+          )}
+
+          <div className="border-t border-zinc-400/20 pt-4 space-y-3 text-sm">
+            <div className="flex gap-3">
+              <span className="shrink-0 w-14 text-zinc-500">সূত্র</span>
+              <code className="font-mono bg-zinc-400/10 px-2 py-0.5 rounded text-xs break-all">
+                {result.formula}
+              </code>
+            </div>
+            <div className="flex gap-3">
+              <span className="shrink-0 w-14 text-zinc-500">ব্যাখ্যা</span>
+              <span className="leading-relaxed text-zinc-600 dark:text-zinc-400">
+                {result.explanation}
+              </span>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="rounded-2xl border border-dashed border-zinc-400/30 py-12 text-center">
+          <p className="text-sm text-zinc-500">
+            উপরে সংখ্যা লিখুন — ফলাফল এখানে দেখাবে
+          </p>
+        </div>
+      )}
+
+      {/* History */}
+      {history.length > 0 && (
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-medium">সাম্প্রতিক হিসাব</h3>
+            <button
+              onClick={clearHistory}
+              className="text-xs text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+            >
+              সব মুছে ফেলুন
+            </button>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {history.map((h, i) => (
+              <span
+                key={i}
+                className="inline-flex items-center gap-2 px-2.5 py-1 text-xs rounded-full bg-zinc-400/10"
+              >
+                {h.label}
+                <span className="opacity-50">{h.time}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* SEO Content */}
+      <section className="space-y-6 pt-8 border-t border-zinc-400/20">
+        <div className="space-y-3">
+          <h2 className="text-xl font-bold">কীভাবে ব্যবহার করবেন?</h2>
+          <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+            উপরের ট্যাব থেকে আপনার প্রয়োজনীয় হিসাব বেছে নিন। ঘরে সংখ্যা লিখুন —
+            সাথে সাথে সূত্র ও সহজ বাংলা ব্যাখ্যাসহ উত্তর দেখাবে। কোনো বাটন চাপতে
+            হবে না, রেজিস্ট্রেশনও লাগবে না। ফলাফল এক ক্লিকে কপি করে নিতে পারবেন।
           </p>
         </div>
 
-        {/* Tabs - scrollable on mobile */}
-        <div className="overflow-x-auto -mx-1 px-1 pb-1">
-          <div className="flex gap-1 min-w-max">
-            {TABS.map((t) => (
-              <button
-                key={t.id}
-                onClick={() => changeTab(t.id)}
-                className={`px-3 py-2 text-xs sm:text-sm  rounded-lg whitespace-nowrap  ${
-                  tab === t.id
-                    ? "bg-indigo-500 text-white"
-                    : "bg-zinc-400/10  hover:bg-zinc-800 hover:bg-zinc-700"
-                }`}
-              >
-                {t.label}
-              </button>
-            ))}
-          </div>
+        <div className="space-y-2">
+          <h3 className="text-lg font-semibold">৯টি হিসাবের ধরন</h3>
+          <ul className="space-y-1.5 text-sm text-zinc-600 dark:text-zinc-400 list-disc list-inside">
+            <li>
+              <strong>কোনো সংখ্যার %</strong> — যেমন: ৫০০ টাকার ২০% কত?
+            </li>
+            <li>
+              <strong>কত শতাংশ?</strong> — যেমন: ২৫ হলো ১০০-এর কত শতাংশ?
+            </li>
+            <li>
+              <strong>মূল সংখ্যা বের করুন</strong> — যেমন: ৪০ টাকা যদি ২০% হয়,
+              তাহলে মূল সংখ্যা কত?
+            </li>
+            <li>
+              <strong>বাড়ান</strong> — বেতন বা দাম কত % বাড়লে নতুন মান কত হবে
+            </li>
+            <li>
+              <strong>কমান</strong> — কোনো সংখ্যা কত % কমালে কত থাকবে
+            </li>
+            <li>
+              <strong>ছাড় হিসাব</strong> — শপিংয়ে কত টাকা বাঁচবে + চূড়ান্ত দাম
+            </li>
+            <li>
+              <strong>টিপ হিসাব</strong> — রেস্টুরেন্ট বিল + টিপ মিলিয়ে মোট কত
+            </li>
+            <li>
+              <strong>মুনাফা / মার্জিন</strong> — কেনা ও বিক্রির দাম থেকে মুনাফার
+              শতাংশ
+            </li>
+            <li>
+              <strong>পার্থক্য %</strong> — দুটি সংখ্যার মধ্যে শতকরা পার্থক্য
+            </li>
+          </ul>
         </div>
 
-        {/* Input Card */}
-        <div className="rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900/50 p-4 space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {fields.map((f) => (
-              <div key={f.key} className="flex flex-col gap-2">
-                <label className="text-sm  ">{f.label}</label>
-                <input
-                  type="number"
-                  step="any"
-                  value={f.key === "value1" ? value1 : f.key === "value2" ? value2 : percent}
-                  onChange={(e) => {
-                    if (f.key === "value1") setValue1(e.target.value);
-                    else if (f.key === "value2") setValue2(e.target.value);
-                    else setPercent(e.target.value);
-                  }}
-                  placeholder={f.placeholder}
-                  className="w-full p-2 rounded-lg bg-zinc-400/10 border-none outline-none"
-                />
-              </div>
-            ))}
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2 pt-1">
-            <button
-              onClick={resetAll}
-              className="px-3 py-1.5 text-sm rounded-lg text-zinc-400 hover:text-zinc-200 dark:hover:text-zinc-300 hover:bg-zinc-900 hover:bg-zinc-800"
-            >
-              মুছে ফেলুন
-            </button>
-            {examples.map((ex) => (
-              <button
-                key={ex.label}
-                onClick={() => fillExample(ex)}
-                className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700 "
-              >
-                {ex.label}
-              </button>
-            ))}
-          </div>
+        <div className="space-y-2">
+          <h3 className="text-lg font-semibold">বাস্তব জীবনের উদাহরণ</h3>
+          <ul className="space-y-1.5 text-sm text-zinc-600 dark:text-zinc-400 list-disc list-inside">
+            <li>
+              <strong>শপিং:</strong> ২৫০০ টাকার পণ্যে ৩০% ছাড় → আপনি কত টাকা
+              দেবেন?
+            </li>
+            <li>
+              <strong>বেতন:</strong> এখন ৪০,০০০ টাকা, ১২% বাড়লে নতুন বেতন কত?
+            </li>
+            <li>
+              <strong>পরীক্ষা:</strong> ১০০-তে ৭৫ পেলে কত পারসেন্ট?
+            </li>
+            <li>
+              <strong>বিনিয়োগ:</strong> ৫০,০০০ টাকায় ১৮% লাভ হলে মোট কত?
+            </li>
+            <li>
+              <strong>রেস্টুরেন্ট:</strong> ১৮০০ টাকার বিলে ১০% টিপ কত?
+            </li>
+            <li>
+              <strong>ব্যবসা:</strong> ৮০০ টাকায় কিনে ১২০০ টাকায় বিক্রি করলে
+              মার্জিন কত?
+            </li>
+          </ul>
         </div>
 
-        {/* Result */}
-        {result ? (
-          <div className="rounded-2xl border border-emerald-500/30 dark:border-emerald-500/20 bg-zinc-950 bg-zinc-900/50 p-4 space-y-4">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <span className="inline-block px-2.5 py-0.5 text-xs  rounded-full bg-zinc-400/10 ">
-                  {result.badge}
-                </span>
-                <div className="mt-2 text-3xl  font-bold tracking-tight tabular-nums text-zinc-50 dark:text-white">
-                  {result.value}
-                  <span className="text-zinc-300 text-2xl">{result.suffix}</span>
-                </div>
-              </div>
-              <button
-                onClick={copyResult}
-                className="px-3 py-1.5 text-sm rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700 shrink-0"
-              >
-                {copied ? "কপি হয়েছে!" : "কপি"}
-              </button>
-            </div>
-
-            {result.extra && (
-              <span
-                className={`inline-block px-2.5 py-1 text-xs  rounded-full ${extraColor[result.extra.color] || extraColor.emerald}`}
-              >
-                {result.extra.title}: {result.extra.value}
-              </span>
-            )}
-
-            <div className="border-t border-zinc-400/25 pt-4 space-y-4 text-sm">
-              <div className="flex gap-4 sm:gap-4">
-                <span className=" shrink-0 w-14">সূত্র</span>
-                <code className="font-mono  bg-zinc-400/10 px-2 py-0.5 rounded text-xs sm:text-sm break-all">
-                  {result.formula}
-                </code>
-              </div>
-              <div className="flex gap-4 sm:gap-4">
-                <span className=" shrink-0 w-14">ব্যাখ্যা</span>
-                <span className=" leading-relaxed">{result.explanation}</span>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="rounded-2xl border border-dashed border-zinc-700 dark:border-zinc-700 /30 py-12 text-center">
-            <svg
-              className="mx-auto w-8 h-8 text-zinc-400 mb-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.5"
-                d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
-              />
-            </svg>
-            <p className=" text-sm">উপরে সংখ্যা লিখুন — ফলাফল এখানে দেখাবে</p>
-          </div>
-        )}
-
-        {/* History */}
-        {history.length > 0 && (
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm  ">সাম্প্রতিক হিসাব</h3>
-              <button
-                onClick={clearHistory}
-                className="text-xs text-zinc-400 hover:text-zinc-200 dark:hover:text-zinc-300"
-              >
-                সব মুছে ফেলুন
-              </button>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {history.map((h, i) => (
-                <span
-                  key={i}
-                  className="inline-flex items-center gap-2 px-2.5 py-1 text-xs rounded-full bg-zinc-400/10 "
-                >
-                  {h.label}
-                  <span className="opacity-50">{h.time}</span>
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* SEO Content */}
-        <div className="mt-16 pt-10 border-t border-zinc-400/25 space-y-8 text-sm ">
-          <div>
-            <h3 className="text-lg font-bold text-zinc-50 text-zinc-200 mb-4">কীভাবে ব্যবহার করবেন?</h3>
-            <p className="leading-relaxed">
-              উপরের ট্যাব থেকে আপনার প্রয়োজনীয় হিসাব বেছে নিন। ঘরে সংখ্যা লিখুন — সাথে সাথে সূত্র ও সহজ বাংলা
-              ব্যাখ্যাসহ উত্তর দেখাবে। কোনো বাটন চাপতে হবে না, রেজিস্ট্রেশনও লাগবে না। ফলাফল এক ক্লিকে কপি করে নিতে
-              পারবেন।
-            </p>
-          </div>
-
-          <div>
-            <h3 className="text-lg font-bold text-zinc-50 text-zinc-200 mb-4">
-              ৯টি হিসাবের ধরন (সহজ ভাষায়)
-            </h3>
-            <ul className="list-disc list-inside space-y-1.5 ml-1">
-              <li>
-                <strong>কোনো সংখ্যার %</strong> — যেমন: ৫০০ টাকার ২০% কত?
-              </li>
-              <li>
-                <strong>কত শতাংশ?</strong> — যেমন: ২৫ হলো ১০০-এর কত শতাংশ?
-              </li>
-              <li>
-                <strong>মূল সংখ্যা বের করুন</strong> — যেমন: ৪০ টাকা যদি ২০% হয়, তাহলে মূল সংখ্যা কত?
-              </li>
-              <li>
-                <strong>বাড়ান</strong> — বেতন বা দাম কত % বাড়লে নতুন মান কত হবে
-              </li>
-              <li>
-                <strong>কমান</strong> — কোনো সংখ্যা কত % কমালে কত থাকবে
-              </li>
-              <li>
-                <strong>ছাড় হিসাব</strong> — শপিংয়ে কত টাকা বাঁচবে + চূড়ান্ত দাম
-              </li>
-              <li>
-                <strong>টিপ হিসাব</strong> — রেস্টুরেন্ট বিল + টিপ মিলিয়ে মোট কত
-              </li>
-              <li>
-                <strong>মুনাফা / মার্জিন</strong> — কেনা ও বিক্রির দাম থেকে মুনাফার শতাংশ
-              </li>
-              <li>
-                <strong>পার্থক্য %</strong> — দুটি সংখ্যার মধ্যে শতকরা পার্থক্য
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-lg font-bold text-zinc-50 text-zinc-200 mb-4">বাস্তব জীবনের উদাহরণ</h3>
-            <ul className="list-disc list-inside space-y-1.5 ml-1">
-              <li>
-                <strong>শপিং:</strong> ২৫০০ টাকার পণ্যে ৩০% ছাড় → আপনি কত টাকা দেবেন?
-              </li>
-              <li>
-                <strong>বেতন:</strong> এখন ৪০,০০০ টাকা, ১২% বাড়লে নতুন বেতন কত?
-              </li>
-              <li>
-                <strong>পরীক্ষা:</strong> ১০০-তে ৭৫ পেলে কত পারসেন্ট?
-              </li>
-              <li>
-                <strong>বিনিয়োগ:</strong> ৫০,০০০ টাকায় ১৮% লাভ হলে মোট কত?
-              </li>
-              <li>
-                <strong>রেস্টুরেন্ট:</strong> ১৮০০ টাকার বিলে ১০% টিপ কত?
-              </li>
-              <li>
-                <strong>ব্যবসা:</strong> ৮০০ টাকায় কিনে ১২০০ টাকায় বিক্রি করলে মার্জিন কত?
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-lg font-bold text-zinc-50 text-zinc-200 mb-4">মূল সূত্রগুলো মনে রাখুন</h3>
-            <ul className="list-disc list-inside space-y-1 ml-1 font-mono text-xs sm:text-sm">
-              <li>কোনো সংখ্যার % = (শতকরা ÷ ১০০) × মূল সংখ্যা</li>
-              <li>কত শতাংশ = (ছোট সংখ্যা ÷ বড় সংখ্যা) × ১০০</li>
-              <li>মূল সংখ্যা = (জানা মান × ১০০) ÷ শতকরা</li>
-              <li>বাড়ানো = মূল + (মূল × শতকরা ÷ ১০০)</li>
-              <li>কমানো / ছাড় = মূল − (মূল × শতকরা ÷ ১০০)</li>
-              <li>মার্জিন % = (বিক্রি − কেনা) ÷ কেনা × ১০০</li>
-              <li>পার্থক্য % = |A − B| ÷ ((A + B) ÷ ২) × ১০০</li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-lg font-bold text-zinc-50 text-zinc-200 mb-4">সচরাচর জিজ্ঞাসা (FAQ)</h3>
-            <div className="space-y-4">
-              <div>
-                <strong className="text-zinc-50 text-zinc-200">
-                  পার্সেন্টেজ আর পারসেন্টেজ পয়েন্টের পার্থক্য কী?
-                </strong>
-                <p className="mt-1 ">
-                  ১০% থেকে ১৫% হলে পারসেন্টেজ পয়েন্ট বেড়েছে ৫, কিন্তু আপেক্ষিক বৃদ্ধি ৫০%।
-                </p>
-              </div>
-              <div>
-                <strong className="text-zinc-50 text-zinc-200">মূল সংখ্যা বের করা কখন লাগে?</strong>
-                <p className="mt-1 ">
-                  যখন আপনি জানেন “৪০ টাকা হলো ২০%”, তখন মূল সংখ্যা বের করতে এই টুল ব্যবহার করুন।
-                </p>
-              </div>
-              <div>
-                <strong className="text-zinc-50 text-zinc-200">মার্জিন আর মার্কআপ কি একই?</strong>
-                <p className="mt-1 ">
-                  না। মার্জিন = মুনাফা ÷ বিক্রির দাম, মার্কআপ = মুনাফা ÷ কেনার দাম। এই ক্যালকুলেটরে কেনার দামের উপর
-                  ভিত্তি করে (মার্কআপ স্টাইল) দেখানো হয়।
-                </p>
-              </div>
-            </div>
-          </div>
+        <div className="space-y-2">
+          <h3 className="text-lg font-semibold">মূল সূত্রগুলো মনে রাখুন</h3>
+          <ul className="space-y-1 text-sm text-zinc-600 dark:text-zinc-400 list-disc list-inside font-mono text-xs sm:text-sm">
+            <li>কোনো সংখ্যার % = (শতকরা ÷ ১০০) × মূল সংখ্যা</li>
+            <li>কত শতাংশ = (ছোট সংখ্যা ÷ বড় সংখ্যা) × ১০০</li>
+            <li>মূল সংখ্যা = (জানা মান × ১০০) ÷ শতকরা</li>
+            <li>বাড়ানো = মূল + (মূল × শতকরা ÷ ১০০)</li>
+            <li>কমানো / ছাড় = মূল − (মূল × শতকরা ÷ ১০০)</li>
+            <li>মার্জিন % = (বিক্রি − কেনা) ÷ কেনা × ১০০</li>
+            <li>পার্থক্য % = |A − B| ÷ ((A + B) ÷ ২) × ১০০</li>
+          </ul>
         </div>
-      </div>
+      </section>
     </section>
   );
 }

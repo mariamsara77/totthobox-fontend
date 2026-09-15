@@ -2,9 +2,7 @@
 
 import type { SaveFormat } from "./practiceClient";
 
-/* -------------------------------------------------------------------------- */
-/*  Clear Modal                                                               */
-/* -------------------------------------------------------------------------- */
+/* Clear Modal */
 interface ClearModalProps {
   open: boolean;
   onClose: () => void;
@@ -17,13 +15,13 @@ export function ClearModal({ open, onClose, onConfirm }: ClearModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative bg-zinc-950 bg-zinc-900 rounded-2xl p-4 max-w-sm w-full shadow-2xl space-y-4">
+      <div className="relative bg-zinc-200 dark:bg-zinc-900 rounded-2xl p-5 max-w-sm w-full shadow-2xl space-y-4">
         <div>
-          <h2 className="text-lg ">ক্যানভাস মুছে ফেলবেন?</h2>
-          <p className="mt-2 text-sm ">
+          <h2 className="text-lg font-semibold">ক্যানভাস মুছে ফেলবেন?</h2>
+          <p className="mt-2 text-sm">
             সব অঙ্কন মুছে যাবে। এই কাজটি পূর্বাবস্থায় ফেরানো যাবে না।
           </p>
         </div>
@@ -31,14 +29,14 @@ export function ClearModal({ open, onClose, onConfirm }: ClearModalProps) {
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-sm rounded-lg hover:bg-zinc-900 hover:bg-zinc-800 transition"
+            className="px-4 py-2 text-sm rounded-xl bg-zinc-400/10 hover:bg-zinc-400/20 transition"
           >
             বাতিল
           </button>
           <button
             type="button"
             onClick={onConfirm}
-            className="px-4 py-2 text-sm rounded-lg bg-red-600 text-white hover:bg-red-700 transition"
+            className="px-4 py-2 text-sm rounded-xl bg-rose-600 text-white hover:bg-rose-700 transition"
           >
             মুছে ফেলুন
           </button>
@@ -48,9 +46,7 @@ export function ClearModal({ open, onClose, onConfirm }: ClearModalProps) {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Save Modal                                                                */
-/* -------------------------------------------------------------------------- */
+/* Save Modal */
 interface SaveModalProps {
   open: boolean;
   onClose: () => void;
@@ -79,28 +75,28 @@ export function SaveModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative bg-zinc-950 bg-zinc-900 rounded-2xl p-4 max-w-sm w-full shadow-2xl space-y-5">
-        <h2 className="text-lg ">সংরক্ষণ অপশন</h2>
+      <div className="relative bg-zinc-200 dark:bg-zinc-900 rounded-2xl p-5 max-w-sm w-full shadow-2xl space-y-5">
+        <h2 className="text-lg font-semibold">সংরক্ষণ অপশন</h2>
 
-        <div>
-          <label className="block text-sm  mb-1.5">ফাইলের নাম</label>
+        <div className="space-y-1.5">
+          <label className="block text-sm text-zinc-400">ফাইলের নাম</label>
           <input
             type="text"
             value={fileName}
             onChange={(e) => onFileNameChange(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg border border-zinc-700 dark:border-zinc-600 bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2.5 rounded-xl bg-zinc-400/10 outline-none text-sm"
           />
         </div>
 
-        <div>
-          <label className="block text-sm  mb-1.5">ফরম্যাট</label>
+        <div className="space-y-1.5">
+          <label className="block text-sm text-zinc-400">ফরম্যাট</label>
           <select
             value={saveFormat}
             onChange={(e) => onFormatChange(e.target.value as SaveFormat)}
-            className="w-full px-3 py-2 rounded-lg border border-zinc-700 dark:border-zinc-600 bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2.5 rounded-xl bg-zinc-400/10 outline-none text-sm"
           >
             <option value="png">PNG (উচ্চ মান)</option>
             <option value="jpeg">JPEG (ছোট সাইজ)</option>
@@ -109,29 +105,29 @@ export function SaveModal({
         </div>
 
         {saveFormat === "png" && (
-          <label className="flex items-center gap-4 cursor-pointer select-none">
+          <label className="flex items-center gap-3 cursor-pointer select-none">
             <input
               type="checkbox"
               checked={transparentBg}
               onChange={(e) => onTransparentChange(e.target.checked)}
-              className="size-4 rounded accent-blue-600"
+              className="size-4 rounded"
             />
             <span className="text-sm">স্বচ্ছ ব্যাকগ্রাউন্ড</span>
           </label>
         )}
 
-        <div className="flex gap-2 justify-end pt-2">
+        <div className="flex gap-2 justify-end pt-1">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-sm rounded-lg hover:bg-zinc-900 hover:bg-zinc-800 transition"
+            className="px-4 py-2 text-sm rounded-xl bg-zinc-400/10 hover:bg-zinc-400/20 transition"
           >
             বাতিল
           </button>
           <button
             type="button"
             onClick={onSave}
-            className="px-4 py-2 text-sm rounded-lg bg-zinc-700 text-white hover:bg-zinc-600 transition"
+            className="px-4 py-2 text-sm rounded-xl bg-zinc-700 text-white hover:bg-zinc-600 transition"
           >
             সংরক্ষণ করুন
           </button>
@@ -141,9 +137,7 @@ export function SaveModal({
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Help Modal                                                                */
-/* -------------------------------------------------------------------------- */
+/* Help Modal */
 interface HelpModalProps {
   open: boolean;
   onClose: () => void;
@@ -153,10 +147,10 @@ export function HelpModal({ open, onClose }: HelpModalProps) {
   if (!open) return null;
 
   const shortcuts = [
-    { label: "Undo", key: "Ctrl + Z" },
-    { label: "Redo", key: "Ctrl + Y" },
-    { label: "Save", key: "Ctrl + S" },
-    { label: "Clear", key: "Ctrl + Del" },
+    { label: "আনডু", key: "Ctrl + Z" },
+    { label: "রিডু", key: "Ctrl + Y" },
+    { label: "সংরক্ষণ", key: "Ctrl + S" },
+    { label: "মুছুন", key: "Ctrl + Del" },
     { label: "টুল পরিবর্তন", key: "E" },
     { label: "সেটিংস", key: "S" },
   ];
@@ -164,22 +158,22 @@ export function HelpModal({ open, onClose }: HelpModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative bg-zinc-950 bg-zinc-900 rounded-2xl p-4 max-w-lg w-full shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-        <h2 className="text-lg ">সহায়তা ও শর্টকাট</h2>
+      <div className="relative bg-zinc-200 dark:bg-zinc-900 rounded-2xl p-5 max-w-lg w-full shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
+        <h2 className="text-lg font-semibold">সহায়তা ও শর্টকাট</h2>
 
         <div>
-          <h3 className="text-sm  mb-4">কীবোর্ড শর্টকাট</h3>
+          <h3 className="text-sm font-medium mb-3">কীবোর্ড শর্টকাট</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {shortcuts.map((item) => (
               <div
                 key={item.label}
-                className="flex items-center justify-between p-2 rounded-lg bg-zinc-400/10"
+                className="flex items-center justify-between p-2.5 rounded-xl bg-zinc-400/10"
               >
                 <span className="text-sm">{item.label}</span>
-                <span className="text-xs font-mono px-2 py-0.5 rounded bg-zinc-400/10">
+                <span className="text-xs font-mono px-2 py-0.5 rounded bg-zinc-400/15">
                   {item.key}
                 </span>
               </div>
@@ -188,9 +182,11 @@ export function HelpModal({ open, onClose }: HelpModalProps) {
         </div>
 
         <div>
-          <h3 className="text-sm  mb-4">টিপস</h3>
-          <div className="space-y-2.5 text-sm ">
-            <p>• লেখার গাইড হিসেবে সেটিংস থেকে প্র্যাকটিস ক্যারেক্টার বেছে নিন।</p>
+          <h3 className="text-sm font-medium mb-3">টিপস</h3>
+          <div className="space-y-2 text-sm text-zinc-400">
+            <p>
+              • লেখার গাইড হিসেবে সেটিংস থেকে প্র্যাকটিস ক্যারেক্টার বেছে নিন।
+            </p>
             <p>• বিভিন্ন পেপার স্টাইল দিয়ে আলাদা লেখার অভিজ্ঞতা নিন।</p>
             <p>• গাইড অক্ষরের উপর ট্রেস করতে Opacity কমিয়ে নিন।</p>
             <p>• স্টাইলাস ব্যবহার করলে Pressure Sensitivity চালু করুন।</p>
@@ -203,7 +199,7 @@ export function HelpModal({ open, onClose }: HelpModalProps) {
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-sm rounded-lg bg-zinc-700 text-white hover:bg-zinc-600 transition"
+            className="px-4 py-2 text-sm rounded-xl bg-zinc-700 text-white hover:bg-zinc-600 transition"
           >
             বুঝেছি!
           </button>

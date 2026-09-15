@@ -474,45 +474,45 @@ export default function ImageResizer() {
     <section className="w-full">
       <div className="space-y-4">
         {/* Header */}
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl tracking-tight ">
-              ইমেজ স্টুডিও
-            </h1>
-            <p className="text-sm  mt-0.5">
-              ক্রপ · রিসাইজ · কম্প্রেস
-            </p>
-          </div>
+<div className="flex items-start justify-between gap-4">
+  <div className="space-y-1">
+    <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+      ইমেজ স্টুডিও
+    </h1>
+    <p className="text-sm text-zinc-600 dark:text-zinc-400">
+      ক্রপ · রিসাইজ · কম্প্রেস · ফরম্যাট কনভার্ট
+    </p>
+  </div>
 
-          {imageSrc && (
-            <div className="flex items-center gap-2">
-              <button
-                onClick={resetAll}
-                className="px-3 py-1.5 text-sm rounded-lg hover:bg-zinc-400/25 "
-              >
-                রিসেট
-              </button>
-              <label className="cursor-pointer">
-                <span className="px-3 py-1.5 text-sm rounded-lg hover:bg-zinc-400/25  inline-block">
-                  বদলান
-                </span>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={onFileChange}
-                  className="hidden"
-                />
-              </label>
-              <button
-                onClick={removeImage}
-                className="px-3 py-1.5 text-sm rounded-lg hover:bg-rose-500/10 text-rose-500"
-              >
-                মুছুন
-              </button>
-            </div>
-          )}
-        </div>
+  {imageSrc && (
+    <div className="flex items-center gap-2 shrink-0">
+      <button
+        onClick={resetAll}
+        className="px-3 py-1.5 text-sm rounded-xl bg-zinc-400/10 hover:bg-zinc-400/20 transition"
+      >
+        রিসেট
+      </button>
+      <label className="cursor-pointer">
+        <span className="px-3 py-1.5 text-sm rounded-xl bg-zinc-400/10 hover:bg-zinc-400/20 transition inline-block">
+          বদলান
+        </span>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={onFileChange}
+          className="hidden"
+        />
+      </label>
+      <button
+        onClick={removeImage}
+        className="px-3 py-1.5 text-sm rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 transition"
+      >
+        মুছুন
+      </button>
+    </div>
+  )}
+</div>
 
         {/* Error */}
         {error && (
@@ -534,28 +534,28 @@ export default function ImageResizer() {
 
         {!imageSrc ? (
           /* ========== EMPTY STATE ========== */
-          <div
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={onDrop}
-            onClick={() => fileInputRef.current?.click()}
-            className="border-2 border-dashed border-zinc-400/25 rounded-2xl p-4 text-center cursor-pointer hover:border-zinc-400/50  bg-zinc-400/10"
-          >
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={onFileChange}
-              className="hidden"
-            />
-            <div className="mx-auto size-14 rounded-2xl bg-zinc-400/10 flex items-center justify-center  shadow-indigo-500/25 mb-4">
-              <svg className="w-7 h-7 " fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-              </svg>
-            </div>
-            <p className="text-base">ইমেজ আপলোড করুন</p>
-            <p className="text-sm">ড্র্যাগ করে ছাড়ুন অথবা ক্লিক করুন</p>
-            <p className="text-xs opacity-50 mt-3">JPG · PNG · WebP · GIF · সর্বোচ্চ ৩০MB</p>
-          </div>
+         <div
+  onDragOver={(e) => e.preventDefault()}
+  onDrop={onDrop}
+  onClick={() => fileInputRef.current?.click()}
+  className="border-2 border-dashed border-zinc-400/30 rounded-2xl p-10 text-center cursor-pointer hover:border-zinc-400/50 hover:bg-zinc-400/5 transition bg-zinc-400/5"
+>
+  <input
+    ref={fileInputRef}
+    type="file"
+    accept="image/*"
+    onChange={onFileChange}
+    className="hidden"
+  />
+  <div className="mx-auto size-14 rounded-2xl bg-zinc-400/10 flex items-center justify-center mb-4">
+    <svg className="w-7 h-7 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+    </svg>
+  </div>
+  <p className="text-base font-medium">ইমেজ আপলোড করুন</p>
+  <p className="text-sm text-zinc-500 mt-1">ড্র্যাগ করে ছাড়ুন অথবা ক্লিক করুন</p>
+  <p className="text-xs opacity-50 mt-3">JPG · PNG · WebP · GIF · সর্বোচ্চ ৩০MB</p>
+</div>
         ) : (
           /* ========== EDITOR ========== */
           <div className="space-y-5">
@@ -850,111 +850,91 @@ export default function ImageResizer() {
               </div>
 
               {/* Download bar */}
-              <div className="px-4 pb-4">
-                <div className="flex items-center gap-2">
-                  <div className="flex-1 grid grid-cols-3 gap-0.5 rounded-xl overflow-hidden border border-zinc-400/25 dark:border-zinc-700">
-                    {FORMATS.map((f) => (
-                      <button
-                        key={f.value}
-                        onClick={() => setFormat(f.value)}
-                        className={`py-2 text-xs  ${
-                          format === f.value
-                            ? "bg-indigo-500 "
-                            : "bg-zinc-400/10 "
-                        }`}
-                      >
-                        {f.label}
-                      </button>
-                    ))}
-                  </div>
+<div className="px-4 pb-4">
+  <div className="flex items-center gap-2">
+    <div className="flex-1 grid grid-cols-3 gap-0.5 rounded-xl overflow-hidden bg-zinc-400/10">
+      {FORMATS.map((f) => (
+        <button
+          key={f.value}
+          onClick={() => setFormat(f.value)}
+          className={`py-2.5 text-xs font-medium transition ${
+            format === f.value
+              ? "bg-zinc-700 text-white"
+              : "hover:bg-zinc-400/20"
+          }`}
+        >
+          {f.label}
+        </button>
+      ))}
+    </div>
 
-                  <button
-                    onClick={download}
-                    disabled={!previewUrl || isProcessing}
-                    className="shrink-0 px-5 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-600 disabled:opacity-50  text-sm  flex items-center gap-2"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                    </svg>
-                    ডাউনলোড
-                    {compressedSize > 0 && (
-                      <span className="opacity-80 text-xs">{formatBytes(compressedSize)}</span>
-                    )}
-                  </button>
-                </div>
+    <button
+      onClick={download}
+      disabled={!previewUrl || isProcessing}
+      className="shrink-0 px-5 py-2.5 rounded-xl bg-zinc-700 hover:bg-zinc-600 disabled:opacity-50 text-white text-sm font-medium flex items-center gap-2 transition"
+    >
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+      </svg>
+      ডাউনলোড
+      {compressedSize > 0 && (
+        <span className="opacity-80 text-xs">{formatBytes(compressedSize)}</span>
+      )}
+    </button>
+  </div>
 
-                {savings > 0 && (
-                  <p className="text-center text-xs  mt-2 ">
-                    মূল ফাইলের চেয়ে {savings}% ছোট
-                  </p>
-                )}
-              </div>
+  {savings > 0 && (
+    <p className="text-center text-xs text-zinc-500 mt-2">
+      মূল ফাইলের চেয়ে {savings}% ছোট
+    </p>
+  )}
+</div>
             </div>
           </div>
         )}
 
         {/* Instructions */}
-        <div className="mt-16 pt-10 border-t border-zinc-400/25 space-y-4 text-sm ">
-          <div className="text-center mb-10">
-            <h2 className="text-xl  font-bold  tracking-tight">
-              সিভি ও চাকরির আবেদনের জন্য পারফেক্ট ছবি তৈরি করুন
-            </h2>
-            <p className="mt-2 text-sm  max-w-2xl mx-auto">
-              যেকোনো ওয়েবসাইটে ছবি আপলোডের নির্দিষ্ট শর্ত (রেজুলেশন, ফাইল সাইজ ও ফরম্যাট) এখন পূরণ করুন সহজেই।
-            </p>
-          </div>
+<section className="mt-12 pt-8 border-t border-zinc-400/20 space-y-6">
+  <div className="text-center space-y-2">
+    <h2 className="text-xl font-bold">
+      সিভি ও চাকরির আবেদনের জন্য পারফেক্ট ছবি তৈরি করুন
+    </h2>
+    <p className="text-sm text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">
+      যেকোনো ওয়েবসাইটে ছবি আপলোডের নির্দিষ্ট শর্ত (রেজুলেশন, ফাইল সাইজ ও ফরম্যাট) এখন পূরণ করুন সহজেই।
+    </p>
+  </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="rounded-xl border border-zinc-400/25 p-4">
-              <h3 className="font-bold text-zinc-50 text-zinc-200 mb-2">সরকারি চাকরির আবেদন</h3>
-              <p className="text-sm">
-                টেলিটক বা বিপিএসসি ফর্মে ছবির নির্দিষ্ট মাপ <strong>৩০০×৩০০ পিক্সেল</strong> (সর্বোচ্চ ১০০KB) এবং
-                স্বাক্ষরের মাপ <strong>৩০০×৮০ পিক্সেল</strong> সহজেই সেট করুন।
-              </p>
-            </div>
-            <div className="rounded-xl border border-zinc-400/25 p-4">
-              <h3 className="font-bold text-zinc-50 text-zinc-200 mb-2">সিভি ও পোর্টফোলিও</h3>
-              <p className="text-sm">
-                প্রফেশনাল সিভি বা LinkedIn প্রোফাইলের জন্য ছবিকে <strong>১:১ (স্কয়ার)</strong> রেশিওতে ক্রপ করুন এক
-                ক্লিকেই।
-              </p>
-            </div>
-            <div className="rounded-xl border border-zinc-400/25 p-4">
-              <h3 className="font-bold text-zinc-50 text-zinc-200 mb-2">ফাইল সাইজ কমানো</h3>
-              <p className="text-sm">
-                ছবির কোয়ালিটি ঠিক রেখে ফাইলের সাইজ (KB/MB) কমান। ভিসা ফর্ম বা ভার্সিটি অ্যাডমিশনে সাইজ লিমিট নিয়ে আর চিন্তা
-                নেই।
-              </p>
-            </div>
-          </div>
+  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div className="rounded-2xl bg-zinc-400/10 p-4 space-y-2">
+      <h3 className="font-semibold">সরকারি চাকরির আবেদন</h3>
+      <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        টেলিটক বা বিপিএসসি ফর্মে ছবির নির্দিষ্ট মাপ <strong>৩০০×৩০০ পিক্সেল</strong> (সর্বোচ্চ ১০০KB) এবং স্বাক্ষরের মাপ <strong>৩০০×৮০ পিক্সেল</strong> সহজেই সেট করুন।
+      </p>
+    </div>
+    <div className="rounded-2xl bg-zinc-400/10 p-4 space-y-2">
+      <h3 className="font-semibold">সিভি ও পোর্টফোলিও</h3>
+      <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        প্রফেশনাল সিভি বা LinkedIn প্রোফাইলের জন্য ছবিকে <strong>১:১ (স্কয়ার)</strong> রেশিওতে ক্রপ করুন এক ক্লিকেই।
+      </p>
+    </div>
+    <div className="rounded-2xl bg-zinc-400/10 p-4 space-y-2">
+      <h3 className="font-semibold">ফাইল সাইজ কমানো</h3>
+      <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        ছবির কোয়ালিটি ঠিক রেখে ফাইলের সাইজ (KB/MB) কমান। ভিসা ফর্ম বা ভার্সিটি অ্যাডমিশনে সাইজ লিমিট নিয়ে আর চিন্তা নেই।
+      </p>
+    </div>
+  </div>
 
-          <div>
-            <h3 className="text-lg font-bold text-zinc-50 text-zinc-200 mb-4 flex items-center gap-2">
-              <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              কীভাবে ব্যবহার করবেন?
-            </h3>
-            <ul className="list-disc list-inside space-y-2 ml-1">
-              <li>
-                <strong>ছবি আপলোড:</strong> মোবাইল বা কম্পিউটার থেকে ছবি সিলেক্ট করুন বা ড্র্যাগ করুন।
-              </li>
-              <li>
-                <strong>ক্রপ (ঐচ্ছিক):</strong> রেশিও বাটন চেপে ড্র্যাগ করে অপ্রয়োজনীয় অংশ কেটে দিন।
-              </li>
-              <li>
-                <strong>পিক্সেল সেট:</strong> রিসাইজ বক্সে প্রস্থ ও উচ্চতা দিন (যেমন ৩০০×৩০০)।
-              </li>
-              <li>
-                <strong>কোয়ালিটি ও ফরম্যাট:</strong> স্লাইডার দিয়ে সাইজ কমান এবং JPG/PNG/WebP বেছে ডাউনলোড করুন।
-              </li>
-            </ul>
-          </div>
-        </div>
+  <div className="space-y-3">
+    <h3 className="text-lg font-bold">কীভাবে ব্যবহার করবেন?</h3>
+    <ul className="space-y-2 text-sm text-zinc-600 dark:text-zinc-400 list-disc list-inside">
+      <li><strong>ছবি আপলোড:</strong> মোবাইল বা কম্পিউটার থেকে ছবি সিলেক্ট করুন বা ড্র্যাগ করুন।</li>
+      <li><strong>ক্রপ (ঐচ্ছিক):</strong> রেশিও বাটন চেপে ড্র্যাগ করে অপ্রয়োজনীয় অংশ কেটে দিন।</li>
+      <li><strong>পিক্সেল সেট:</strong> রিসাইজ বক্সে প্রস্থ ও উচ্চতা দিন (যেমন ৩০০×৩০০)।</li>
+      <li><strong>কোয়ালিটি ও ফরম্যাট:</strong> স্লাইডার দিয়ে সাইজ কমান এবং JPG/PNG/WebP বেছে ডাউনলোড করুন।</li>
+    </ul>
+  </div>
+</section>
       </div>
     </section>
   );

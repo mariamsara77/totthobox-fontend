@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import useSWRInfinite from "swr/infinite";
 import {
@@ -12,12 +12,12 @@ import {
   ShieldCheck,
   Heart,
   Flame,
-  ChevronDown,
   Loader2,
+  X,
 } from "lucide-react";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
-
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 type Category = {
@@ -58,18 +58,20 @@ export default function ContactClient({ category }: Props) {
   const [thanaId, setThanaId] = useState("");
   const [types, setTypes] = useState<string[]>([]);
 
-  const [divisions, setDivisions] = useState<{ id: number; name: string }[]>([]);
-  const [districts, setDistricts] = useState<{ id: number; name: string }[]>([]);
+  const [divisions, setDivisions] = useState<{ id: number; name: string }[]>(
+    [],
+  );
+  const [districts, setDistricts] = useState<{ id: number; name: string }[]>(
+    [],
+  );
   const [thanas, setThanas] = useState<{ id: number; name: string }[]>([]);
   const [contactTypes, setContactTypes] = useState<string[]>([]);
 
-  // Debounce search
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(search), 350);
     return () => clearTimeout(t);
   }, [search]);
 
-  // Load divisions + types
   useEffect(() => {
     fetch(`${API_BASE}/api/contacts/divisions`)
       .then((r) => r.json())
@@ -80,7 +82,6 @@ export default function ContactClient({ category }: Props) {
       .then((j) => setContactTypes(j.data || []));
   }, [category.id]);
 
-  // Load districts when division changes
   useEffect(() => {
     setDistrictId("");
     setThanaId("");
@@ -94,7 +95,6 @@ export default function ContactClient({ category }: Props) {
       .then((j) => setDistricts(j.data || []));
   }, [divisionId]);
 
-  // Load thanas when district changes
   useEffect(() => {
     setThanaId("");
     if (!districtId) {
@@ -106,7 +106,7 @@ export default function ContactClient({ category }: Props) {
       .then((j) => setThanas(j.data || []));
   }, [districtId]);
 
-  // Update URL when search changes (for SEO)
+  // Update URL for SEO
   useEffect(() => {
     const params = new URLSearchParams();
     if (debouncedSearch) params.set("search", debouncedSearch);
@@ -130,10 +130,14 @@ export default function ContactClient({ category }: Props) {
     return `${API_BASE}/api/contacts?${params.toString()}`;
   };
 
-  const { data, size, setSize, isValidating, error } = useSWRInfinite(getKey, fetcher, {
-    revalidateFirstPage: false,
-    revalidateOnFocus: false,
-  });
+  const { data, size, setSize, isValidating, error } = useSWRInfinite(
+    getKey,
+    fetcher,
+    {
+      revalidateFirstPage: false,
+      revalidateOnFocus: false,
+    },
+  );
 
   const contacts: Contact[] = data ? data.flatMap((p) => p.data || []) : [];
   const hasMore = data?.[data.length - 1]?.meta?.has_more ?? false;
@@ -145,8 +149,10 @@ export default function ContactClient({ category }: Props) {
   }, [debouncedSearch, divisionId, districtId, thanaId, types, setSize]);
 
   // Dynamic H1
-  const divisionName = divisions.find((d) => String(d.id) === divisionId)?.name || "";
-  const districtName = districts.find((d) => String(d.id) === districtId)?.name || "";
+  const divisionName =
+    divisions.find((d) => String(d.id) === divisionId)?.name || "";
+  const districtName =
+    districts.find((d) => String(d.id) === districtId)?.name || "";
   const thanaName = thanas.find((t) => String(t.id) === thanaId)?.name || "";
 
   let h1 = `জরুরী ${category.name} ফোন নাম্বার`;
@@ -166,16 +172,35 @@ export default function ContactClient({ category }: Props) {
     sub = "বিভাগভিত্তিক জরুরী যোগাযোগ";
   }
 
+  const hasFilters = !!(
+    search ||
+    divisionId ||
+    districtId ||
+    thanaId ||
+    types.length
+  );
+
+  const resetFilters = () => {
+    setSearch("");
+    setDivisionId("");
+    setDistrictId("");
+    setThanaId("");
+    setTypes([]);
+  };
+
   const toggleType = (type: string) => {
     setTypes((prev) =>
-      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
+      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type],
     );
   };
 
   const getIcon = () => {
-    if (category.name === "পুলিশ") return <ShieldCheck className="w-6 h-6 text-white" />;
-    if (category.name === "হাসপাতাল") return <Heart className="w-6 h-6 text-white" />;
-    if (category.name === "ফায়ার সার্ভিস") return <Flame className="w-6 h-6 text-white" />;
+    if (category.name === "পুলিশ")
+      return <ShieldCheck className="w-6 h-6 text-white" />;
+    if (category.name === "হাসপাতাল")
+      return <Heart className="w-6 h-6 text-white" />;
+    if (category.name === "ফায়ার সার্ভিস")
+      return <Flame className="w-6 h-6 text-white" />;
     return <Phone className="w-6 h-6 text-white" />;
   };
 
@@ -203,33 +228,43 @@ export default function ContactClient({ category }: Props) {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-4 p-4 sm:p-6 pb-20">
+    <div className="max-w-2xl mx-auto space-y-8 px-4 py-6 sm:py-8 pb-20">
       {/* Header */}
-      <header className="text-center space-y-1">
-        <h1 className="text-2xl  font-bold tracking-tight text-zinc-50 text-zinc-100">
-          {h1}
-        </h1>
-        <p className="text-base ">{sub}</p>
+      <header className="space-y-2 text-center">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{h1}</h1>
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">{sub}</p>
       </header>
 
       {/* Filters */}
-      <nav className="bg-zinc-950 bg-zinc-800 rounded-xl p-4  border border-zinc-400/20 space-y-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+      <div className="space-y-3">
+        <div className="flex gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 opacity-50" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="নাম বা ঠিকানা দিয়ে খুঁজুন..."
-              className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-zinc-400/25  text-sm focus:outline-none focus:ring-2 focus:ring-zinc-400"
+              className="w-full pl-10 pr-4 py-3 rounded-xl bg-zinc-400/10 text-sm outline-none hover:bg-zinc-400/15 transition"
             />
           </div>
 
+          {hasFilters && (
+            <button
+              onClick={resetFilters}
+              className="px-3.5 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/20 transition"
+              title="ফিল্টার মুছুন"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
           <select
             value={divisionId}
             onChange={(e) => setDivisionId(e.target.value)}
-            className="w-full px-3 py-2.5 rounded-lg border border-zinc-400/25  text-sm focus:outline-none focus:ring-2 focus:ring-zinc-400"
+            className="rounded-xl bg-zinc-400/10 text-sm px-3 py-2.5 outline-none"
           >
             <option value="">সব বিভাগ</option>
             {divisions.map((d) => (
@@ -243,7 +278,7 @@ export default function ContactClient({ category }: Props) {
             value={districtId}
             onChange={(e) => setDistrictId(e.target.value)}
             disabled={!divisionId}
-            className="w-full px-3 py-2.5 rounded-lg border border-zinc-400/25  text-sm focus:outline-none focus:ring-2 focus:ring-zinc-400 disabled:opacity-50"
+            className="rounded-xl bg-zinc-400/10 text-sm px-3 py-2.5 outline-none disabled:opacity-50"
           >
             <option value="">সব জেলা</option>
             {districts.map((d) => (
@@ -257,7 +292,7 @@ export default function ContactClient({ category }: Props) {
             value={thanaId}
             onChange={(e) => setThanaId(e.target.value)}
             disabled={!districtId}
-            className="w-full px-3 py-2.5 rounded-lg border border-zinc-400/25  text-sm focus:outline-none focus:ring-2 focus:ring-zinc-400 disabled:opacity-50"
+            className="rounded-xl bg-zinc-400/10 text-sm px-3 py-2.5 outline-none disabled:opacity-50"
           >
             <option value="">সব থানা</option>
             {thanas.map((t) => (
@@ -269,13 +304,13 @@ export default function ContactClient({ category }: Props) {
         </div>
 
         {contactTypes.length > 0 && (
-          <div className="pt-3 border-t border-zinc-400/20">
-            <p className="text-xs  text-zinc-400 mb-2">ধরণ অনুযায়ী ফিল্টার</p>
+          <div className="pt-2">
+            <p className="text-xs text-zinc-500 mb-2">ধরণ অনুযায়ী ফিল্টার</p>
             <div className="flex flex-wrap gap-2">
               {contactTypes.map((type) => (
                 <label
                   key={type}
-                  className="inline-flex items-center gap-2 text-sm cursor-pointer"
+                  className="inline-flex items-center gap-2 text-sm cursor-pointer px-3 py-1.5 rounded-lg bg-zinc-400/10 hover:bg-zinc-400/15 transition"
                 >
                   <input
                     type="checkbox"
@@ -289,23 +324,41 @@ export default function ContactClient({ category }: Props) {
             </div>
           </div>
         )}
-      </nav>
+      </div>
 
       {/* Count */}
-      <p className="text-sm text-zinc-400">
-        মোট {total.toLocaleString("bn-BD")}টি ফলাফল পাওয়া গেছে
-      </p>
+      {!isLoading && (
+        <p className="text-xs text-zinc-500">
+          মোট {total.toLocaleString("bn-BD")}টি ফলাফল পাওয়া গেছে
+        </p>
+      )}
 
       {/* List */}
-      <section className="space-y-4">
+      <section className="space-y-3">
         {isLoading ? (
-          <div className="flex justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-zinc-400" />
+          <div className="space-y-3">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div
+                key={i}
+                className="rounded-2xl bg-zinc-400/10 p-4 animate-pulse"
+              >
+                <div className="flex gap-4">
+                  <div className="w-12 h-12 rounded-full bg-zinc-400/15" />
+                  <div className="flex-1 space-y-2.5 pt-1">
+                    <div className="h-4 w-3/4 rounded bg-zinc-400/15" />
+                    <div className="h-3 w-1/2 rounded bg-zinc-400/15" />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : contacts.length === 0 ? (
-          <div className="text-center py-16 text-zinc-400">
-            <p className="text-lg ">কোনো নম্বর পাওয়া যায়নি</p>
-            <p className="text-sm mt-1">অন্য ফিল্টার দিয়ে চেষ্টা করুন</p>
+          <div className="text-center py-16 rounded-2xl bg-zinc-400/5">
+            <Phone className="w-10 h-10 mx-auto opacity-40 mb-3" />
+            <p className="text-base font-medium">কোনো নম্বর পাওয়া যায়নি</p>
+            <p className="text-sm text-zinc-500 mt-1">
+              অন্য ফিল্টার দিয়ে চেষ্টা করুন
+            </p>
           </div>
         ) : (
           contacts.map((contact) => {
@@ -316,24 +369,24 @@ export default function ContactClient({ category }: Props) {
             return (
               <article
                 key={contact.id}
-                className="rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900 p-4 space-y-4 hover: transition-shadow"
+                className="rounded-2xl bg-zinc-400/10 p-4 space-y-4 transition hover:bg-zinc-400/15"
               >
                 <div className="flex items-start gap-4">
-                  <div className="size-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow shrink-0">
+                  <div className="size-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shrink-0">
                     {getIcon()}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="text-lg  text-zinc-50 text-zinc-100">
+                      <h3 className="text-base font-semibold">
                         {contact.name}
                       </h3>
                       {contact.type && (
-                        <span className="px-2 py-0.5 rounded-md text-xs  bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
+                        <span className="px-2 py-0.5 rounded-md text-[11px] bg-blue-500/15 text-blue-700 dark:text-blue-300">
                           {contact.type}
                         </span>
                       )}
                     </div>
-                    <div className="flex flex-wrap items-center gap-2 mt-1 text-sm text-zinc-400">
+                    <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-zinc-500">
                       {location && (
                         <span className="inline-flex items-center gap-1">
                           <MapPin className="w-3.5 h-3.5" />
@@ -347,38 +400,40 @@ export default function ContactClient({ category }: Props) {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-zinc-400/10/50 rounded-xl p-2 text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-zinc-400/10 rounded-xl p-3 text-sm">
                   {contact.phone && (
                     <div className="flex items-center gap-2">
-                      <Phone className="w-4 h-4 text-green-600" />
+                      <Phone className="w-4 h-4 text-green-600 shrink-0" />
                       <span className="font-mono">{contact.phone}</span>
                     </div>
                   )}
                   {contact.alt_phone && (
                     <div className="flex items-center gap-2">
-                      <Phone className="w-4 h-4 text-blue-600" />
-                      <span className="font-mono text-zinc-300">{contact.alt_phone}</span>
+                      <Phone className="w-4 h-4 text-blue-600 shrink-0" />
+                      <span className="font-mono opacity-80">
+                        {contact.alt_phone}
+                      </span>
                     </div>
                   )}
                   {contact.email && (
                     <div className="flex items-center gap-2 col-span-full">
-                      <span className="text-zinc-400">✉</span>
+                      <span className="opacity-60">✉</span>
                       <span className="truncate">{contact.email}</span>
                     </div>
                   )}
                   {contact.address && (
                     <div className="flex items-start gap-2 col-span-full">
-                      <MapPin className="w-4 h-4 text-zinc-400 mt-0.5 shrink-0" />
-                      <span className="text-zinc-300">{contact.address}</span>
+                      <MapPin className="w-4 h-4 opacity-60 mt-0.5 shrink-0" />
+                      <span className="opacity-90">{contact.address}</span>
                     </div>
                   )}
                 </div>
 
-                <div className="flex flex-wrap gap-2 justify-end pt-2 border-t border-zinc-100 border-zinc-400/25">
+                <div className="flex flex-wrap gap-2 justify-end pt-2 border-t border-zinc-400/20">
                   {contact.phone && (
                     <a
                       href={`tel:${contact.phone}`}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-700 text-white text-sm  hover:bg-zinc-600"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-700 text-white text-sm hover:bg-zinc-600 transition"
                     >
                       <Phone className="w-4 h-4" />
                       কল করুন
@@ -386,15 +441,17 @@ export default function ContactClient({ category }: Props) {
                   )}
                   <button
                     onClick={() => shareContact(contact)}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-zinc-400/30 text-sm  hover:bg-zinc-900 hover:bg-zinc-800"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-400/10 text-sm hover:bg-zinc-400/20 transition"
                   >
                     <Share2 className="w-4 h-4" />
                     শেয়ার
                   </button>
                   {contact.phone && (
                     <button
-                      onClick={(e) => copyPhone(contact.phone!, e.currentTarget)}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-zinc-400/30 text-sm  hover:bg-zinc-900 hover:bg-zinc-800"
+                      onClick={(e) =>
+                        copyPhone(contact.phone!, e.currentTarget)
+                      }
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-400/10 text-sm hover:bg-zinc-400/20 transition"
                     >
                       <Copy className="w-4 h-4" />
                       কপি
@@ -409,17 +466,17 @@ export default function ContactClient({ category }: Props) {
 
       {/* Load More */}
       {hasMore && (
-        <div className="flex justify-center py-6">
+        <div className="flex justify-center pt-2">
           <button
             onClick={() => setSize(size + 1)}
             disabled={isValidating}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-zinc-400/25 text-sm  disabled:opacity-50"
+            className="px-6 py-2.5 rounded-xl bg-zinc-400/10 text-sm font-medium hover:bg-zinc-400/20 transition disabled:opacity-50"
           >
             {isValidating ? (
-              <>
+              <span className="flex items-center gap-2">
                 <Loader2 className="w-4 h-4 animate-spin" />
                 লোড হচ্ছে...
-              </>
+              </span>
             ) : (
               "আরও দেখুন"
             )}
@@ -428,17 +485,20 @@ export default function ContactClient({ category }: Props) {
       )}
 
       {/* SEO Content */}
-      <section className="rounded-2xl bg-zinc-400/10/40 p-4 space-y-4">
-        <h2 className="text-lg font-bold text-zinc-50 text-zinc-200">
+      <section className="space-y-4 pt-8 border-t border-zinc-400/20">
+        <h2 className="text-xl font-bold">
           জরুরী {category.name} যোগাযোগ নম্বর সম্পর্কে
         </h2>
-        <div className="text-sm leading-relaxed  space-y-4">
+        <div className="space-y-3 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
           <p>
-            বাংলাদেশের সারাদেশের গুরুত্বপূর্ণ <strong>{category.name}</strong> যোগাযোগ নম্বর ও
-            ঠিকানা এক জায়গায় খুঁজে নিন। বিভাগ, জেলা ও থানা অনুযায়ী ফিল্টার করে সহজেই প্রয়োজনীয়
-            নম্বর পেয়ে যান।
+            বাংলাদেশের সারাদেশের গুরুত্বপূর্ণ <strong>{category.name}</strong>{" "}
+            যোগাযোগ নম্বর ও ঠিকানা এক জায়গায় খুঁজে নিন। বিভাগ, জেলা ও থানা
+            অনুযায়ী ফিল্টার করে সহজেই প্রয়োজনীয় নম্বর পেয়ে যান।
           </p>
-          <p>নম্বরে ক্লিক করে সরাসরি কল করতে পারবেন, কপি বা শেয়ারও করা যায়।</p>
+          <p>
+            নম্বরে ক্লিক করে সরাসরি কল করতে পারবেন। কপি বা শেয়ারও করা যায়।
+            তথ্যবক্স থেকে নির্ভরযোগ্য জরুরী নম্বর সহজেই পেয়ে যান।
+          </p>
         </div>
       </section>
     </div>

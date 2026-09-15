@@ -458,18 +458,18 @@ export default function Sidebar() {
                   onMouseLeave={handleMouseLeave}
                   className={cn(
                     "group flex w-full items-center gap-4 rounded-lg px-3 py-2.5 text-sm  transition-all duration-200 text-left",
-                    "text-zinc-300 hover:bg-zinc-900 text-zinc-300 hover:bg-zinc-800",
+                    "hover:bg-zinc-400/25",
                     collapsed && "justify-center px-2",
                   )}
                 >
-                  <Layers className="h-5 w-5 shrink-0 text-zinc-400 group-hover:text-zinc-200 dark:group-hover:text-zinc-200" />
+                  <Layers className="h-5 w-5 shrink-0" />
                   {!collapsed && (
                     <div className="flex flex-1 items-center justify-between">
                       <span className="truncate">অন্যান্য কনভার্টার</span>
                       {isExtraConvertersOpen ? (
-                        <ChevronDown className="h-4 w-4 text-zinc-400" />
+                        <ChevronDown className="h-4 w-4" />
                       ) : (
-                        <ChevronRight className="h-4 w-4 text-zinc-400" />
+                        <ChevronRight className="h-4 w-4" />
                       )}
                     </div>
                   )}

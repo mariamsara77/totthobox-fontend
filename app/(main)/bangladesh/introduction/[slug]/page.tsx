@@ -7,7 +7,8 @@ type Props = {
 };
 
 async function getIntro(slug: string) {
-  const base = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+  const base =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
   const res = await fetch(`${base}/api/intro-bd/${slug}`, {
     next: { revalidate: 3600 },
   });
@@ -27,22 +28,31 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  const title = `${intro.title} | বাংলাদেশের পরিচিতি | তথ্যবক্স`;
-  const description = (intro.description || `${intro.title} সম্পর্কে বিস্তারিত তথ্য।`)
+  const cleanDesc = (
+    intro.description || `${intro.title} সম্পর্কে বিস্তারিত তথ্য ও পরিচিতি।`
+  )
     .replace(/<[^>]+>/g, "")
-    .slice(0, 155);
+    .slice(0, 160);
+
+  const title = `${intro.title} | বাংলাদেশের পরিচিতি | তথ্যবক্স`;
 
   return {
     title,
-    description,
-    keywords: `${intro.title}, বাংলাদেশের পরিচিতি, ${intro.intro_category || ""}, তথ্যবক্স`,
+    description: cleanDesc,
+    keywords: `${intro.title}, বাংলাদেশের পরিচিতি, ${intro.intro_category || ""}, বাংলাদেশ তথ্য, তথ্যবক্স`,
     openGraph: {
       title,
-      description,
+      description: cleanDesc,
       images: intro.image_url ? [{ url: intro.image_url }] : [],
       type: "article",
       locale: "bn_BD",
       siteName: "Totthobox",
+      url: `https://totthobox.com/bangladesh/introduction/${intro.slug}`,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: cleanDesc,
     },
     alternates: {
       canonical: `https://totthobox.com/bangladesh/introduction/${intro.slug}`,
@@ -58,6 +68,5 @@ export default async function IntroductionShowPage({ params }: Props) {
     notFound();
   }
 
-  // শুধু এটা — InteractiveActions Client-এর ভিতরে যাবে
   return <IntroductionShowClient intro={intro} />;
 }

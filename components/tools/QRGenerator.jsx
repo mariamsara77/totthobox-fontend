@@ -97,7 +97,6 @@ export default function QRGenerator() {
   const lastKeyRef = useRef("");
   const fileInputRef = useRef(null);
 
-  // Load qr-code-styling from CDN
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (window.QRCodeStyling) {
@@ -105,17 +104,14 @@ export default function QRGenerator() {
       return;
     }
     const script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js";
+    script.src =
+      "https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js";
     script.async = true;
     script.onload = () => setLibReady(true);
     script.onerror = () => setLibFailed(true);
     document.body.appendChild(script);
-    return () => {
-      // keep script for reuse
-    };
   }, []);
 
-  // Load history
   useEffect(() => {
     try {
       const saved = localStorage.getItem("qr_gen_history_v2");
@@ -196,7 +192,8 @@ export default function QRGenerator() {
   const finalData = useMemo(() => getFinalContent(), [getFinalContent]);
 
   const generate = useCallback(() => {
-    if (!libReady || typeof window === "undefined" || !window.QRCodeStyling) return;
+    if (!libReady || typeof window === "undefined" || !window.QRCodeStyling)
+      return;
     const data = finalData;
     if (!data) {
       setHasContent(false);
@@ -362,7 +359,9 @@ export default function QRGenerator() {
     if (!qrRef.current || !hasContent) return;
     try {
       const blob = await qrRef.current.getRawData("png");
-      await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+      await navigator.clipboard.write([
+        new ClipboardItem({ "image/png": blob }),
+      ]);
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     } catch {
@@ -391,32 +390,33 @@ export default function QRGenerator() {
   const canShare = typeof navigator !== "undefined" && !!navigator.share;
 
   const inputClass =
-    "w-full p-2 rounded-lg bg-zinc-400/10 border-none outline-none text-sm";
-  const labelClass = "text-sm  ";
+    "w-full rounded-xl bg-zinc-400/10 px-3 py-2.5 text-sm outline-none";
+  const labelClass = "text-sm text-zinc-600 dark:text-zinc-400";
 
   return (
-    <section className="w-full space-y-4">
+    <section className="w-full space-y-6">
       {/* Header */}
-      <div className="text-center space-y-2">
-        <span className="inline-block px-3 py-1 text-xs  rounded-full bg-lime-100 dark:bg-lime-900/40 text-lime-700 dark:text-lime-300">
+      <header className="space-y-2 text-center">
+        <span className="inline-block px-3 py-1 text-xs rounded-full bg-zinc-400/10 text-zinc-600 dark:text-zinc-400">
           বিনামূল্যে · রেজিস্ট্রেশন লাগবে না
         </span>
-        <h1 className="text-2xl  font-bold tracking-tight text-zinc-50 dark:text-white">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
           QR কোড জেনারেটর
         </h1>
-        <p className="text-base  max-w-xl mx-auto">
-          টেক্সট, লিংক, ওয়াইফাই, SMS, ভিকার্ড বা ফোন নম্বর লিখুন — সাথে সাথে প্রফেশনাল QR কোড তৈরি হবে।
+        <p className="text-sm text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">
+          টেক্সট, লিংক, ওয়াইফাই, SMS, ভিকার্ড বা ফোন নম্বর লিখুন — সাথে সাথে
+          প্রফেশনাল QR কোড তৈরি হবে।
         </p>
-      </div>
+      </header>
 
       {libFailed && (
-        <div className="rounded-xl border border-red-300 dark:border-red-800 bg-red-50 dark:bg-red-900/20 px-4 py-2 flex items-center justify-between gap-4">
-          <p className="text-sm text-red-700 dark:text-red-300">
+        <div className="rounded-xl bg-rose-500/10 px-4 py-3 flex items-center justify-between gap-4">
+          <p className="text-sm text-rose-600 dark:text-rose-400">
             QR লাইব্রেরি লোড হয়নি। ইন্টারনেট সংযোগ পরীক্ষা করুন।
           </p>
           <button
             onClick={() => window.location.reload()}
-            className="px-3 py-1.5 text-xs rounded-lg bg-red-600 text-white"
+            className="px-3 py-1.5 text-xs rounded-lg bg-rose-600 text-white"
           >
             আবার চেষ্টা করুন
           </button>
@@ -424,16 +424,16 @@ export default function QRGenerator() {
       )}
 
       {/* Type tabs */}
-      <div className="overflow-x-auto -mx-1 px-1 pb-1">
-        <div className="flex gap-1 min-w-max">
+      <div className="overflow-x-auto pb-1 scrollbar-hide">
+        <div className="flex gap-1.5 min-w-max">
           {TYPES.map((t) => (
             <button
               key={t.id}
               onClick={() => changeType(t.id)}
-              className={`px-3 py-2 text-xs sm:text-sm  rounded-lg whitespace-nowrap  ${
+              className={`px-3 py-2 text-xs sm:text-sm rounded-lg whitespace-nowrap transition ${
                 type === t.id
-                  ? "bg-indigo-500 text-white"
-                  : "bg-zinc-400/10  hover:bg-zinc-800 hover:bg-zinc-700"
+                  ? "bg-zinc-700 text-white"
+                  : "bg-zinc-400/10 hover:bg-zinc-400/20"
               }`}
             >
               {t.label}
@@ -445,9 +445,9 @@ export default function QRGenerator() {
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* Inputs */}
         <div className="lg:col-span-3 space-y-5">
-          <div className="rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900/50 p-4 space-y-4">
+          <div className="rounded-2xl bg-zinc-400/10 p-4 sm:p-5 space-y-4">
             {type === "text" && (
-              <div className="flex flex-col gap-2">
+              <div className="space-y-1.5">
                 <label className={labelClass}>যা লিখতে চান</label>
                 <textarea
                   value={content}
@@ -460,7 +460,7 @@ export default function QRGenerator() {
             )}
 
             {type === "url" && (
-              <div className="flex flex-col gap-2">
+              <div className="space-y-1.5">
                 <label className={labelClass}>ওয়েবসাইট লিংক</label>
                 <input
                   type="url"
@@ -474,7 +474,7 @@ export default function QRGenerator() {
 
             {type === "wifi" && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-2">
+                <div className="space-y-1.5">
                   <label className={labelClass}>নেটওয়ার্ক নাম (SSID)</label>
                   <input
                     value={wifiSsid}
@@ -483,7 +483,7 @@ export default function QRGenerator() {
                     className={inputClass}
                   />
                 </div>
-                <div className="flex flex-col gap-2">
+                <div className="space-y-1.5">
                   <label className={labelClass}>পাসওয়ার্ড</label>
                   <input
                     value={wifiPassword}
@@ -492,7 +492,7 @@ export default function QRGenerator() {
                     className={inputClass}
                   />
                 </div>
-                <div className="flex flex-col gap-2">
+                <div className="space-y-1.5">
                   <label className={labelClass}>এনক্রিপশন ধরন</label>
                   <select
                     value={wifiEncryption}
@@ -504,7 +504,7 @@ export default function QRGenerator() {
                     <option value="nopass">পাসওয়ার্ড নেই (Open)</option>
                   </select>
                 </div>
-                <label className="flex items-center gap-2 mt-6 text-sm ">
+                <label className="flex items-center gap-2 mt-6 text-sm">
                   <input
                     type="checkbox"
                     checked={wifiHidden}
@@ -517,7 +517,7 @@ export default function QRGenerator() {
             )}
 
             {type === "email" && (
-              <div className="flex flex-col gap-2">
+              <div className="space-y-1.5">
                 <label className={labelClass}>ইমেইল ঠিকানা</label>
                 <input
                   type="email"
@@ -530,7 +530,7 @@ export default function QRGenerator() {
             )}
 
             {type === "phone" && (
-              <div className="flex flex-col gap-2">
+              <div className="space-y-1.5">
                 <label className={labelClass}>ফোন নম্বর</label>
                 <input
                   type="tel"
@@ -544,7 +544,7 @@ export default function QRGenerator() {
 
             {type === "sms" && (
               <div className="space-y-4">
-                <div className="flex flex-col gap-2">
+                <div className="space-y-1.5">
                   <label className={labelClass}>প্রাপকের নম্বর</label>
                   <input
                     type="tel"
@@ -554,7 +554,7 @@ export default function QRGenerator() {
                     className={inputClass}
                   />
                 </div>
-                <div className="flex flex-col gap-2">
+                <div className="space-y-1.5">
                   <label className={labelClass}>বার্তা (ঐচ্ছিক)</label>
                   <textarea
                     value={smsMessage}
@@ -569,7 +569,7 @@ export default function QRGenerator() {
 
             {type === "vcard" && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-2">
+                <div className="space-y-1.5">
                   <label className={labelClass}>পূর্ণ নাম</label>
                   <input
                     value={vcardName}
@@ -578,7 +578,7 @@ export default function QRGenerator() {
                     className={inputClass}
                   />
                 </div>
-                <div className="flex flex-col gap-2">
+                <div className="space-y-1.5">
                   <label className={labelClass}>ফোন নম্বর</label>
                   <input
                     type="tel"
@@ -588,7 +588,7 @@ export default function QRGenerator() {
                     className={inputClass}
                   />
                 </div>
-                <div className="flex flex-col gap-2">
+                <div className="space-y-1.5">
                   <label className={labelClass}>ইমেইল</label>
                   <input
                     type="email"
@@ -598,7 +598,7 @@ export default function QRGenerator() {
                     className={inputClass}
                   />
                 </div>
-                <div className="flex flex-col gap-2">
+                <div className="space-y-1.5">
                   <label className={labelClass}>প্রতিষ্ঠান (ঐচ্ছিক)</label>
                   <input
                     value={vcardOrg}
@@ -607,7 +607,7 @@ export default function QRGenerator() {
                     className={inputClass}
                   />
                 </div>
-                <div className="flex flex-col gap-2 sm:col-span-2">
+                <div className="space-y-1.5 sm:col-span-2">
                   <label className={labelClass}>ওয়েবসাইট (ঐচ্ছিক)</label>
                   <input
                     type="url"
@@ -621,17 +621,19 @@ export default function QRGenerator() {
             )}
 
             {/* Examples */}
-            <div className="flex flex-wrap gap-2 pt-3 border-t border-zinc-400/25">
+            <div className="flex flex-wrap gap-2 pt-3 border-t border-zinc-400/20">
               <button
                 onClick={() => changeType(type)}
-                className="px-3 py-1.5 text-sm rounded-lg text-zinc-400 hover:bg-zinc-900 hover:bg-zinc-800"
+                className="px-3 py-1.5 text-sm rounded-lg bg-zinc-400/10 hover:bg-zinc-400/20 transition"
               >
                 রিসেট
               </button>
               {type === "text" && (
                 <button
-                  onClick={() => setContent("আসসালামু আলাইকুম! এটি একটি টেস্ট QR কোড।")}
-                  className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700"
+                  onClick={() =>
+                    setContent("আসসালামু আলাইকুম! এটি একটি টেস্ট QR কোড।")
+                  }
+                  className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-400/20 transition"
                 >
                   বাংলা টেক্সট
                 </button>
@@ -640,13 +642,13 @@ export default function QRGenerator() {
                 <>
                   <button
                     onClick={() => setContent("https://google.com")}
-                    className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700"
+                    className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-400/20 transition"
                   >
                     Google
                   </button>
                   <button
                     onClick={() => setContent("https://youtube.com")}
-                    className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700"
+                    className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-400/20 transition"
                   >
                     YouTube
                   </button>
@@ -660,7 +662,7 @@ export default function QRGenerator() {
                     setWifiEncryption("WPA");
                     setWifiHidden(false);
                   }}
-                  className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700"
+                  className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-400/20 transition"
                 >
                   ওয়াইফাই উদাহরণ
                 </button>
@@ -668,7 +670,7 @@ export default function QRGenerator() {
               {type === "email" && (
                 <button
                   onClick={() => setContent("hello@example.com")}
-                  className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700"
+                  className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-400/20 transition"
                 >
                   ইমেইল
                 </button>
@@ -676,7 +678,7 @@ export default function QRGenerator() {
               {type === "phone" && (
                 <button
                   onClick={() => setContent("+8801712345678")}
-                  className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700"
+                  className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-400/20 transition"
                 >
                   ফোন
                 </button>
@@ -687,7 +689,7 @@ export default function QRGenerator() {
                     setSmsNumber("+8801712345678");
                     setSmsMessage("আসসালামু আলাইকুম");
                   }}
-                  className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700"
+                  className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-400/20 transition"
                 >
                   SMS উদাহরণ
                 </button>
@@ -701,7 +703,7 @@ export default function QRGenerator() {
                     setVcardOrg("Totthobox");
                     setVcardUrl("https://totthobox.com");
                   }}
-                  className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700"
+                  className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-400/20 transition"
                 >
                   ভিকার্ড উদাহরণ
                 </button>
@@ -710,28 +712,33 @@ export default function QRGenerator() {
           </div>
 
           {/* Advanced customization */}
-          <div className="rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900/50 overflow-hidden">
+          <div className="rounded-2xl bg-zinc-400/10 overflow-hidden">
             <button
               onClick={() => setShowAdvanced(!showAdvanced)}
-              className="w-full flex items-center justify-between px-4 py-2  text-zinc-50 text-zinc-200 hover:bg-zinc-900 hover:bg-zinc-800/50"
+              className="w-full flex items-center justify-between px-4 py-3 hover:bg-zinc-400/15 transition"
             >
-              <span>অ্যাডভান্সড কাস্টমাইজেশন</span>
+              <span className="text-sm font-medium">অ্যাডভান্সড কাস্টমাইজেশন</span>
               <svg
-                className={`w-4 h-4 text-zinc-400 transition ${showAdvanced ? "rotate-180" : ""}`}
+                className={`w-4 h-4 opacity-50 transition ${showAdvanced ? "rotate-180" : ""}`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M19 9l-7 7-7-7"
+                />
               </svg>
             </button>
 
             {showAdvanced && (
-              <div className="px-4 pb-4 space-y-5 border-t border-zinc-400/25 pt-4">
+              <div className="px-4 pb-5 space-y-5 border-t border-zinc-400/20 pt-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className={labelClass}>সাইজ (পিক্সেল)</label>
-                    <div className="flex items-center gap-4 mt-1.5">
+                    <div className="flex items-center gap-3 mt-1.5">
                       <input
                         type="range"
                         min="128"
@@ -739,16 +746,18 @@ export default function QRGenerator() {
                         step="8"
                         value={size}
                         onChange={(e) => setSize(Number(e.target.value))}
-                        className="w-full accent-indigo-500"
+                        className="w-full accent-zinc-600"
                       />
-                      <span className="text-sm font-mono w-12 text-right tabular-nums">{size}</span>
+                      <span className="text-sm font-mono w-12 text-right tabular-nums">
+                        {size}
+                      </span>
                     </div>
                     <div className="flex gap-2 mt-2">
                       {[256, 512, 1024].map((s) => (
                         <button
                           key={s}
                           onClick={() => setSize(s)}
-                          className="px-2 py-1 text-xs rounded bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700"
+                          className="px-2 py-1 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-400/20 transition"
                         >
                           {s === 256 ? "ছোট" : s === 512 ? "মাঝারি" : "বড়"}
                         </button>
@@ -757,7 +766,7 @@ export default function QRGenerator() {
                   </div>
                   <div>
                     <label className={labelClass}>কোয়ায়েট জোন / মার্জিন</label>
-                    <div className="flex items-center gap-4 mt-1.5">
+                    <div className="flex items-center gap-3 mt-1.5">
                       <input
                         type="range"
                         min="0"
@@ -765,21 +774,29 @@ export default function QRGenerator() {
                         step="1"
                         value={margin}
                         onChange={(e) => setMargin(Number(e.target.value))}
-                        className="w-full accent-indigo-500"
+                        className="w-full accent-zinc-600"
                       />
-                      <span className="text-sm font-mono w-12 text-right tabular-nums">{margin}</span>
+                      <span className="text-sm font-mono w-12 text-right tabular-nums">
+                        {margin}
+                      </span>
                     </div>
                   </div>
-                  <div className="flex flex-col gap-2">
+                  <div className="space-y-1.5">
                     <label className={labelClass}>এরর করেকশন</label>
-                    <select value={ecc} onChange={(e) => setEcc(e.target.value)} className={inputClass}>
+                    <select
+                      value={ecc}
+                      onChange={(e) => setEcc(e.target.value)}
+                      className={inputClass}
+                    >
                       {ECC_LEVELS.map((e) => (
                         <option key={e.value} value={e.value}>
                           {e.label}
                         </option>
                       ))}
                     </select>
-                    <p className="text-xs text-zinc-400">লোগো যোগ করলে &quot;সর্বোচ্চ (H)&quot; বেছে নিন।</p>
+                    <p className="text-xs text-zinc-500">
+                      লোগো যোগ করলে &quot;সর্বোচ্চ (H)&quot; বেছে নিন।
+                    </p>
                   </div>
                 </div>
 
@@ -821,7 +838,7 @@ export default function QRGenerator() {
                 </div>
 
                 <div>
-                  <label className="flex items-center gap-2 text-sm ">
+                  <label className="flex items-center gap-2 text-sm">
                     <input
                       type="checkbox"
                       checked={useGradient}
@@ -849,7 +866,7 @@ export default function QRGenerator() {
                           />
                         </div>
                       </div>
-                      <div className="flex flex-col gap-2">
+                      <div className="space-y-1.5">
                         <label className={labelClass}>গ্রেডিয়েন্ট ধরন</label>
                         <select
                           value={gradientType}
@@ -865,9 +882,13 @@ export default function QRGenerator() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="flex flex-col gap-2">
+                  <div className="space-y-1.5">
                     <label className={labelClass}>ডট স্টাইল</label>
-                    <select value={dotStyle} onChange={(e) => setDotStyle(e.target.value)} className={inputClass}>
+                    <select
+                      value={dotStyle}
+                      onChange={(e) => setDotStyle(e.target.value)}
+                      className={inputClass}
+                    >
                       {DOT_STYLES.map((s) => (
                         <option key={s.value} value={s.value}>
                           {s.label}
@@ -875,7 +896,7 @@ export default function QRGenerator() {
                       ))}
                     </select>
                   </div>
-                  <div className="flex flex-col gap-2">
+                  <div className="space-y-1.5">
                     <label className={labelClass}>কর্নার স্টাইল</label>
                     <select
                       value={cornerSquareStyle}
@@ -889,7 +910,7 @@ export default function QRGenerator() {
                       ))}
                     </select>
                   </div>
-                  <div className="flex flex-col gap-2">
+                  <div className="space-y-1.5">
                     <label className={labelClass}>কর্নার ডট স্টাইল</label>
                     <select
                       value={cornerDotStyle}
@@ -907,31 +928,32 @@ export default function QRGenerator() {
 
                 <div className="space-y-2">
                   <label className={labelClass}>লোগো (ঐচ্ছিক)</label>
-                  <div className="flex flex-wrap items-center gap-4">
+                  <div className="flex flex-wrap items-center gap-3">
                     <input
                       ref={fileInputRef}
                       type="file"
                       accept="image/*"
                       onChange={onLogoChange}
-                      className="text-sm text-zinc-400 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-zinc-900 dark:file:bg-zinc-800 file:text-sm file: hover:file:bg-zinc-800 dark:hover:file:bg-zinc-700 cursor-pointer"
+                      className="text-sm text-zinc-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-zinc-400/15 file:text-sm cursor-pointer"
                     />
                     {logoDataUrl && (
                       <button
                         onClick={removeLogo}
-                        className="px-2 py-1 text-xs rounded bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700"
+                        className="px-2 py-1 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-400/20 transition"
                       >
                         লোগো সরান
                       </button>
                     )}
                   </div>
-                  <p className="text-xs text-zinc-400">
-                    লোগো QR এর মাঝখানে বসবে। স্ক্যান করতে সমস্যা হলে এরর করেকশন &quot;সর্বোচ্চ (H)&quot; করুন।
+                  <p className="text-xs text-zinc-500">
+                    লোগো QR এর মাঝখানে বসবে। স্ক্যান করতে সমস্যা হলে এরর করেকশন
+                    &quot;সর্বোচ্চ (H)&quot; করুন।
                   </p>
                 </div>
 
                 <button
                   onClick={resetStyle}
-                  className="px-3 py-1.5 text-sm rounded-lg text-zinc-400 hover:bg-zinc-900 hover:bg-zinc-800"
+                  className="px-3 py-1.5 text-sm rounded-lg bg-zinc-400/10 hover:bg-zinc-400/20 transition"
                 >
                   স্টাইল রিসেট করুন
                 </button>
@@ -942,23 +964,33 @@ export default function QRGenerator() {
 
         {/* Preview */}
         <div className="lg:col-span-2">
-          <div className="sticky top-6 rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900/50 p-4 space-y-4">
+          <div className="sticky top-6 rounded-2xl bg-zinc-400/10 p-5 space-y-4">
             <div className="text-center">
-              <span className="inline-block px-2.5 py-0.5 text-xs  rounded-full bg-zinc-400/10  mb-4">
+              <span className="inline-block px-2.5 py-0.5 text-xs rounded-full bg-zinc-400/15 mb-4">
                 লাইভ প্রিভিউ
               </span>
-              <div className="flex justify-center items-center p-4 bg-zinc-400/10/50 rounded-xl border border-dashed border-zinc-700 dark:border-zinc-700 min-h-[220px]">
+              <div className="flex justify-center items-center p-4 rounded-xl border border-dashed border-zinc-400/30 min-h-[220px]">
                 {!hasContent && (
-                  <div className="text-center text-zinc-400">
-                    <svg className="mx-auto w-12 h-12 mb-2 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                  <div className="text-center text-zinc-500">
+                    <svg
+                      className="mx-auto w-12 h-12 mb-2 opacity-40"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1.5"
+                        d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
+                      />
                     </svg>
                     <p className="text-sm">কন্টেন্ট লিখুন</p>
                   </div>
                 )}
                 <div
                   ref={containerRef}
-                  className={`[&>canvas]:rounded-lg [&>canvas]: [&>canvas]:max-w-full ${hasContent ? "" : "hidden"}`}
+                  className={`[&>canvas]:rounded-lg [&>canvas]:max-w-full ${hasContent ? "" : "hidden"}`}
                 />
               </div>
             </div>
@@ -968,39 +1000,39 @@ export default function QRGenerator() {
                 <div className="grid grid-cols-3 gap-2">
                   <button
                     onClick={() => download("png")}
-                    className="py-2 text-sm  rounded-lg bg-indigo-500 text-white hover:bg-indigo-600"
+                    className="py-2.5 text-sm font-medium rounded-xl bg-zinc-700 text-white hover:bg-zinc-600 transition"
                   >
                     PNG
                   </button>
                   <button
                     onClick={() => download("jpeg")}
-                    className="py-2 text-sm  rounded-lg bg-indigo-500 text-white hover:bg-indigo-600"
+                    className="py-2.5 text-sm font-medium rounded-xl bg-zinc-700 text-white hover:bg-zinc-600 transition"
                   >
                     JPEG
                   </button>
                   <button
                     onClick={() => download("svg")}
-                    className="py-2 text-sm  rounded-lg bg-indigo-500 text-white hover:bg-indigo-600"
+                    className="py-2.5 text-sm font-medium rounded-xl bg-zinc-700 text-white hover:bg-zinc-600 transition"
                   >
                     SVG
                   </button>
                 </div>
                 <button
                   onClick={copyImage}
-                  className="w-full py-2 text-sm rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700"
+                  className="w-full py-2.5 text-sm rounded-xl bg-zinc-400/10 hover:bg-zinc-400/20 transition"
                 >
                   {copied ? "কপি হয়েছে!" : "ছবি কপি করুন"}
                 </button>
                 <button
                   onClick={copyText}
-                  className="w-full py-2 text-sm rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700"
+                  className="w-full py-2.5 text-sm rounded-xl bg-zinc-400/10 hover:bg-zinc-400/20 transition"
                 >
                   ডেটা টেক্সট কপি করুন
                 </button>
                 {canShare && (
                   <button
                     onClick={shareQR}
-                    className="w-full py-2 text-sm rounded-lg bg-zinc-400/10 hover:bg-zinc-800 hover:bg-zinc-700"
+                    className="w-full py-2.5 text-sm rounded-xl bg-zinc-400/10 hover:bg-zinc-400/20 transition"
                   >
                     শেয়ার করুন
                   </button>
@@ -1014,8 +1046,8 @@ export default function QRGenerator() {
       {/* History */}
       {history.length > 0 && (
         <div>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm  ">সাম্প্রতিক QR</h3>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-medium">সাম্প্রতিক QR</h3>
             <button
               onClick={() => {
                 setHistory([]);
@@ -1023,7 +1055,7 @@ export default function QRGenerator() {
                   localStorage.removeItem("qr_gen_history_v2");
                 } catch {}
               }}
-              className="text-xs text-zinc-400 hover:text-zinc-200 dark:hover:text-zinc-300"
+              className="text-xs text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
             >
               সব মুছে ফেলুন
             </button>
@@ -1032,7 +1064,7 @@ export default function QRGenerator() {
             {history.map((h, i) => (
               <span
                 key={i}
-                className="inline-flex items-center gap-2 px-2.5 py-1 text-xs rounded-full bg-zinc-400/10 "
+                className="inline-flex items-center gap-2 px-2.5 py-1 text-xs rounded-full bg-zinc-400/10"
               >
                 {h.label}
                 <span className="opacity-50">{h.time}</span>
@@ -1042,29 +1074,33 @@ export default function QRGenerator() {
         </div>
       )}
 
-      {/* How to + FAQ */}
-      <div className="mt-12 pt-8 border-t border-zinc-400/25 space-y-8 text-sm ">
-        <div>
-          <h2 className="text-lg font-bold text-zinc-50 text-zinc-200 mb-2">কীভাবে ব্যবহার করবেন?</h2>
-          <p className="leading-relaxed">
-            ট্যাব থেকে ধরন বেছে নিন → তথ্য লিখুন → QR কোড সাথে সাথে দেখাবে → PNG/JPEG/SVG ফরম্যাটে ডাউনলোড করুন। রঙ,
-            গ্রেডিয়েন্ট, ডট স্টাইল, কর্নার স্টাইল, লোগো, সাইজ ও এরর করেকশন ইচ্ছেমতো বদলাতে পারবেন।
+      {/* SEO + FAQ */}
+      <section className="space-y-6 pt-8 border-t border-zinc-400/20">
+        <div className="space-y-3">
+          <h2 className="text-xl font-bold">কীভাবে ব্যবহার করবেন?</h2>
+          <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+            ট্যাব থেকে ধরন বেছে নিন → তথ্য লিখুন → QR কোড সাথে সাথে দেখাবে →
+            PNG/JPEG/SVG ফরম্যাটে ডাউনলোড করুন। রঙ, গ্রেডিয়েন্ট, ডট স্টাইল,
+            কর্নার স্টাইল, লোগো, সাইজ ও এরর করেকশন ইচ্ছেমতো বদলাতে পারবেন।
           </p>
         </div>
 
-        <div className="rounded-2xl bg-zinc-400/10/40 p-4 space-y-4">
-          <h2 className="text-lg font-bold text-zinc-50 text-zinc-200">
+        <div className="rounded-2xl bg-zinc-400/10 p-5 space-y-3">
+          <h2 className="text-lg font-bold">
             ফ্রি অ্যাডভান্সড অনলাইন QR কোড জেনারেটর
           </h2>
-          <p className="leading-relaxed">
-            এই টুল দিয়ে <strong>টেক্সট, URL, WiFi, ইমেইল, ফোন নম্বর, SMS ও ভিকার্ড (vCard)</strong> থেকে তাৎক্ষণিক
-            প্রফেশনাল QR কোড তৈরি করুন। সম্পূর্ণ ফ্রি, রেজিস্ট্রেশন লাগে না, আর সবকিছু আপনার ব্রাউজারেই হয় — কোনো ডেটা
-            সার্ভারে যায় না।
+          <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+            এই টুল দিয়ে{" "}
+            <strong>
+              টেক্সট, URL, WiFi, ইমেইল, ফোন নম্বর, SMS ও ভিকার্ড (vCard)
+            </strong>{" "}
+            থেকে তাৎক্ষণিক প্রফেশনাল QR কোড তৈরি করুন। সম্পূর্ণ ফ্রি, রেজিস্ট্রেশন
+            লাগে না, আর সবকিছু আপনার ব্রাউজারেই হয় — কোনো ডেটা সার্ভারে যায় না।
           </p>
         </div>
 
-        <div>
-          <h2 className="text-lg font-bold text-zinc-50 text-zinc-200 mb-4">প্রায়শই জিজ্ঞাসিত প্রশ্ন</h2>
+        <div className="space-y-3">
+          <h2 className="text-xl font-bold">প্রায়শই জিজ্ঞাসিত প্রশ্ন</h2>
           <div className="space-y-2">
             {[
               {
@@ -1073,7 +1109,7 @@ export default function QRGenerator() {
               },
               {
                 q: "কোন কোন ধরনের QR বানানো যায়?",
-                a: "টেক্সট, ওয়েব লিংক (URL), WiFi, ইমেইল, ফোন নম্বর, SMS এবং ভিকার্ড (vCard) — এই সাত ধরন সাপোর্টেড।",
+                a: "টেক্সট, ওয়েব লিংক (URL), WiFi, ইমেইল, ফোন নম্বর, SMS এবং ভিকার্ড (vCard)।",
               },
               {
                 q: "লোগো সহ QR স্ক্যান হবে তো?",
@@ -1090,25 +1126,32 @@ export default function QRGenerator() {
             ].map((item, i) => (
               <details
                 key={i}
-                className="group rounded-xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900 overflow-hidden"
+                className="group rounded-xl bg-zinc-400/10 overflow-hidden"
               >
-                <summary className="flex items-center justify-between cursor-pointer px-4 py-2  text-zinc-50 text-zinc-200 hover:bg-zinc-900 hover:bg-zinc-800/50">
-                  {item.q}
+                <summary className="flex items-center justify-between cursor-pointer px-4 py-3 list-none hover:bg-zinc-400/15 transition">
+                  <span className="text-sm font-medium">{item.q}</span>
                   <svg
-                    className="w-4 h-4 text-zinc-400 group-open:rotate-180 transition"
+                    className="w-4 h-4 opacity-50 group-open:rotate-180 transition shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </summary>
-                <div className="px-4 pb-4 text-sm  leading-relaxed">{item.a}</div>
+                <div className="px-4 pb-4 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400 border-t border-zinc-400/20 pt-3">
+                  {item.a}
+                </div>
               </details>
             ))}
           </div>
         </div>
-      </div>
+      </section>
     </section>
   );
 }

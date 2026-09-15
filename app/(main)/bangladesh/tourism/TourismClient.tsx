@@ -117,46 +117,47 @@ export default function TourismClient() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6 p-4 sm:p-6">
+    <div className="max-w-2xl mx-auto space-y-8 px-4 py-6 sm:py-8">
       {/* Header */}
-      <header>
-        <h1 className="text-2xl font-bold flex items-center gap-2">
-          <Map className="w-6 h-6" />
+      <header className="space-y-2">
+        <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2.5 tracking-tight">
+          <Map className="w-7 h-7" />
           বাংলাদেশের পর্যটন কেন্দ্র
         </h1>
-        <p className="text-sm mt-1">
-          সকল জেলার দর্শনীয় স্থান, ভ্রমণ গাইড ও পর্যটন তথ্য
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          সকল জেলার দর্শনীয় স্থান, ভ্রমণ গাইড ও পর্যটন তথ্য এক জায়গায়
         </p>
       </header>
 
       {/* Search + Filters */}
       <div className="space-y-3">
-        <div className="flex gap-3">
+        <div className="flex gap-2">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 opacity-60" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 opacity-50" />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="নামে বা বিবরণে খুঁজুন..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-400/10 text-sm outline-none"
+              className="w-full pl-10 pr-4 py-3 rounded-xl bg-zinc-400/10 text-sm outline-none hover:bg-zinc-400/15 transition"
             />
           </div>
 
           {hasFilters && (
             <button
               onClick={resetFilters}
-              className="p-2.5 rounded-xl bg-zinc-400/10"
+              className="px-3.5 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/20 transition"
+              title="ফিল্টার মুছুন"
             >
               <X className="w-5 h-5" />
             </button>
           )}
         </div>
 
-        <div className="flex gap-2 overflow-x-auto pb-1">
+        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
           <select
             value={type}
             onChange={(e) => setType(e.target.value)}
-            className="min-w-40 rounded-lg bg-zinc-400/10 text-sm px-3 py-2 outline-none"
+            className="min-w-[140px] rounded-xl bg-zinc-400/10 text-sm px-3 py-2.5 outline-none"
           >
             <option value="">সকল ধরন</option>
             {types.map((t) => (
@@ -169,7 +170,7 @@ export default function TourismClient() {
           <select
             value={divisionId}
             onChange={(e) => setDivisionId(e.target.value)}
-            className="min-w-32 rounded-lg bg-zinc-400/10 text-sm px-3 py-2 outline-none"
+            className="min-w-[120px] rounded-xl bg-zinc-400/10 text-sm px-3 py-2.5 outline-none"
           >
             <option value="">সকল বিভাগ</option>
             {divisions.map((d) => (
@@ -183,7 +184,7 @@ export default function TourismClient() {
             value={districtId}
             onChange={(e) => setDistrictId(e.target.value)}
             disabled={!divisionId}
-            className="min-w-32 rounded-lg bg-zinc-400/10 text-sm px-3 py-2 outline-none disabled:opacity-50"
+            className="min-w-[120px] rounded-xl bg-zinc-400/10 text-sm px-3 py-2.5 outline-none disabled:opacity-50"
           >
             <option value="">সকল জেলা</option>
             {districts.map((d) => (
@@ -197,7 +198,7 @@ export default function TourismClient() {
             value={thanaId}
             onChange={(e) => setThanaId(e.target.value)}
             disabled={!districtId}
-            className="min-w-32 rounded-lg bg-zinc-400/10 text-sm px-3 py-2 outline-none disabled:opacity-50"
+            className="min-w-[120px] rounded-xl bg-zinc-400/10 text-sm px-3 py-2.5 outline-none disabled:opacity-50"
           >
             <option value="">সকল থানা</option>
             {thanas.map((t) => (
@@ -210,49 +211,55 @@ export default function TourismClient() {
       </div>
 
       {hasFilters && !isLoading && (
-        <p className="text-xs opacity-70">{total}টি ফলাফল পাওয়া গেছে</p>
+        <p className="text-xs text-zinc-500">{total}টি ফলাফল পাওয়া গেছে</p>
       )}
 
       {/* List */}
       <section className="space-y-3">
         {isLoading ? (
           <div className="space-y-3">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
+            {[1, 2, 3, 4, 5].map((i) => (
               <div
                 key={i}
                 className="rounded-2xl bg-zinc-400/10 p-4 animate-pulse"
               >
                 <div className="flex gap-4">
-                  <div className="w-16 h-16 rounded-xl bg-zinc-400/10" />
-                  <div className="flex-1 space-y-2">
-                    <div className="h-5 w-3/4 rounded bg-zinc-400/10" />
-                    <div className="h-3 w-full rounded bg-zinc-400/10" />
+                  <div className="w-16 h-16 rounded-xl bg-zinc-400/15" />
+                  <div className="flex-1 space-y-2.5 pt-1">
+                    <div className="h-4 w-3/4 rounded bg-zinc-400/15" />
+                    <div className="h-3 w-1/2 rounded bg-zinc-400/15" />
+                    <div className="h-3 w-full rounded bg-zinc-400/15" />
                   </div>
                 </div>
               </div>
             ))}
           </div>
         ) : items.length === 0 ? (
-          <div className="text-center py-16 opacity-60">
-            <p className="text-lg">কোনো স্থান পাওয়া যায়নি</p>
+          <div className="text-center py-16 rounded-2xl bg-zinc-400/5">
+            <Map className="w-10 h-10 mx-auto opacity-40 mb-3" />
+            <p className="text-base font-medium">কোনো স্থান পাওয়া যায়নি</p>
+            <p className="text-sm text-zinc-500 mt-1">
+              অন্য কীওয়ার্ড বা ফিল্টার দিয়ে চেষ্টা করুন
+            </p>
           </div>
         ) : (
           items.map((item) => (
             <Link
               key={item.id}
               href={`/bangladesh/tourism/${item.slug}`}
-              className="block rounded-2xl bg-zinc-400/10 p-4 transition-all hover:bg-zinc-400/25"
+              className="block rounded-2xl bg-zinc-400/10 p-4 transition hover:bg-zinc-400/20"
             >
               <div className="flex gap-4 items-start">
-                <div className="shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-zinc-400/10">
+                <div className="shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-zinc-400/15">
                   {item.image_url ? (
                     <img
                       src={item.image_url}
                       alt={item.title}
                       className="w-full h-full object-cover"
+                      loading="lazy"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center opacity-50">
+                    <div className="w-full h-full flex items-center justify-center opacity-40">
                       <Map className="w-7 h-7" />
                     </div>
                   )}
@@ -260,32 +267,32 @@ export default function TourismClient() {
 
                 <div className="flex-1 min-w-0 space-y-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="text-lg font-medium line-clamp-1">
+                    <h2 className="text-base font-semibold line-clamp-1">
                       {item.title}
                     </h2>
                     {item.type_label && (
-                      <span className="text-xs px-2 py-0.5 rounded bg-zinc-400/10">
+                      <span className="text-[11px] px-2 py-0.5 rounded-md bg-zinc-400/15">
                         {item.type_label}
                       </span>
                     )}
                   </div>
 
-                  <p className="text-xs flex items-center gap-1 opacity-70">
+                  <p className="text-xs flex items-center gap-1 text-zinc-500">
                     <MapPin className="w-3 h-3" />
-                    {item.thana || "..."} • {item.district || "..."}
+                    {item.thana || "—"} • {item.district || "—"}
                   </p>
 
                   {item.description && (
-                    <p className="text-sm line-clamp-2 opacity-80">
+                    <p className="text-sm line-clamp-2 text-zinc-600 dark:text-zinc-400">
                       {item.description.replace(/<[^>]+>/g, "")}
                     </p>
                   )}
                 </div>
               </div>
 
-              <div className="mt-3 pt-3 border-t border-zinc-400/25">
-                <span className="inline-flex items-center gap-2 text-xs  hover:underline">
-                  বিস্তারিত পড়ুন
+              <div className="mt-3 pt-3 border-t border-zinc-400/20">
+                <span className="inline-flex items-center gap-1.5 text-xs font-medium">
+                  বিস্তারিত পড়ুন
                   <ArrowRight className="w-3.5 h-3.5" />
                 </span>
               </div>
@@ -296,11 +303,11 @@ export default function TourismClient() {
 
       {/* Load more */}
       {hasMore && (
-        <div className="flex justify-center py-4">
+        <div className="flex justify-center pt-2">
           <button
             onClick={() => setSize(size + 1)}
             disabled={isValidating}
-            className="px-5 py-2.5 rounded-xl bg-zinc-400/10 text-sm disabled:opacity-50"
+            className="px-6 py-2.5 rounded-xl bg-zinc-400/10 text-sm font-medium hover:bg-zinc-400/20 transition disabled:opacity-50"
           >
             {isValidating ? (
               <span className="flex items-center gap-2">
@@ -314,16 +321,28 @@ export default function TourismClient() {
         </div>
       )}
 
-      {/* SEO block */}
-      <section className="space-y-3 pt-6 text-sm opacity-80">
-        <h2 className="text-lg font-bold">
+      {/* SEO Content Block - AdSense friendly */}
+      <section className="space-y-4 pt-8 border-t border-zinc-400/20">
+        <h2 className="text-xl font-bold">
           বাংলাদেশের পর্যটন কেন্দ্র সম্পর্কে
         </h2>
-        <p>
-          এই পেজে বাংলাদেশের সকল জেলার দর্শনীয় স্থান, ঐতিহাসিক নিদর্শন ও
-          প্রাকৃতিক সৌন্দর্যের তালিকা দেওয়া আছে। জেলা বা ধরন অনুসারে ফিল্টার করে
-          প্রয়োজনীয় স্থান খুঁজে নিন।
-        </p>
+        <div className="space-y-3 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+          <p>
+            বাংলাদেশে রয়েছে অসংখ্য দর্শনীয় স্থান, ঐতিহাসিক নিদর্শন এবং প্রাকৃতিক
+            সৌন্দর্য। সুন্দরবন, কক্সবাজার, সিলেটের চা বাগান, বান্দরবানের পাহাড়,
+            কুয়াকাটাসহ দেশের প্রতিটি জেলায়ই ভ্রমণের আকর্ষণীয় স্থান রয়েছে।
+          </p>
+          <p>
+            এই পেজে আপনি বাংলাদেশের সকল জেলার পর্যটন কেন্দ্রের তালিকা পাবেন।
+            বিভাগ, জেলা বা ধরন অনুসারে ফিল্টার করে সহজেই আপনার পছন্দের স্থান
+            খুঁজে নিতে পারবেন। প্রতিটি স্থানের সংক্ষিপ্ত বিবরণ ও অবস্থান দেওয়া
+            আছে।
+          </p>
+          <p>
+            ভ্রমণ পরিকল্পনা করার আগে স্থানের বিস্তারিত তথ্য জেনে নিন। তথ্যবক্স
+            থেকে সহজেই নির্ভরযোগ্য পর্যটন গাইড পেয়ে যাবেন।
+          </p>
+        </div>
       </section>
     </div>
   );

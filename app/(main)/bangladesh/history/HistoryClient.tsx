@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import useSWRInfinite from "swr/infinite";
 import {
-  Building2,
+  Landmark,
   Search,
   X,
   ArrowRight,
@@ -102,7 +102,10 @@ export default function HistoryClient() {
   const { data, size, setSize, isValidating, error } = useSWRInfinite(
     getKey,
     fetcher,
-    { revalidateFirstPage: false, revalidateOnFocus: false },
+    {
+      revalidateFirstPage: false,
+      revalidateOnFocus: false,
+    },
   );
 
   const items: Item[] = data ? data.flatMap((p) => p.data || []) : [];
@@ -125,45 +128,48 @@ export default function HistoryClient() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-4 p-4 sm:p-6">
-      <header>
-        <h1 className="text-2xl font-bold flex items-center gap-2">
-          <Building2 className="w-6 h-6" />
+    <div className="max-w-2xl mx-auto space-y-8 px-4 py-6 sm:py-8">
+      {/* Header */}
+      <header className="space-y-2">
+        <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2.5 tracking-tight">
+          <Landmark className="w-7 h-7" />
           বাংলাদেশের ইতিহাস ও ঐতিহ্য
         </h1>
-        <p className="text-sm mt-1">
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">
           প্রাচীনকাল থেকে বর্তমান পর্যন্ত গৌরবময় ঐতিহাসিক প্রেক্ষাপট ও
           প্রত্নতাত্ত্বিক নিদর্শন
         </p>
       </header>
 
-      <div className="space-y-4">
-        <div className="flex gap-4">
+      {/* Search + Filters */}
+      <div className="space-y-3">
+        <div className="flex gap-2">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 opacity-50" />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="নামে, যুগে বা বিবরণে খুঁজুন..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-400/25 bg-zinc-400/10 text-sm outline-none"
+              className="w-full pl-10 pr-4 py-3 rounded-xl bg-zinc-400/10 text-sm outline-none hover:bg-zinc-400/15 transition"
             />
           </div>
+
           {hasFilters && (
             <button
-              type="button"
               onClick={resetFilters}
-              className="p-2.5 rounded-xl border border-zinc-400/25 outline-none"
+              className="px-3.5 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/20 transition"
+              title="ফিল্টার মুছুন"
             >
               <X className="w-5 h-5" />
             </button>
           )}
         </div>
 
-        <div className="flex gap-2 overflow-x-auto pb-1">
+        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
           <select
             value={divisionId}
             onChange={(e) => setDivisionId(e.target.value)}
-            className="min-w-32 rounded-lg border border-zinc-400/25 bg-zinc-400/10 text-sm px-3 py-2 outline-none"
+            className="min-w-[120px] rounded-xl bg-zinc-400/10 text-sm px-3 py-2.5 outline-none"
           >
             <option value="">সকল বিভাগ</option>
             {divisions.map((d) => (
@@ -177,7 +183,7 @@ export default function HistoryClient() {
             value={districtId}
             onChange={(e) => setDistrictId(e.target.value)}
             disabled={!divisionId}
-            className="min-w-32 rounded-lg border border-zinc-400/25 bg-zinc-400/10 text-sm outline-none px-3 py-2 disabled:opacity-50"
+            className="min-w-[120px] rounded-xl bg-zinc-400/10 text-sm px-3 py-2.5 outline-none disabled:opacity-50"
           >
             <option value="">সকল জেলা</option>
             {districts.map((d) => (
@@ -191,7 +197,7 @@ export default function HistoryClient() {
             value={thanaId}
             onChange={(e) => setThanaId(e.target.value)}
             disabled={!districtId}
-            className="min-w-32 rounded-lg border border-zinc-400/25 bg-zinc-400/10 text-sm outline-none px-3 py-2 disabled:opacity-50"
+            className="min-w-[120px] rounded-xl bg-zinc-400/10 text-sm px-3 py-2.5 outline-none disabled:opacity-50"
           >
             <option value="">সকল থানা</option>
             {thanas.map((t) => (
@@ -204,7 +210,7 @@ export default function HistoryClient() {
           <select
             value={era}
             onChange={(e) => setEra(e.target.value)}
-            className="min-w-36 rounded-lg border border-zinc-400/25 bg-zinc-400/10 text-sm px-3 py-2 outline-none"
+            className="min-w-[140px] rounded-xl bg-zinc-400/10 text-sm px-3 py-2.5 outline-none"
           >
             <option value="">সকল যুগ</option>
             {eras.map((e) => (
@@ -217,65 +223,76 @@ export default function HistoryClient() {
       </div>
 
       {hasFilters && !isLoading && (
-        <p className="text-xs text-zinc-400">{total}টি ফলাফল পাওয়া গেছে</p>
+        <p className="text-xs text-zinc-500">{total}টি ফলাফল পাওয়া গেছে</p>
       )}
 
-      <section className="space-y-4">
+      {/* List */}
+      <section className="space-y-3">
         {isLoading ? (
-          <div className="space-y-4">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
+          <div className="space-y-3">
+            {[1, 2, 3, 4, 5].map((i) => (
               <div
                 key={i}
-                className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 animate-pulse"
+                className="rounded-2xl bg-zinc-400/10 p-4 animate-pulse"
               >
                 <div className="flex gap-4">
-                  <div className="w-16 h-16 rounded-xl bg-zinc-400/10" />
-                  <div className="flex-1 space-y-2">
-                    <div className="h-5 w-3/4 rounded bg-zinc-400/10" />
-                    <div className="h-3 w-full rounded bg-zinc-400/10" />
+                  <div className="w-16 h-16 rounded-xl bg-zinc-400/15" />
+                  <div className="flex-1 space-y-2.5 pt-1">
+                    <div className="h-4 w-3/4 rounded bg-zinc-400/15" />
+                    <div className="h-3 w-1/2 rounded bg-zinc-400/15" />
+                    <div className="h-3 w-full rounded bg-zinc-400/15" />
                   </div>
                 </div>
               </div>
             ))}
           </div>
         ) : items.length === 0 ? (
-          <div className="text-center py-16">
-            <p className="text-lg ">কোনো স্থান পাওয়া যায়নি</p>
+          <div className="text-center py-16 rounded-2xl bg-zinc-400/5">
+            <Landmark className="w-10 h-10 mx-auto opacity-40 mb-3" />
+            <p className="text-base font-medium">
+              কোনো ঐতিহাসিক স্থান পাওয়া যায়নি
+            </p>
+            <p className="text-sm text-zinc-500 mt-1">
+              অন্য কীওয়ার্ড বা ফিল্টার দিয়ে চেষ্টা করুন
+            </p>
           </div>
         ) : (
           items.map((item) => (
             <Link
               key={item.id}
               href={`/bangladesh/history/${item.slug}`}
-              className="block rounded-2xl bg-zinc-400/10 p-4 transition-all hover:bg-zinc-400/25"
+              className="block rounded-2xl bg-zinc-400/10 p-4 transition hover:bg-zinc-400/20"
             >
               <div className="flex gap-4 items-start">
-                <div className="shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-zinc-400/10">
+                <div className="shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-zinc-400/15">
                   {item.image_url ? (
                     <img
                       src={item.image_url}
                       alt={item.title}
                       className="w-full h-full object-cover"
+                      loading="lazy"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Building2 className="w-7 h-7" />
+                    <div className="w-full h-full flex items-center justify-center opacity-40">
+                      <Landmark className="w-7 h-7" />
                     </div>
                   )}
                 </div>
+
                 <div className="flex-1 min-w-0 space-y-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="text-lg line-clamp-1">{item.title}</h2>
+                    <h2 className="text-base font-semibold line-clamp-1">
+                      {item.title}
+                    </h2>
                     {item.is_featured && (
-                      <span className="inline-flex items-center gap-0.5 text-xs px-1.5 py-0.5 rounded">
-                        <Star className="w-3 h-3" /> Featured
+                      <span className="inline-flex items-center gap-0.5 text-[11px] px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-600 dark:text-amber-400">
+                        <Star className="w-3 h-3" />
+                        Featured
                       </span>
                     )}
-                    <span className="text-xs px-2 py-0.5 rounded border border-zinc-400/10">
-                      ইতিহাস ও ঐতিহ্য
-                    </span>
                   </div>
-                  <div className="flex flex-wrap gap-4 text-xs">
+
+                  <div className="flex flex-wrap gap-3 text-xs text-zinc-500">
                     {item.era && (
                       <span className="inline-flex items-center gap-1">
                         <Clock className="w-3.5 h-3.5" />
@@ -289,16 +306,19 @@ export default function HistoryClient() {
                       </span>
                     )}
                   </div>
+
                   {item.description && (
-                    <p className="text-sm  line-clamp-2">
+                    <p className="text-sm line-clamp-2 text-zinc-600 dark:text-zinc-400">
                       {item.description.replace(/<[^>]+>/g, "")}
                     </p>
                   )}
                 </div>
               </div>
-              <div className="mt-3 pt-3 border-t border-zinc-400/25">
-                <span className="inline-flex items-center gap-2 text-xs hover:underline">
-                  বিস্তারিত পড়ুন <ArrowRight className="w-3.5 h-3.5" />
+
+              <div className="mt-3 pt-3 border-t border-zinc-400/20">
+                <span className="inline-flex items-center gap-1.5 text-xs font-medium">
+                  বিস্তারিত পড়ুন
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </span>
               </div>
             </Link>
@@ -306,28 +326,49 @@ export default function HistoryClient() {
         )}
       </section>
 
+      {/* Load more */}
       {hasMore && (
-        <div className="flex justify-center py-6">
+        <div className="flex justify-center pt-2">
           <button
-            type="button"
             onClick={() => setSize(size + 1)}
             disabled={isValidating}
-            className="px-5 py-2.5 rounded-xl border border-zinc-400/25 text-sm disabled:opacity-50"
+            className="px-6 py-2.5 rounded-xl bg-zinc-400/10 text-sm font-medium hover:bg-zinc-400/20 transition disabled:opacity-50"
           >
-            {isValidating ? "লোড হচ্ছে..." : "আরও দেখুন"}
+            {isValidating ? (
+              <span className="flex items-center gap-2">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                লোড হচ্ছে...
+              </span>
+            ) : (
+              "আরও দেখুন"
+            )}
           </button>
         </div>
       )}
 
-      <section className="space-y-4 pt-6 border-t border-zinc-400/25 text-sm ">
-        <h2 className="text-lg font-bold">
+      {/* SEO + AdSense Content Block */}
+      <section className="space-y-4 pt-8 border-t border-zinc-400/20">
+        <h2 className="text-xl font-bold">
           বাংলাদেশের ঐতিহাসিক স্থান সম্পর্কে
         </h2>
-        <p>
-          এই পেজে বাংলাদেশের সকল জেলার প্রাচীন রাজপ্রাসাদ, জমিদার বাড়ি,
-          প্রত্নতাত্ত্বিক নিদর্শন ও গৌরবময় ইতিহাসের তালিকা দেওয়া আছে। জেলা বা
-          যুগ অনুসারে ফিল্টার করে প্রয়োজনীয় স্থান খুঁজে নিন।
-        </p>
+        <div className="space-y-3 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+          <p>
+            বাংলাদেশের ইতিহাস অত্যন্ত সমৃদ্ধ ও গৌরবময়। প্রাচীনকালের মৌর্য,
+            গুপ্ত, পাল ও সেন যুগ থেকে শুরু করে মধ্যযুগের সুলতানি ও মুঘল আমল,
+            ব্রিটিশ শাসন এবং ১৯৭১ সালের মহান মুক্তিযুদ্ধ — সবই এই দেশের
+            অবিচ্ছেদ্য অংশ।
+          </p>
+          <p>
+            এই পেজে আপনি বাংলাদেশের সকল জেলার প্রাচীন রাজপ্রাসাদ, জমিদার বাড়ি,
+            প্রত্নতাত্ত্বিক নিদর্শন, দুর্গ, মসজিদ, মন্দির এবং অন্যান্য ঐতিহাসিক
+            স্থানের তালিকা পাবেন। যুগ, বিভাগ বা জেলা অনুসারে ফিল্টার করে সহজেই
+            প্রয়োজনীয় স্থান খুঁজে নিতে পারবেন।
+          </p>
+          <p>
+            তথ্যবক্স থেকে নির্ভরযোগ্য ও হালনাগাদ তথ্য নিয়ে বাংলাদেশের গৌরবময়
+            ইতিহাস ও ঐতিহ্য সম্পর্কে বিস্তারিত জানুন।
+          </p>
+        </div>
       </section>
     </div>
   );

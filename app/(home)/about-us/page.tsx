@@ -13,11 +13,23 @@ export const metadata: Metadata = {
     "ডিজিটাল সেবা",
     "বিশ্বকোষ",
   ],
+  alternates: {
+    canonical: "https://totthobox.com/about-us", // তোমার আসল ডোমেইন দাও
+  },
   openGraph: {
     title: "আমাদের সম্পর্কে | Totthobox",
     description:
       "Totthobox (তথ্যবক্স) - আপনার প্রয়োজনীয় সকল তথ্য ও ডিজিটাল সেবা এক জায়গায়।",
+    url: "https://totthobox.com/about-us",
+    siteName: "Totthobox",
     type: "website",
+    locale: "bn_BD",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "আমাদের সম্পর্কে | Totthobox",
+    description:
+      "Totthobox (তথ্যবক্স) - আপনার প্রয়োজনীয় সকল তথ্য ও ডিজিটাল সেবা এক জায়গায়।",
   },
 };
 

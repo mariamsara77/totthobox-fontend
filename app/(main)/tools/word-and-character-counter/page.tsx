@@ -2,7 +2,8 @@ import { Metadata } from "next";
 import WordCounter from "@/components/tools/WordCounter";
 
 export const metadata: Metadata = {
-  title: "ওয়ার্ড অ্যান্ড ক্যারেক্টার কাউন্টার - শব্দ, অক্ষর ও লাইন হিসাব | Totthobox",
+  title:
+    "ওয়ার্ড অ্যান্ড ক্যারেক্টার কাউন্টার - শব্দ, অক্ষর ও লাইন হিসাব | তথ্যবক্স",
   description:
     "অনলাইনে তাৎক্ষণিকভাবে শব্দ, অক্ষর (স্পেসসহ/ছাড়া), বাক্য, প্যারাগ্রাফ, লাইন এবং পড়ার সময় হিসাব করুন। বাংলা ও ইংরেজি দুই ভাষাতেই নিখুঁত কাজ করে। Uppercase, Lowercase, Title Case টুলসহ।",
   keywords: [
@@ -16,21 +17,33 @@ export const metadata: Metadata = {
     "uppercase",
     "lowercase",
     "title case",
-    "Totthobox",
+    "তথ্যবক্স",
   ],
+  alternates: {
+    canonical: "https://totthobox.com/tools/word-counter",
+  },
   openGraph: {
-    title: "ওয়ার্ড অ্যান্ড ক্যারেক্টার কাউন্টার - শব্দ, অক্ষর ও লাইন হিসাব | Totthobox",
+    title:
+      "ওয়ার্ড অ্যান্ড ক্যারেক্টার কাউন্টার - শব্দ, অক্ষর ও লাইন হিসাব | তথ্যবক্স",
     description:
-      "অনলাইনে তাৎক্ষণিকভাবে শব্দ, অক্ষর (স্পেসসহ/ছাড়া), বাক্য, প্যারাগ্রাফ, লাইন এবং পড়ার সময় হিসাব করুন। বাংলা ও ইংরেজি দুই ভাষাতেই নিখুঁত কাজ করে।",
+      "অনলাইনে তাৎক্ষণিকভাবে শব্দ, অক্ষর, বাক্য, প্যারাগ্রাফ ও পড়ার সময় হিসাব করুন। বাংলা ও ইংরেজি দুই ভাষাতেই নিখুঁত কাজ করে।",
     type: "website",
     locale: "bn_BD",
     siteName: "Totthobox",
+    url: "https://totthobox.com/tools/word-counter",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title:
+      "ওয়ার্ড অ্যান্ড ক্যারেক্টার কাউন্টার - শব্দ, অক্ষর ও লাইন হিসাব | তথ্যবক্স",
+    description:
+      "অনলাইনে তাৎক্ষণিকভাবে শব্দ, অক্ষর, বাক্য, প্যারাগ্রাফ ও পড়ার সময় হিসাব করুন।",
   },
 };
 
 export default function WordCounterPage() {
   return (
-    <div className="mx-auto max-w-2xl p-4">
+    <div className="max-w-2xl mx-auto px-4 py-6 sm:py-8">
       <WordCounter />
     </div>
   );

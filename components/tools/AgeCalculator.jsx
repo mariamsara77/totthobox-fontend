@@ -66,33 +66,23 @@ function getDiff(start, end) {
 
 function getNextBirthday(dob, fromDate) {
   const next = new Date(fromDate.getFullYear(), dob.getMonth(), dob.getDate());
-  if (next < fromDate || (next.getTime() === fromDate.getTime() && fromDate.getHours() > 0)) {
-    // if already passed this year
-    if (next < fromDate) {
-      next.setFullYear(next.getFullYear() + 1);
-    }
+  if (next < fromDate) {
+    next.setFullYear(next.getFullYear() + 1);
   }
-  // handle if today is birthday
-  if (
-    next.getFullYear() === fromDate.getFullYear() &&
-    next.getMonth() === fromDate.getMonth() &&
-    next.getDate() === fromDate.getDate()
-  ) {
-    return { days: 0, date: next };
-  }
-  if (next <= fromDate) {
-    next.setFullYear(fromDate.getFullYear() + 1);
-  }
-  const days = Math.ceil((next.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24));
+  const days = Math.ceil(
+    (next.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24)
+  );
   return { days, date: next };
 }
 
 function getPrevBirthday(dob, fromDate) {
   const prev = new Date(fromDate.getFullYear(), dob.getMonth(), dob.getDate());
-  if (prev > fromDate || (prev.getTime() === fromDate.getTime())) {
+  if (prev > fromDate) {
     prev.setFullYear(prev.getFullYear() - 1);
   }
-  const days = Math.floor((fromDate.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24));
+  const days = Math.floor(
+    (fromDate.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24)
+  );
   return { days, date: prev };
 }
 
@@ -150,7 +140,6 @@ export default function AgeCalculator() {
     }
 
     const older = p1 < p2 ? "প্রথম ব্যক্তি" : "দ্বিতীয় ব্যক্তি";
-    const younger = p1 < p2 ? "দ্বিতীয় ব্যক্তি" : "প্রথম ব্যক্তি";
     const earlier = p1 < p2 ? p1 : p2;
     const later = p1 < p2 ? p2 : p1;
     const diff = getDiff(earlier, later);
@@ -158,7 +147,6 @@ export default function AgeCalculator() {
     return {
       status: "different",
       older,
-      younger,
       ...diff,
       person1Formatted: formatBanglaDate(p1),
       person2Formatted: formatBanglaDate(p2),
@@ -176,336 +164,329 @@ export default function AgeCalculator() {
   };
 
   return (
-    <section className="w-full">
-      <div className="space-y-8">
-        {/* Header */}
-        <div className="text-center space-y-2 mb-8">
-          <h1 className="text-3xl   tracking-tight ">
-            স্মার্ট এজ ক্যালকুলেটর
-          </h1>
-          <h2 className="text-lg ">
-            সঠিক বয়স, পরবর্তী জন্মদিন এবং দুইজনের বয়সের পার্থক্য নিখুঁতভাবে হিসেব করুন
-          </h2>
-        </div>
+    <section className="w-full space-y-8">
+      {/* Header */}
+      <header className="space-y-2 text-center">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+          স্মার্ট এজ ক্যালকুলেটর
+        </h1>
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          সঠিক বয়স, পরবর্তী জন্মদিন এবং দুইজনের বয়সের পার্থক্য নিখুঁতভাবে হিসেব
+          করুন
+        </p>
+      </header>
 
-       {/* Tabs */}
-<div className="flex border-b border-zinc-400/25">
-  <button
-    onClick={() => setTab("single")}
-    className={`flex-1 py-2 text-center  font-medium transition-all border-b-2 ${
-      tab === "single"
-        ? "border-emerald-600 text-emerald-600 dark:border-emerald-400 dark:text-emerald-400"
-        : "border-transparent"
-    }`}
-  >
-    একক বয়স হিসেব
-  </button>
-  <button
-    onClick={() => setTab("difference")}
-    className={`flex-1 py-2 text-center  font-medium transition-all border-b-2 ${
-      tab === "difference"
-        ? "border-emerald-600 text-emerald-600 dark:border-emerald-400 dark:text-emerald-400"
-        : "border-transparent"
-    }`}
-  >
-    বয়সের পার্থক্য
-  </button>
-</div>
-
-        {/* ========== SINGLE TAB ========== */}
-        {tab === "single" && (
-          <div className="space-y-4">
-            <div className="space-y-4 rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 sm:p-5">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm text-zinc-600 dark:text-zinc-400">
-                    জন্মতারিখ
-                  </label>
-                  <input
-                    type="date"
-                    value={dob}
-                    max={todayISO()}
-                    onChange={(e) => setDob(e.target.value)}
-                    className="w-full rounded-xl bg-zinc-100 p-2.5 outline-none dark:bg-zinc-800"
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <label className="opacity-50">
-                    কোন তারিখ পর্যন্ত হিসেব করবেন?
-                  </label>
-                  <input
-                    type="date"
-                    value={targetDate}
-                    onChange={(e) => setTargetDate(e.target.value)}
-                    className="w-full p-2 rounded-lg bg-zinc-400/10 outline-none"
-                  />
-                </div>
-              </div>
-              <button
-                onClick={resetSingle}
-                className="bg-zinc-400/10 hover:bg-zinc-400/25 rounded-lg px-4 py-2"
-              >
-                রিসেট করুন
-              </button>
-            </div>
-
-            {singleAge && (
-              <>
-                {singleAge.error ? (
-                  <div className="rounded-xl bg-zinc-400/10 p-4 text-center">
-                    {singleAge.error}
-                  </div>
-                ) : (
-                  <div className="p-4 rounded-2xl space-y-4 bg-zinc-400/10">
-                    {/* Main Age */}
-                    <div className="text-center">
-                      <p className="uppercase tracking-wider  ">
-                        {singleAge.isToday ? "আপনার বর্তমান বয়স" : "নির্দিষ্ট তারিখে আপনার বয়স"}
-                      </p>
-                      <div className="flex flex-wrap justify-center items-baseline gap-x-2 gap-y-1 mt-3">
-                        <span className="text-3xl font-bold">
-                          {singleAge.years}
-                        </span>
-                        <span className="opacity-50">
-                          বছর
-                        </span>
-                        <span className="text-3xl font-bold">
-                          {singleAge.months}
-                        </span>
-                        <span className="opacity-50">
-                          মাস
-                        </span>
-                        <span className="text-3xl font-bold">
-                          {singleAge.days}
-                        </span>
-                        <span className="opacity-50">
-                          দিন
-                        </span>
-                      </div>
-                      <p className="mt-2  ">
-                        {singleAge.birthDateFormatted} → {singleAge.targetDateFormatted}
-                      </p>
-                    </div>
-
-                    {/* Stats Grid */}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-4 border-t border-zinc-400/25">
-                      <div className="p-3 bg-zinc-400/10 rounded-xl text-center ">
-                        <div className=" text-zinc-400">মোট দিন</div>
-                        <div className="text-base sm:text-lg font-bold mt-1">
-                          {singleAge.totalDays.toLocaleString("en-IN")}
-                        </div>
-                      </div>
-                      <div className="p-3 bg-zinc-400/10 rounded-xl text-center ">
-                        <div className=" text-zinc-400">মোট সপ্তাহ</div>
-                        <div className="text-base sm:text-lg font-bold mt-1">
-                          {singleAge.totalWeeks.toLocaleString("en-IN")}
-                        </div>
-                      </div>
-                      <div className="p-3 bg-zinc-400/10 rounded-xl text-center ">
-                        <div className=" text-zinc-400">মোট মাস</div>
-                        <div className="text-base sm:text-lg font-bold mt-1">
-                          {singleAge.totalMonths.toLocaleString("en-IN")}
-                        </div>
-                      </div>
-                      <div className="p-3 bg-zinc-400/10 rounded-xl text-center ">
-                        <div className=" text-zinc-400">মোট ঘণ্টা</div>
-                        <div className="text-base sm:text-lg font-bold mt-1">
-                          {singleAge.totalHours.toLocaleString("en-IN")}
-                        </div>
-                      </div>
-                      <div className="p-3 bg-zinc-400/10 rounded-xl text-center ">
-                        <div className=" text-zinc-400">জন্মদিনের দিন</div>
-                        <div className="text-base sm:text-lg font-bold mt-1">{singleAge.dayOfWeek}</div>
-                      </div>
-                      <div className="p-3 bg-zinc-400/10 rounded-xl text-center ">
-                        <div className=" text-zinc-400">পূর্ববর্তী জন্মদিন</div>
-                        <div className="text-base sm:text-lg font-bold mt-1 text-amber-600 dark:text-amber-400">
-                          {singleAge.prevBirthdayDays} দিন আগে
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Next Birthday */}
-                    <div className="p-4 rounded-xl bg-zinc-400/10/80 border border-emerald-200 dark:border-emerald-800 text-center">
-                      <div className="  text-emerald-800 text-zinc-300">
-                        পরবর্তী জন্মদিন
-                      </div>
-                      <div className="mt-1 text-xl font-bold ">
-                        {singleAge.nextBirthdayDays === 0
-                          ? "আজই আপনার জন্মদিন! 🎉"
-                          : `${singleAge.nextBirthdayDays} দিন পর`}
-                      </div>
-                      {singleAge.nextBirthdayDays > 0 && (
-                        <div className="  mt-0.5">
-                          {singleAge.nextBirthdayDate}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-        )}
-
-        {/* ========== DIFFERENCE TAB ========== */}
-        {tab === "difference" && (
-          <div className="space-y-4">
-            <div className="rounded-2xl bg-zinc-400/10 p-4 space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-2">
-                  <label className="opacity-50">
-                    প্রথম ব্যক্তির জন্মতারিখ
-                  </label>
-                  <input
-                    type="date"
-                    value={person1Dob}
-                    max={todayISO()}
-                    onChange={(e) => setPerson1Dob(e.target.value)}
-                    className="w-full p-2 rounded-lg bg-zinc-400/10 border-none outline-none"
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <label className="opacity-50">
-                    দ্বিতীয় ব্যক্তির জন্মতারিখ
-                  </label>
-                  <input
-                    type="date"
-                    value={person2Dob}
-                    max={todayISO()}
-                    onChange={(e) => setPerson2Dob(e.target.value)}
-                    className="w-full p-2 rounded-lg bg-zinc-400/10 border-none outline-none"
-                  />
-                </div>
-              </div>
-              <button
-                onClick={resetDifference}
-                className="bg-zinc-400/10 rounded-lg py-2 px-4 hover:bg-zinc-400/25"
-              >
-                রিসেট করুন
-              </button>
-            </div>
-
-            {ageDifference && (
-              <div className="p-4  rounded-2xl text-center space-y-5 bg-zinc-400/10">
-                {ageDifference.status === "same" ? (
-                  <div className="inline-flex px-4 py-2 rounded-full bg-zinc-400/10   ">
-                    {ageDifference.message}
-                  </div>
-                ) : (
-                  <>
-                    <div className="inline-flex px-4 py-2 rounded-full bg-zinc-400/10 text-xl fotn-bold">
-                      {ageDifference.older} বড়
-                    </div>
-
-                    <div>
-                      <p className="uppercase tracking-wider  ">
-                        বয়সের পার্থক্য
-                      </p>
-                      <div className="flex flex-wrap justify-center items-baseline gap-x-2 gap-y-1 mt-2">
-                        <span className="text-2xl   ">
-                          {ageDifference.years}
-                        </span>
-                        <span className="  ">বছর</span>
-                        <span className="text-2xl   ">
-                          {ageDifference.months}
-                        </span>
-                        <span className="  ">মাস</span>
-                        <span className="text-2xl   ">
-                          {ageDifference.days}
-                        </span>
-                        <span className="  ">দিন</span>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-4 pt-2">
-                      <div className="p-2.5 bg-zinc-400/10 rounded-xl text-center">
-                        <div className=" text-zinc-400">মোট দিন</div>
-                        <div className="text-base font-bold mt-1">
-                          {ageDifference.totalDays.toLocaleString("en-IN")}
-                        </div>
-                      </div>
-                      <div className="p-2.5 bg-zinc-400/10 rounded-xl text-center">
-                        <div className=" text-zinc-400">মোট সপ্তাহ</div>
-                        <div className="text-base font-bold mt-1">
-                          {ageDifference.totalWeeks.toLocaleString("en-IN")}
-                        </div>
-                      </div>
-                      <div className="p-2.5 bg-zinc-400/10 rounded-xl text-center">
-                        <div className=" text-zinc-400">মোট মাস</div>
-                        <div className="text-base font-bold mt-1">
-                          {ageDifference.totalMonths.toLocaleString("en-IN")}
-                        </div>
-                      </div>
-                    </div>
-
-                    <p className=" ">
-                      {ageDifference.person1Formatted} ও {ageDifference.person2Formatted} এর মধ্যে
-                    </p>
-                  </>
-                )}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* SEO / Instructions */}
-        <div className="mt-16 pt-10 border-t border-zinc-400/25 space-y-4  ">
-          <div>
-            <h3 className="text-lg font-bold text-zinc-50 text-zinc-200 mb-4 flex items-center gap-2">
-              <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              স্মার্ট এজ ক্যালকুলেটর কীভাবে ব্যবহার করবেন?
-            </h3>
-            <p className="mb-4 leading-relaxed">
-              আমাদের স্মার্ট এজ ক্যালকুলেটর দিয়ে আপনি খুব সহজে এবং নিখুঁতভাবে যেকোনো ব্যক্তির বয়স হিসাব করতে পারবেন।
-              শুধু জন্মতারিখ দিলেই বছর, মাস ও দিন অনুযায়ী সম্পূর্ণ বয়স দেখাবে। এছাড়া আপনি চাইলে ভবিষ্যতের বা অতীতের কোনো
-              নির্দিষ্ট তারিখ পর্যন্ত বয়সও বের করতে পারবেন।
-            </p>
-          </div>
-
-          <div>
-            <h3 className="text-base font-bold text-zinc-50 text-zinc-200 mb-2">
-              একক বয়স হিসেবের সুবিধা
-            </h3>
-            <ul className="list-disc list-inside space-y-1.5 ml-1">
-              <li>জন্মতারিখ থেকে আজকের বা যেকোনো তারিখ পর্যন্ত সঠিক বয়স (বছর-মাস-দিন)</li>
-              <li>মোট কত দিন, সপ্তাহ, মাস ও ঘণ্টা পার হয়েছে তা এক নজরে</li>
-              <li>পরবর্তী জন্মদিন কত দিন পরে এবং কোন তারিখে</li>
-              <li>পূর্ববর্তী জন্মদিন কত দিন আগে পার হয়েছে</li>
-              <li>কোন দিনে জন্ম হয়েছিল (সোমবার, মঙ্গলবার ইত্যাদি)</li>
-              <li>রিসেট বাটন দিয়ে সহজে নতুন হিসাব শুরু করা</li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-base font-bold text-zinc-50 text-zinc-200 mb-2">
-              বয়সের পার্থক্য হিসেব
-            </h3>
-            <p className="leading-relaxed">
-              দুইজনের জন্মতারিখ দিয়ে কে কত বছর-মাস-দিন বড় বা ছোট তা মুহূর্তেই জানতে পারবেন। এছাড়া মোট দিন, সপ্তাহ ও
-              মাসের পার্থক্যও দেখাবে। বন্ধু, ভাইবোন বা পরিবারের সদস্যদের মধ্যে বয়সের তুলনা করতে এটি খুবই উপযোগী।
-            </p>
-          </div>
-
-          <div>
-            <h3 className="text-base font-bold text-zinc-50 text-zinc-200 mb-2">
-              কেন এই ক্যালকুলেটর ব্যবহার করবেন?
-            </h3>
-            <p className="leading-relaxed">
-              অনেক সময় সরকারি ফর্ম, চাকরির আবেদন, স্কুল-কলেজের ভর্তি বা ব্যক্তিগত প্রয়োজনে সঠিক বয়স জানার প্রয়োজন হয়।
-              এই টুলটি নিখুঁতভাবে তারিখের পার্থক্য গণনা করে, তাই ভুল হওয়ার সম্ভাবনা নেই। সম্পূর্ণ ফ্রি, কোনো
-              রেজিস্ট্রেশন লাগে না এবং আপনার ডেটা কোথাও সংরক্ষণ করা হয় না। বাংলা ভাষায় ইন্টারফেস থাকায় যেকোনো বয়সের
-              ব্যবহারকারী সহজেই ব্যবহার করতে পারবেন।
-            </p>
-          </div>
-        </div>
+      {/* Tabs */}
+      <div className="flex rounded-xl bg-zinc-400/10 p-1">
+        <button
+          onClick={() => setTab("single")}
+          className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition ${
+            tab === "single"
+              ? "bg-zinc-700 text-white"
+              : "hover:bg-zinc-400/15"
+          }`}
+        >
+          একক বয়স হিসেব
+        </button>
+        <button
+          onClick={() => setTab("difference")}
+          className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition ${
+            tab === "difference"
+              ? "bg-zinc-700 text-white"
+              : "hover:bg-zinc-400/15"
+          }`}
+        >
+          বয়সের পার্থক্য
+        </button>
       </div>
+
+      {/* ========== SINGLE TAB ========== */}
+      {tab === "single" && (
+        <div className="space-y-4">
+          <div className="rounded-2xl bg-zinc-400/10 p-4 sm:p-5 space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-sm text-zinc-600 dark:text-zinc-400">
+                  জন্মতারিখ
+                </label>
+                <input
+                  type="date"
+                  value={dob}
+                  max={todayISO()}
+                  onChange={(e) => setDob(e.target.value)}
+                  className="w-full rounded-xl bg-zinc-400/10 px-3 py-2.5 text-sm outline-none"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-sm text-zinc-600 dark:text-zinc-400">
+                  কোন তারিখ পর্যন্ত হিসেব করবেন?
+                </label>
+                <input
+                  type="date"
+                  value={targetDate}
+                  onChange={(e) => setTargetDate(e.target.value)}
+                  className="w-full rounded-xl bg-zinc-400/10 px-3 py-2.5 text-sm outline-none"
+                />
+              </div>
+            </div>
+            <button
+              onClick={resetSingle}
+              className="px-4 py-2 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/20 text-sm transition"
+            >
+              রিসেট করুন
+            </button>
+          </div>
+
+          {singleAge && (
+            <>
+              {singleAge.error ? (
+                <div className="rounded-2xl bg-rose-500/10 p-4 text-center text-rose-600 dark:text-rose-400">
+                  {singleAge.error}
+                </div>
+              ) : (
+                <div className="rounded-2xl bg-zinc-400/10 p-5 space-y-5">
+                  {/* Main Age */}
+                  <div className="text-center space-y-2">
+                    <p className="text-xs uppercase tracking-wider text-zinc-500">
+                      {singleAge.isToday
+                        ? "আপনার বর্তমান বয়স"
+                        : "নির্দিষ্ট তারিখে আপনার বয়স"}
+                    </p>
+                    <div className="flex flex-wrap justify-center items-baseline gap-x-2 gap-y-1">
+                      <span className="text-3xl font-bold">
+                        {singleAge.years}
+                      </span>
+                      <span className="text-sm opacity-60">বছর</span>
+                      <span className="text-3xl font-bold">
+                        {singleAge.months}
+                      </span>
+                      <span className="text-sm opacity-60">মাস</span>
+                      <span className="text-3xl font-bold">
+                        {singleAge.days}
+                      </span>
+                      <span className="text-sm opacity-60">দিন</span>
+                    </div>
+                    <p className="text-xs text-zinc-500">
+                      {singleAge.birthDateFormatted} →{" "}
+                      {singleAge.targetDateFormatted}
+                    </p>
+                  </div>
+
+                  {/* Stats Grid */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-4 border-t border-zinc-400/20">
+                    <div className="p-3 rounded-xl bg-zinc-400/10 text-center">
+                      <div className="text-xs text-zinc-500">মোট দিন</div>
+                      <div className="text-base font-bold mt-1">
+                        {singleAge.totalDays.toLocaleString("bn-BD")}
+                      </div>
+                    </div>
+                    <div className="p-3 rounded-xl bg-zinc-400/10 text-center">
+                      <div className="text-xs text-zinc-500">মোট সপ্তাহ</div>
+                      <div className="text-base font-bold mt-1">
+                        {singleAge.totalWeeks.toLocaleString("bn-BD")}
+                      </div>
+                    </div>
+                    <div className="p-3 rounded-xl bg-zinc-400/10 text-center">
+                      <div className="text-xs text-zinc-500">মোট মাস</div>
+                      <div className="text-base font-bold mt-1">
+                        {singleAge.totalMonths.toLocaleString("bn-BD")}
+                      </div>
+                    </div>
+                    <div className="p-3 rounded-xl bg-zinc-400/10 text-center">
+                      <div className="text-xs text-zinc-500">মোট ঘণ্টা</div>
+                      <div className="text-base font-bold mt-1">
+                        {singleAge.totalHours.toLocaleString("bn-BD")}
+                      </div>
+                    </div>
+                    <div className="p-3 rounded-xl bg-zinc-400/10 text-center">
+                      <div className="text-xs text-zinc-500">জন্মদিনের দিন</div>
+                      <div className="text-base font-bold mt-1">
+                        {singleAge.dayOfWeek}
+                      </div>
+                    </div>
+                    <div className="p-3 rounded-xl bg-zinc-400/10 text-center">
+                      <div className="text-xs text-zinc-500">
+                        পূর্ববর্তী জন্মদিন
+                      </div>
+                      <div className="text-base font-bold mt-1 text-amber-600 dark:text-amber-400">
+                        {singleAge.prevBirthdayDays} দিন আগে
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Next Birthday */}
+                  <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-center">
+                    <div className="text-xs text-emerald-700 dark:text-emerald-400">
+                      পরবর্তী জন্মদিন
+                    </div>
+                    <div className="mt-1 text-xl font-bold">
+                      {singleAge.nextBirthdayDays === 0
+                        ? "আজই আপনার জন্মদিন! 🎉"
+                        : `${singleAge.nextBirthdayDays} দিন পর`}
+                    </div>
+                    {singleAge.nextBirthdayDays > 0 && (
+                      <div className="text-xs opacity-70 mt-0.5">
+                        {singleAge.nextBirthdayDate}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
+
+      {/* ========== DIFFERENCE TAB ========== */}
+      {tab === "difference" && (
+        <div className="space-y-4">
+          <div className="rounded-2xl bg-zinc-400/10 p-4 sm:p-5 space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-sm text-zinc-600 dark:text-zinc-400">
+                  প্রথম ব্যক্তির জন্মতারিখ
+                </label>
+                <input
+                  type="date"
+                  value={person1Dob}
+                  max={todayISO()}
+                  onChange={(e) => setPerson1Dob(e.target.value)}
+                  className="w-full rounded-xl bg-zinc-400/10 px-3 py-2.5 text-sm outline-none"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-sm text-zinc-600 dark:text-zinc-400">
+                  দ্বিতীয় ব্যক্তির জন্মতারিখ
+                </label>
+                <input
+                  type="date"
+                  value={person2Dob}
+                  max={todayISO()}
+                  onChange={(e) => setPerson2Dob(e.target.value)}
+                  className="w-full rounded-xl bg-zinc-400/10 px-3 py-2.5 text-sm outline-none"
+                />
+              </div>
+            </div>
+            <button
+              onClick={resetDifference}
+              className="px-4 py-2 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/20 text-sm transition"
+            >
+              রিসেট করুন
+            </button>
+          </div>
+
+          {ageDifference && (
+            <div className="rounded-2xl bg-zinc-400/10 p-5 text-center space-y-5">
+              {ageDifference.status === "same" ? (
+                <div className="inline-flex px-4 py-2 rounded-full bg-zinc-400/15 text-sm font-medium">
+                  {ageDifference.message}
+                </div>
+              ) : (
+                <>
+                  <div className="inline-flex px-4 py-2 rounded-full bg-zinc-400/15 text-sm font-medium">
+                    {ageDifference.older} বড়
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className="text-xs uppercase tracking-wider text-zinc-500">
+                      বয়সের পার্থক্য
+                    </p>
+                    <div className="flex flex-wrap justify-center items-baseline gap-x-2 gap-y-1">
+                      <span className="text-2xl font-bold">
+                        {ageDifference.years}
+                      </span>
+                      <span className="text-sm opacity-60">বছর</span>
+                      <span className="text-2xl font-bold">
+                        {ageDifference.months}
+                      </span>
+                      <span className="text-sm opacity-60">মাস</span>
+                      <span className="text-2xl font-bold">
+                        {ageDifference.days}
+                      </span>
+                      <span className="text-sm opacity-60">দিন</span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="p-3 rounded-xl bg-zinc-400/10 text-center">
+                      <div className="text-xs text-zinc-500">মোট দিন</div>
+                      <div className="text-base font-bold mt-1">
+                        {ageDifference.totalDays.toLocaleString("bn-BD")}
+                      </div>
+                    </div>
+                    <div className="p-3 rounded-xl bg-zinc-400/10 text-center">
+                      <div className="text-xs text-zinc-500">মোট সপ্তাহ</div>
+                      <div className="text-base font-bold mt-1">
+                        {ageDifference.totalWeeks.toLocaleString("bn-BD")}
+                      </div>
+                    </div>
+                    <div className="p-3 rounded-xl bg-zinc-400/10 text-center">
+                      <div className="text-xs text-zinc-500">মোট মাস</div>
+                      <div className="text-base font-bold mt-1">
+                        {ageDifference.totalMonths.toLocaleString("bn-BD")}
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-zinc-500">
+                    {ageDifference.person1Formatted} ও{" "}
+                    {ageDifference.person2Formatted} এর মধ্যে
+                  </p>
+                </>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* SEO Content */}
+      <section className="space-y-6 pt-8 border-t border-zinc-400/20">
+        <div className="space-y-3">
+          <h2 className="text-xl font-bold">
+            স্মার্ট এজ ক্যালকুলেটর কীভাবে ব্যবহার করবেন?
+          </h2>
+          <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+            আমাদের স্মার্ট এজ ক্যালকুলেটর দিয়ে আপনি খুব সহজে এবং নিখুঁতভাবে
+            যেকোনো ব্যক্তির বয়স হিসাব করতে পারবেন। শুধু জন্মতারিখ দিলেই বছর, মাস
+            ও দিন অনুযায়ী সম্পূর্ণ বয়স দেখাবে। এছাড়া আপনি চাইলে ভবিষ্যতের বা
+            অতীতের কোনো নির্দিষ্ট তারিখ পর্যন্ত বয়সও বের করতে পারবেন।
+          </p>
+        </div>
+
+        <div className="space-y-2">
+          <h3 className="text-lg font-semibold">একক বয়স হিসেবের সুবিধা</h3>
+          <ul className="space-y-1.5 text-sm text-zinc-600 dark:text-zinc-400 list-disc list-inside">
+            <li>
+              জন্মতারিখ থেকে আজকের বা যেকোনো তারিখ পর্যন্ত সঠিক বয়স (বছর-মাস-দিন)
+            </li>
+            <li>মোট কত দিন, সপ্তাহ, মাস ও ঘণ্টা পার হয়েছে তা এক নজরে</li>
+            <li>পরবর্তী জন্মদিন কত দিন পরে এবং কোন তারিখে</li>
+            <li>পূর্ববর্তী জন্মদিন কত দিন আগে পার হয়েছে</li>
+            <li>কোন দিনে জন্ম হয়েছিল (সোমবার, মঙ্গলবার ইত্যাদি)</li>
+          </ul>
+        </div>
+
+        <div className="space-y-2">
+          <h3 className="text-lg font-semibold">বয়সের পার্থক্য হিসেব</h3>
+          <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+            দুইজনের জন্মতারিখ দিয়ে কে কত বছর-মাস-দিন বড় বা ছোট তা মুহূর্তেই জানতে
+            পারবেন। এছাড়া মোট দিন, সপ্তাহ ও মাসের পার্থক্যও দেখাবে। বন্ধু, ভাইবোন
+            বা পরিবারের সদস্যদের মধ্যে বয়সের তুলনা করতে এটি খুবই উপযোগী।
+          </p>
+        </div>
+
+        <div className="space-y-2">
+          <h3 className="text-lg font-semibold">
+            কেন এই ক্যালকুলেটর ব্যবহার করবেন?
+          </h3>
+          <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+            অনেক সময় সরকারি ফর্ম, চাকরির আবেদন, স্কুল-কলেজের ভর্তি বা ব্যক্তিগত
+            প্রয়োজনে সঠিক বয়স জানার প্রয়োজন হয়। এই টুলটি নিখুঁতভাবে তারিখের
+            পার্থক্য গণনা করে, তাই ভুল হওয়ার সম্ভাবনা নেই। সম্পূর্ণ ফ্রি, কোনো
+            রেজিস্ট্রেশন লাগে না এবং আপনার ডেটা কোথাও সংরক্ষণ করা হয় না।
+          </p>
+        </div>
+      </section>
     </section>
   );
 }

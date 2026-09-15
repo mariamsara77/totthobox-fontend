@@ -7,7 +7,8 @@ type Props = {
 };
 
 async function getTourism(slug: string) {
-  const base = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+  const base =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
   const res = await fetch(`${base}/api/tourism-bd/${slug}`, {
     cache: "no-store",
   });
@@ -28,9 +29,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const title = `${item.title} | বাংলাদেশের পর্যটন কেন্দ্র | তথ্যবক্স`;
-  const description = (item.description || `${item.title} সম্পর্কে বিস্তারিত ভ্রমণ গাইড।`)
+  const description = (
+    item.description || `${item.title} সম্পর্কে বিস্তারিত ভ্রমণ গাইড।`
+  )
     .replace(/<[^>]+>/g, "")
-    .slice(0, 155);
+    .slice(0, 160);
 
   return {
     title,
@@ -43,6 +46,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: "article",
       locale: "bn_BD",
       siteName: "Totthobox",
+      url: `https://totthobox.com/bangladesh/tourism/${item.slug}`,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
     },
     alternates: {
       canonical: `https://totthobox.com/bangladesh/tourism/${item.slug}`,

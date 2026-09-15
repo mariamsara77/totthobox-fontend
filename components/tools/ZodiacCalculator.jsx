@@ -190,7 +190,10 @@ const ZODIACS = [
 
 function getZodiacData(month, day) {
   for (const z of ZODIACS) {
-    if ((month === z.startM && day >= z.startD) || (month === z.endM && day <= z.endD)) {
+    if (
+      (month === z.startM && day >= z.startD) ||
+      (month === z.endM && day <= z.endD)
+    ) {
       return z;
     }
   }
@@ -209,7 +212,7 @@ function todayISO() {
 }
 
 function getElementKey(elementStr) {
-  return elementStr.split(" ")[0]; // অগ্নি, জল, পৃথিবী, বায়ু
+  return elementStr.split(" ")[0];
 }
 
 export default function ZodiacCalculator() {
@@ -252,7 +255,8 @@ export default function ZodiacCalculator() {
 
     if (el1 === el2) {
       score = 95;
-      message = "চমৎকার মিল! আপনাদের স্বভাব ও চিন্তাধারায় দারুণ সামঞ্জস্য রয়েছে।";
+      message =
+        "চমৎকার মিল! আপনাদের স্বভাব ও চিন্তাধারায় দারুণ সামঞ্জস্য রয়েছে।";
       status = "excellent";
     } else if (
       (el1 === "অগ্নি" && el2 === "বায়ু") ||
@@ -261,7 +265,8 @@ export default function ZodiacCalculator() {
       (el2 === "পৃথিবী" && el1 === "জল")
     ) {
       score = 85;
-      message = "খুব ভালো মিল! আপনারা একে অপরকে দারুণভাবে পরিপূরক করেন।";
+      message =
+        "খুব ভালো মিল! আপনারা একে অপরকে দারুণভাবে পরিপূরক করেন।";
       status = "good";
     } else if (
       (el1 === "অগ্নি" && el2 === "জল") ||
@@ -270,286 +275,279 @@ export default function ZodiacCalculator() {
       (el2 === "পৃথিবী" && el1 === "বায়ু")
     ) {
       score = 45;
-      message = "পার্থক্য রয়েছে! আপনাদের সম্পর্ক টিকিয়ে রাখতে ভালো বোঝাপড়া জরুরি।";
+      message =
+        "পার্থক্য রয়েছে! আপনাদের সম্পর্ক টিকিয়ে রাখতে ভালো বোঝাপড়া জরুরি।";
       status = "poor";
     } else {
       score = 65;
-      message = "মোটামুটি মিল। আপনাদের সম্পর্কে নতুনত্ব ও বৈচিত্র্য থাকতে পারে।";
+      message =
+        "মোটামুটি মিল। আপনাদের সম্পর্কে নতুনত্ব ও বৈচিত্র্য থাকতে পারে।";
       status = "average";
     }
 
     return { p1: z1, p2: z2, score, message, status };
   }, [person1Dob, person2Dob]);
 
-  const statusColor = {
-    excellent: " bg-zinc-900 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800",
-    good: "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800",
-    average: "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800",
-    medium: "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800",
-    poor: "text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800",
+  const statusStyles = {
+    excellent: "bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-400",
+    good: "bg-blue-500/10 border-blue-500/20 text-blue-700 dark:text-blue-400",
+    average: "bg-amber-500/10 border-amber-500/20 text-amber-700 dark:text-amber-400",
+    medium: "bg-amber-500/10 border-amber-500/20 text-amber-700 dark:text-amber-400",
+    poor: "bg-rose-500/10 border-rose-500/20 text-rose-700 dark:text-rose-400",
   };
 
   return (
-    <section className="w-full">
-      <div className="space-y-8">
-        {/* Header */}
-        <div className="text-center space-y-2 mb-8">
-          <h1 className="text-3xl   tracking-tight text-zinc-50 dark:text-white">
-            স্মার্ট রাশিফল ক্যালকুলেটর
-          </h1>
-          <h2 className="text-lg ">
-            জন্মতারিখ দিয়ে আপনার সঠিক রাশি এবং দুইজনের রাশির মিল নিখুঁতভাবে হিসেব করুন
-          </h2>
-        </div>
+    <section className="w-full space-y-8">
+      {/* Header */}
+      <header className="space-y-2 text-center">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+          স্মার্ট রাশিফল ক্যালকুলেটর
+        </h1>
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          জন্মতারিখ দিয়ে আপনার সঠিক রাশি এবং দুইজনের রাশির মিল নিখুঁতভাবে হিসেব
+          করুন
+        </p>
+      </header>
 
-        {/* Tabs */}
-        <div className="flex rounded-xl overflow-hidden border border-zinc-400/25 dark:border-zinc-700">
-          <button
-            onClick={() => setTab("single")}
-            className={`flex-1 py-2 text-sm   ${
-              tab === "single"
-                ? "bg-indigo-500 text-white"
-                : "bg-zinc-400/10  hover:bg-zinc-900 hover:bg-zinc-700"
-            }`}
-          >
-            একক রাশি
-          </button>
-          <button
-            onClick={() => setTab("compatibility")}
-            className={`flex-1 py-2 text-sm   ${
-              tab === "compatibility"
-                ? "bg-indigo-500 text-white"
-                : "bg-zinc-400/10  hover:bg-zinc-900 hover:bg-zinc-700"
-            }`}
-          >
-            রাশির মিল
-          </button>
-        </div>
+      {/* Tabs */}
+      <div className="flex rounded-xl bg-zinc-400/10 p-1">
+        <button
+          onClick={() => setTab("single")}
+          className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition ${
+            tab === "single"
+              ? "bg-zinc-700 text-white"
+              : "hover:bg-zinc-400/15"
+          }`}
+        >
+          একক রাশি
+        </button>
+        <button
+          onClick={() => setTab("compatibility")}
+          className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition ${
+            tab === "compatibility"
+              ? "bg-zinc-700 text-white"
+              : "hover:bg-zinc-400/15"
+          }`}
+        >
+          রাশির মিল
+        </button>
+      </div>
 
-        {/* ========== SINGLE ========== */}
-        {tab === "single" && (
-          <div className="space-y-4">
-            <div className="rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900/50 p-4 space-y-4">
-              <div className="flex flex-col gap-2">
-                <label className="text-sm  ">
-                  আপনার জন্মতারিখ দিন
+      {/* ========== SINGLE ========== */}
+      {tab === "single" && (
+        <div className="space-y-4">
+          <div className="rounded-2xl bg-zinc-400/10 p-4 sm:p-5 space-y-4">
+            <div className="space-y-1.5">
+              <label className="text-sm text-zinc-600 dark:text-zinc-400">
+                আপনার জন্মতারিখ দিন
+              </label>
+              <input
+                type="date"
+                value={dob}
+                max={todayISO()}
+                onChange={(e) => setDob(e.target.value)}
+                className="w-full rounded-xl bg-zinc-400/10 px-3 py-2.5 text-sm outline-none"
+              />
+            </div>
+            <button
+              onClick={() => setDob("")}
+              className="px-4 py-2 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/20 text-sm transition"
+            >
+              রিসেট করুন
+            </button>
+          </div>
+
+          {singleZodiac && (
+            <>
+              {singleZodiac.error ? (
+                <div className="rounded-2xl bg-rose-500/10 p-4 text-center text-rose-600 dark:text-rose-400">
+                  {singleZodiac.error}
+                </div>
+              ) : (
+                <div className="rounded-2xl bg-zinc-400/10 p-5 space-y-5">
+                  {/* Main Display */}
+                  <div className="text-center space-y-2">
+                    <p className="text-xs uppercase tracking-wider text-zinc-500">
+                      আপনার রাশিফল
+                    </p>
+                    <div className="text-6xl">{singleZodiac.emoji}</div>
+                    <h3 className="text-2xl font-bold">{singleZodiac.name}</h3>
+                    <p className="text-sm opacity-70">{singleZodiac.en}</p>
+                    <p className="text-xs text-zinc-500">
+                      জন্মতারিখ: {singleZodiac.formattedDate}
+                    </p>
+                  </div>
+
+                  {/* Stats */}
+                  <div className="grid grid-cols-2 gap-3 pt-4 border-t border-zinc-400/20">
+                    <div className="p-3 rounded-xl bg-zinc-400/10 text-center">
+                      <div className="text-xs text-zinc-500">উপাদান</div>
+                      <div className="text-sm font-bold mt-1">
+                        {singleZodiac.element}
+                      </div>
+                    </div>
+                    <div className="p-3 rounded-xl bg-zinc-400/10 text-center">
+                      <div className="text-xs text-zinc-500">অধিপতি গ্রহ</div>
+                      <div className="text-sm font-bold mt-1">
+                        {singleZodiac.planet}
+                      </div>
+                    </div>
+                    <div className="p-3 rounded-xl bg-zinc-400/10 text-center">
+                      <div className="text-xs text-zinc-500">শুভ রং</div>
+                      <div className="text-sm font-bold mt-1">
+                        {singleZodiac.color}
+                      </div>
+                    </div>
+                    <div className="p-3 rounded-xl bg-zinc-400/10 text-center">
+                      <div className="text-xs text-zinc-500">শুভ সংখ্যা</div>
+                      <div className="text-sm font-bold mt-1">
+                        {singleZodiac.number}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Trait */}
+                  <div className="p-4 rounded-xl bg-zinc-400/10 text-center">
+                    <div className="text-xs text-zinc-500 mb-2">
+                      ব্যক্তিত্ব ও বৈশিষ্ট্য
+                    </div>
+                    <p className="text-sm leading-relaxed">
+                      “{singleZodiac.trait}”
+                    </p>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
+
+      {/* ========== COMPATIBILITY ========== */}
+      {tab === "compatibility" && (
+        <div className="space-y-4">
+          <div className="rounded-2xl bg-zinc-400/10 p-4 sm:p-5 space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-sm text-zinc-600 dark:text-zinc-400">
+                  প্রথম ব্যক্তির জন্মতারিখ
                 </label>
                 <input
                   type="date"
-                  value={dob}
+                  value={person1Dob}
                   max={todayISO()}
-                  onChange={(e) => setDob(e.target.value)}
-                  className="w-full p-2 rounded-lg bg-zinc-400/10 border-none outline-none"
+                  onChange={(e) => setPerson1Dob(e.target.value)}
+                  className="w-full rounded-xl bg-zinc-400/10 px-3 py-2.5 text-sm outline-none"
                 />
               </div>
-              <button
-                onClick={() => setDob("")}
-                className="text-sm text-zinc-400 hover:text-zinc-200 dark:hover:text-zinc-300"
-              >
-                রিসেট করুন
-              </button>
-            </div>
-
-            {singleZodiac && (
-              <>
-                {singleZodiac.error ? (
-                  <div className="rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/40 px-4 py-2 text-center text-rose-600 dark:text-rose-400 ">
-                    {singleZodiac.error}
-                  </div>
-                ) : (
-                  <div className="p-4 sm:p-6  rounded-2xl space-y-4 border border-zinc-400/25">
-                    {/* Main Display */}
-                    <div className="text-center">
-                      <p className="uppercase tracking-wider text-xs ">
-                        আপনার রাশিফল
-                      </p>
-                      <div className="mt-4 mb-2 text-7xl">{singleZodiac.emoji}</div>
-                      <h3 className="text-3xl   text-indigo-600 dark:text-indigo-400">
-                        {singleZodiac.name}
-                      </h3>
-                      <p className="text-lg   mt-1">
-                        {singleZodiac.en}
-                      </p>
-                      <p className="mt-3 text-sm ">
-                        জন্মতারিখ: {singleZodiac.formattedDate}
-                      </p>
-                    </div>
-
-                    {/* Stats */}
-                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-zinc-400/25">
-                      <div className="p-3 bg-zinc-950 bg-zinc-800 rounded-xl  text-center">
-                        <div className="text-xs text-zinc-400">উপাদান (Element)</div>
-                        <div className="text-base sm:text-lg font-bold mt-1 ">
-                          {singleZodiac.element}
-                        </div>
-                      </div>
-                      <div className="p-3 bg-zinc-950 bg-zinc-800 rounded-xl  text-center">
-                        <div className="text-xs text-zinc-400">অধিপতি গ্রহ</div>
-                        <div className="text-base sm:text-lg font-bold mt-1 text-blue-600 dark:text-blue-400">
-                          {singleZodiac.planet}
-                        </div>
-                      </div>
-                      <div className="p-3 bg-zinc-950 bg-zinc-800 rounded-xl  text-center">
-                        <div className="text-xs text-zinc-400">শুভ রং</div>
-                        <div className="text-sm font-bold mt-1 text-pink-600 dark:text-pink-400">
-                          {singleZodiac.color}
-                        </div>
-                      </div>
-                      <div className="p-3 bg-zinc-950 bg-zinc-800 rounded-xl  text-center">
-                        <div className="text-xs text-zinc-400">শুভ সংখ্যা</div>
-                        <div className="text-base sm:text-lg font-bold mt-1 text-purple-600 dark:text-purple-400">
-                          {singleZodiac.number}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Trait */}
-                    <div className="p-4 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-center">
-                      <div className="text-sm  text-indigo-800 dark:text-indigo-300 mb-2">
-                        ব্যক্তিত্ব ও বৈশিষ্ট্য
-                      </div>
-                      <div className="text-base  text-indigo-700 dark:text-indigo-400 leading-relaxed">
-                        &ldquo;{singleZodiac.trait}&rdquo;
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-        )}
-
-        {/* ========== COMPATIBILITY ========== */}
-        {tab === "compatibility" && (
-          <div className="space-y-4">
-            <div className="rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900/50 p-4 space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm  ">
-                    প্রথম ব্যক্তির জন্মতারিখ
-                  </label>
-                  <input
-                    type="date"
-                    value={person1Dob}
-                    max={todayISO()}
-                    onChange={(e) => setPerson1Dob(e.target.value)}
-                    className="w-full p-2 rounded-lg bg-zinc-400/10 border-none outline-none"
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm  ">
-                    দ্বিতীয় ব্যক্তির জন্মতারিখ
-                  </label>
-                  <input
-                    type="date"
-                    value={person2Dob}
-                    max={todayISO()}
-                    onChange={(e) => setPerson2Dob(e.target.value)}
-                    className="w-full p-2 rounded-lg bg-zinc-400/10 border-none outline-none"
-                  />
-                </div>
-              </div>
-              <button
-                onClick={() => {
-                  setPerson1Dob("");
-                  setPerson2Dob("");
-                }}
-                className="text-sm text-zinc-400 hover:text-zinc-200 dark:hover:text-zinc-300"
-              >
-                রিসেট করুন
-              </button>
-            </div>
-
-            {compatibility && (
-              <div className="p-4 sm:p-6  rounded-2xl space-y-4 border border-zinc-400/25">
-                {/* Two signs */}
-                <div className="grid grid-cols-2 gap-4 text-center">
-                  <div className="p-4 bg-zinc-950 bg-zinc-800 rounded-xl">
-                    <div className="text-4xl mb-2">{compatibility.p1.emoji}</div>
-                    <div className="font-bold text-indigo-600 dark:text-indigo-400">
-                      {compatibility.p1.name}
-                    </div>
-                    <div className="text-xs text-zinc-400">{compatibility.p1.en}</div>
-                    <div className="text-xs text-zinc-400 mt-1">{compatibility.p1.element}</div>
-                  </div>
-                  <div className="p-4 bg-zinc-950 bg-zinc-800 rounded-xl">
-                    <div className="text-4xl mb-2">{compatibility.p2.emoji}</div>
-                    <div className="font-bold text-indigo-600 dark:text-indigo-400">
-                      {compatibility.p2.name}
-                    </div>
-                    <div className="text-xs text-zinc-400">{compatibility.p2.en}</div>
-                    <div className="text-xs text-zinc-400 mt-1">{compatibility.p2.element}</div>
-                  </div>
-                </div>
-
-                {/* Score */}
-                <div
-                  className={`p-4 rounded-xl border text-center ${statusColor[compatibility.status]}`}
-                >
-                  <div className="text-sm  mb-1">মিল স্কোর</div>
-                  <div className="text-4xl ">{compatibility.score}%</div>
-                  <p className="mt-3 text-sm leading-relaxed">{compatibility.message}</p>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* SEO / Instructions */}
-        <div className="mt-16 pt-10 border-t border-zinc-400/25 space-y-4 text-sm ">
-          <div>
-            <h3 className="text-lg font-bold text-zinc-50 text-zinc-200 mb-4 flex items-center gap-2">
-              <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                  clipRule="evenodd"
+              <div className="space-y-1.5">
+                <label className="text-sm text-zinc-600 dark:text-zinc-400">
+                  দ্বিতীয় ব্যক্তির জন্মতারিখ
+                </label>
+                <input
+                  type="date"
+                  value={person2Dob}
+                  max={todayISO()}
+                  onChange={(e) => setPerson2Dob(e.target.value)}
+                  className="w-full rounded-xl bg-zinc-400/10 px-3 py-2.5 text-sm outline-none"
                 />
-              </svg>
-              স্মার্ট রাশিফল ক্যালকুলেটর কীভাবে ব্যবহার করবেন?
-            </h3>
-            <p className="leading-relaxed">
-              আমাদের স্মার্ট রাশিফল ক্যালকুলেটর দিয়ে আপনি খুব সহজে এবং নিখুঁতভাবে আপনার বা আপনার প্রিয়জনের রাশি
-              (Zodiac Sign) জানতে পারবেন। পাশ্চাত্য জ্যোতিষশাস্ত্র (Western Astrology) অনুযায়ী আপনার জন্মতারিখ
-              দিলেই আপনার রাশি, বৈশিষ্ট্য, শুভ রং ও শুভ সংখ্যা স্বয়ংক্রিয়ভাবে চলে আসবে।
-            </p>
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                setPerson1Dob("");
+                setPerson2Dob("");
+              }}
+              className="px-4 py-2 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/20 text-sm transition"
+            >
+              রিসেট করুন
+            </button>
           </div>
 
-          <div>
-            <h3 className="text-base font-bold text-zinc-50 text-zinc-200 mb-2">
-              একক রাশি হিসেবের সুবিধা
-            </h3>
-            <ul className="list-disc list-inside space-y-1.5 ml-1">
-              <li>জন্মতারিখ থেকে ১০০% সঠিক রাশি নির্ণয় (মেষ থেকে মীন)।</li>
-              <li>আপনার রাশির উপাদান (Fire, Water, Earth, Air) এবং অধিপতি গ্রহ সম্পর্কে ধারণা।</li>
-              <li>আপনার ব্যক্তিত্বের মূল বৈশিষ্ট্য ও স্বভাব।</li>
-              <li>আপনার জন্য ভাগ্যবান রং এবং শুভ সংখ্যা এক নজরে।</li>
-            </ul>
-          </div>
+          {compatibility && (
+            <div className="rounded-2xl bg-zinc-400/10 p-5 space-y-5">
+              {/* Two signs */}
+              <div className="grid grid-cols-2 gap-3 text-center">
+                <div className="p-4 rounded-xl bg-zinc-400/10">
+                  <div className="text-4xl mb-2">{compatibility.p1.emoji}</div>
+                  <div className="font-bold">{compatibility.p1.name}</div>
+                  <div className="text-xs opacity-60">{compatibility.p1.en}</div>
+                  <div className="text-xs opacity-60 mt-1">
+                    {compatibility.p1.element}
+                  </div>
+                </div>
+                <div className="p-4 rounded-xl bg-zinc-400/10">
+                  <div className="text-4xl mb-2">{compatibility.p2.emoji}</div>
+                  <div className="font-bold">{compatibility.p2.name}</div>
+                  <div className="text-xs opacity-60">{compatibility.p2.en}</div>
+                  <div className="text-xs opacity-60 mt-1">
+                    {compatibility.p2.element}
+                  </div>
+                </div>
+              </div>
 
-          <div>
-            <h3 className="text-base font-bold text-zinc-50 text-zinc-200 mb-2">
-              রাশির মিল বা জোটক বিচার (Zodiac Compatibility)
-            </h3>
-            <p className="leading-relaxed">
-              &ldquo;রাশির মিল&rdquo; ট্যাবে গিয়ে আপনি আপনার এবং আপনার পার্টনারের জন্মতারিখ দিলে, আমাদের অ্যালগরিদম
-              আপনাদের রাশির উপাদানের (Elements) উপর ভিত্তি করে একটি নিখুঁত স্কোর প্রদান করবে। এর মাধ্যমে বুঝতে পারবেন
-              আপনাদের চিন্তাধারা এবং স্বভাবের মধ্যে কতটা মিল বা অমিল রয়েছে। বন্ধুত্ব, প্রেম বা বৈবাহিক সম্পর্কের
-              ক্ষেত্রে এটি একটি দারুণ গাইডলাইন হতে পারে।
-            </p>
-          </div>
-
-          <div>
-            <h3 className="text-base font-bold text-zinc-50 text-zinc-200 mb-2">
-              কেন এই টুলটি ব্যবহার করবেন?
-            </h3>
-            <p className="leading-relaxed">
-              অনেকেই নিজের সঠিক রাশি নিয়ে বিভ্রান্তিতে থাকেন। এই টুলটি স্ট্রিক্ট ডেট রেঞ্জিং লজিক ব্যবহার করে তৈরি,
-              তাই এখানে ভুল হওয়ার কোনো সুযোগ নেই। সম্পূর্ণ ফ্রি এবং আপনার কোনো ব্যক্তিগত ডেটা সংরক্ষণ করে না।
-            </p>
-          </div>
+              {/* Score */}
+              <div
+                className={`p-4 rounded-xl border text-center ${statusStyles[compatibility.status]}`}
+              >
+                <div className="text-xs mb-1">মিল স্কোর</div>
+                <div className="text-3xl font-bold">{compatibility.score}%</div>
+                <p className="mt-3 text-sm leading-relaxed">
+                  {compatibility.message}
+                </p>
+              </div>
+            </div>
+          )}
         </div>
-      </div>
+      )}
+
+      {/* SEO Content */}
+      <section className="space-y-6 pt-8 border-t border-zinc-400/20">
+        <div className="space-y-3">
+          <h2 className="text-xl font-bold">
+            স্মার্ট রাশিফল ক্যালকুলেটর কীভাবে ব্যবহার করবেন?
+          </h2>
+          <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+            আমাদের স্মার্ট রাশিফল ক্যালকুলেটর দিয়ে আপনি খুব সহজে এবং নিখুঁতভাবে
+            আপনার বা আপনার প্রিয়জনের রাশি (Zodiac Sign) জানতে পারবেন। পাশ্চাত্য
+            জ্যোতিষশাস্ত্র অনুযায়ী আপনার জন্মতারিখ দিলেই আপনার রাশি, বৈশিষ্ট্য,
+            শুভ রং ও শুভ সংখ্যা স্বয়ংক্রিয়ভাবে চলে আসবে।
+          </p>
+        </div>
+
+        <div className="space-y-2">
+          <h3 className="text-lg font-semibold">একক রাশি হিসেবের সুবিধা</h3>
+          <ul className="space-y-1.5 text-sm text-zinc-600 dark:text-zinc-400 list-disc list-inside">
+            <li>জন্মতারিখ থেকে ১০০% সঠিক রাশি নির্ণয় (মেষ থেকে মীন)</li>
+            <li>
+              আপনার রাশির উপাদান (Fire, Water, Earth, Air) এবং অধিপতি গ্রহ
+              সম্পর্কে ধারণা
+            </li>
+            <li>আপনার ব্যক্তিত্বের মূল বৈশিষ্ট্য ও স্বভাব</li>
+            <li>আপনার জন্য ভাগ্যবান রং এবং শুভ সংখ্যা এক নজরে</li>
+          </ul>
+        </div>
+
+        <div className="space-y-2">
+          <h3 className="text-lg font-semibold">
+            রাশির মিল বা জোটক বিচার
+          </h3>
+          <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+            “রাশির মিল” ট্যাবে গিয়ে আপনি আপনার এবং আপনার পার্টনারের জন্মতারিখ
+            দিলে, আমাদের অ্যালগরিদম আপনাদের রাশির উপাদানের উপর ভিত্তি করে একটি
+            নিখুঁত স্কোর প্রদান করবে। এর মাধ্যমে বুঝতে পারবেন আপনাদের চিন্তাধারা
+            এবং স্বভাবের মধ্যে কতটা মিল বা অমিল রয়েছে।
+          </p>
+        </div>
+
+        <div className="space-y-2">
+          <h3 className="text-lg font-semibold">কেন এই টুলটি ব্যবহার করবেন?</h3>
+          <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+            অনেকেই নিজের সঠিক রাশি নিয়ে বিভ্রান্তিতে থাকেন। এই টুলটি স্ট্রিক্ট
+            ডেট রেঞ্জিং লজিক ব্যবহার করে তৈরি, তাই এখানে ভুল হওয়ার কোনো সুযোগ
+            নেই। সম্পূর্ণ ফ্রি এবং আপনার কোনো ব্যক্তিগত ডেটা সংরক্ষণ করে না।
+          </p>
+        </div>
+      </section>
     </section>
   );
 }
