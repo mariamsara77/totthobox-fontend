@@ -1,53 +1,71 @@
 "use client";
 
 import { useState } from "react";
-import { Download } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+type Props = {
+  appId: string | number;
+  name?: string;
+  platform?: string;
+};
 
 export default function DownloadButton({
   appId,
-  name,
+  name = "সফটওয়্যার",
   platform,
-}: {
-  appId: number;
-  name: string;
-  platform?: string;
-}) {
+}: Props) {
   const [loading, setLoading] = useState(false);
 
-  const handleDownload = async () => {
+  async function handleDownload() {
+    if (loading) return;
+
     setLoading(true);
+
     try {
-      const res = await fetch(`${API_BASE}/api/apps/${appId}/download`, {
-        method: "POST",
-      });
+      const baseUrl =
+        process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
-      if (!res.ok) throw new Error("Download failed");
+      const response = await fetch(
+        `${baseUrl.replace(/\/$/, "")}/api/apps/${appId}/download`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Accept: "application/json",
+          },
+        },
+      );
 
-      const data = await res.json();
-      if (data.download_url) {
-        window.open(data.download_url, "_blank");
+      const data = await response.json();
+
+      if (!response.ok || !data?.download_url) {
+        throw new Error(data?.message || "অফিসিয়াল সোর্স পাওয়া যায়নি।");
       }
+
+      window.open(data.download_url, "_blank", "noopener,noreferrer");
     } catch (error) {
-      console.error(error);
-      alert("ডাউনলোড করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+      console.error("Software source error:", error);
+
+      alert(
+        error instanceof Error ? error.message : "অফিসিয়াল সোর্স পাওয়া যায়নি।",
+      );
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   return (
     <button
+      type="button"
       onClick={handleDownload}
       disabled={loading}
-      className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white  py-3.5 px-4 rounded-xl "
+      className="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-3 text-sm font-medium transition hover:bg-zinc-400/20 disabled:cursor-not-allowed disabled:opacity-50"
     >
-      <Download className="w-5 h-5" />
+      <ExternalLink className="w-4 h-4" />
+
       {loading
-        ? "প্রসেস হচ্ছে..."
-        : `Download ${name}${platform ? ` for ${platform}` : ""} (Free)`}
+        ? "অফিসিয়াল সোর্স খোঁজা হচ্ছে..."
+        : `${name}${platform ? ` (${platform})` : ""} — অফিসিয়াল সোর্স`}
     </button>
   );
 }

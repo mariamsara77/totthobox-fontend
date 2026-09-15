@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ThumbsUp, ThumbsDown, Share2 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
@@ -22,51 +22,76 @@ export default function InteractiveActions({ appId, initialData }: Props) {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
 
   const [likeCount, setLikeCount] = useState(initialData.reactions.like_count);
+
   const [dislikeCount, setDislikeCount] = useState(
     initialData.reactions.dislike_count,
   );
-  const [userHasLiked, setUserHasLiked] = useState(false);
-  const [userHasDisliked, setUserHasDisliked] = useState(false);
+
+  const [userHasLiked, setUserHasLiked] = useState(
+    initialData.reactions.user_has_liked,
+  );
+
+  const [userHasDisliked, setUserHasDisliked] = useState(
+    initialData.reactions.user_has_disliked,
+  );
+
   const [loading, setLoading] = useState(false);
 
-  // লগইন থাকলে শুধুমাত্র user-এর reaction status আনা
   useEffect(() => {
-    if (authLoading || !isLoggedIn) return;
+    if (authLoading || !isLoggedIn) {
+      return;
+    }
+
+    let cancelled = false;
 
     const fetchStatus = async () => {
       try {
         const res = await fetch(`/api/backend/apps/${appId}/reaction-status`, {
           credentials: "include",
+          headers: {
+            Accept: "application/json",
+          },
         });
 
-        if (res.ok) {
-          const data = await res.json();
-          setUserHasLiked(data.user_has_liked ?? data.has_like ?? false);
-          setUserHasDisliked(
-            data.user_has_disliked ?? data.has_dislike ?? false,
-          );
-
-          if (typeof data.like_count === "number")
-            setLikeCount(data.like_count);
-          if (typeof data.dislike_count === "number")
-            setDislikeCount(data.dislike_count);
+        if (!res.ok || cancelled) {
+          return;
         }
-      } catch (err) {
-        console.error("Reaction status fetch failed", err);
+
+        const data = await res.json();
+
+        setUserHasLiked(data.user_has_liked ?? data.has_like ?? false);
+
+        setUserHasDisliked(data.user_has_disliked ?? data.has_dislike ?? false);
+
+        if (typeof data.like_count === "number") {
+          setLikeCount(data.like_count);
+        }
+
+        if (typeof data.dislike_count === "number") {
+          setDislikeCount(data.dislike_count);
+        }
+      } catch (error) {
+        console.error("Reaction status fetch failed:", error);
       }
     };
 
     fetchStatus();
+
+    return () => {
+      cancelled = true;
+    };
   }, [appId, isLoggedIn, authLoading]);
 
   const handleReact = async (type: "like" | "dislike") => {
     if (!isLoggedIn) {
-      alert("রিয়্যাকশন দিতে লগইন করতে হবে");
       window.location.href = "/login";
       return;
     }
 
-    if (loading) return;
+    if (loading) {
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -81,7 +106,6 @@ export default function InteractiveActions({ appId, initialData }: Props) {
       });
 
       if (res.status === 401) {
-        alert("সেশন শেষ হয়ে গেছে। আবার লগইন করুন।");
         window.location.href = "/login";
         return;
       }
@@ -89,16 +113,20 @@ export default function InteractiveActions({ appId, initialData }: Props) {
       const data = await res.json();
 
       if (res.ok && (data.success || data.like_count !== undefined)) {
-        setLikeCount(data.like_count);
-        setDislikeCount(data.dislike_count);
+        setLikeCount(data.like_count ?? 0);
+        setDislikeCount(data.dislike_count ?? 0);
+
         setUserHasLiked(data.user_has_liked ?? data.has_like ?? false);
+
         setUserHasDisliked(data.user_has_disliked ?? data.has_dislike ?? false);
-      } else {
-        alert(data.message || "রিয়্যাকশন দিতে সমস্যা হয়েছে");
+
+        return;
       }
-    } catch (err) {
-      console.error(err);
-      alert("কিছু সমস্যা হয়েছে");
+
+      alert(data.message || "রিয়্যাকশন দিতে সমস্যা হয়েছে।");
+    } catch (error) {
+      console.error("Reaction error:", error);
+      alert("কিছু সমস্যা হয়েছে। আবার চেষ্টা করুন।");
     } finally {
       setLoading(false);
     }
@@ -109,26 +137,37 @@ export default function InteractiveActions({ appId, initialData }: Props) {
 
     if (navigator.share) {
       try {
-        await navigator.share({ title: initialData.title, url });
+        await navigator.share({
+          title: initialData.title,
+          url,
+        });
       } catch {
-        // user cancel করলে ignore
+        // User cancelled sharing.
       }
-    } else {
+
+      return;
+    }
+
+    try {
       await navigator.clipboard.writeText(url);
-      alert("লিংক কপি করা হয়েছে!");
+      alert("লিংক কপি করা হয়েছে।");
+    } catch (error) {
+      console.error("Copy failed:", error);
+      alert("লিংক কপি করা সম্ভব হয়নি।");
     }
   };
 
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex gap-4">
+    <div className="flex items-center justify-between gap-4">
+      <div className="flex gap-2">
         <button
           type="button"
           onClick={() => handleReact("like")}
           disabled={loading}
-          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm disabled:opacity-50 ${
+          aria-label="Like"
+          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm disabled:opacity-50 ${
             userHasLiked
-              ? "bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
+              ? "bg-zinc-400/25"
               : "bg-zinc-400/10 hover:bg-zinc-400/25"
           }`}
         >
@@ -140,9 +179,10 @@ export default function InteractiveActions({ appId, initialData }: Props) {
           type="button"
           onClick={() => handleReact("dislike")}
           disabled={loading}
-          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm disabled:opacity-50 ${
+          aria-label="Dislike"
+          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm disabled:opacity-50 ${
             userHasDisliked
-              ? "bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400"
+              ? "bg-zinc-400/25"
               : "bg-zinc-400/10 hover:bg-zinc-400/25"
           }`}
         >
@@ -154,7 +194,7 @@ export default function InteractiveActions({ appId, initialData }: Props) {
       <button
         type="button"
         onClick={handleShare}
-        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm bg-zinc-400/10 hover:bg-zinc-400/25"
+        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm bg-zinc-400/10 hover:bg-zinc-400/25"
       >
         <Share2 className="w-4 h-4" />
         শেয়ার

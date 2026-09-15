@@ -1,43 +1,53 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import SoftwareClient from "../SoftwareClient";
 
 type Props = {
-  params: Promise<{ platform: string }>;
+  params: Promise<{
+    platform: string;
+  }>;
 };
+
+function formatPlatformName(value: string) {
+  return decodeURIComponent(value).trim();
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { platform } = await params;
-  const platformName = decodeURIComponent(platform);
+  const platformName = formatPlatformName(platform);
 
-  const title = `Free ${platformName} Software Download | Safe & Verified Apps | তথ্যবক্স`;
-  const description = `Download 100% free and verified ${platformName} software and apps on Totthobox. Safe, malware-free and regularly updated digital resources.`;
-  const keywords = `free ${platformName.toLowerCase()} software, ${platformName.toLowerCase()} apps download, safe ${platformName.toLowerCase()} software, Totthobox`;
+  const title = `${platformName} Software & Apps | তথ্যবক্স`;
+
+  const description = `${platformName} প্ল্যাটফর্মের সফটওয়্যার ও অ্যাপ সম্পর্কে তথ্য, ফিচার, সিস্টেম রিকোয়ারমেন্ট এবং অফিসিয়াল সোর্স দেখুন।`;
+
+  const canonical = `https://totthobox.com/software/all/${encodeURIComponent(
+    platformName,
+  )}`;
 
   return {
     title,
     description,
-    keywords,
+    alternates: {
+      canonical,
+    },
     openGraph: {
       title,
       description,
       type: "website",
       locale: "bn_BD",
-      siteName: "Totthobox",
+      siteName: "তথ্যবক্স",
+      url: canonical,
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
     },
-    alternates: {
-      canonical: `https://totthobox.com/software/all/${encodeURIComponent(platformName)}`,
-    },
   };
 }
 
 export default async function PlatformSoftwarePage({ params }: Props) {
   const { platform } = await params;
-  const platformName = decodeURIComponent(platform);
+  const platformName = formatPlatformName(platform);
 
   return <SoftwareClient platform={platformName} />;
 }
