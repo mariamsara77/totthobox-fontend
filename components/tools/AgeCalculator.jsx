@@ -170,7 +170,7 @@ export default function AgeCalculator() {
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
           স্মার্ট এজ ক্যালকুলেটর
         </h1>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="text-sm">
           সঠিক বয়স, পরবর্তী জন্মদিন এবং দুইজনের বয়সের পার্থক্য নিখুঁতভাবে হিসেব
           করুন
         </p>
@@ -182,8 +182,8 @@ export default function AgeCalculator() {
           onClick={() => setTab("single")}
           className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition ${
             tab === "single"
-              ? "bg-zinc-700 text-white"
-              : "hover:bg-zinc-400/15"
+              ? ""
+              : "hover:bg-zinc-400/25"
           }`}
         >
           একক বয়স হিসেব
@@ -192,7 +192,7 @@ export default function AgeCalculator() {
           onClick={() => setTab("difference")}
           className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition ${
             tab === "difference"
-              ? "bg-zinc-700 text-white"
+              ? ""
               : "hover:bg-zinc-400/15"
           }`}
         >

@@ -313,7 +313,7 @@ export default function PercentageCalculator() {
               onClick={() => changeTab(t.id)}
               className={`px-3 py-2 text-xs sm:text-sm rounded-lg whitespace-nowrap transition ${
                 tab === t.id
-                  ? "bg-zinc-700 text-white"
+                  ? "bg-znic-400/25"
                   : "bg-zinc-400/10 hover:bg-zinc-400/20"
               }`}
             >

@@ -315,7 +315,7 @@ export default function ZodiacCalculator() {
           onClick={() => setTab("single")}
           className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition ${
             tab === "single"
-              ? "bg-zinc-700 text-white"
+              ? "bg-znic-400/25"
               : "hover:bg-zinc-400/15"
           }`}
         >
@@ -325,7 +325,7 @@ export default function ZodiacCalculator() {
           onClick={() => setTab("compatibility")}
           className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition ${
             tab === "compatibility"
-              ? "bg-zinc-700 text-white"
+              ? "bg-znic-400/25"
               : "hover:bg-zinc-400/15"
           }`}
         >
