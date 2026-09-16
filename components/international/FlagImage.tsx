@@ -16,20 +16,20 @@ export function FlagImage({
   fallbackSrc = "https://flagcdn.com/w640/un.png",
   alt,
   className = "",
-  width,
-  height,
+  width = 640,
+  height = 427,
 }: FlagImageProps) {
+  const imageUrl = src || fallbackSrc;
+
   return (
     <div className={`rounded-xl overflow-hidden ${className}`}>
       <MediaGallery
         media={[
           {
-            url: src,
+            url: imageUrl,
             caption: alt,
           },
         ]}
-        // Optional: if MediaGallery supports fallback / onError you can pass it,
-        // otherwise the gallery itself should handle broken images
       />
     </div>
   );
