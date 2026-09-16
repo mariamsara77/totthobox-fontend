@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
 import type {
   Country,
@@ -13,49 +13,54 @@ import type {
 
 const PER_PAGE = 24;
 
-function formatPopulation(population: number) {
-  if (population >= 1_000_000_000) {
-    return `${(population / 1_000_000_000).toFixed(2)} বিলিয়ন`;
-  }
-
-  if (population >= 1_000_000) {
-    return `${(population / 1_000_000).toFixed(2)} মিলিয়ন`;
-  }
-
-  if (population >= 1_000) {
-    return `${(population / 1_000).toFixed(1)} হাজার`;
-  }
-
-  return population > 0 ? population.toLocaleString("bn-BD") : "তথ্য নেই";
-}
-
-function formatArea(area: number) {
-  if (area <= 0) {
-    return "জানা নেই";
-  }
-
-  if (area >= 1_000_000) {
-    return `${(area / 1_000_000).toFixed(2)} মি. কিমি²`;
-  }
-
-  return `${area.toLocaleString("bn-BD")} কিমি²`;
-}
-
 type Props = {
   initialCountries: Country[];
   initialPage: number;
   initialTotal: number;
   initialTotalPages: number;
   initialHasMore: boolean;
-
   stats: CountryStats;
-
   regions: string[];
-
   initialSearch: string;
   initialRegion: string;
   initialSort: CountrySort;
 };
+
+function formatPopulation(population: number) {
+  if (population >= 1_000_000_000) {
+    return `${(population / 1_000_000_000).toFixed(2)} বিলিয়ন`;
+  }
+  if (population >= 1_000_000) {
+    return `${(population / 1_000_000).toFixed(2)} মিলিয়ন`;
+  }
+  if (population >= 1_000) {
+    return `${(population / 1_000).toFixed(1)} হাজার`;
+  }
+  return population > 0 ? population.toLocaleString("bn-BD") : "তথ্য নেই";
+}
+
+function formatArea(area: number) {
+  if (area <= 0) return "জানা নেই";
+  if (area >= 1_000_000) {
+    return `${(area / 1_000_000).toFixed(2)} মি. কিমি²`;
+  }
+  return `${area.toLocaleString("bn-BD")} কিমি²`;
+}
+
+function buildQuery(
+  search: string,
+  region: string,
+  sort: CountrySort,
+  page?: number,
+) {
+  const params = new URLSearchParams();
+  if (search.trim()) params.set("search", search.trim());
+  if (region.trim()) params.set("regionFilter", region.trim());
+  if (sort !== "name") params.set("sortBy", sort);
+  if (page && page > 1) params.set("page", String(page));
+  const query = params.toString();
+  return query ? `?${query}` : "";
+}
 
 export function CountryGrid({
   initialCountries,
@@ -73,33 +78,26 @@ export function CountryGrid({
   const pathname = usePathname();
 
   const [countries, setCountries] = useState<Country[]>(initialCountries);
-
   const [search, setSearch] = useState(initialSearch);
-
   const [regionFilter, setRegionFilter] = useState(initialRegion);
-
   const [sortBy, setSortBy] = useState<CountrySort>(initialSort);
-
   const [currentPage, setCurrentPage] = useState(initialPage);
-
   const [total, setTotal] = useState(initialTotal);
-
   const [totalPages, setTotalPages] = useState(initialTotalPages);
-
   const [hasMore, setHasMore] = useState(initialHasMore);
-
   const [loadingMore, setLoadingMore] = useState(false);
-
   const [error, setError] = useState<string | null>(null);
 
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
-
+  const loadingRef = useRef(false);
   const requestIdRef = useRef(0);
+  const currentPageRef = useRef(initialPage);
+  const hasMoreRef = useRef(initialHasMore);
+  const searchRef = useRef(initialSearch);
+  const regionRef = useRef(initialRegion);
+  const sortRef = useRef(initialSort);
 
-  /*
-   * Server component থেকে নতুন props এলে
-   * client state synchronize হবে।
-   */
+  // Sync when server props change (filter / page navigation)
   useEffect(() => {
     setCountries(initialCountries);
     setCurrentPage(initialPage);
@@ -109,6 +107,14 @@ export function CountryGrid({
     setSearch(initialSearch);
     setRegionFilter(initialRegion);
     setSortBy(initialSort);
+
+    currentPageRef.current = initialPage;
+    hasMoreRef.current = initialHasMore;
+    searchRef.current = initialSearch;
+    regionRef.current = initialRegion;
+    sortRef.current = initialSort;
+    loadingRef.current = false;
+    setLoadingMore(false);
     setError(null);
   }, [
     initialCountries,
@@ -123,282 +129,225 @@ export function CountryGrid({
 
   const updateUrl = useCallback(
     (nextSearch: string, nextRegion: string, nextSort: CountrySort) => {
-      const params = new URLSearchParams();
-
-      if (nextSearch.trim()) {
-        params.set("search", nextSearch.trim());
-      }
-
-      if (nextRegion.trim()) {
-        params.set("regionFilter", nextRegion.trim());
-      }
-
-      if (nextSort !== "name") {
-        params.set("sortBy", nextSort);
-      }
-
-      const query = params.toString();
-
-      router.replace(query ? `${pathname}?${query}` : pathname, {
-        scroll: false,
-      });
+      const query = buildQuery(nextSearch, nextRegion, nextSort);
+      router.replace(`${pathname}${query}`, { scroll: false });
     },
     [pathname, router],
   );
 
-  const handleSearchChange = (value: string) => {
-    setSearch(value);
+  const changeFilters = useCallback(
+    (nextSearch: string, nextRegion: string, nextSort: CountrySort) => {
+      requestIdRef.current += 1;
+      loadingRef.current = false;
+      setLoadingMore(false);
+      setError(null);
 
-    updateUrl(value, regionFilter, sortBy);
-  };
+      searchRef.current = nextSearch;
+      regionRef.current = nextRegion;
+      sortRef.current = nextSort;
 
-  const handleRegionChange = (value: string) => {
-    setRegionFilter(value);
+      setSearch(nextSearch);
+      setRegionFilter(nextRegion);
+      setSortBy(nextSort);
+      updateUrl(nextSearch, nextRegion, nextSort);
+    },
+    [updateUrl],
+  );
 
-    updateUrl(search, value, sortBy);
-  };
+  const loadNextPage = useCallback(
+    async (requestedPage?: number) => {
+      if (loadingRef.current || !hasMoreRef.current) return;
 
-  const handleSortChange = (value: CountrySort) => {
-    setSortBy(value);
-
-    updateUrl(search, regionFilter, value);
-  };
-
-  const resetFilters = () => {
-    setSearch("");
-    setRegionFilter("");
-    setSortBy("name");
-
-    updateUrl("", "", "name");
-  };
-
-  /*
-   * পরের page server API থেকে নিয়ে আসবে।
-   *
-   * গুরুত্বপূর্ণ:
-   * API একই filtering/sorting ব্যবহার করছে,
-   * তাই duplicate বা wrong ordering হবে না।
-   */
-  const loadNextPage = useCallback(async () => {
-    if (loadingMore || !hasMore) {
-      return;
-    }
-
-    const nextPage = currentPage + 1;
-
-    setLoadingMore(true);
-    setError(null);
-
-    const requestId = ++requestIdRef.current;
-
-    try {
-      const params = new URLSearchParams();
-
-      params.set("page", String(nextPage));
-
-      params.set("perPage", String(PER_PAGE));
-
-      if (search.trim()) {
-        params.set("search", search.trim());
+      const nextPage = requestedPage ?? currentPageRef.current + 1;
+      if (nextPage <= currentPageRef.current || nextPage > totalPages) {
+        if (nextPage > totalPages) {
+          hasMoreRef.current = false;
+          setHasMore(false);
+        }
+        return;
       }
 
-      if (regionFilter.trim()) {
-        params.set("region", regionFilter.trim());
-      }
+      loadingRef.current = true;
+      setLoadingMore(true);
+      setError(null);
+      const requestId = ++requestIdRef.current;
 
-      params.set("sort", sortBy);
-
-      const response = await fetch(
-        `/api/international/countries?${params.toString()}`,
-        {
-          method: "GET",
+      try {
+        const response = await fetch("/api/international/countries", {
+          method: "POST",
           headers: {
             Accept: "application/json",
+            "Content-Type": "application/json",
           },
+          body: JSON.stringify({
+            page: nextPage,
+            perPage: PER_PAGE,
+            search: searchRef.current.trim(),
+            region: regionRef.current.trim(),
+            sort: sortRef.current,
+          }),
           cache: "no-store",
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error("Country API request failed");
-      }
-
-      const result = (await response.json()) as CountryPage;
-
-      if (requestId !== requestIdRef.current) {
-        return;
-      }
-
-      setCountries((previous) => {
-        const existing = new Set(
-          previous.map(
-            (country) => country.cca3 || country.code || country.slug,
-          ),
-        );
-
-        const newCountries = result.countries.filter((country) => {
-          const key = country.cca3 || country.code || country.slug;
-
-          return !existing.has(key);
+          credentials: "same-origin",
         });
 
-        return [...previous, ...newCountries];
-      });
+        if (!response.ok) {
+          throw new Error(`Country API returned ${response.status}`);
+        }
 
-      setCurrentPage(result.page);
-      setTotal(result.total);
-      setTotalPages(result.totalPages);
-      setHasMore(result.hasMore);
-    } catch {
-      if (requestId !== requestIdRef.current) {
-        return;
+        const result = (await response.json()) as CountryPage;
+
+        if (requestId !== requestIdRef.current) return;
+
+        setCountries((prev) => {
+          const existing = new Set(prev.map((c) => c.cca3 || c.code || c.slug));
+          const fresh = result.countries.filter((c) => {
+            const key = c.cca3 || c.code || c.slug;
+            return !existing.has(key);
+          });
+          return [...prev, ...fresh];
+        });
+
+        currentPageRef.current = result.page;
+        hasMoreRef.current = result.hasMore;
+        setCurrentPage(result.page);
+        setTotal(result.total);
+        setTotalPages(result.totalPages);
+        setHasMore(result.hasMore);
+      } catch (err) {
+        if (requestId !== requestIdRef.current) return;
+        console.error("Country pagination failed:", err);
+        setError("আরও দেশের তথ্য লোড করা সম্ভব হয়নি।");
+      } finally {
+        if (requestId === requestIdRef.current) {
+          loadingRef.current = false;
+          setLoadingMore(false);
+        }
       }
+    },
+    [totalPages],
+  );
 
-      setError("আরও দেশের তথ্য লোড করা সম্ভব হয়নি।");
-    } finally {
-      if (requestId === requestIdRef.current) {
-        setLoadingMore(false);
-      }
-    }
-  }, [currentPage, hasMore, loadingMore, regionFilter, search, sortBy]);
-
-  /*
-   * Native IntersectionObserver.
-   *
-   * react-intersection-observer package আর দরকার নেই।
-   */
+  // Intersection Observer for infinite scroll
   useEffect(() => {
     const target = loadMoreRef.current;
-
-    if (!target || !hasMore) {
-      return;
-    }
+    if (!target || !hasMore) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
-        const entry = entries[0];
-
-        if (entry?.isIntersecting) {
+        if (entries[0]?.isIntersecting && !loadingRef.current) {
           void loadNextPage();
         }
       },
-      {
-        root: null,
-        rootMargin: "800px 0px",
-        threshold: 0,
-      },
+      { root: null, rootMargin: "800px 0px", threshold: 0 },
     );
 
     observer.observe(target);
-
-    return () => {
-      observer.disconnect();
-    };
+    return () => observer.disconnect();
   }, [hasMore, loadNextPage]);
+
+  const nextPageHref = useMemo(() => {
+    if (!hasMore) return pathname;
+    return `${pathname}${buildQuery(search, regionFilter, sortBy, currentPage + 1)}`;
+  }, [pathname, search, regionFilter, sortBy, currentPage, hasMore]);
+
+  const handleNextClick = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>) => {
+      if (loadingRef.current || !hasMoreRef.current) return;
+      e.preventDefault();
+      void loadNextPage(currentPageRef.current + 1);
+    },
+    [loadNextPage],
+  );
+
+  const resetFilters = useCallback(() => {
+    changeFilters("", "", "name");
+  }, [changeFilters]);
 
   const statsItems = useMemo(
     () => [
-      {
-        label: "মোট দেশ",
-        value: `${stats.total.toLocaleString("bn-BD")} টি`,
-      },
-      {
-        label: "বিশ্ব জনসংখ্যা",
-        value: formatPopulation(stats.population),
-      },
-      {
-        label: "অঞ্চল",
-        value: `${stats.regions} টি`,
-      },
-      {
-        label: "স্থলবেষ্টিত",
-        value: `${stats.landlocked} টি`,
-      },
+      { label: "মোট দেশ", value: `${stats.total.toLocaleString("bn-BD")} টি` },
+      { label: "বিশ্ব জনসংখ্যা", value: formatPopulation(stats.population) },
+      { label: "অঞ্চল", value: `${stats.regions} টি` },
+      { label: "স্থলবেষ্টিত", value: `${stats.landlocked} টি` },
     ],
     [stats],
   );
 
   return (
-    <div className="space-y-8">
-      {/* Statistics */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="space-y-10">
+      {/* Stats */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {statsItems.map((item) => (
           <div
             key={item.label}
-            className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl p-4 hover:bg-zinc-400/25 transition-colors"
+            className="rounded-2xl border border-zinc-200/70 bg-white/60 p-4 shadow-sm dark:border-zinc-700/60 dark:bg-zinc-900/50"
           >
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
               {item.label}
             </p>
-
-            <p className="text-xl font-bold mt-1">{item.value}</p>
+            <p className="mt-1 text-xl font-bold tabular-nums">{item.value}</p>
           </div>
         ))}
       </div>
 
       {/* Filters */}
-      <div className="bg-zinc-400/10 p-4 rounded-xl border border-zinc-400/25">
-        <div className="flex flex-wrap gap-4 items-center">
-          <div className="flex-1 min-w-50">
+      <div className="rounded-2xl border border-zinc-200/70 bg-white/60 p-4 shadow-sm dark:border-zinc-700/60 dark:bg-zinc-900/50 sm:p-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="flex-1">
             <label htmlFor="country-search" className="sr-only">
               দেশের নাম বা রাজধানী খুঁজুন
             </label>
-
             <input
               id="country-search"
               type="search"
               value={search}
-              onChange={(event) => handleSearchChange(event.target.value)}
-              placeholder="দেশের নাম বা রাজধানী খুঁজুন..."
-              className="w-full px-4 py-2.5 rounded-lg border border-zinc-400/25 bg-transparent outline-none focus:ring-2 focus:ring-zinc-400/25 hover:bg-zinc-400/25"
+              onChange={(e) =>
+                changeFilters(e.target.value, regionFilter, sortBy)
+              }
+              placeholder="দেশের নাম, রাজধানী বা কোড খুঁজুন..."
+              className="w-full rounded-xl border border-zinc-300/80 bg-transparent px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30 dark:border-zinc-600"
             />
           </div>
 
           <select
             value={regionFilter}
-            onChange={(event) => handleRegionChange(event.target.value)}
+            onChange={(e) => changeFilters(search, e.target.value, sortBy)}
             aria-label="অঞ্চল নির্বাচন করুন"
-            className="w-full sm:w-auto min-w-37.5 px-4 py-2.5 rounded-lg border border-zinc-400/25 bg-transparent outline-none hover:bg-zinc-400/25"
+            className="w-full rounded-xl border border-zinc-300/80 bg-transparent px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30 dark:border-zinc-600 sm:w-44"
           >
             <option value="">সকল অঞ্চল</option>
-
-            {regions.map((region) => (
-              <option key={region} value={region}>
-                {region}
+            {regions.map((r) => (
+              <option key={r} value={r}>
+                {r}
               </option>
             ))}
           </select>
 
           <select
             value={sortBy}
-            onChange={(event) =>
-              handleSortChange(event.target.value as CountrySort)
+            onChange={(e) =>
+              changeFilters(search, regionFilter, e.target.value as CountrySort)
             }
             aria-label="সাজানোর পদ্ধতি"
-            className="w-full sm:w-auto min-w-40 px-4 py-2.5 rounded-lg border border-zinc-400/25 bg-transparent outline-none hover:bg-zinc-400/25"
+            className="w-full rounded-xl border border-zinc-300/80 bg-transparent px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30 dark:border-zinc-600 sm:w-52"
           >
-            <option value="name">নাম (A-Z)</option>
-
+            <option value="name">নাম (A–Z)</option>
             <option value="population_desc">জনসংখ্যা (বেশি → কম)</option>
-
             <option value="population_asc">জনসংখ্যা (কম → বেশি)</option>
-
             <option value="area_desc">আয়তন (বড় → ছোট)</option>
-
             <option value="area_asc">আয়তন (ছোট → বড়)</option>
           </select>
         </div>
 
-        <div className="flex items-center justify-between gap-4 mt-3">
+        <div className="mt-3 flex items-center justify-between gap-3">
           <p className="text-sm text-zinc-600 dark:text-zinc-400">
             {total.toLocaleString("bn-BD")} টি দেশ পাওয়া গেছে
           </p>
-
           {(search || regionFilter || sortBy !== "name") && (
             <button
               type="button"
               onClick={resetFilters}
-              className="text-sm hover:underline"
+              className="text-sm font-medium text-zinc-700 underline-offset-2 hover:underline dark:text-zinc-300"
             >
               ফিল্টার মুছুন
             </button>
@@ -406,16 +355,15 @@ export function CountryGrid({
         </div>
       </div>
 
-      {/* Country cards */}
-      <div className="grid md:grid-cols-2 gap-6">
+      {/* Cards */}
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-2">
         {countries.length === 0 ? (
-          <div className="md:col-span-2 py-12 text-center">
-            <p className="text-lg">কোনো দেশের তথ্য পাওয়া যায়নি।</p>
-
+          <div className="col-span-full rounded-2xl border border-dashed border-zinc-300 py-16 text-center dark:border-zinc-700">
+            <p className="text-lg font-medium">কোনো দেশের তথ্য পাওয়া যায়নি</p>
             <button
               type="button"
               onClick={resetFilters}
-              className="mt-3 text-sm underline"
+              className="mt-4 text-sm font-medium underline underline-offset-2"
             >
               সব ফিল্টার মুছুন
             </button>
@@ -424,9 +372,9 @@ export function CountryGrid({
           countries.map((country) => (
             <article
               key={country.cca3 || country.code || country.slug}
-              className="bg-zinc-400/10 border border-zinc-400/25 rounded-xl overflow-hidden hover:bg-zinc-400/25 transition-colors"
+              className="group overflow-hidden rounded-2xl border border-zinc-200/70 bg-white/70 shadow-sm transition hover:border-zinc-300 hover:shadow-md dark:border-zinc-700/60 dark:bg-zinc-900/50 dark:hover:border-zinc-600"
             >
-              <div className="flex items-center gap-4 p-4 border-b border-zinc-400/25">
+              <div className="flex items-center gap-4 border-b border-zinc-100 p-4 dark:border-zinc-800">
                 <img
                   src={country.flag}
                   alt={`${country.name_bengali} এর পতাকা`}
@@ -434,65 +382,70 @@ export function CountryGrid({
                   decoding="async"
                   width={64}
                   height={44}
-                  className="w-16 h-11 object-cover rounded border border-zinc-400/25"
-                  onError={(event) => {
-                    const image = event.currentTarget;
-
-                    if (image.src.endsWith("/un.png")) {
-                      return;
+                  className="h-11 w-16 shrink-0 rounded-lg border border-zinc-200 object-cover dark:border-zinc-700"
+                  onError={(e) => {
+                    const img = e.currentTarget;
+                    if (!img.src.endsWith("/un.png")) {
+                      img.src = "https://flagcdn.com/w320/un.png";
                     }
-
-                    image.src = "https://flagcdn.com/w320/un.png";
                   }}
                 />
-
-                <div className="min-w-0">
-                  <h2 className="text-lg font-bold truncate">
+                <div className="min-w-0 flex-1">
+                  <h2 className="truncate text-lg font-bold leading-tight">
                     {country.name_bengali}{" "}
                     <span className="text-base">{country.flag_emoji}</span>
                   </h2>
-
-                  <span className="text-xs px-2 py-0.5 bg-zinc-400/10 rounded-full">
+                  <span className="mt-1 inline-block rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
                     {country.continent}
                   </span>
                 </div>
               </div>
 
-              <div className="p-4 space-y-4">
-                <p className="text-sm leading-relaxed">
-                  <strong>{country.name_bengali}</strong> ({country.name}){" "}
-                  {country.continent} মহাদেশের একটি {country.independent}।
-                  রাজধানী: <strong>{country.capital}</strong>। জনসংখ্যা প্রায়{" "}
-                  {formatPopulation(country.population)}, আয়তন{" "}
-                  {formatArea(country.area)}।
+              <div className="space-y-4 p-4">
+                <p className="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
+                  <strong>{country.name_bengali}</strong> ({country.name})
+                  দেশটির রাজধানী <strong>{country.capital}</strong>। এটি{" "}
+                  {country.continent} অঞ্চলের অন্তর্ভুক্ত।
                 </p>
 
-                <div className="grid grid-cols-2 gap-y-2 pt-2 text-sm">
+                <div className="grid grid-cols-2 gap-3 text-sm">
                   <div>
-                    <span className="block text-xs text-zinc-600 dark:text-zinc-400">
-                      ডায়ালিং কোড
-                    </span>
-
-                    <span className="font-mono">{country.phone_code}</span>
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                      জনসংখ্যা
+                    </p>
+                    <p className="font-semibold tabular-nums">
+                      {formatPopulation(country.population)}
+                    </p>
                   </div>
-
                   <div>
-                    <span className="block text-xs text-zinc-600 dark:text-zinc-400">
-                      ISO কোড
-                    </span>
-
-                    <span className="font-mono">{country.cca3}</span>
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                      আয়তন
+                    </p>
+                    <p className="font-semibold tabular-nums">
+                      {formatArea(country.area)}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                      অঞ্চল
+                    </p>
+                    <p className="font-semibold">{country.region}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                      কোড
+                    </p>
+                    <p className="font-semibold">{country.cca3}</p>
                   </div>
                 </div>
 
-                <div className="pt-3 flex justify-end">
-                  <Link
-                    href={`/international/country/${country.slug}`}
-                    className="inline-flex items-center gap-1 text-sm hover:underline"
-                  >
-                    আরও পড়ুন →
-                  </Link>
-                </div>
+                <Link
+                  href={`/international/country/${country.slug}`}
+                  className="inline-flex items-center gap-1 text-sm font-medium text-zinc-800 transition group-hover:underline dark:text-zinc-200"
+                >
+                  বিস্তারিত দেখুন
+                  <span aria-hidden="true">→</span>
+                </Link>
               </div>
             </article>
           ))
@@ -503,85 +456,58 @@ export function CountryGrid({
       {hasMore && (
         <div
           ref={loadMoreRef}
-          className="flex justify-center py-8 min-h-20"
+          className="flex min-h-20 items-center justify-center"
           aria-live="polite"
-          aria-busy={loadingMore}
         >
           {loadingMore ? (
-            <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
+            <div className="flex items-center gap-2 text-sm text-zinc-500">
               <span
-                className="w-5 h-5 border-2 border-zinc-400 border-t-transparent rounded-full animate-spin"
+                className="h-4 w-4 animate-spin rounded-full border-2 border-zinc-300 border-t-zinc-700 dark:border-zinc-600 dark:border-t-zinc-200"
                 aria-hidden="true"
               />
-
-              <span>আরও দেশ লোড হচ্ছে...</span>
+              আরও দেশ লোড হচ্ছে...
             </div>
           ) : (
-            <span className="text-sm text-zinc-500">আরও তথ্য লোড হবে...</span>
+            <span className="text-xs text-zinc-400">আরও তথ্য লোড হবে...</span>
           )}
+        </div>
+      )}
+
+      {/* Crawlable fallback (important for AdSense + SEO) */}
+      {hasMore && (
+        <div className="flex justify-center">
+          <Link
+            href={nextPageHref}
+            onClick={handleNextClick}
+            className="rounded-xl border border-zinc-300 bg-white px-5 py-2.5 text-sm font-medium shadow-sm transition hover:bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+          >
+            পরের পৃষ্ঠা →
+          </Link>
         </div>
       )}
 
       {/* Error */}
       {error && (
-        <div className="text-center space-y-3 py-6">
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">{error}</p>
-
+        <div
+          role="alert"
+          className="rounded-2xl border border-red-200 bg-red-50 p-4 text-center dark:border-red-900/50 dark:bg-red-950/30"
+        >
+          <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
           <button
             type="button"
-            onClick={() => void loadNextPage()}
-            className="px-4 py-2 rounded-xl border border-zinc-400/25 bg-zinc-400/10 hover:bg-zinc-400/25 text-sm"
+            onClick={() => void loadNextPage(currentPageRef.current + 1)}
+            className="mt-3 rounded-xl border border-red-300 bg-white px-4 py-2 text-sm font-medium dark:border-red-800 dark:bg-red-950"
           >
             আবার চেষ্টা করুন
           </button>
         </div>
       )}
 
-      {/* Final state */}
       {!hasMore && countries.length > 0 && (
-        <div className="text-center py-8">
-          <p className="text-sm text-zinc-500">
-            সব {total.toLocaleString("bn-BD")} টি দেশের তথ্য দেখানো হয়েছে।
-          </p>
-        </div>
+        <p className="py-6 text-center text-sm text-zinc-500 dark:text-zinc-400">
+          সব {total.toLocaleString("bn-BD")} টি ফলাফল দেখানো হয়েছে।
+        </p>
       )}
-
-      {/* 
-        SEO fallback:
-        JavaScript থাকলে user infinite scroll দেখবে।
-        JavaScript ছাড়া পরের page-এ যাওয়া যাবে।
-      */}
-      {hasMore && (
-        <noscript>
-          <div className="text-center py-6">
-            <Link
-              href={{
-                pathname,
-                query: {
-                  ...(search ? { search } : {}),
-                  ...(regionFilter
-                    ? {
-                        regionFilter,
-                      }
-                    : {}),
-                  ...(sortBy !== "name"
-                    ? {
-                        sortBy,
-                      }
-                    : {}),
-                  page: currentPage + 1,
-                },
-              }}
-              className="inline-flex items-center justify-center px-5 py-3 rounded-xl border border-zinc-400/25 bg-zinc-400/10 hover:bg-zinc-400/25 text-sm font-medium"
-            >
-              পরের পৃষ্ঠা দেখুন →
-            </Link>
-          </div>
-        </noscript>
-      )}
-
-      {/* Prevent unused variable warning in strict builds */}
-      {totalPages > 0 && null}
     </div>
   );
 }

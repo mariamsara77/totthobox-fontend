@@ -19,8 +19,6 @@ type SearchParams = {
 
 const SITE_NAME = "Totthobox";
 
-const DEFAULT_SORT: CountrySort = "name";
-
 const PER_PAGE = 24;
 
 const SORT_VALUES: CountrySort[] = [
@@ -34,17 +32,48 @@ const SORT_VALUES: CountrySort[] = [
 function getSafeSort(value?: string): CountrySort {
   return SORT_VALUES.includes(value as CountrySort)
     ? (value as CountrySort)
-    : DEFAULT_SORT;
+    : "name";
 }
 
-function getSafePage(value?: string) {
+function getSafePage(value?: string): number {
   const page = Number(value ?? "1");
 
-  if (!Number.isFinite(page)) {
+  if (!Number.isFinite(page) || page < 1) {
     return 1;
   }
 
-  return Math.max(1, Math.floor(page));
+  return Math.floor(page);
+}
+
+function buildCanonical(
+  search: string,
+  region: string,
+  sort: CountrySort,
+  page: number,
+) {
+  const params = new URLSearchParams();
+
+  if (search) {
+    params.set("search", search);
+  }
+
+  if (region) {
+    params.set("regionFilter", region);
+  }
+
+  if (sort !== "name") {
+    params.set("sortBy", sort);
+  }
+
+  if (page > 1) {
+    params.set("page", String(page));
+  }
+
+  const query = params.toString();
+
+  return query
+    ? `/international/all-country?${query}`
+    : "/international/all-country";
 }
 
 export async function generateMetadata({
@@ -58,7 +87,11 @@ export async function generateMetadata({
 
   const region = (params.regionFilter ?? "").trim();
 
+  const sort = getSafeSort(params.sortBy);
+
   const page = getSafePage(params.page);
+
+  const canonical = buildCanonical(search, region, sort, page);
 
   if (search) {
     return {
@@ -66,23 +99,13 @@ export async function generateMetadata({
 
       description: `"${search}" সম্পর্কিত দেশের রাজধানী, জনসংখ্যা, আয়তন ও আন্তর্জাতিক তথ্য — ${SITE_NAME}।`,
 
-      keywords: [search, "দেশের তালিকা", "রাজধানী", "জনসংখ্যা", SITE_NAME],
-
       robots: {
         index: false,
         follow: true,
       },
 
       alternates: {
-        canonical: "/international/all-country",
-      },
-
-      openGraph: {
-        title: `"${search.slice(0, 40)}" — দেশের তথ্য | ${SITE_NAME}`,
-
-        description: `"${search}" সম্পর্কিত দেশের রাজধানী, জনসংখ্যা, আয়তন ও আন্তর্জাতিক তথ্য — ${SITE_NAME}।`,
-
-        images: ["/og-image.png"],
+        canonical,
       },
     };
   }
@@ -93,69 +116,51 @@ export async function generateMetadata({
 
       description: `${region} অঞ্চলের দেশের রাজধানী, জনসংখ্যা, আয়তন ও আন্তর্জাতিক তথ্য — ${SITE_NAME}।`,
 
-      keywords: [region, "দেশের তালিকা", `${region} দেশ`, SITE_NAME],
-
       robots: {
         index: false,
         follow: true,
       },
 
       alternates: {
-        canonical: "/international/all-country",
-      },
-
-      openGraph: {
-        title: `${region} অঞ্চলের দেশসমূহ — রাজধানী ও তথ্য | ${SITE_NAME}`,
-
-        description: `${region} অঞ্চলের দেশের রাজধানী, জনসংখ্যা, আয়তন ও আন্তর্জাতিক তথ্য — ${SITE_NAME}।`,
-
-        images: ["/og-image.png"],
+        canonical,
       },
     };
   }
 
-  const baseTitle = "বিশ্বকোষ: পৃথিবীর সব দেশের তালিকা, রাজধানী ও সাধারণ জ্ঞান";
-
-  const baseDescription =
-    "পৃথিবীর ২৫০+ দেশের রাজধানী, জনসংখ্যা, আয়তন, ভাষা ও আন্তর্জাতিক কোডসহ বিস্তারিত তথ্যভাণ্ডার — Totthobox।";
+  const title =
+    page > 1
+      ? `বিশ্বের সব দেশের তালিকা — পৃষ্ঠা ${page} | ${SITE_NAME}`
+      : `বিশ্বের সব দেশের তালিকা, রাজধানী ও সাধারণ জ্ঞান | ${SITE_NAME}`;
 
   return {
-    title:
-      page > 1
-        ? `${baseTitle} — পৃষ্ঠা ${page} | ${SITE_NAME}`
-        : `${baseTitle} | ${SITE_NAME}`,
+    title,
 
-    description: baseDescription,
+    description:
+      "পৃথিবীর বিভিন্ন দেশের রাজধানী, জনসংখ্যা, আয়তন, ভাষা ও আন্তর্জাতিক কোডসহ গুরুত্বপূর্ণ তথ্য — Totthobox।",
 
-    keywords: [
-      "দেশের তালিকা",
-      "সব দেশের রাজধানী",
-      "পৃথিবীর দেশসমূহ",
-      "দেশের জনসংখ্যা",
-      "সাধারণ জ্ঞান",
-      "বিশ্বকোষ",
-      SITE_NAME,
-    ],
-
-    openGraph: {
-      title:
-        page > 1
-          ? `${baseTitle} — পৃষ্ঠা ${page} | ${SITE_NAME}`
-          : `${baseTitle} | ${SITE_NAME}`,
-
-      description: baseDescription,
-
-      images: ["/og-image.png"],
+    robots: {
+      index: true,
+      follow: true,
     },
 
     alternates: {
-      canonical:
-        page > 1
-          ? `/international/all-country?page=${page}`
-          : "/international/all-country",
+      canonical,
+    },
+
+    openGraph: {
+      title,
+
+      description:
+        "বিশ্বের বিভিন্ন দেশের রাজধানী, জনসংখ্যা, আয়তন ও আন্তর্জাতিক তথ্য।",
+
+      url: canonical,
+
+      type: "website",
     },
   };
 }
+
+// ... keep your generateMetadata exactly as is (it is already good)
 
 export default async function InternationalAllCountryPage({
   searchParams,
@@ -163,24 +168,11 @@ export default async function InternationalAllCountryPage({
   searchParams: Promise<SearchParams>;
 }) {
   const params = await searchParams;
-
   const search = (params.search ?? "").trim();
-
   const region = (params.regionFilter ?? "").trim();
-
   const sort = getSafeSort(params.sortBy);
-
   const page = getSafePage(params.page);
 
-  /*
-   * একই cached source থেকে:
-   *
-   * 1. current page data
-   * 2. overall statistics
-   * 3. regions
-   *
-   * নেওয়া হচ্ছে।
-   */
   const [pageResult, allCountries] = await Promise.all([
     getCountryPage({
       search,
@@ -189,44 +181,55 @@ export default async function InternationalAllCountryPage({
       page,
       perPage: PER_PAGE,
     }),
-
     getAllCountries(),
   ]);
 
   const stats = getCountryStats(allCountries);
-
   const regions = getCountryRegions(allCountries);
 
-  let h1 = "বিশ্বকোষ: পৃথিবীর সকল দেশের বিস্তারিত তথ্য";
-
-  let sub =
+  let title = "বিশ্বকোষ: পৃথিবীর সকল দেশের বিস্তারিত তথ্য";
+  let description =
     "পৃথিবীর বিভিন্ন দেশের রাজধানী, জনসংখ্যা, আয়তন, আন্তর্জাতিক কোড ও অন্যান্য গুরুত্বপূর্ণ তথ্য এক জায়গায়।";
 
   if (search) {
-    h1 = `"${search}" খোঁজার ফলাফল`;
-
-    sub = "আপনার অনুসন্ধানের সঙ্গে মিল থাকা দেশগুলোর তথ্য নিচে দেখানো হয়েছে।";
+    title = `"${search}" খোঁজার ফলাফল`;
+    description =
+      "আপনার অনুসন্ধানের সঙ্গে মিল থাকা দেশগুলোর তথ্য নিচে দেখানো হয়েছে।";
   } else if (region) {
-    h1 = `${region} অঞ্চলের দেশসমূহ`;
-
-    sub =
+    title = `${region} অঞ্চলের দেশসমূহ`;
+    description =
       "এই অঞ্চলের দেশগুলোর রাজধানী, জনসংখ্যা, আয়তন ও আন্তর্জাতিক তথ্য দেখুন।";
   } else if (page > 1) {
-    h1 = "পৃথিবীর দেশসমূহ — আরও বিস্তারিত তথ্য";
-
-    sub =
+    title = `পৃথিবীর দেশসমূহ — পৃষ্ঠা ${page}`;
+    description =
       "দেশের তালিকার পরবর্তী অংশ থেকে রাজধানী, জনসংখ্যা, আয়তন ও আন্তর্জাতিক তথ্য দেখুন।";
   }
 
   return (
-    <section className="max-w-2xl mx-auto space-y-4 p-4">
-      <article className="max-w-none text-center pb-6 border-b border-zinc-400/25">
-        <h1 className="text-3xl font-bold mb-4">{h1}</h1>
-
-        <p className="text-lg leading-relaxed max-w-2xl mx-auto text-zinc-600 dark:text-zinc-400">
-          {sub}
+    <section className="mx-auto max-w-2xl space-y-8 px-4 py-8 sm:px-6">
+      <header className="text-center">
+        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+          {title}
+        </h1>
+        <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-zinc-600 dark:text-zinc-400">
+          {description}
         </p>
-      </article>
+      </header>
+
+      {/* Only show on clean first page — gives AdSense real content */}
+      {!search && !region && page === 1 && (
+        <div className="rounded-2xl border border-zinc-200/60 bg-zinc-50/80 p-6 dark:border-zinc-700/50 dark:bg-zinc-900/40">
+          <h2 className="text-xl font-semibold">বিশ্বের দেশগুলোর তথ্য</h2>
+          <p className="mt-3 text-sm leading-7 text-zinc-600 dark:text-zinc-400">
+            এই তালিকায় বিশ্বের বিভিন্ন দেশের নাম, রাজধানী, জনসংখ্যা, আয়তন,
+            অঞ্চল, আন্তর্জাতিক কোড এবং অন্যান্য সাধারণ তথ্য দ্রুত খুঁজে দেখা
+            যায়। দেশ অনুসন্ধান, অঞ্চল নির্বাচন এবং বিভিন্ন তথ্য অনুযায়ী তালিকা
+            সাজানোর সুবিধাও রয়েছে। Totthobox-এ সব তথ্য এক জায়গায় সাজানো হয়েছে
+            যাতে শিক্ষার্থী, গবেষক ও ভ্রমণ পরিকল্পনাকারীরা সহজেই ব্যবহার করতে
+            পারেন।
+          </p>
+        </div>
+      )}
 
       <CountryGrid
         initialCountries={pageResult.countries}
@@ -240,6 +243,20 @@ export default async function InternationalAllCountryPage({
         initialRegion={region}
         initialSort={sort}
       />
+
+      {!search && !region && page === 1 && (
+        <div className="rounded-2xl border border-zinc-200/60 bg-zinc-50/80 p-6 dark:border-zinc-700/50 dark:bg-zinc-900/40">
+          <h2 className="text-xl font-semibold">
+            দেশভিত্তিক তথ্য কেন কাজে লাগে?
+          </h2>
+          <p className="mt-3 text-sm leading-7 text-zinc-600 dark:text-zinc-400">
+            দেশগুলোর রাজধানী, জনসংখ্যা, আয়তন, অঞ্চল এবং আন্তর্জাতিক কোড সাধারণ
+            জ্ঞান, শিক্ষামূলক গবেষণা এবং ভ্রমণ পরিকল্পনায় কাজে লাগতে পারে।
+            Totthobox-এ এসব তথ্য সহজে খুঁজে দেখার জন্য দেশভিত্তিক তালিকাটি
+            সাজানো হয়েছে। প্রতিটি দেশের বিস্তারিত পাতায় আরও তথ্য পাওয়া যায়।
+          </p>
+        </div>
+      )}
     </section>
   );
 }

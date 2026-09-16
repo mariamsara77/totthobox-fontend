@@ -1,3 +1,5 @@
+import "server-only";
+
 export type Country = {
   slug: string;
   name: string;
@@ -51,6 +53,9 @@ export type CountryStats = {
 
 const DATA_REVALIDATE = 60 * 60 * 24 * 30;
 
+const DEFAULT_PER_PAGE = 24;
+const MAX_PER_PAGE = 48;
+
 const COUNTRIES_URL =
   "https://raw.githubusercontent.com/mledoze/countries/master/dist/countries.json";
 
@@ -59,37 +64,6 @@ const POPULATION_URL =
 
 const CONTINENT_URL =
   "https://raw.githubusercontent.com/samayo/country-json/master/src/country-by-continent.json";
-
-function createSlug(value: string) {
-  return value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
-}
-
-function normalize(value: unknown) {
-  return String(value ?? "")
-    .trim()
-    .toLowerCase();
-}
-
-async function fetchJson<T>(url: string): Promise<T | null> {
-  try {
-    const response = await fetch(url, {
-      next: {
-        revalidate: DATA_REVALIDATE,
-      },
-    });
-
-    if (!response.ok) {
-      return null;
-    }
-
-    return (await response.json()) as T;
-  } catch {
-    return null;
-  }
-}
 
 type PopulationItem = {
   country?: string;
@@ -101,8 +75,58 @@ type ContinentItem = {
   continent?: string;
 };
 
+function normalize(value: unknown): string {
+  return String(value ?? "")
+    .trim()
+    .toLowerCase();
+}
+
+function createSlug(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+async function fetchJson<T>(
+  url: string,
+): Promise<T | null> {
+  try {
+    const response = await fetch(url, {
+      next: {
+        revalidate: DATA_REVALIDATE,
+      },
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      console.error(
+        `Country data request failed: ${response.status}`,
+        url,
+      );
+
+      return null;
+    }
+
+    return (await response.json()) as T;
+  } catch (error) {
+    console.error(
+      "Country data request error:",
+      error,
+    );
+
+    return null;
+  }
+}
+
 export async function getAllCountries(): Promise<Country[]> {
-  const [main, populationData, continentData] = await Promise.all([
+  const [
+    main,
+    populationData,
+    continentData,
+  ] = await Promise.all([
     fetchJson<any[]>(COUNTRIES_URL),
     fetchJson<PopulationItem[]>(POPULATION_URL),
     fetchJson<ContinentItem[]>(CONTINENT_URL),
@@ -112,11 +136,16 @@ export async function getAllCountries(): Promise<Country[]> {
     return [];
   }
 
-  const populationMap = new Map<string, number>();
+  const populationMap = new Map<
+    string,
+    number
+  >();
 
   if (Array.isArray(populationData)) {
     for (const item of populationData) {
-      if (!item?.country) continue;
+      if (!item?.country) {
+        continue;
+      }
 
       populationMap.set(
         normalize(item.country),
@@ -125,11 +154,16 @@ export async function getAllCountries(): Promise<Country[]> {
     }
   }
 
-  const continentMap = new Map<string, string>();
+  const continentMap = new Map<
+    string,
+    string
+  >();
 
   if (Array.isArray(continentData)) {
     for (const item of continentData) {
-      if (!item?.country) continue;
+      if (!item?.country) {
+        continue;
+      }
 
       continentMap.set(
         normalize(item.country),
@@ -141,21 +175,38 @@ export async function getAllCountries(): Promise<Country[]> {
   const countries: Country[] = [];
 
   for (const country of main) {
-    const commonName = String(country?.name?.common ?? "Unknown");
+    const commonName = String(
+      country?.name?.common ?? "Unknown",
+    );
+
     const officialName = String(
       country?.name?.official ?? commonName,
     );
 
-    const code = String(country?.cca2 ?? "");
+    const code = String(
+      country?.cca2 ?? "",
+    );
+
+    const cca3 = String(
+      country?.cca3 ?? "",
+    );
 
     const population =
-      populationMap.get(normalize(commonName)) ??
-      populationMap.get(normalize(officialName)) ??
-      0;
+      populationMap.get(
+        normalize(commonName),
+      ) ??
+      populationMap.get(
+        normalize(officialName),
+      ) ??
+      Number(country?.population ?? 0);
 
     const continent =
-      continentMap.get(normalize(commonName)) ??
-      continentMap.get(normalize(officialName)) ??
+      continentMap.get(
+        normalize(commonName),
+      ) ??
+      continentMap.get(
+        normalize(officialName),
+      ) ??
       String(country?.region ?? "Unknown");
 
     const bengaliName =
@@ -166,16 +217,24 @@ export async function getAllCountries(): Promise<Country[]> {
     let phoneCode = "N/A";
 
     if (country?.idd?.root) {
-      const root = String(country.idd.root);
-      const suffix = String(country.idd.suffixes?.[0] ?? "");
+      const root = String(
+        country.idd.root,
+      );
+
+      const suffix = String(
+        country.idd.suffixes?.[0] ?? "",
+      );
 
       phoneCode = `${root}${suffix}`;
     }
 
-    const lowerCode = (code || "un").toLowerCase();
+    const lowerCode =
+      (code || "un").toLowerCase();
 
     const languages = country?.languages
-      ? Object.values(country.languages).map(String)
+      ? Object.values(country.languages).map(
+          String,
+        )
       : [];
 
     countries.push({
@@ -191,17 +250,26 @@ export async function getAllCountries(): Promise<Country[]> {
 
       code,
 
-      cca3: String(country?.cca3 ?? "N/A"),
+      cca3,
 
-      region: String(country?.region ?? "Unknown"),
+      region: String(
+        country?.region ?? "Unknown",
+      ),
 
-      subregion: String(country?.subregion ?? ""),
+      subregion: String(
+        country?.subregion ?? "",
+      ),
 
       continent,
 
-      capital: String(country?.capital?.[0] ?? "তথ্য নেই"),
+      capital: String(
+        country?.capital?.[0] ??
+          "তথ্য নেই",
+      ),
 
-      area: Number(country?.area ?? 0),
+      area: Number(
+        country?.area ?? 0,
+      ),
 
       population: Number(population),
 
@@ -209,48 +277,117 @@ export async function getAllCountries(): Promise<Country[]> {
 
       flag: `https://flagcdn.com/w320/${lowerCode}.png`,
 
-      flag_emoji: String(country?.flag ?? "🌐"),
+      flag_emoji: String(
+        country?.flag ?? "🌐",
+      ),
 
       languages,
 
-      landlocked: Boolean(country?.landlocked),
+      landlocked: Boolean(
+        country?.landlocked,
+      ),
     });
   }
 
   return countries.sort((a, b) =>
-    a.name.localeCompare(b.name),
+    a.name.localeCompare(
+      b.name,
+      undefined,
+      {
+        sensitivity: "base",
+      },
+    ),
   );
 }
 
 function sortCountries(
   countries: Country[],
   sort: CountrySort,
-) {
+): Country[] {
   const result = [...countries];
 
   switch (sort) {
     case "population_desc":
       return result.sort(
-        (a, b) => b.population - a.population,
+        (a, b) =>
+          b.population - a.population,
       );
 
     case "population_asc":
       return result.sort(
-        (a, b) => a.population - b.population,
+        (a, b) =>
+          a.population - b.population,
       );
 
     case "area_desc":
-      return result.sort((a, b) => b.area - a.area);
+      return result.sort(
+        (a, b) =>
+          b.area - a.area,
+      );
 
     case "area_asc":
-      return result.sort((a, b) => a.area - b.area);
+      return result.sort(
+        (a, b) =>
+          a.area - b.area,
+      );
 
     case "name":
     default:
       return result.sort((a, b) =>
-        a.name.localeCompare(b.name),
+        a.name.localeCompare(
+          b.name,
+          undefined,
+          {
+            sensitivity: "base",
+          },
+        ),
       );
   }
+}
+
+function filterCountries(
+  countries: Country[],
+  search: string,
+  region: string,
+): Country[] {
+  const normalizedSearch =
+    normalize(search);
+
+  const normalizedRegion =
+    normalize(region);
+
+  return countries.filter(
+    (country) => {
+      const matchesSearch =
+        !normalizedSearch ||
+        normalize(
+          country.name,
+        ).includes(normalizedSearch) ||
+        normalize(
+          country.name_bengali,
+        ).includes(normalizedSearch) ||
+        normalize(
+          country.capital,
+        ).includes(normalizedSearch) ||
+        normalize(
+          country.code,
+        ).includes(normalizedSearch) ||
+        normalize(
+          country.cca3,
+        ).includes(normalizedSearch);
+
+      const matchesRegion =
+        !normalizedRegion ||
+        normalize(
+          country.region,
+        ) === normalizedRegion;
+
+      return (
+        matchesSearch &&
+        matchesRegion
+      );
+    },
+  );
 }
 
 export async function getCountryPage({
@@ -258,56 +395,60 @@ export async function getCountryPage({
   region = "",
   sort = "name",
   page = 1,
-  perPage = 24,
+  perPage = DEFAULT_PER_PAGE,
 }: CountryQuery): Promise<CountryPage> {
-  const countries = await getAllCountries();
+  const countries =
+    await getAllCountries();
 
-  const normalizedSearch = search.trim().toLowerCase();
-  const normalizedRegion = region.trim();
+  const filtered =
+    filterCountries(
+      countries,
+      search,
+      region,
+    );
 
-  let filtered = countries.filter((country) => {
-    const matchesSearch =
-      !normalizedSearch ||
-      country.name.toLowerCase().includes(normalizedSearch) ||
-      country.name_bengali
-        .toLowerCase()
-        .includes(normalizedSearch) ||
-      country.capital
-        .toLowerCase()
-        .includes(normalizedSearch) ||
-      country.code.toLowerCase().includes(normalizedSearch) ||
-      country.cca3
-        .toLowerCase()
-        .includes(normalizedSearch);
+  const sorted =
+    sortCountries(
+      filtered,
+      sort,
+    );
 
-    const matchesRegion =
-      !normalizedRegion ||
-      country.region === normalizedRegion;
-
-    return matchesSearch && matchesRegion;
-  });
-
-  filtered = sortCountries(filtered, sort);
-
-  const safePage = Math.max(1, Number(page) || 1);
-  const safePerPage = Math.min(
-    48,
-    Math.max(1, Number(perPage) || 24),
+  const safePage = Math.max(
+    1,
+    Math.floor(
+      Number(page) || 1,
+    ),
   );
 
-  const total = filtered.length;
+  const safePerPage = Math.min(
+    MAX_PER_PAGE,
+    Math.max(
+      1,
+      Math.floor(
+        Number(perPage) ||
+          DEFAULT_PER_PAGE,
+      ),
+    ),
+  );
+
+  const total = sorted.length;
 
   const totalPages =
     total === 0
       ? 1
-      : Math.ceil(total / safePerPage);
+      : Math.ceil(
+          total / safePerPage,
+        );
 
-  const start = (safePage - 1) * safePerPage;
+  const start =
+    (safePage - 1) *
+    safePerPage;
 
-  const pageCountries = filtered.slice(
-    start,
-    start + safePerPage,
-  );
+  const pageCountries =
+    sorted.slice(
+      start,
+      start + safePerPage,
+    );
 
   return {
     countries: pageCountries,
@@ -320,7 +461,8 @@ export async function getCountryPage({
 
     totalPages,
 
-    hasMore: safePage < totalPages,
+    hasMore:
+      safePage < totalPages,
   };
 }
 
@@ -330,31 +472,50 @@ export function getCountryStats(
   return {
     total: countries.length,
 
-    population: countries.reduce(
-      (sum, country) => sum + country.population,
-      0,
-    ),
+    population:
+      countries.reduce(
+        (sum, country) =>
+          sum + country.population,
+        0,
+      ),
 
-    regions: new Set(
-      countries
-        .map((country) => country.region)
-        .filter(Boolean),
-    ).size,
+    regions:
+      new Set(
+        countries
+          .map(
+            (country) =>
+              country.region,
+          )
+          .filter(Boolean),
+      ).size,
 
-    landlocked: countries.filter(
-      (country) => country.landlocked,
-    ).length,
+    landlocked:
+      countries.filter(
+        (country) =>
+          country.landlocked,
+      ).length,
   };
 }
 
 export function getCountryRegions(
   countries: Country[],
-) {
+): string[] {
   return Array.from(
     new Set(
       countries
-        .map((country) => country.region)
+        .map(
+          (country) =>
+            country.region,
+        )
         .filter(Boolean),
     ),
-  ).sort((a, b) => a.localeCompare(b));
+  ).sort((a, b) =>
+    a.localeCompare(
+      b,
+      undefined,
+      {
+        sensitivity: "base",
+      },
+    ),
+  );
 }
