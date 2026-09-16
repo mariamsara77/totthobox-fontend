@@ -2,8 +2,9 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { ArrowLeft, Eye, Play, Pause, Star, ChevronDown } from "lucide-react";
 import InteractiveActions from "./InteractiveActions";
-import { ArrowLeft, Eye, Play, Pause, Star } from "lucide-react";
+import MediaGallery from "@/components/MediaGallery";
 
 interface Props {
   initialData: {
@@ -40,62 +41,76 @@ export default function DowaShowClient({ initialData, slug }: Props) {
     }
   };
 
+  // MediaGallery support
+  const media =
+    item.media && item.media.length > 0
+      ? item.media.map((m: any) => ({
+          url: m.url,
+          caption: m.caption || item.bangla_name,
+        }))
+      : item.first_media_url
+        ? [{ url: item.first_media_url, caption: item.bangla_name }]
+        : [];
+
   return (
-    <div className="max-w-2xl mx-auto space-y-4 px-4 py-6">
+    <div className="max-w-2xl mx-auto space-y-6 p-4 sm:p-6">
       {/* Breadcrumb */}
-      <nav
-        aria-label="Breadcrumb"
-        className="text-sm text-zinc-400 flex flex-wrap items-center gap-1"
-      >
-        <Link href="/" className="hover:text-zinc-300">
+      <nav className="flex items-center gap-2 text-sm">
+        <Link href="/" className="hover:underline">
           হোম
         </Link>
         <span>/</span>
-        <Link href="/islam/dowan" className="hover:text-zinc-300">
+        <Link href="/islam/dowan" className="hover:underline">
           দোয়া সংগ্রহ
         </Link>
         <span>/</span>
-        <span className="text-zinc-50 text-zinc-200 truncate max-w-[180px]">
-          {item.bangla_name}
-        </span>
+        <span className="truncate opacity-70">{item.bangla_name}</span>
       </nav>
 
-      {/* Header badges */}
+      {/* Badges */}
       <div className="flex flex-wrap items-center gap-2">
         {item.is_featured && (
-          <span className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+          <span className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-lg bg-zinc-400/15">
             <Star className="w-3.5 h-3.5" /> বিশেষ আমল
           </span>
         )}
         {item.type && (
-          <span className="text-xs px-2.5 py-1 rounded-full bg-zinc-400/10 text-zinc-300">
-            {item.type}
+          <span className="text-xs px-2.5 py-1 rounded-lg bg-zinc-400/10">
+            {item.type_name || item.type}
           </span>
         )}
-        <span className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-zinc-400/10">
-          <Eye className="w-3.5 h-3.5" /> {views}
+        <span className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-lg bg-zinc-400/10">
+          <Eye className="w-3.5 h-3.5" />
+          {(views || 0).toLocaleString("bn-BD")}
         </span>
       </div>
 
       {/* Title */}
-      <div className="text-center space-y-2">
-        <h1 className="text-2xl  font-black tracking-tight text-zinc-50 dark:text-white">
+      <header className="text-center space-y-2">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
           {item.bangla_name}
         </h1>
         {item.arabic_name && (
-          <p className="text-xl font-serif  ">
+          <p className="text-xl font-serif opacity-90" dir="rtl">
             {item.arabic_name}
           </p>
         )}
-        <p className="text-sm text-zinc-400">আরবি · উচ্চারণ · অর্থ ও ফজিলত</p>
-      </div>
+        <p className="text-sm opacity-70">আরবি · উচ্চারণ · অর্থ ও ফজিলত</p>
+      </header>
+
+      {/* Media Gallery */}
+      {media.length > 0 && (
+        <div className="rounded-2xl overflow-hidden">
+          <MediaGallery media={media} />
+        </div>
+      )}
 
       {/* Audio Player */}
       {item.audio_url && (
-        <div className="rounded-2xl p-4 flex items-center gap-4 border border-zinc-400/25 bg-zinc-400/10/40">
+        <div className="rounded-2xl p-4 flex items-center gap-4 bg-zinc-400/10">
           <button
             onClick={toggleAudio}
-            className="p-2.5 rounded-full bg-emerald-600 text-white hover:bg-emerald-700 transition"
+            className="p-3 rounded-full bg-zinc-400/20 hover:bg-zinc-400/30 transition"
             aria-label={playing ? "অডিও পজ করুন" : "অডিও প্লে করুন"}
           >
             {playing ? (
@@ -105,11 +120,9 @@ export default function DowaShowClient({ initialData, slug }: Props) {
             )}
           </button>
           <div>
-            <p className="text-sm font-bold text-zinc-50 text-zinc-200">
-              দোয়াটির অডিও লিসেনিং
-            </p>
-            <p className="text-xs text-zinc-400 mt-0.5">
-              {playing ? "বর্তমানে প্লে হচ্ছে..." : "শুনতে বাটনে ক্লিক করুন"}
+            <p className="text-sm font-semibold">দোয়াটির অডিও</p>
+            <p className="text-xs opacity-70 mt-0.5">
+              {playing ? "প্লে হচ্ছে..." : "শুনতে বাটনে ক্লিক করুন"}
             </p>
           </div>
         </div>
@@ -119,76 +132,53 @@ export default function DowaShowClient({ initialData, slug }: Props) {
       {item.arabic_text && (
         <div
           dir="rtl"
-          className="rounded-2xl border border-zinc-400/25 border-l-4 border-l-emerald-500 py-6 px-4 text-center text-2xl  font-serif leading-relaxed"
+          className="rounded-2xl bg-zinc-400/10 py-6 px-4 text-center text-2xl font-serif leading-relaxed"
         >
           {item.arabic_text}
         </div>
       )}
 
       {/* Details */}
-      <section aria-labelledby="dowa-details-heading" className="space-y-4">
-        <h2
-          id="dowa-details-heading"
-          className="text-lg font-bold text-zinc-50 text-zinc-200"
-        >
-          বিস্তারিত বিবরণ
-        </h2>
+      <section className="space-y-5">
+        <h2 className="text-lg font-bold">বিস্তারিত বিবরণ</h2>
 
         {item.bangla_text && (
-          <div>
-            <h3 className="text-sm font-bold text-sky-600 dark:text-sky-400 mb-2 tracking-wide">
-              উচ্চারণ
-            </h3>
-            <div
-              dir="rtl"
-              className="rounded-2xl border border-zinc-400/25 border-l-4 border-l-blue-500 py-6 px-4 text-center text-xl sm:text-2xl leading-relaxed"
-            >
+          <div className="space-y-2">
+            <h3 className="text-sm font-semibold opacity-80">উচ্চারণ</h3>
+            <div className="rounded-2xl bg-zinc-400/10 py-5 px-4 text-center text-lg leading-relaxed">
               {item.bangla_text}
             </div>
           </div>
         )}
 
         {item.bangla_meaning && (
-          <div>
-            <h3 className="text-sm font-bold  mb-2 tracking-wide">
-              অনুবাদ ও অর্থ
-            </h3>
+          <div className="space-y-2">
+            <h3 className="text-sm font-semibold opacity-80">অনুবাদ ও অর্থ</h3>
             <div
-              className="rounded-2xl border border-zinc-400/25 border-l-4 border-l-orange-500 py-6 px-4 prose prose-sm dark:prose-invert max-w-none"
+              className="rounded-2xl bg-zinc-400/10 py-5 px-4 prose dark:prose-invert max-w-none text-sm leading-relaxed"
               dangerouslySetInnerHTML={{ __html: item.bangla_meaning }}
             />
           </div>
         )}
 
         {item.bangla_fojilot && (
-          <div className="rounded-2xl bg-amber-50/50 dark:bg-amber-950/10 border border-amber-200/60 dark:border-amber-900/40 p-4">
-            <h3 className="text-sm font-bold text-amber-800 dark:text-amber-400 mb-4 tracking-wide flex items-center gap-2">
-              <span className="text-amber-600">ℹ</span> ফজিলত ও আমল
-            </h3>
+          <div className="space-y-2">
+            <h3 className="text-sm font-semibold opacity-80">ফজিলত ও আমল</h3>
             <div
-              className="prose prose-sm dark:prose-invert max-w-none  leading-relaxed"
+              className="rounded-2xl bg-zinc-400/10 py-5 px-4 prose dark:prose-invert max-w-none text-sm leading-relaxed"
               dangerouslySetInnerHTML={{ __html: item.bangla_fojilot }}
             />
           </div>
         )}
 
         {!item.bangla_text && !item.bangla_meaning && !item.bangla_fojilot && (
-          <p className="text-sm text-zinc-400">
+          <p className="text-sm opacity-60">
             এই দোয়ার বিস্তারিত বিবরণ এখনো যোগ করা হয়নি।
           </p>
         )}
       </section>
 
-      <div>
-        <Link
-          href="/islam/dowan"
-          className="inline-flex items-center gap-2 text-sm text-zinc-300 hover:text-zinc-300"
-        >
-          <ArrowLeft className="w-4 h-4" /> দোয়া সংগ্রহ তালিকায় ফিরে যান
-        </Link>
-      </div>
-
-      {/* Like / Dislike / Copy / Share */}
+      {/* Interactive Actions */}
       <InteractiveActions
         itemId={item.id}
         initialLike={item.like_count ?? 0}
@@ -199,58 +189,71 @@ export default function DowaShowClient({ initialData, slug }: Props) {
         shareTitle={item.bangla_name}
       />
 
+      {/* Back */}
+      <Link
+        href="/islam/dowan"
+        className="inline-flex items-center gap-2 text-sm hover:underline"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        দোয়া সংগ্রহ তালিকায় ফিরে যান
+      </Link>
+
       {/* About */}
-      <section className="rounded-2xl bg-zinc-400/10/40 p-4 space-y-4">
-        <h2 className="text-lg font-bold text-zinc-50 text-zinc-200">
-          {item.bangla_name} সম্পর্কে
-        </h2>
-        <p className="text-sm leading-relaxed ">
-          <strong>{item.bangla_name}</strong>
-          {item.arabic_name && (
-            <>
-              {" "}
-              (<span className="font-serif">{item.arabic_name}</span>)
-            </>
-          )}{" "}
-          একটি গুরুত্বপূর্ণ ইসলামিক দোয়া/আমল। উপরের আরবি পাঠ, উচ্চারণ, অর্থ ও
-          ফজিলত অনুসরণ করে নিয়মিত পাঠ করুন।
-        </p>
+      <section className="rounded-2xl bg-zinc-400/10 p-5 space-y-3">
+        <h2 className="text-lg font-bold">{item.bangla_name} সম্পর্কে</h2>
+        <div className="text-sm leading-relaxed space-y-2 opacity-90">
+          <p>
+            <strong>{item.bangla_name}</strong>
+            {item.arabic_name && (
+              <>
+                {" "}
+                (<span className="font-serif">{item.arabic_name}</span>)
+              </>
+            )}{" "}
+            একটি গুরুত্বপূর্ণ ইসলামিক দোয়া/আমল।
+          </p>
+          <p>
+            উপরের আরবি পাঠ, উচ্চারণ, অর্থ ও ফজিলত অনুসরণ করে নিয়মিত পাঠ করুন।
+            আরও দোয়া দেখতে{" "}
+            <Link href="/islam/dowan" className="underline">
+              দোয়া সংগ্রহ
+            </Link>{" "}
+            তালিকায় যান।
+          </p>
+        </div>
       </section>
 
       {/* FAQ */}
-      <section className="space-y-4">
+      <section className="space-y-3">
         <h2 className="text-lg font-bold">প্রায়শই জিজ্ঞাসিত প্রশ্ন</h2>
-        <div className="space-y-2">
-          <details className="group rounded-xl border border-zinc-400/25 dark:border-zinc-700 overflow-hidden">
-            <summary className="flex items-center justify-between cursor-pointer px-4 py-2  list-none hover:bg-zinc-900 hover:bg-zinc-800/50">
-              <span>{item.bangla_name} কখন পড়বেন?</span>
-              <span className="text-zinc-400 group-open:rotate-180 transition">
-                ▼
-              </span>
-            </summary>
-            <div className="px-4 pb-4 text-sm ">
-              উপরের “ফজিলত ও আমল” সেকশনে এই দোয়ার উপযুক্ত সময় ও নিয়ম লেখা আছে।
-              নিয়মিত পাঠ করলে বেশি উপকার পাওয়া যায়।
-            </div>
-          </details>
-          <details className="group rounded-xl border border-zinc-400/25 dark:border-zinc-700 overflow-hidden">
-            <summary className="flex items-center justify-between cursor-pointer px-4 py-2  list-none hover:bg-zinc-900 hover:bg-zinc-800/50">
-              <span>অন্যান্য দোয়া কোথায় পাব?</span>
-              <span className="text-zinc-400 group-open:rotate-180 transition">
-                ▼
-              </span>
-            </summary>
-            <div className="px-4 pb-4 text-sm ">
-              <Link
-                href="/islam/dowan"
-                className="text-zinc-300 hover:underline"
-              >
-                দোয়া সংগ্রহ
-              </Link>{" "}
-              তালিকায় ফিরে গিয়ে আরও অনেক প্রয়োজনীয় দোয়া ও আমল দেখতে পারবেন।
-            </div>
-          </details>
-        </div>
+
+        <details className="group rounded-xl bg-zinc-400/10 overflow-hidden">
+          <summary className="flex items-center justify-between cursor-pointer px-4 py-3 list-none hover:bg-zinc-400/15 transition">
+            <span className="text-sm font-medium">
+              {item.bangla_name} কখন পড়বেন?
+            </span>
+            <ChevronDown className="w-4 h-4 group-open:rotate-180 transition shrink-0" />
+          </summary>
+          <div className="px-4 pb-4 text-sm leading-relaxed border-t border-zinc-400/20 pt-3 opacity-90">
+            উপরের “ফজিলত ও আমল” সেকশনে এই দোয়ার উপযুক্ত সময় ও নিয়ম লেখা আছে।
+            নিয়মিত পাঠ করলে বেশি উপকার পাওয়া যায়।
+          </div>
+        </details>
+
+        <details className="group rounded-xl bg-zinc-400/10 overflow-hidden">
+          <summary className="flex items-center justify-between cursor-pointer px-4 py-3 list-none hover:bg-zinc-400/15 transition">
+            <span className="text-sm font-medium">
+              অন্যান্য দোয়া কোথায় পাব?
+            </span>
+            <ChevronDown className="w-4 h-4 group-open:rotate-180 transition shrink-0" />
+          </summary>
+          <div className="px-4 pb-4 text-sm leading-relaxed border-t border-zinc-400/20 pt-3 opacity-90">
+            <Link href="/islam/dowan" className="underline">
+              দোয়া সংগ্রহ
+            </Link>{" "}
+            তালিকায় ফিরে গিয়ে আরও অনেক প্রয়োজনীয় দোয়া ও আমল দেখতে পারবেন।
+          </div>
+        </details>
       </section>
     </div>
   );

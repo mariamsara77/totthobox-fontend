@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { ArrowLeft, Eye, ChevronDown } from "lucide-react";
+import { FaUserPen } from "react-icons/fa6";
+import { TbRosetteDiscountCheckFilled } from "react-icons/tb";
 import InteractiveActions from "./InteractiveActions";
-import { ArrowLeft, Eye, User, Check, ArrowRight } from "lucide-react";
 import MediaGallery from "@/components/MediaGallery";
 
 interface Props {
@@ -18,137 +20,162 @@ interface Props {
 }
 
 export default function SignShowClient({ initialData, categorySlug }: Props) {
-  const { category, item, creators, views } = initialData;
+  const { category, item, creators = [], views } = initialData;
   const [showCreators, setShowCreators] = useState(false);
+  const creatorsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        creatorsRef.current &&
+        !creatorsRef.current.contains(e.target as Node)
+      ) {
+        setShowCreators(false);
+      }
+    };
+    if (showCreators) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showCreators]);
+
+  // MediaGallery - Single + Multiple
+  const media =
+    item.media && item.media.length > 0
+      ? item.media.map((m: any) => ({
+          url: m.url,
+          caption: m.caption || item.name,
+        }))
+      : item.first_media_url
+        ? [{ url: item.first_media_url, caption: item.name }]
+        : [];
 
   return (
-    <div className="max-w-2xl mx-auto space-y-4 px-4 py-6">
+    <div className="max-w-2xl mx-auto space-y-6 p-4 sm:p-6">
       {/* Breadcrumb */}
-      <nav className="text-sm text-zinc-400 flex flex-wrap items-center gap-1">
-        <Link href="/" className="hover:text-amber-600">
+      <nav className="flex items-center gap-2 text-sm">
+        <Link href="/" className="hover:underline">
           হোম
         </Link>
         <span>/</span>
-        <Link href={`/signs/${categorySlug}`} className="hover:text-amber-600">
-          {category.name} সাইন
+        <Link href="/signs/all" className="hover:underline">
+          ট্রাফিক সাইন
         </Link>
         <span>/</span>
-        <span className="text-zinc-50 text-zinc-200 truncate max-w-[160px]">
-          {item.name}
-        </span>
+        <Link href={`/signs/${categorySlug}`} className="hover:underline">
+          {category?.name || categorySlug}
+        </Link>
+        <span>/</span>
+        <span className="truncate opacity-70">{item.name}</span>
       </nav>
 
       {/* Header */}
-      <div className="flex items-start justify-between gap-4">
+      <header className="flex items-start justify-between gap-4">
         <div className="flex-1 space-y-2">
-          <span className="inline-block text-xs px-2.5 py-1 rounded-full bg-zinc-400/10 text-zinc-300">
-            {category.name}
-          </span>
-          <h1 className="text-2xl  font-black tracking-tight text-zinc-50 dark:text-white">
+          {category?.name && (
+            <span className="inline-block px-2.5 py-1 rounded-md text-xs bg-zinc-400/10">
+              {category.name}
+            </span>
+          )}
+
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
             {item.name}
           </h1>
-          <p className="text-sm text-zinc-400">
-            {category.name} সাইন · অর্থ ও ব্যবহার
+
+          <p className="text-sm opacity-80">
+            {category?.name || "ট্রাফিক"} সাইন · অর্থ ও ব্যবহার
           </p>
-          <div className="inline-flex items-center gap-2 text-xs px-2.5 py-1 rounded-full bg-zinc-400/10">
-            <Eye className="w-3.5 h-3.5" /> {views}
+
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs bg-zinc-400/10">
+            <Eye className="w-3.5 h-3.5" />
+            {(views || 0).toLocaleString("bn-BD")}
           </div>
         </div>
 
         {/* Creators */}
-        <div className="relative shrink-0">
+        <div className="relative shrink-0" ref={creatorsRef}>
           <button
+            type="button"
             onClick={() => setShowCreators(!showCreators)}
-            className="p-1.5 rounded-lg hover:bg-zinc-900 hover:bg-zinc-800"
-            aria-label="তথ্য প্রদানকারী"
+            className="p-2 rounded-lg hover:bg-zinc-400/25 transition"
+            aria-label="তথ্য প্রদানকারীগণ"
           >
-            <User className="w-4 h-4" />
+            <FaUserPen className="w-5 h-5" />
           </button>
+
           {showCreators && (
-            <div className="absolute right-0 top-full mt-2 w-72 max-h-80 overflow-y-auto rounded-2xl border bg-zinc-950 bg-zinc-900  z-50 p-4 space-y-4">
+            <div className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-y-auto rounded-2xl border border-zinc-400/25 backdrop-blur-xl p-4 z-50 space-y-3">
               <div>
-                <h2 className=" text-sm">তথ্য প্রদানকারী</h2>
-                <p className="text-xs text-zinc-400">
-                  এই কন্টেন্ট তৈরিতে অবদান রেখেছেন
+                <h3 className="font-medium">
+                  তথ্য প্রদানকারীগণ ({creators.length})
+                </h3>
+                <p className="text-xs mt-0.5 opacity-70">
+                  এই কন্টেন্ট তৈরিতে যারা অবদান রেখেছেন
                 </p>
               </div>
+
               {creators.length === 0 ? (
-                <p className="text-xs text-zinc-400 text-center py-2">
-                  কোনো কন্ট্রিবিউটর পাওয়া যায়নি।
+                <p className="text-sm text-center py-4 opacity-60">
+                  এখনো কোনো কন্ট্রিবিউটর পাওয়া যায়নি।
                 </p>
               ) : (
                 creators.map((c: any) => (
-                  <div
-                    key={c.id}
-                    className="p-2.5 rounded-xl bg-zinc-400/10/60 space-y-2"
-                  >
-                    <div className="flex items-start gap-4">
-                      {c.avatar_url ? (
-                        <img
-                          src={c.avatar_url}
-                          alt={c.name}
-                          className="w-9 h-9 rounded-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-9 h-9 rounded-full bg-amber-100 flex items-center justify-center text-sm  text-amber-700">
-                          {c.name.charAt(0)}
-                        </div>
-                      )}
-                      <div className="min-w-0">
+                  <Link key={c.id} href={`/users/${c.slug}`}>
+                    <div className="flex items-start gap-3 p-2 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/25 border border-zinc-400/25 transition">
+                      <div className="relative">
+                        {c.avatar_url ? (
+                          <img
+                            src={c.avatar_url}
+                            alt={c.name}
+                            className="w-12 h-12 rounded-xl object-cover"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 rounded-xl bg-zinc-400/15 flex items-center justify-center text-sm font-medium">
+                            {c.name?.charAt(0)}
+                          </div>
+                        )}
+                        {c.is_online !== undefined && (
+                          <span
+                            className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white dark:border-zinc-900 ${
+                              c.is_online ? "bg-green-500" : "bg-zinc-400"
+                            }`}
+                          />
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1">
-                          <span className=" text-sm truncate">
-                            {c.name}
-                          </span>
-                          {c.email_verified && (
-                            <Check className="w-3.5 h-3.5 text-zinc-300" />
+                          <strong className="truncate text-sm">{c.name}</strong>
+                          {(c.email_verified || c.is_verified) && (
+                            <TbRosetteDiscountCheckFilled className="w-4 h-4 text-blue-600 shrink-0" />
                           )}
                         </div>
-                        <p className="text-xs text-zinc-400 truncate">
-                          {c.profession}
+                        <p className="text-xs opacity-70 truncate">
+                          {c.profession || "কন্টেন্ট কন্ট্রিবিউটর"}
                         </p>
+                        {(c.last_active_bn || c.last_active_at) && (
+                          <p className="text-xs opacity-60 mt-0.5">
+                            সর্বশেষ: {c.last_active_bn || c.last_active_at}
+                          </p>
+                        )}
                       </div>
                     </div>
-                    <div className="flex justify-between text-xs text-zinc-400 pt-1 border-t">
-                      <span>একটিভ: {c.last_active_bn}</span>
-                      <Link
-                        href={`/users/${c.slug}`}
-                        className="text-amber-600 hover:underline inline-flex items-center gap-0.5"
-                      >
-                        প্রোফাইল <ArrowRight className="w-3 h-3" />
-                      </Link>
-                    </div>
-                  </div>
+                  </Link>
                 ))
               )}
-              <p className="text-xs text-zinc-400 text-center border-t pt-2">
-                আমাদের সকল তথ্য ভেরিফাইড এবং যাচাইকৃত।
-              </p>
             </div>
           )}
         </div>
-      </div>
+      </header>
 
-      <article className="space-y-4">
-        {/* Media Gallery Integration */}
-        {item.media?.length > 0 && (
-          <div className="rounded-xl overflow-hidden mb-6">
-            <MediaGallery
-              media={item.media.map((m: any) => ({
-                url: m.url,
-                caption: item.title, // লাইটবক্সে ছবির নিচে ক্যাপশন হিসেবে টাইটেল দেখাবে
-              }))}
-            />
-          </div>
-        )}
-
-        <div
-          className="prose prose-emerald dark:prose-invert max-w-none leading-relaxed"
-          dangerouslySetInnerHTML={{ __html: item.description }}
-        />
-      </article>
+      {/* Media Gallery (Single + Multiple) */}
+      {media.length > 0 && (
+        <div className="rounded-2xl overflow-hidden">
+          <MediaGallery media={media} />
+        </div>
+      )}
 
       {/* Description */}
-      <section className="space-y-4">
+      <section className="space-y-3">
         <h2 className="text-lg font-bold">বিস্তারিত বিবরণ</h2>
         {item.description ? (
           <div
@@ -156,13 +183,13 @@ export default function SignShowClient({ initialData, categorySlug }: Props) {
             dangerouslySetInnerHTML={{ __html: item.description }}
           />
         ) : (
-          <p className="text-sm text-zinc-400">
+          <p className="text-sm opacity-60">
             এই চিহ্নের বিস্তারিত বিবরণ এখনো যোগ করা হয়নি।
           </p>
         )}
       </section>
 
-      {/* Actions */}
+      {/* Like / Dislike / Share */}
       <InteractiveActions
         itemId={item.id}
         initialLike={item.like_count ?? 0}
@@ -173,58 +200,61 @@ export default function SignShowClient({ initialData, categorySlug }: Props) {
       />
 
       {/* Back */}
-      <div>
-        <Link
-          href={`/signs/${categorySlug}`}
-          className="inline-flex items-center gap-2 text-sm text-zinc-300 hover:text-amber-600"
-        >
-          <ArrowLeft className="w-4 h-4" /> {category.name} তালিকায় ফিরে যান
-        </Link>
-      </div>
+      <Link
+        href={`/signs/${categorySlug}`}
+        className="inline-flex items-center gap-2 text-sm hover:underline"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        {category?.name || "সাইন"} তালিকায় ফিরে যান
+      </Link>
 
       {/* About */}
-      <section className="rounded-2xl bg-zinc-400/10/40 p-4 space-y-4">
+      <section className="rounded-2xl bg-zinc-400/10 p-5 space-y-3">
         <h2 className="text-lg font-bold">{item.name} সম্পর্কে</h2>
-        <p className="text-sm  leading-relaxed">
-          <strong>{item.name}</strong> হলো <strong>{category.name}</strong>{" "}
-          ক্যাটাগরির একটি ট্রাফিক সাইন/রোড চিহ্ন। রাস্তায় এই চিহ্ন দেখলে উপরের
-          নির্দেশনা অনুসরণ করুন।
-        </p>
+        <div className="text-sm leading-relaxed space-y-2 opacity-90">
+          <p>
+            <strong>{item.name}</strong> হলো{" "}
+            <strong>{category?.name || "ট্রাফিক"}</strong> ক্যাটাগরির একটি
+            ট্রাফিক সাইন/রোড চিহ্ন।
+          </p>
+          <p>
+            রাস্তায় এই চিহ্ন দেখলে উপরের নির্দেশনা অনুসরণ করুন। আরও সাইন দেখতে{" "}
+            <Link href={`/signs/${categorySlug}`} className="underline">
+              {category?.name || "সাইন"}
+            </Link>{" "}
+            তালিকায় যান।
+          </p>
+        </div>
       </section>
 
       {/* FAQ */}
-      <section className="space-y-4">
+      <section className="space-y-3">
         <h2 className="text-lg font-bold">প্রায়শই জিজ্ঞাসিত প্রশ্ন</h2>
-        <div className="space-y-2">
-          <details className="group rounded-xl border overflow-hidden">
-            <summary className="flex justify-between cursor-pointer px-4 py-2  list-none hover:bg-zinc-900 hover:bg-zinc-800/50">
-              <span>{item.name} কী বোঝায়?</span>
-              <span className="text-zinc-400 group-open:rotate-180 transition">
-                ▼
-              </span>
-            </summary>
-            <div className="px-4 pb-4 text-sm ">
-              উপরের “বিস্তারিত বিবরণ” সেকশনে এই চিহ্নের অর্থ ও ব্যবহার লেখা আছে।
-            </div>
-          </details>
-          <details className="group rounded-xl border overflow-hidden">
-            <summary className="flex justify-between cursor-pointer px-4 py-2  list-none hover:bg-zinc-900 hover:bg-zinc-800/50">
-              <span>একই ক্যাটাগরির অন্য সাইন কোথায়?</span>
-              <span className="text-zinc-400 group-open:rotate-180 transition">
-                ▼
-              </span>
-            </summary>
-            <div className="px-4 pb-4 text-sm ">
-              <Link
-                href={`/signs/${categorySlug}`}
-                className="text-amber-600 hover:underline"
-              >
-                {category.name}
-              </Link>{" "}
-              তালিকায় ফিরে গিয়ে অন্যান্য চিহ্ন দেখতে পারবেন।
-            </div>
-          </details>
-        </div>
+
+        <details className="group rounded-xl bg-zinc-400/10 overflow-hidden">
+          <summary className="flex items-center justify-between cursor-pointer px-4 py-3 list-none hover:bg-zinc-400/15 transition">
+            <span className="text-sm font-medium">{item.name} কী বোঝায়?</span>
+            <ChevronDown className="w-4 h-4 group-open:rotate-180 transition shrink-0" />
+          </summary>
+          <div className="px-4 pb-4 text-sm leading-relaxed border-t border-zinc-400/20 pt-3 opacity-90">
+            উপরের “বিস্তারিত বিবরণ” সেকশনে এই চিহ্নের অর্থ ও ব্যবহার লেখা আছে।
+          </div>
+        </details>
+
+        <details className="group rounded-xl bg-zinc-400/10 overflow-hidden">
+          <summary className="flex items-center justify-between cursor-pointer px-4 py-3 list-none hover:bg-zinc-400/15 transition">
+            <span className="text-sm font-medium">
+              একই ক্যাটাগরির অন্য সাইন কোথায়?
+            </span>
+            <ChevronDown className="w-4 h-4 group-open:rotate-180 transition shrink-0" />
+          </summary>
+          <div className="px-4 pb-4 text-sm leading-relaxed border-t border-zinc-400/20 pt-3 opacity-90">
+            <Link href={`/signs/${categorySlug}`} className="underline">
+              {category?.name || "সাইন"}
+            </Link>{" "}
+            তালিকায় ফিরে গিয়ে অন্যান্য চিহ্ন দেখতে পারবেন।
+          </div>
+        </details>
       </section>
     </div>
   );

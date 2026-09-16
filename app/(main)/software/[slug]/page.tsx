@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Home, Eye, ArrowLeft, Puzzle, ExternalLink } from "lucide-react";
+import { Home, Eye, ArrowLeft, Puzzle } from "lucide-react";
 
 import InteractiveActions from "./InteractiveActions";
 import CreatorsTooltip from "./CreatorsTooltip";
@@ -44,10 +44,7 @@ async function getAppData(slug: string) {
 }
 
 function stripHtml(value?: string) {
-  if (!value) {
-    return "";
-  }
-
+  if (!value) return "";
   return value
     .replace(/<[^>]*>/g, "")
     .replace(/\s+/g, " ")
@@ -57,9 +54,7 @@ function stripHtml(value?: string) {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{
-    slug: string;
-  }>;
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
   const data = await getAppData(slug);
@@ -85,7 +80,7 @@ export async function generateMetadata({
     seo.description ||
     `${app.name}${
       app.platform ? ` (${app.platform})` : ""
-    } সম্পর্কে ফিচার, ব্যবহার, সিস্টেম রিকোয়ারমেন্ট এবং প্রয়োজনীয় সফটওয়্যার তথ্য দেখুন।`;
+    } সম্পর্কে ফিচার, সিস্টেম রিকোয়ারমেন্ট এবং অফিসিয়াল সোর্সের তথ্য।`;
 
   const canonical = `https://totthobox.com/software/${encodeURIComponent(
     app.slug,
@@ -94,11 +89,7 @@ export async function generateMetadata({
   return {
     title,
     description,
-    ...(seo.keywords
-      ? {
-          keywords: seo.keywords,
-        }
-      : {}),
+    ...(seo.keywords ? { keywords: seo.keywords } : {}),
     alternates: {
       canonical,
     },
@@ -129,9 +120,7 @@ export async function generateMetadata({
 export default async function AppShowPage({
   params,
 }: {
-  params: Promise<{
-    slug: string;
-  }>;
+  params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
   const data = await getAppData(slug);
@@ -141,7 +130,6 @@ export default async function AppShowPage({
   }
 
   const { app, creators } = data;
-
   const description = stripHtml(app.description);
 
   return (
@@ -154,15 +142,11 @@ export default async function AppShowPage({
         <Link href="/" className="hover:opacity-100" aria-label="হোম">
           <Home className="w-4 h-4" />
         </Link>
-
         <span>/</span>
-
         <Link href="/software/all" className="hover:opacity-100">
           Software & Apps
         </Link>
-
         <span>/</span>
-
         <span className="truncate max-w-40 sm:max-w-xs">{app.name}</span>
       </nav>
 
@@ -176,7 +160,6 @@ export default async function AppShowPage({
                   {app.platform}
                 </span>
               )}
-
               {app.version && (
                 <span className="inline-flex items-center rounded-lg bg-zinc-400/10 px-2.5 py-1 text-xs opacity-70">
                   Version {app.version}
@@ -225,17 +208,12 @@ export default async function AppShowPage({
       </div>
 
       {/* Official Source */}
-      <section className="space-y-2">
+      <section className="space-y-3">
         <DownloadButton
           appId={app.id}
           name={app.name}
           platform={app.platform}
         />
-
-        <p className="text-xs text-center opacity-50">
-          সফটওয়্যার সংগ্রহ বা ইনস্টল করার জন্য সংশ্লিষ্ট ডেভেলপার বা প্রকাশকের
-          অফিসিয়াল সোর্স ব্যবহার করুন।
-        </p>
       </section>
 
       {/* Overview */}
@@ -266,7 +244,6 @@ export default async function AppShowPage({
           {app.platform && (
             <div className="flex items-center justify-between gap-4 p-4">
               <span className="text-sm opacity-60">প্ল্যাটফর্ম</span>
-
               <span className="text-sm">{app.platform}</span>
             </div>
           )}
@@ -274,7 +251,6 @@ export default async function AppShowPage({
           {app.version && (
             <div className="flex items-center justify-between gap-4 p-4">
               <span className="text-sm opacity-60">সংস্করণ</span>
-
               <span className="text-sm">{app.version}</span>
             </div>
           )}
@@ -282,7 +258,6 @@ export default async function AppShowPage({
           {app.developer && (
             <div className="flex items-center justify-between gap-4 p-4">
               <span className="text-sm opacity-60">ডেভেলপার</span>
-
               <span className="text-sm text-right">{app.developer}</span>
             </div>
           )}
@@ -290,22 +265,23 @@ export default async function AppShowPage({
           {app.license && (
             <div className="flex items-center justify-between gap-4 p-4">
               <span className="text-sm opacity-60">লাইসেন্স</span>
-
               <span className="text-sm text-right">{app.license}</span>
             </div>
           )}
         </div>
       </section>
 
-      {/* Notice */}
-      <section className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 space-y-2">
-        <h2 className="font-bold">অফিসিয়াল সোর্স সম্পর্কে</h2>
-
-        <p className="text-sm opacity-70 leading-relaxed">
-          তথ্যবক্সে সফটওয়্যার সম্পর্কিত তথ্য উপস্থাপন করা হয়। সফটওয়্যার ডাউনলোড
-          বা ইনস্টল করার আগে ডেভেলপার, লাইসেন্স এবং সিস্টেম রিকোয়ারমেন্ট যাচাই
-          করুন। সম্ভব হলে সংশ্লিষ্ট ডেভেলপার বা প্রকাশকের অফিসিয়াল ওয়েবসাইট থেকে
-          সফটওয়্যার সংগ্রহ করুন।
+      {/* Strong Notice - AdSense Safe */}
+      <section className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4 space-y-2">
+        <h2 className="font-bold text-amber-700 dark:text-amber-400">
+          গুরুত্বপূর্ণ নোটিশ
+        </h2>
+        <p className="text-sm opacity-80 leading-relaxed">
+          তথ্যবক্স শুধুমাত্র সফটওয়্যার সম্পর্কিত তথ্য প্রদান করে। আমরা কোনো
+          সফটওয়্যার ফাইল হোস্ট, ডিস্ট্রিবিউট বা ডাউনলোড লিংক সরবরাহ করি না।
+          যেকোনো সফটওয়্যার সংগ্রহ করার আগে অবশ্যই সংশ্লিষ্ট ডেভেলপার বা
+          প্রকাশকের <strong>অফিসিয়াল ওয়েবসাইট</strong> থেকে সংগ্রহ করুন এবং
+          লাইসেন্স যাচাই করুন।
         </p>
       </section>
 

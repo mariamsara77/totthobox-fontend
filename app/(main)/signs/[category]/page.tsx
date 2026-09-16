@@ -21,16 +21,54 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         "ট্রাফিক রুলস",
         "road signs bangladesh",
       ],
-      alternates: { canonical: "/signs/all" },
+      alternates: {
+        canonical: "https://totthobox.com/signs/all",
+      },
+      openGraph: {
+        title: "সকল ট্রাফিক সাইন ও চিহ্ন | তথ্যবক্স",
+        description:
+          "বাংলাদেশের সকল ট্রাফিক সাইন ও রোড চিহ্নের সম্পূর্ণ তালিকা।",
+        url: "https://totthobox.com/signs/all",
+        siteName: "Totthobox",
+        type: "website",
+        locale: "bn_BD",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: "সকল ট্রাফিক সাইন ও চিহ্ন | তথ্যবক্স",
+        description:
+          "বাংলাদেশের সকল ট্রাফিক সাইন ও রোড চিহ্নের সম্পূর্ণ তালিকা।",
+      },
     };
   }
 
-  // Category-specific – fetch name if needed, fallback:
   return {
     title: `${category} | ট্রাফিক সাইন ও চিহ্ন | তথ্যবক্স`,
     description: `${category} ক্যাটাগরির সকল ট্রাফিক সাইন ও চিহ্নের ছবি, নাম এবং অর্থসহ বিস্তারিত বিবরণ পড়ুন।`,
-    keywords: [category, "ট্রাফিক সাইন", "ট্রাফিক চিহ্ন", "রোড সাইন", "ট্রাফিক রুলস"],
-    alternates: { canonical: `/signs/${category}` },
+    keywords: [
+      category,
+      "ট্রাফিক সাইন",
+      "ট্রাফিক চিহ্ন",
+      "রোড সাইন",
+      "ট্রাফিক রুলস",
+      "তথ্যবক্স",
+    ],
+    alternates: {
+      canonical: `https://totthobox.com/signs/${category}`,
+    },
+    openGraph: {
+      title: `${category} | ট্রাফিক সাইন ও চিহ্ন | তথ্যবক্স`,
+      description: `${category} ক্যাটাগরির সকল ট্রাফিক সাইন ও চিহ্নের বিস্তারিত।`,
+      url: `https://totthobox.com/signs/${category}`,
+      siteName: "Totthobox",
+      type: "website",
+      locale: "bn_BD",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${category} | ট্রাফিক সাইন | তথ্যবক্স`,
+      description: `${category} ক্যাটাগরির সকল ট্রাফিক সাইন ও চিহ্ন।`,
+    },
   };
 }
 

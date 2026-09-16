@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import DowaShowClient from "./dowaShowClient";
 
 async function getItem(slug: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+  const baseUrl =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
   if (!baseUrl) return null;
 
   try {
@@ -30,14 +31,21 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const data = await getItem(slug);
-  if (!data) return { title: "পৃষ্ঠা পাওয়া যায়নি", robots: { index: false, follow: false } };
+
+  if (!data) {
+    return {
+      title: "পৃষ্ঠা পাওয়া যায়নি | তথ্যবক্স",
+      robots: { index: false, follow: false },
+    };
+  }
 
   const item = data.item;
-  const title = `${item.bangla_name} - আরবি, উচ্চারণ, অর্থ ও আমল | দোয়া সংগ্রহ`;
+  const title = `${item.bangla_name} - আরবি, উচ্চারণ, অর্থ ও আমল | দোয়া সংগ্রহ | তথ্যবক্স`;
   const description =
     (item.bangla_meaning
-      ? item.bangla_meaning.replace(/<[^>]+>/g, "").slice(0, 155)
-      : item.bangla_text?.slice(0, 155)) || item.bangla_name;
+      ? item.bangla_meaning.replace(/<[^>]+>/g, "").slice(0, 160)
+      : item.bangla_text?.slice(0, 160)) ||
+    `${item.bangla_name} — আরবি, উচ্চারণ, অর্থ ও ফজিলত।`;
 
   return {
     title,
@@ -48,11 +56,14 @@ export async function generateMetadata({
       "দোয়ার ফজিলত",
       "প্রতিদিনের দোয়া",
       "আরবি দোয়া ও আমল",
+      "তথ্যবক্স",
     ],
     openGraph: {
       title,
       description,
       type: "article",
+      url: `https://totthobox.com/islam/dowan/${slug}`,
+      siteName: "Totthobox",
       images: item.first_media_url ? [{ url: item.first_media_url }] : [],
       locale: "bn_BD",
     },
@@ -62,7 +73,7 @@ export async function generateMetadata({
       description,
     },
     alternates: {
-      canonical: `/islam/dowan/${slug}`,
+      canonical: `https://totthobox.com/islam/dowan/${slug}`,
     },
   };
 }

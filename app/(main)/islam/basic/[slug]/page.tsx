@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import BasicIslamShowClient from "./basicislamShowClient";
 
 async function getItem(slug: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+  const baseUrl =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
   if (!baseUrl) return null;
 
   try {
@@ -31,12 +32,19 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const data = await getItem(slug);
-  if (!data) return { title: "পৃষ্ঠা পাওয়া যায়নি", robots: { index: false, follow: false } };
+
+  if (!data) {
+    return {
+      title: "পৃষ্ঠা পাওয়া যায়নি | তথ্যবক্স",
+      robots: { index: false, follow: false },
+    };
+  }
 
   const item = data.item;
-  const title = `${item.title} | ইসলামের মৌলিক জ্ঞান`;
+  const title = `${item.title} | ইসলামের মৌলিক জ্ঞান | তথ্যবক্স`;
   const description =
-    item.description_plain?.slice(0, 155) || `${item.title} সম্পর্কে বিস্তারিত জানুন।`;
+    item.description_plain?.slice(0, 160) ||
+    `${item.title} সম্পর্কে বিস্তারিত জানুন। ইসলামের মৌলিক জ্ঞান।`;
 
   return {
     title,
@@ -56,6 +64,8 @@ export async function generateMetadata({
       title,
       description,
       type: "article",
+      url: `https://totthobox.com/islam/basic/${slug}`,
+      siteName: "Totthobox",
       images: item.first_media_url ? [{ url: item.first_media_url }] : [],
       locale: "bn_BD",
     },
@@ -65,7 +75,7 @@ export async function generateMetadata({
       description,
     },
     alternates: {
-      canonical: `/islam/basic/${slug}`,
+      canonical: `https://totthobox.com/islam/basic/${slug}`,
     },
   };
 }

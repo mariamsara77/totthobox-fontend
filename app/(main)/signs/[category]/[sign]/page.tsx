@@ -7,7 +7,8 @@ type Props = {
 };
 
 async function getItem(category: string, sign: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+  const baseUrl =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
   if (!baseUrl) return null;
 
   try {
@@ -26,27 +27,48 @@ async function getItem(category: string, sign: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category, sign } = await params;
   const data = await getItem(category, sign);
-  if (!data) return { title: "পৃষ্ঠা পাওয়া যায়নি", robots: { index: false, follow: false } };
+
+  if (!data) {
+    return {
+      title: "পৃষ্ঠা পাওয়া যায়নি | তথ্যবক্স",
+      robots: { index: false, follow: false },
+    };
+  }
 
   const item = data.item;
   const cat = data.category;
   const title = `${item.name} | ${cat.name} | ট্রাফিক সাইন | তথ্যবক্স`;
   const description =
-    item.description_plain?.slice(0, 155) ||
-    `${item.name} ট্রাফিক সাইনের অর্থ ও ব্যবহার।`;
+    item.description_plain?.slice(0, 160) ||
+    `${item.name} ট্রাফিক সাইনের অর্থ, ব্যবহার ও বিস্তারিত ব্যাখ্যা।`;
 
   return {
     title,
     description,
-    keywords: [item.name, cat.name, "ট্রাফিক সাইন", "রোড সাইন", "ট্রাফিক চিহ্ন"],
+    keywords: [
+      item.name,
+      cat.name,
+      "ট্রাফিক সাইন",
+      "রোড সাইন",
+      "ট্রাফিক চিহ্ন",
+      "তথ্যবক্স",
+    ],
     openGraph: {
       title,
       description,
+      type: "article",
+      url: `https://totthobox.com/signs/${category}/${sign}`,
+      siteName: "Totthobox",
       images: item.first_media_url ? [{ url: item.first_media_url }] : [],
       locale: "bn_BD",
     },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
     alternates: {
-      canonical: `/signs/${category}/${sign}`,
+      canonical: `https://totthobox.com/signs/${category}/${sign}`,
     },
   };
 }
