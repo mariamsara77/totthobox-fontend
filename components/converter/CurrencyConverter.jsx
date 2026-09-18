@@ -306,7 +306,7 @@ export default function CurrencyConverter() {
               type="number"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="w-full rounded-xl bg-zinc-400/10 p-4 outline-none"
+              className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
             />
           </div>
         </div>
@@ -374,7 +374,7 @@ export default function CurrencyConverter() {
               type="number"
               value={convertedAmount.toFixed(2)}
               readOnly
-              className="w-full rounded-xl bg-zinc-400/10 p-4 outline-none"
+              className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
             />
           </div>
         </div>
