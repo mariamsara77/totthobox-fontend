@@ -172,7 +172,7 @@ export default function SoftwareClient({ platform = "" }: Props) {
               onChange={(event) => setSearch(event.target.value)}
               placeholder="সফটওয়্যার বা অ্যাপের নামে খুঁজুন..."
               aria-label="সফটওয়্যার সার্চ"
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-400/25 bg-zinc-400/10 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-400"
+              className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 pl-10 pr-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
             />
           </div>
 
@@ -196,7 +196,7 @@ export default function SoftwareClient({ platform = "" }: Props) {
               value={platform}
               onChange={(event) => handlePlatformChange(event.target.value)}
               aria-label="প্ল্যাটফর্ম নির্বাচন করুন"
-              className="appearance-none w-full bg-zinc-400/10 border border-zinc-400/25 rounded-xl p-2.5 pr-9 outline-none text-sm"
+              className="w-full appearance-none rounded-xl border border-zinc-400/25 bg-zinc-400/10 p-2.5 pr-9 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
             >
               <option value="">সব প্ল্যাটফর্ম</option>
               <option value="Windows">Windows</option>
