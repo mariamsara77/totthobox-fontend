@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import AdvancedBanglaCalendar from "./AdvancedBanglaCalendar";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "https://totthobox.com/bangla/calendar" },
+  twitter: { card: "summary_large_image", title: "উন্নত বাংলা ক্যালেন্ডার | Totthobox", description: "আজকের বাংলা তারিখ, বঙ্গাব্দ, ঋতু, হিজরি ও ইংরেজি তারিখের তথ্য এবং রূপান্তর টুল।" },
   title: "উন্নত বাংলা ক্যালেণ্ডার ও তারিখ রূপান্তরকারী | Bangla Calendar Today",
   description:
     "আজকের সঠিক বাংলা তারিখ, বঙ্গাব্দ সাল, ঋতু, হিজরী তারিখ ও ইংরেজি তারিখের হিসাব দেখুন। সহজে ইংরেজি তারিখ থেকে বাংলা তারিখে রূপান্তরের অনলাইন টুল।",
