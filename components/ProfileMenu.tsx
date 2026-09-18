@@ -10,6 +10,7 @@ import {
   User as UserIcon,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { useAuthModal } from "@/context/AuthModalContext";
 
 interface ProfileMenuProps {
   variant?: "default" | "sidebar";
@@ -25,6 +26,7 @@ export default function ProfileMenu({
   onLeave,
 }: ProfileMenuProps) {
   const { user, loading, isLoading, logout } = useAuth();
+  const { openLoginModal } = useAuthModal();
   const isAuthLoading = loading ?? isLoading;
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -158,28 +160,30 @@ export default function ProfileMenu({
   if (!user) {
     if (isSidebar) {
       return (
-        <Link
-          href="/login"
+        <button
+          type="button"
+          onClick={() => openLoginModal()}
           onMouseEnter={(e) => collapsed && onHover?.(e, "লগইন")}
           onMouseLeave={onLeave}
-          className={`flex items-center gap-4 rounded-lg px-3 py-2.5 text-sm transition-all hover:bg-zinc-400/25 ${
+          className={`flex w-full items-center gap-4 rounded-lg px-3 py-2.5 text-left text-sm transition-all hover:bg-zinc-400/25 ${
             collapsed ? "justify-center" : ""
           }`}
         >
           <UserIcon size={18} />
           {!collapsed && <span>লগইন</span>}
-        </Link>
+        </button>
       );
     }
 
     return (
-      <Link
-        href="/login"
+      <button
+        type="button"
+        onClick={() => openLoginModal()}
         className="flex items-center gap-2 rounded-xl bg-zinc-400/10 px-4 py-2.5 text-sm transition-all hover:bg-zinc-400/25"
       >
         <UserIcon size={16} />
         লগইন
-      </Link>
+      </button>
     );
   }
 
