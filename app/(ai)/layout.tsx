@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
-import "./ai-chat.css";
-import AiChatShell from "@/components/ai/AiChatShell";
 
-export default function AiLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div>
-      <AiChatShell>{children}</AiChatShell>
-    </div>
-  );
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
+
+export default function AILayout({ children }: { children: React.ReactNode }) {
+  return children;
 }
