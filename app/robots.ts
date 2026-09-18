@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/api/", "/auth/", "/login", "/register", "/forgot-password", "/ai/chat/"],
+      disallow: ["/api/", "/auth/", "/login", "/register", "/forgot-password", "/reset-password", "/settings/", "/messages/", "/ai/chat/", "/offline"],
     },
     sitemap: "https://totthobox.com/sitemap.xml",
   };
