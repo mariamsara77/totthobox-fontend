@@ -165,7 +165,7 @@ export default function MessageBubble({
                 value={newContent}
                 onChange={(e) => setNewContent(e.target.value)}
                 rows={3}
-                className="w-full text-sm bg-zinc-400/10 rounded-lg p-2 outline-none resize-none"
+                className="w-full resize-none rounded-xl border border-zinc-400/25 bg-zinc-400/10 p-3 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
                 onKeyDown={(e) => {
                   if (e.key === "Escape") setEditing(false);
                   if (e.key === "Enter" && e.ctrlKey) {
