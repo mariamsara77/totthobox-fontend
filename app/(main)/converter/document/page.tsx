@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import AdvancedDocumentConverter from "@/components/tools/AdvancedDocumentConverter";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "https://totthobox.com/converter/document" },
   title: "Free Online Document Converter & PDF Tools | PDF, Word, Excel",
   description:
     "Convert and edit documents entirely in your browser. Merge, split, compress PDFs, convert DOCX to HTML, Excel to CSV, images to PDF and more. No upload, 100% private & free.",
