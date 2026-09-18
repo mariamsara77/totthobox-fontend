@@ -305,7 +305,7 @@ export function CountryGrid({
                 changeFilters(e.target.value, regionFilter, sortBy)
               }
               placeholder="দেশের নাম, রাজধানী বা কোড খুঁজুন..."
-              className="w-full rounded-xl border border-zinc-300/80 bg-transparent px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30 dark:border-zinc-600"
+              className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
             />
           </div>
 
@@ -313,7 +313,7 @@ export function CountryGrid({
             value={regionFilter}
             onChange={(e) => changeFilters(search, e.target.value, sortBy)}
             aria-label="অঞ্চল নির্বাচন করুন"
-            className="w-full rounded-xl border border-zinc-300/80 bg-transparent px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30 dark:border-zinc-600 sm:w-44"
+            className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30 sm:w-44"
           >
             <option value="">সকল অঞ্চল</option>
             {regions.map((r) => (
@@ -329,7 +329,7 @@ export function CountryGrid({
               changeFilters(search, regionFilter, e.target.value as CountrySort)
             }
             aria-label="সাজানোর পদ্ধতি"
-            className="w-full rounded-xl border border-zinc-300/80 bg-transparent px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30 dark:border-zinc-600 sm:w-52"
+            className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30 sm:w-52"
           >
             <option value="name">নাম (A–Z)</option>
             <option value="population_desc">জনসংখ্যা (বেশি → কম)</option>
