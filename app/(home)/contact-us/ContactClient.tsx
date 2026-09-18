@@ -215,7 +215,7 @@ export default function ContactClient() {
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="সম্পূর্ণ নাম লিখুন"
-                    className={`w-full px-4 py-2.5 rounded-xl bg-white dark:bg-zinc-900 border outline-none focus:ring-2 focus:ring-indigo-500/50 transition ${
+                    className={`w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30 ${
                       errors.name
                         ? "border-red-500"
                         : "border-zinc-200 dark:border-zinc-700"
@@ -239,7 +239,7 @@ export default function ContactClient() {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="example@email.com"
-                    className={`w-full px-4 py-2.5 rounded-xl bg-white dark:bg-zinc-900 border outline-none focus:ring-2 focus:ring-indigo-500/50 transition ${
+                    className={`w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30 ${
                       errors.email
                         ? "border-red-500"
                         : "border-zinc-200 dark:border-zinc-700"
@@ -265,7 +265,7 @@ export default function ContactClient() {
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="01XXXXXXXXX"
-                    className="w-full px-4 py-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 outline-none focus:ring-2 focus:ring-indigo-500/50 transition"
+                    className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
                   />
                 </div>
 
@@ -277,7 +277,7 @@ export default function ContactClient() {
                     name="category"
                     value={formData.category}
                     onChange={handleChange}
-                    className="w-full px-4 py-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 outline-none focus:ring-2 focus:ring-indigo-500/50 transition"
+                    className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
                   >
                     <option value="general">সাধারণ জিজ্ঞাসা</option>
                     <option value="support">সাপোর্ট / সমস্যা</option>
@@ -302,7 +302,7 @@ export default function ContactClient() {
                     value={formData.subject}
                     onChange={handleChange}
                     placeholder="মেসেজের বিষয় লিখুন"
-                    className="w-full px-4 py-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 outline-none focus:ring-2 focus:ring-indigo-500/50 transition"
+                    className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
                   />
                 </div>
 
@@ -314,7 +314,7 @@ export default function ContactClient() {
                     name="priority"
                     value={formData.priority}
                     onChange={handleChange}
-                    className="w-full px-4 py-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 outline-none focus:ring-2 focus:ring-indigo-500/50 transition"
+                    className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
                   >
                     <option value="normal">সাধারণ</option>
                     <option value="urgent">জরুরি (Urgent)</option>
@@ -336,7 +336,7 @@ export default function ContactClient() {
                   value={formData.message}
                   onChange={handleChange}
                   placeholder="বিস্তারিত লিখুন..."
-                  className={`w-full px-4 py-2.5 rounded-xl bg-white dark:bg-zinc-900 border outline-none focus:ring-2 focus:ring-indigo-500/50 transition resize-none ${
+                  className={`w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30 resize-none ${
                     errors.message
                       ? "border-red-500"
                       : "border-zinc-200 dark:border-zinc-700"
