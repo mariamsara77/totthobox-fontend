@@ -109,38 +109,38 @@ export default function RelatedLinks() {
   if (!items.length) return null;
 
   return (
-    <section className="mx-auto w-full max-w-5xl px-4 pb-8 pt-2 sm:px-6" aria-labelledby="related-pages-title">
-      <div className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 sm:p-5">
-        <div className="mb-4 flex items-end justify-between gap-3">
+    <section className="mx-auto w-full max-w-2xl px-4 pb-8 pt-6 sm:px-6 sm:pt-8" aria-labelledby="related-pages-title">
+      <div className="border-t border-zinc-400/25 pt-6">
+        <div className="mb-4 space-y-1">
           <div>
-            <h2 id="related-pages-title" className="text-lg font-semibold">
+            <h2 id="related-pages-title" className="text-lg font-bold tracking-tight">
               {group.title}
             </h2>
-            <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+            <p className="text-sm leading-6 text-zinc-500 dark:text-zinc-400">
               Totthobox-এর একই বিষয়ের আরও প্রয়োজনীয় তথ্য ও টুলস।
             </p>
           </div>
         </div>
         <nav aria-label={group.title}>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-2">
             {items.map((item) => {
               const Icon = iconFor(item.href);
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="group rounded-xl border border-zinc-400/20 bg-white/50 p-4 transition hover:-translate-y-0.5 hover:bg-zinc-400/10 dark:bg-zinc-900/30"
+                  className="group block rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 transition-colors hover:bg-zinc-400/20 active:bg-zinc-400/25"
                 >
                   <div className="flex items-start gap-3">
-                    <span className="rounded-xl bg-zinc-400/15 p-2.5 text-zinc-600 dark:text-zinc-300">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-zinc-400/15 text-zinc-600 dark:text-zinc-300">
                       <Icon className="h-4 w-4" aria-hidden="true" />
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="flex items-center gap-1 text-sm font-semibold">
+                      <span className="flex items-center gap-1 text-sm font-semibold leading-5">
                         {item.label}
                         <ArrowRight className="h-3.5 w-3.5 opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100" aria-hidden="true" />
                       </span>
-                      <span className="mt-1 block text-xs leading-5 text-zinc-500 dark:text-zinc-400">
+                      <span className="mt-1 block text-sm leading-5 text-zinc-500 dark:text-zinc-400">
                         {item.description}
                       </span>
                     </span>
