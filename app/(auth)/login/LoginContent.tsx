@@ -19,7 +19,7 @@ type ViewState =
   | { mode: "manual" };
 
 export default function LoginContent() {
-  const { login, loginWithRefresh, user, isLoading: authLoading } = useAuth();
+  const { login, user, isLoading: authLoading } = useAuth();
   const router = useRouter();
 
   const [view, setView] = useState<ViewState>({ mode: "list" });
@@ -59,10 +59,9 @@ export default function LoginContent() {
     }
   }, [view]);
 
-  const handlePickProfile = async (profile: SavedProfile) => {
-    setView({ mode: "switching", profile });
-    const ok = await loginWithRefresh();
-    if (ok) return;
+  const handlePickProfile = (profile: SavedProfile) => {
+    // Saved profiles contain only non-sensitive identity data.
+    // Never try to switch accounts with a shared/browser refresh token.
     setView({ mode: "password", profile });
   };
 
@@ -132,7 +131,9 @@ export default function LoginContent() {
 
   if (authLoading) return null;
 
-  // ── Switching overlay ─────────────────────────────────────────────────
+  // ── Legacy switching state is intentionally unreachable.
+  // A saved profile is an email shortcut only; authentication always requires
+  // the current password or Google OAuth.
   if (view.mode === "switching") {
     return (
       <div className="max-w-md mx-auto flex flex-col items-center gap-6 py-12">
