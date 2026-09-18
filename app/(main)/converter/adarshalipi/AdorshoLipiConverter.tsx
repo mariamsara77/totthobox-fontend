@@ -1850,7 +1850,7 @@ export default function AdorshoLipiConverter() {
             onChange={(e) => handleAdorshoChange(e.target.value)}
             rows={6}
             placeholder="BcnÑ¢m¢f HM¡®e V¡Cf Ll¤e..."
-            className="w-full resize-none p-4 rounded-lg bg-zinc-400/10 adorsholipi-exp outline-none leading-relaxed "
+            className="w-full resize-none rounded-xl border border-zinc-400/25 bg-zinc-400/10 p-4 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30 adorsholipi-exp leading-relaxed"
           />
 
           <div className="flex justify-end">
