@@ -277,7 +277,7 @@ export default function CurrencyConverter() {
                     value={fromSearch}
                     onChange={(e) => setFromSearch(e.target.value)}
                     placeholder="সার্চ করুন..."
-                    className="w-full rounded-lg bg-zinc-400/10 p-2 outline-none text-sm"
+                    className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-3 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
                   />
                 </div>
                 <ul className="max-h-60 overflow-y-auto space-y-2 p-2">
@@ -345,7 +345,7 @@ export default function CurrencyConverter() {
                     value={toSearch}
                     onChange={(e) => setToSearch(e.target.value)}
                     placeholder="সার্চ করুন..."
-                    className="w-full rounded-lg bg-zinc-400/10 p-2 outline-none text-sm"
+                    className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-3 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
                   />
                 </div>
                 <ul className="max-h-60 overflow-y-auto space-y-2 p-2">
