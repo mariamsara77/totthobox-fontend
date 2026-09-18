@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Noto_Sans_Bengali } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 import { AppProviders } from "./providers";
 import SettingsModalWrapper from "@/components/SettingsModalWrapper";
@@ -106,15 +105,6 @@ export default function RootLayout({
         suppressHydrationWarning
         className="antialiased bg-white dark:bg-zinc-800"
       >
-        {/* ========== AdSense Script (next/script দিয়ে) ========== */}
-        <Script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9522604367420521"
-          crossOrigin="anonymous"
-          strategy="afterInteractive"
-        />
-        {/* ====================================================== */}
-
         <NetworkStatus />
         <TagManager />
         <AppProviders>
