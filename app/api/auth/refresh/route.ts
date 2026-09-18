@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     body: JSON.stringify({ refresh_token: refreshToken }),
   });
 
-  if (status === 401 || !data?.access_token) {
+  if (status === 401 || status === 403) {
     const response = NextResponse.json(
       { message: "সেশন শেষ হয়ে গেছে।" },
       { status: 401 },
@@ -23,8 +23,11 @@ export async function POST(request: NextRequest) {
     return response;
   }
 
-  if (status < 200 || status >= 300) {
-    return NextResponse.json(data ?? { message: "Refresh failed." }, { status });
+  if (status < 200 || status >= 300 || !data?.access_token) {
+    return NextResponse.json(
+      data ?? { message: "সেশন রিফ্রেশ করা যায়নি।" },
+      { status: status >= 400 ? status : 502 },
+    );
   }
 
   const response = NextResponse.json({ user: data.user });
