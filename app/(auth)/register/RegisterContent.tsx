@@ -213,7 +213,7 @@ export default function RegisterContent() {
               placeholder="আপনার পূর্ণ নাম"
               autoComplete="name"
               className={clsx(
-                "w-full rounded-full py-3.5 px-6 border bg-zinc-400/10 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition",
+                "w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-3.5 outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30",
                 errors.name ? "border-red-500" : "border-transparent",
               )}
             />
@@ -236,7 +236,7 @@ export default function RegisterContent() {
               placeholder="ইমেইল (যেমন: name@example.com)"
               autoComplete="email"
               className={clsx(
-                "w-full rounded-full py-3.5 px-6 border bg-zinc-400/10 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition",
+                "w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-3.5 outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30",
                 errors.email ? "border-red-500" : "border-transparent",
               )}
             />
@@ -367,7 +367,7 @@ export default function RegisterContent() {
                 setErrors((prev) => ({ ...prev, otp: "" }));
               }}
               placeholder="••••"
-              className="w-48 text-center text-3xl tracking-[0.5em] font-bold rounded-2xl py-4 border-2 border-zinc-200 dark:border-zinc-700 bg-zinc-400/10 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"
+              className="w-full max-w-xs rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-3.5 text-center text-2xl font-bold tracking-[0.4em] outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
             />
           </div>
           {errors.otp && (
