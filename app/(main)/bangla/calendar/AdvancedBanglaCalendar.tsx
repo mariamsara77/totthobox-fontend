@@ -405,7 +405,7 @@ export default function AdvancedBanglaCalendar() {
                     ),
                   );
                 }}
-                className="appearance-none bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-xl pl-3 pr-8 py-2 text-sm font-medium outline-none cursor-pointer transition-colors"
+                className="appearance-none w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 pl-3 pr-8 py-2.5 text-sm font-medium outline-none cursor-pointer transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
               >
                 {Array.from({ length: 12 }).map((_, i) => (
                   <option key={i} value={i}>
@@ -426,7 +426,7 @@ export default function AdvancedBanglaCalendar() {
                     new Date(parseInt(e.target.value), viewDate.getMonth(), 1),
                   );
                 }}
-                className="appearance-none bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-xl pl-3 pr-8 py-2 text-sm font-medium outline-none cursor-pointer transition-colors"
+                className="appearance-none w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 pl-3 pr-8 py-2.5 text-sm font-medium outline-none cursor-pointer transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
               >
                 {Array.from({ length: 121 }).map((_, i) => {
                   const y = new Date().getFullYear() - 100 + i;
