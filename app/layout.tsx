@@ -9,6 +9,7 @@ import GoogleTranslate from "@/components/GoogleTranslate";
 import VisitorTracker from "@/components/VisitorTracker";
 import InstallPWA from "@/components/InstallPWA";
 import NetworkStatus from "@/components/NetworkStatus";
+import SiteStructuredData from "@/components/seo/SiteStructuredData";
 // Adsense কম্পোনেন্ট আর লাগবে না, নিচে সরাসরি দিয়ে দিলাম
 
 const geistSans = Geist({
@@ -38,7 +39,6 @@ export const metadata: Metadata = {
   },
   description:
     "Totthobox হলো একটি আধুনিক ডিজিটাল ইনফরমেশন ও ইউটিলিটি সার্ভিস প্ল্যাটফর্ম। প্রয়োজনীয় সকল তথ্য ও সেবা সহজে পেতে ভিজিট করুন।",
-  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     siteName: "Totthobox",
@@ -92,7 +92,6 @@ export default function RootLayout({
       <head>
         {/* অতিরিক্ত কাস্টম ট্যাগ এখানে রাখতে পারেন */}
         <meta name="author" content="Totthobox Team" />
-        <meta name="robots" content="index, follow" />
         <meta property="fb:app_id" content="1108131871544005" />
         <meta
           name="vapid-public-key"
@@ -115,6 +114,7 @@ export default function RootLayout({
         />
         {/* ====================================================== */}
 
+        <SiteStructuredData />
         <NetworkStatus />
         <TagManager />
         <AppProviders>
