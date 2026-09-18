@@ -61,7 +61,7 @@ const services = [
     details: "সফটওয়্যার পরিচিতি ও তথ্য।",
   },
   {
-    href: "/contact-numbers",
+    href: "/contact/police",
     icon: PhoneCall,
     label: "জরুরি সেবা",
     details: "হেল্পলাইন ও জরুরি নম্বর।",
@@ -118,7 +118,6 @@ export default function ServicesPage() {
         </p>
       </header>
 
-      {/* Dashboard Placeholder (আপনার livewire dashboard-এর বিকল্প) */}
       <div className="w-full">
         <div className=" border border-zinc-400/25 rounded-2xl p-4 text-center">
           <p className="">
