@@ -1,5 +1,3 @@
-import Script from "next/script";
-
 export default function SiteStructuredData() {
   const graph = {
     "@context": "https://schema.org",
@@ -25,10 +23,9 @@ export default function SiteStructuredData() {
   };
 
   return (
-    <Script
+    <script
       id="totthobox-site-structured-data"
       type="application/ld+json"
-      strategy="afterInteractive"
       dangerouslySetInnerHTML={{ __html: JSON.stringify(graph) }}
     />
   );
