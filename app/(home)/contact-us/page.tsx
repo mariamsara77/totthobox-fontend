@@ -8,7 +8,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/contact-us" },
   openGraph: {
     title: "যোগাযোগ করুন | Totthobox",
-    description: "Totthobox-এর সাথে যোগাযোগের জন্য মেসেজ, ইমেইল, ফোন ও অন্যান্য যোগাযোগের মাধ্যম।",
+    description:
+      "Totthobox-এর সাথে যোগাযোগের জন্য মেসেজ, ইমেইল, ফোন ও অন্যান্য যোগাযোগের মাধ্যম।",
     url: "https://totthobox.com/contact-us",
     siteName: "Totthobox",
     type: "website",
@@ -21,11 +22,6 @@ export const metadata: Metadata = {
     "সাপোর্ট সেন্টার",
     "মেসেজ দিন",
   ],
-  openGraph: {
-    title: "যোগাযোগ করুন | Totthobox",
-    description: "Totthobox-এর সাথে যোগাযোগ করুন।",
-    type: "website",
-  },
 };
 
 export default function ContactPage() {
