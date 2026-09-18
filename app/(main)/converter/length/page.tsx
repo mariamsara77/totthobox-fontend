@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import LengthConverter from "@/components/converter/LengthConverter";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "https://totthobox.com/converter/length" },
   title: "অনলাইন দৈর্ঘ্য রূপান্তরকারী - মিটার, কিমি, মাইল, ফুট, ইঞ্চি কনভার্টার | Totthobox",
   description:
     "সহজেই মিটার (m), সেন্টিমিটার (cm), কিলোমিটার (km), মাইল (mi), ফুট (ft) এবং ইঞ্চি (in) কনভার্ট করুন। Totthobox-এর নিখুঁত Length Converter।",
