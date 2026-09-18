@@ -1585,7 +1585,7 @@ export default function NumberToWordConverter() {
               value={number}
               onChange={(e) => setNumber(e.target.value)}
               placeholder="যেমন: 12500.50 অথবা ১২৫০০.৫০"
-              className="w-full pl-10 pr-4 py-2 rounded-lg  bg-zinc-400/10 outline-none"
+              className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 pl-10 pr-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
               lang="en"
             />
           </div>
