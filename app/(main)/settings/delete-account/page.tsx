@@ -62,7 +62,7 @@ export default function DeleteAccountPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
-            className="w-full rounded-xl px-4 py-2.5 outline-none bg-zinc-400/10 focus:ring-2"
+            className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
           />
           {error && <div className="text-red-600 text-sm py-2">{error}</div>}
         </div>
