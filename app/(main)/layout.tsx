@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Sidebar from "@/components/Sidebar";
 import { SidebarProvider } from "@/context/SidebarContext";
+import RelatedLinks from "@/components/RelatedLinks";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://totthobox.com"),
@@ -33,6 +34,7 @@ export default function MainLayout({
             </div>
 
             <main className="flex-1 w-full">{children}</main>
+            <RelatedLinks />
             <Footer />
           </div>
         </div>
