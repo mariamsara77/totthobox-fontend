@@ -1,3 +1,11 @@
+import type { Metadata } from "next";
+import ErrorPage from "@/components/ErrorPage";
+
+export const metadata: Metadata = {
+  title: "পৃষ্ঠা পাওয়া যায়নি | Totthobox",
+  robots: { index: false, follow: false },
+};
+
 import ErrorPage from "@/components/ErrorPage";
 
 export default function NotFound() {
