@@ -38,7 +38,6 @@ interface UserProfileData {
 async function getProfileData(slug: string): Promise<UserProfileData | null> {
     try {
         const url = `${process.env.NEXT_PUBLIC_API_BASE_URL || 'https://admin.totthobox.com'}/api/users/${slug}/profile`;
-        console.log('Fetching:', url);           // ← URL দেখুন
 
         const res = await fetch(url, { cache: 'no-store' });
         console.log('Status:', res.status);      // ← status দেখুন
