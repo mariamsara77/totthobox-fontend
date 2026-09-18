@@ -82,8 +82,7 @@ const groups: Array<{ matches: string[]; title: string; links: RelatedLink[] }> 
     title: "জরুরি সেবায় আরও দেখুন",
     links: [
       { href: "/contact/police", label: "পুলিশ", description: "পুলিশের জরুরি যোগাযোগের তথ্য।" },
-      { href: "/contact/fire-service", label: "ফায়ার সার্ভিস", description: "ফায়ার সার্ভিসের জরুরি তথ্য।" },
-      { href: "/contact/ambulance", label: "অ্যাম্বুলেন্স", description: "অ্যাম্বুলেন্স ও জরুরি সহায়তা।" },
+      { href: "/services", label: "সব সেবা", description: "Totthobox-এর অন্যান্য ডিজিটাল সেবা দেখুন।" },
       { href: "/contact-us", label: "যোগাযোগ", description: "Totthobox-এর সাথে যোগাযোগ করুন।" },
     ],
   },
