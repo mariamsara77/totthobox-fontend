@@ -3,6 +3,7 @@ import CurrencyConverter from "@/components/converter/CurrencyConverter";
 
 // আপনার দেওয়া SEO মেটাডেটা
 export const metadata: Metadata = {
+  alternates: { canonical: "https://totthobox.com/converter/currency" },
   title: "লাইভ কারেন্সি কনভার্টার - টাকার সর্বশেষ রেট জানুন | Totthobox",
   description:
     "ডলার, ইউরো, রিয়ালসহ বিশ্বের যেকোনো দেশের মুদ্রাকে বাংলাদেশি টাকায় কনভার্ট করুন। Totthobox-এ পান রিয়েল-টাইম এক্সচেঞ্জ রেট এবং নির্ভুল হিসাব।",
