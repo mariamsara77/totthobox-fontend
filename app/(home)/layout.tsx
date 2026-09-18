@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import NavbarHeader from "@/components/NavbarHeader";
 import Footer from "@/components/Footer";
+import RelatedLinks from "@/components/RelatedLinks";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://totthobox.com"),
@@ -25,6 +26,7 @@ export default function HomeLayout({
             <NavbarHeader />
           </div>
           <main className="flex-1 w-full">{children}</main>
+          <RelatedLinks />
           <Footer />
         </div>
       </div>
