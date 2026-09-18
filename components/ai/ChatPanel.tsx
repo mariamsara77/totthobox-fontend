@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import ChatInput from "./ChatInput";
 import MessageList from "./MessageList";
 import { useAuth } from "@/context/AuthContext";
+import { useAuthModal } from "@/context/AuthModalContext";
 
 export type ChatMessage = {
   id: string | number;
@@ -22,6 +23,7 @@ export default function ChatPanel({
   const router = useRouter();
 
   const { isLoggedIn, loading: authLoading } = useAuth();
+  const { openLoginModal } = useAuthModal();
   const isGuest = !isLoggedIn;
 
   const [uuid, setUuid] = useState<string | null>(initialUuid);
@@ -311,9 +313,7 @@ export default function ChatPanel({
           isGuest={isGuest}
           guestRemaining={guestRemaining}
           onSend={ask}
-          onLogin={() =>
-            window.dispatchEvent(new CustomEvent("chat:session-created"))
-          }
+          onLogin={() => openLoginModal({ reason: "চ্যাট সেভ করতে লগইন করুন।" })}
         />
       </div>
     </div>
