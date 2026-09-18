@@ -1,3 +1,10 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "অফলাইন | Totthobox",
+  robots: { index: false, follow: false },
+};
+
 export default function OfflinePage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen text-center p-4">
