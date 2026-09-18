@@ -366,7 +366,7 @@ export default function ProfileSettingsPage() {
               required
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="w-full rounded-xl px-4 py-2.5 outline-none bg-zinc-400/10 focus:ring-2"
+              className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
             />
           </div>
 
@@ -377,7 +377,7 @@ export default function ProfileSettingsPage() {
               required
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="w-full rounded-xl px-4 py-2.5 outline-none bg-zinc-400/10 focus:ring-2"
+              className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
             />
           </div>
           <div>
@@ -386,7 +386,7 @@ export default function ProfileSettingsPage() {
               type="text"
               value={form.profession}
               onChange={(e) => setForm({ ...form, profession: e.target.value })}
-              className="w-full rounded-xl px-4 py-2.5 outline-none bg-zinc-400/10 focus:ring-2"
+              className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
             />
           </div>
         </div>
@@ -400,7 +400,7 @@ export default function ProfileSettingsPage() {
             rows={4}
             value={form.bio}
             onChange={(e) => setForm({ ...form, bio: e.target.value })}
-            className="w-full rounded-xl px-4 py-2.5 outline-none bg-zinc-400/10 focus:ring-2 resize-none"
+            className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30 resize-none"
           />
         </div>
 
@@ -411,7 +411,7 @@ export default function ProfileSettingsPage() {
             type="text"
             value={form.location}
             onChange={(e) => setForm({ ...form, location: e.target.value })}
-            className="w-full rounded-xl px-4 py-2.5 outline-none bg-zinc-400/10 focus:ring-2"
+            className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
           />
         </div>
 
