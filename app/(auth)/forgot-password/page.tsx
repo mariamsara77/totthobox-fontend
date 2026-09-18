@@ -139,7 +139,7 @@ export default function ForgotPasswordPage() {
             }}
             placeholder="ইমেইল অ্যাড্রেস"
             autoComplete="email"
-            className={`w-full rounded-xl border bg-zinc-400/10 px-4 py-3.5 outline-none transition focus:ring-2 focus:ring-emerald-600 ${
+            className={`w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-3.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30 ${
               errors.email ? "border-rose-500" : "border-transparent"
             }`}
           />
