@@ -222,7 +222,7 @@ export default function PrivacyPolicyPage() {
             থেকে ব্যক্তিগতকৃত বিজ্ঞাপন নিয়ন্ত্রণ করতে পারেন।
           </p>
           <p>
-            তৃতীয় পক্ষের বিজ্ঞাপনদাতারা তাদের নিজস্ব গোপনীয়তা নীতি অনুসরণ করে। আমরা বিজ্ঞাপন অংশীদারদের নিজস্ব ডেটা প্রক্রিয়াকরণ নিয়ন্ত্রণ করি না। Google কীভাবে অংশীদার সাইট ও অ্যাপের তথ্য ব্যবহার করে তা জানতে Google-এর "How Google uses information from sites or apps that use our services" পৃষ্ঠা দেখুন।
+            তৃতীয় পক্ষের বিজ্ঞাপনদাতারা তাদের নিজস্ব গোপনীয়তা নীতি অনুসরণ করে। আমরা বিজ্ঞাপন অংশীদারদের নিজস্ব ডেটা প্রক্রিয়াকরণ নিয়ন্ত্রণ করি না। Google কীভাবে অংশীদার সাইট ও অ্যাপের তথ্য ব্যবহার করে তা জানতে Google-এর <a href="https://business.safety.google/privacy/" target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">How Google uses information</a> পৃষ্ঠা দেখুন।
             আমরা তাদের তথ্য সংগ্রহের পদ্ধতির জন্য দায়ী নই। বিস্তারিত জানতে
             Google-এর গোপনীয়তা নীতি দেখুন:{" "}
             <a
