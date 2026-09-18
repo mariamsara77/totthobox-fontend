@@ -107,7 +107,7 @@ export default function ServicesPage() {
     <div className="max-w-7xl mx-auto p-4 lg:px-8 space-y-8 py-8">
       {/* Header */}
       <header className="text-center space-y-4">
-        <h1 className="text-3xl   font-bold text-zinc-50 dark:text-white tracking-tight">
+        <h1 className="text-3xl   font-bold text-zinc-900 dark:text-white tracking-tight">
           মূল সেবা
         </h1>
         <p className="text-base sm:text-lg  max-w-2xl mx-auto">
@@ -116,7 +116,7 @@ export default function ServicesPage() {
         </p>
       </header>
 
-      {/* Dashboard Placeholder (আপনার livewire dashboard-এর বিকল্প) */}
+      {/* Service introduction */}
       <div className="w-full">
         <div className=" border border-zinc-400/25 rounded-2xl p-4 text-center">
           <p className="">
@@ -140,11 +140,11 @@ export default function ServicesPage() {
                 href={service.href}
                 className="relative flex flex-col items-center h-full p-4 text-center transition-all duration-200 border border-transparent group rounded-3xl bg-zinc-900 dark:bg-zinc-950/5 border-zinc-400/25 border-zinc-400/25"
               >
-                <div className="mb-4 transition-transform duration-200 transform group-hover:scale-110 text-zinc-50 dark:text-white">
+                <div className="mb-4 transition-transform duration-200 transform group-hover:scale-110 text-zinc-900 dark:text-white">
                   <Icon className="w-12 h-12 stroke-[1.5]" />
                 </div>
 
-                <h3 className="text-lg  text-zinc-50 dark:text-white  group-hover:font-bold">
+                <h3 className="text-lg  text-zinc-900 dark:text-white  group-hover:font-bold">
                   {service.label}
                 </h3>
 
@@ -161,7 +161,7 @@ export default function ServicesPage() {
 
       {/* Content Section (AdSense thin-content fix) */}
       <article className="space-y-4">
-        <h2 className="text-2xl font-bold text-zinc-50 dark:text-white">
+        <h2 className="text-2xl font-bold text-zinc-900 dark:text-white">
           তথ্যবক্স (Totthobox) — আপনার দৈনন্দিন ডিজিটাল সহায়ক
         </h2>
 
@@ -174,7 +174,7 @@ export default function ServicesPage() {
             আপনি সহজে নির্ভরযোগ্য তথ্য পেতে পারেন।
           </p>
 
-          <h3 className="text-xl  text-zinc-50 dark:text-white mt-8 mb-4">
+          <h3 className="text-xl  text-zinc-900 dark:text-white mt-8 mb-4">
             কী কী সেবা পাবেন
           </h3>
 
@@ -215,7 +215,7 @@ export default function ServicesPage() {
             </li>
           </ul>
 
-          <h3 className="text-xl  text-zinc-50 dark:text-white mt-8 mb-4">
+          <h3 className="text-xl  text-zinc-900 dark:text-white mt-8 mb-4">
             কেন Totthobox ব্যবহার করবেন
           </h3>
 
