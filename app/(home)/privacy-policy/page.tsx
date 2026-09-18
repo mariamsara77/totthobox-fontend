@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "https://totthobox.com/privacy-policy" },
   title: "গোপনীয়তা নীতি (Privacy Policy) | Totthobox",
   description:
     "Totthobox-এর সম্পূর্ণ গোপনীয়তা নীতি। আমরা কীভাবে আপনার ব্যক্তিগত তথ্য, কুকিজ এবং Google AdSense-এর মাধ্যমে তথ্য সংগ্রহ, ব্যবহার ও সুরক্ষা করি তা বিস্তারিত জানুন।",
