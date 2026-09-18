@@ -217,79 +217,79 @@ export default function ProfileSettingsPage() {
     }
   };
 
-  //   if (loading) {
-  //     return (
-  //       <section className="max-w-2xl mx-auto p-4 space-y-8 animate-pulse">
-  //         {/* Title */}
-  //         <div className="h-8 w-48 bg-zinc-400/25 rounded-lg mb-6" />
+  if (loading) {
+    return (
+      <section className="max-w-2xl mx-auto p-4 space-y-8 animate-pulse">
+        {/* Title */}
+        <div className="h-8 w-48 bg-zinc-400/25 rounded-lg mb-6" />
 
-  //         {/* Avatar Section */}
-  //         <div className="space-y-2">
-  //           <div className="h-4 w-24 bg-zinc-400/25 rounded" />
-  //           <div className="flex items-center gap-6">
-  //             <div className="size-20 bg-zinc-400/25 rounded-xl shrink-0" />
-  //             <div className="flex-1 space-y-2">
-  //               <div className="h-9 w-full bg-zinc-400/10 rounded-lg" />
-  //               <div className="h-3 w-20 bg-zinc-400/25 rounded" />
-  //             </div>
-  //           </div>
-  //         </div>
+        {/* Avatar Section */}
+        <div className="space-y-2">
+          <div className="h-4 w-24 bg-zinc-400/25 rounded" />
+          <div className="flex items-center gap-6">
+            <div className="size-20 bg-zinc-400/25 rounded-xl shrink-0" />
+            <div className="flex-1 space-y-2">
+              <div className="h-9 w-full bg-zinc-400/10 rounded-lg" />
+              <div className="h-3 w-20 bg-zinc-400/25 rounded" />
+            </div>
+          </div>
+        </div>
 
-  //         <div className="h-px w-full bg-zinc-400/10" />
+        <div className="h-px w-full bg-zinc-400/10" />
 
-  //         {/* Inputs (Name, Email, Profession) */}
-  //         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-  //           <div className="space-y-2">
-  //             <div className="h-4 w-24 bg-zinc-400/25 rounded" />
-  //             <div className="h-10 w-full bg-zinc-400/10 rounded-lg" />
-  //           </div>
-  //           <div className="space-y-2">
-  //             <div className="h-4 w-28 bg-zinc-400/25 rounded" />
-  //             <div className="h-10 w-full bg-zinc-400/10 rounded-lg" />
-  //           </div>
-  //           <div className="space-y-2">
-  //             <div className="h-4 w-16 bg-zinc-400/25 rounded" />
-  //             <div className="h-10 w-full bg-zinc-400/10 rounded-lg" />
-  //           </div>
-  //         </div>
+        {/* Inputs (Name, Email, Profession) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <div className="h-4 w-24 bg-zinc-400/25 rounded" />
+            <div className="h-10 w-full bg-zinc-400/10 rounded-lg" />
+          </div>
+          <div className="space-y-2">
+            <div className="h-4 w-28 bg-zinc-400/25 rounded" />
+            <div className="h-10 w-full bg-zinc-400/10 rounded-lg" />
+          </div>
+          <div className="space-y-2">
+            <div className="h-4 w-16 bg-zinc-400/25 rounded" />
+            <div className="h-10 w-full bg-zinc-400/10 rounded-lg" />
+          </div>
+        </div>
 
-  //         {/* Bio */}
-  //         <div className="space-y-2">
-  //           <div className="h-4 w-32 bg-zinc-400/25 rounded" />
-  //           <div className="h-24 w-full bg-zinc-400/10 rounded-lg" />
-  //         </div>
+        {/* Bio */}
+        <div className="space-y-2">
+          <div className="h-4 w-32 bg-zinc-400/25 rounded" />
+          <div className="h-24 w-full bg-zinc-400/10 rounded-lg" />
+        </div>
 
-  //         {/* Location */}
-  //         <div className="space-y-2">
-  //           <div className="h-4 w-16 bg-zinc-400/25 rounded" />
-  //           <div className="h-10 w-full bg-zinc-400/10 rounded-lg" />
-  //         </div>
+        {/* Location */}
+        <div className="space-y-2">
+          <div className="h-4 w-16 bg-zinc-400/25 rounded" />
+          <div className="h-10 w-full bg-zinc-400/10 rounded-lg" />
+        </div>
 
-  //         <div className="h-px w-full bg-zinc-400/10" />
+        <div className="h-px w-full bg-zinc-400/10" />
 
-  //         {/* Cascading Selects (Division, District, Thana) */}
-  //         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-  //           <div className="space-y-2">
-  //             <div className="h-4 w-16 bg-zinc-400/25 rounded" />
-  //             <div className="h-10 w-full bg-zinc-400/10 rounded-lg" />
-  //           </div>
-  //           <div className="space-y-2">
-  //             <div className="h-4 w-12 bg-zinc-400/25 rounded" />
-  //             <div className="h-10 w-full bg-zinc-400/10 rounded-lg" />
-  //           </div>
-  //           <div className="space-y-2">
-  //             <div className="h-4 w-14 bg-zinc-400/25 rounded" />
-  //             <div className="h-10 w-full bg-zinc-400/10 rounded-lg" />
-  //           </div>
-  //         </div>
+        {/* Cascading Selects (Division, District, Thana) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="space-y-2">
+            <div className="h-4 w-16 bg-zinc-400/25 rounded" />
+            <div className="h-10 w-full bg-zinc-400/10 rounded-lg" />
+          </div>
+          <div className="space-y-2">
+            <div className="h-4 w-12 bg-zinc-400/25 rounded" />
+            <div className="h-10 w-full bg-zinc-400/10 rounded-lg" />
+          </div>
+          <div className="space-y-2">
+            <div className="h-4 w-14 bg-zinc-400/25 rounded" />
+            <div className="h-10 w-full bg-zinc-400/10 rounded-lg" />
+          </div>
+        </div>
 
-  //         {/* Submit Button */}
-  //         <div className="pt-4">
-  //           <div className="h-10 w-32 bg-zinc-400/25 rounded-lg" />
-  //         </div>
-  //       </section>
-  //     );
-  //   }
+        {/* Submit Button */}
+        <div className="pt-4">
+          <div className="h-10 w-32 bg-zinc-400/25 rounded-lg" />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="max-w-2xl mx-auto p-4">
