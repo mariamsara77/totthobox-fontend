@@ -22,30 +22,40 @@ export const metadata: Metadata = {
     "Totthobox-এ পাবেন বাংলাদেশ জেলা তথ্য, ইসলামিক শিক্ষা, স্বাস্থ্য জ্ঞান, জরুরী নম্বর, ছুটির তালিকা, কনভার্টার এবং প্রয়োজনীয় ডিজিটাল সেবা।",
   keywords:
     "তথ্যবক্স, Totthobox, বাংলাদেশ সার্ভিস পোর্টাল, বাংলা ক্যালেন্ডার, জরুরি নম্বর, শিশুশিক্ষা, কনভার্টার, ইসলামিক শিক্ষা",
+  alternates: { canonical: "/services" },
+  openGraph: {
+    title: "মূল সেবা | Totthobox",
+    description:
+      "Totthobox-এর বাংলাদেশ ও আন্তর্জাতিক তথ্য, ইসলামিক শিক্ষা, জরুরি সেবা, কনভার্টার ও প্রয়োজনীয় ডিজিটাল টুলসের তালিকা।",
+    url: "https://totthobox.com/services",
+    siteName: "Totthobox",
+    type: "website",
+    locale: "bn_BD",
+  },
 };
 
-// Mock Data for Services
+// Public service directory
 const services = [
   {
-    href: "/calendar",
+    href: "/bangla/calendar",
     icon: CalendarDays,
     label: "বাংলা ক্যালেন্ডার",
     details: "ছুটি ও বিশেষ দিবসের তালিকা।",
   },
   {
-    href: "/converter",
+    href: "/converter/number-to-word",
     icon: ArrowRightLeft,
     label: "কনভার্টার",
     details: "মুদ্রা ও একক রূপান্তর টুলস।",
   },
   {
-    href: "/tools",
+    href: "/tools/age-calculator",
     icon: Wrench,
     label: "বিভিন্ন টুলস",
     details: "ছবি রিসাইজ, বয়স ক্যালকুলেটর প্রভৃতি।",
   },
   {
-    href: "/software",
+    href: "/software/all",
     icon: MonitorPlay,
     label: "সফটওয়্যার",
     details: "সফটওয়্যার পরিচিতি ও তথ্য।",
@@ -57,7 +67,7 @@ const services = [
     details: "হেল্পলাইন ও জরুরি নম্বর।",
   },
   {
-    href: "/bangladesh",
+    href: "/bangladesh/introduction",
     icon: Map,
     label: "বাংলাদেশ",
     details: "দর্শনিয় স্থান, গুণীজন ও অন্যান্য তথ্য।",
@@ -69,25 +79,25 @@ const services = [
     details: "পতাকা, রাজধানী ও মুদ্রার তথ্য।",
   },
   {
-    href: "/islamic",
+    href: "/islam/basic",
     icon: BookOpen,
     label: "ইসলামিক",
     details: "নামাজ, কালেমা ও দোয়া।",
   },
   {
-    href: "/child-education",
+    href: "/tools/writing-practice",
     icon: GraduationCap,
     label: "শিশুশিক্ষা",
     details: "বর্ণমালা ও মৌলিক শিক্ষা।",
   },
   {
-    href: "/signs",
+    href: "/signs/all",
     icon: TriangleAlert,
     label: "সংকেত",
     details: "স্বাস্থ্য ও ট্রাফিক সংকেত।",
   },
   {
-    href: "/ai-chat",
+    href: "/ai/chat",
     icon: Sparkles,
     label: "Totthobox AI",
     details: "চ্যাটবট সহায়তা ও তথ্য সেবা।",
@@ -112,7 +122,7 @@ export default function ServicesPage() {
       <div className="w-full">
         <div className=" border border-zinc-400/25 rounded-2xl p-4 text-center">
           <p className="">
-            ড্যাশবোর্ড সেকশন (এখানে আপনার ইউজারের ড্যাশবোর্ড উইজেট বসবে)
+            প্রয়োজনীয় সেবাগুলো নিচের তালিকা থেকে সরাসরি ব্যবহার করুন।
           </p>
         </div>
       </div>
