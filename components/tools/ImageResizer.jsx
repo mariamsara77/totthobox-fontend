@@ -755,7 +755,7 @@ export default function ImageResizer() {
             </div>
 
             {/* Controls Card */}
-            <div className="rounded-2xl border border-zinc-400/25 bg-zinc-950 bg-zinc-900/50 overflow-hidden">
+            <div className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 overflow-hidden">
               <div className="p-4 space-y-5">
                 {/* Format */}
                 <div>
