@@ -68,12 +68,8 @@ export default function MessageList({
             <div className="p-3 rounded-2xl bg-zinc-400/10">
               <Sparkles className="size-6" />
             </div>
-            <p className="text-sm  ">
-              আমি আপনাকে কিভাবে সাহায্য করতে পারি?
-            </p>
-            <p className="text-xs ">
-              ছবি paste করুন বা drag করে আনুন
-            </p>
+            <p className="text-sm  ">আমি আপনাকে কিভাবে সাহায্য করতে পারি?</p>
+            <p className="text-xs ">ছবি paste করুন বা drag করে আনুন</p>
             {isGuest && (
               <p className="text-xs ">
                 লগইন ছাড়াই বেশ কয়েকবার জিজ্ঞেস করা যাবে
@@ -103,9 +99,7 @@ export default function MessageList({
                 </div>
               </div>
               <div>
-                <span className="text-xs  ">
-                  তথ্যবক্স এআই ভাবছে...
-                </span>
+                <span className="text-xs  ">তথ্যবক্স এআই ভাবছে...</span>
                 <div className="flex gap-1 mt-0.5">
                   <span className="w-1 h-1 bg-zinc-9000/40 rounded-full animate-pulse" />
                   <span className="w-1 h-1 bg-zinc-9000/40 rounded-full animate-pulse [animation-delay:200ms]" />

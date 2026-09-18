@@ -36,20 +36,17 @@ export default function ChatPanel({
   );
 
   // 🛠️ ফিক্স ১: সব API Request-এর জন্য Authorization Header তৈরি করার ফাংশন
-  const getHeaders = useCallback(
-    (isPost = false) => {
-      const headers: Record<string, string> = {
-        Accept: "application/json",
-      };
+  const getHeaders = useCallback((isPost = false) => {
+    const headers: Record<string, string> = {
+      Accept: "application/json",
+    };
 
-      if (isPost) {
-        headers["Content-Type"] = "application/json";
-      }
+    if (isPost) {
+      headers["Content-Type"] = "application/json";
+    }
 
-      return headers;
-    },
-    [],
-  );
+    return headers;
+  }, []);
 
   // ১. URL/Props থেকে initialUuid পরিবর্তন হলে uuid স্টেট আপডেট করা
   useEffect(() => {
@@ -90,11 +87,11 @@ export default function ChatPanel({
 
     (async () => {
       try {
-       const res = await fetch(`/api/backend/ai/sessions/${uuid}`, {
-  credentials: "include",
-  headers: getHeaders(),
-  cache: "no-store",          // ← এটা যোগ করুন
-});
+        const res = await fetch(`/api/backend/ai/sessions/${uuid}`, {
+          credentials: "include",
+          headers: getHeaders(),
+          cache: "no-store", // ← এটা যোগ করুন
+        });
 
         if (res.status === 410) {
           router.replace("/ai/chat");
@@ -177,14 +174,14 @@ export default function ChatPanel({
 
         const { data } = json;
 
-       if (data.session?.is_new && data.session.uuid) {
-  setUuid(data.session.uuid);
-  setTitle(data.session.title);
-  router.replace(`/ai/chat/${data.session.uuid}`, { scroll: false });
-  
-  // ✅ sidebar কে refresh করতে বলো
-  window.dispatchEvent(new CustomEvent("chat:session-created"));
-}
+        if (data.session?.is_new && data.session.uuid) {
+          setUuid(data.session.uuid);
+          setTitle(data.session.title);
+          router.replace(`/ai/chat/${data.session.uuid}`, { scroll: false });
+
+          // ✅ sidebar কে refresh করতে বলো
+          window.dispatchEvent(new CustomEvent("chat:session-created"));
+        }
 
         setMessages((prev) => {
           const withoutTmp = prev.filter((m) => m.id !== tempUserId);
@@ -315,7 +312,7 @@ export default function ChatPanel({
           guestRemaining={guestRemaining}
           onSend={ask}
           onLogin={() =>
-           window.dispatchEvent(new CustomEvent("chat:session-created"))
+            window.dispatchEvent(new CustomEvent("chat:session-created"))
           }
         />
       </div>

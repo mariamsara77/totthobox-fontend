@@ -916,9 +916,8 @@ export default function Sidebar() {
           </div>
         </div>
 
-        {/* Footer */}
-        {/* Footer */}
-        <div className="p-2 space-y-2">
+        {/* Footer — shrink-0 যাতে nav scroll-এ চাপা না পড়ে */}
+        <div className="shrink-0 space-y-2 border-t border-zinc-400/25 p-2">
           <SidebarItem
             onClick={openSettingsModal}
             icon={IoSettings}

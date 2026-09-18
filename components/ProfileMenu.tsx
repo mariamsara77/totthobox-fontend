@@ -34,7 +34,14 @@ export default function ProfileMenu({
 
   const buttonRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [style, setStyle] = useState<React.CSSProperties>({});
+  const [style, setStyle] = useState<React.CSSProperties>({
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: 256,
+    visibility: "hidden",
+    pointerEvents: "none",
+  });
 
   const isSidebar = variant === "sidebar";
 
@@ -42,7 +49,6 @@ export default function ProfileMenu({
     setMounted(true);
   }, []);
 
-  // Loading fallback
   useEffect(() => {
     if (isAuthLoading) {
       const timer = setTimeout(() => setShowLoginFallback(true), 2500);
@@ -51,7 +57,6 @@ export default function ProfileMenu({
     setShowLoginFallback(false);
   }, [isAuthLoading]);
 
-  // Position calculator
   const updatePosition = useCallback(() => {
     if (!buttonRef.current) return;
 
@@ -59,7 +64,6 @@ export default function ProfileMenu({
     const dropdownWidth = 256;
 
     if (isSidebar) {
-      // Sidebar → opens upward
       setStyle({
         position: "fixed",
         bottom: `${window.innerHeight - rect.top + 8}px`,
@@ -67,24 +71,28 @@ export default function ProfileMenu({
           ? `${rect.left}px`
           : `${Math.max(8, rect.right - dropdownWidth)}px`,
         width: `${dropdownWidth}px`,
+        zIndex: 9999,
       });
     } else {
-      // Default → opens downward
       setStyle({
         position: "fixed",
         top: `${rect.bottom + 8}px`,
         left: `${Math.max(8, rect.right - dropdownWidth)}px`,
         width: `${dropdownWidth}px`,
+        zIndex: 9999,
       });
     }
   }, [isSidebar, collapsed]);
 
   const toggleDropdown = () => {
-    if (!isDropdownOpen) updatePosition();
-    setIsDropdownOpen((prev) => !prev);
+    if (!isDropdownOpen) {
+      updatePosition();
+      setIsDropdownOpen(true);
+    } else {
+      setIsDropdownOpen(false);
+    }
   };
 
-  // Click outside + scroll/resize
   useEffect(() => {
     if (!isDropdownOpen) return;
 
@@ -112,6 +120,16 @@ export default function ProfileMenu({
     };
   }, [isDropdownOpen, updatePosition]);
 
+  // ESC বন্ধ
+  useEffect(() => {
+    if (!isDropdownOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsDropdownOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isDropdownOpen]);
+
   const handleLogout = async () => {
     if (isLoggingOut) return;
     setIsLoggingOut(true);
@@ -130,9 +148,9 @@ export default function ProfileMenu({
   // ========== Loading ==========
   if (isAuthLoading && !showLoginFallback) {
     return isSidebar ? (
-      <div className="h-10 w-full animate-pulse bg-zinc-400/10 rounded-lg" />
+      <div className="h-10 w-full animate-pulse rounded-lg bg-zinc-400/10" />
     ) : (
-      <div className="h-10 w-10 animate-pulse bg-zinc-400/20 rounded-full" />
+      <div className="h-10 w-10 animate-pulse rounded-full bg-zinc-400/20" />
     );
   }
 
@@ -157,7 +175,7 @@ export default function ProfileMenu({
     return (
       <Link
         href="/login"
-        className="flex items-center gap-2 text-sm px-4 py-2.5 bg-zinc-400/10 hover:bg-zinc-400/25 rounded-xl transition-all"
+        className="flex items-center gap-2 rounded-xl bg-zinc-400/10 px-4 py-2.5 text-sm transition-all hover:bg-zinc-400/25"
       >
         <UserIcon size={16} />
         লগইন
@@ -173,7 +191,7 @@ export default function ProfileMenu({
 
   return (
     <>
-      {/* ========== Trigger Button ========== */}
+      {/* Trigger */}
       <button
         ref={buttonRef}
         type="button"
@@ -184,8 +202,8 @@ export default function ProfileMenu({
         aria-expanded={isDropdownOpen}
         className={
           isSidebar
-            ? `flex w-full items-center gap-2 rounded-lg px-2 py-2 bg-zinc-400/10 hover:bg-zinc-400/25 transition-colors ${
-                collapsed ? "justify-center" : "text-left"
+            ? `flex w-full items-center gap-2 rounded-lg px-2 py-2 transition-colors hover:bg-zinc-400/25 ${
+                collapsed ? "justify-center" : "bg-zinc-400/10 text-left"
               }`
             : "block"
         }
@@ -196,13 +214,13 @@ export default function ProfileMenu({
           referrerPolicy="no-referrer"
           className={
             isSidebar
-              ? "h-8 w-8 rounded-full object-cover border border-zinc-400/25 dark:border-zinc-700 shrink-0"
-              : "size-10 rounded-full object-cover hover:border-2 border-zinc-400/25 cursor-pointer"
+              ? "h-8 w-8 shrink-0 rounded-full border border-zinc-400/25 object-cover dark:border-zinc-700"
+              : "size-10 cursor-pointer rounded-full border border-zinc-400/25 object-cover hover:border-2"
           }
         />
 
         {isSidebar && !collapsed && (
-          <div className="flex flex-col overflow-hidden">
+          <div className="flex min-w-0 flex-col overflow-hidden">
             <span className="truncate text-sm">{user.name}</span>
             <span className="truncate text-xs text-zinc-500 dark:text-zinc-400">
               {user.email}
@@ -211,45 +229,39 @@ export default function ProfileMenu({
         )}
       </button>
 
-      {/* ========== Portal Dropdown ========== */}
+      {/*
+        ✅ শুধু খোলা থাকলে portal মাউন্ট — বন্ধ থাকলে DOM-এ কিছু নেই,
+        তাই পেজের নিচে ফাঁকা সেকশন তৈরি হবে না
+      */}
       {mounted &&
+        isDropdownOpen &&
         createPortal(
           <div
             ref={dropdownRef}
             style={style}
-            className={`
-              z-[9999]
-              transition-all duration-200 ease-out
-              ${isSidebar ? "origin-bottom" : "origin-top-right"}
-              ${
-                isDropdownOpen
-                  ? "opacity-100 scale-100 translate-y-0 pointer-events-auto visible"
-                  : isSidebar
-                    ? "opacity-0 scale-95 translate-y-2 pointer-events-none invisible"
-                    : "opacity-0 scale-95 -translate-y-2 pointer-events-none invisible"
-              }
-            `}
+            className="z-9999 origin-top-right animate-in fade-in zoom-in-95 duration-150"
+            role="menu"
           >
             <div
               style={{
                 backdropFilter: "blur(20px) saturate(180%)",
                 WebkitBackdropFilter: "blur(20px) saturate(180%)",
               }}
-              className="rounded-2xl border border-zinc-400/25 shadow-2xl overflow-hidden"
+              className="overflow-hidden rounded-2xl border border-zinc-400/25  shadow-2xl"
             >
               {/* Header */}
-              <div className="px-4 py-3 flex items-center gap-3">
+              <div className="flex items-center gap-3 px-4 py-3">
                 <img
                   src={avatarSrc}
                   alt={user.name}
                   referrerPolicy="no-referrer"
                   className="h-12 w-12 rounded-xl object-cover"
                 />
-                <div className="flex flex-col overflow-hidden">
-                  <span className="font-semibold text-sm text-zinc-900 dark:text-white truncate">
+                <div className="flex min-w-0 flex-col overflow-hidden">
+                  <span className="truncate text-sm font-semibold text-zinc-900 dark:text-white">
                     {user.name}
                   </span>
-                  <span className="text-xs text-zinc-500 dark:text-zinc-400 truncate">
+                  <span className="truncate text-xs text-zinc-500 dark:text-zinc-400">
                     {user.email}
                   </span>
                 </div>
@@ -257,12 +269,12 @@ export default function ProfileMenu({
 
               <div className="h-px bg-zinc-400/25" />
 
-              {/* Menu Items */}
-              <div className="p-2 space-y-1">
+              <div className="space-y-1 p-2">
                 <Link
                   href="/settings/profile"
-                  className="flex items-center gap-3 px-3 py-2 text-sm hover:bg-zinc-500/10 rounded-xl transition-colors"
+                  className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-colors hover:bg-zinc-500/10"
                   onClick={() => setIsDropdownOpen(false)}
+                  role="menuitem"
                 >
                   <Settings className="size-5" />
                   Settings
@@ -270,8 +282,9 @@ export default function ProfileMenu({
 
                 <Link
                   href={`/messages/${user.slug || user.id}`}
-                  className="flex items-center gap-3 px-3 py-2 text-sm hover:bg-zinc-500/10 rounded-xl transition-colors"
+                  className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-colors hover:bg-zinc-500/10"
                   onClick={() => setIsDropdownOpen(false)}
+                  role="menuitem"
                 >
                   <MessageSquare className="size-5" />
                   Messages
@@ -280,12 +293,13 @@ export default function ProfileMenu({
 
               <div className="h-px bg-zinc-400/25" />
 
-              {/* Logout */}
               <div className="p-2">
                 <button
+                  type="button"
                   onClick={handleLogout}
                   disabled={isLoggingOut}
-                  className="w-full flex items-center gap-3 px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors disabled:opacity-50"
+                  className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50 dark:text-red-400 dark:hover:bg-red-500/10"
+                  role="menuitem"
                 >
                   <LogOut className="size-5" />
                   {isLoggingOut ? "লগআউট হচ্ছে..." : "Log Out"}
