@@ -282,13 +282,7 @@ export default function PercentageCalculator() {
   const fields = FIELD_CONFIG[tab] || [];
   const examples = EXAMPLES[tab] || [];
 
-  const extraColor = {
-    emerald: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400",
-    rose: "bg-rose-500/10 text-rose-700 dark:text-rose-400",
-    violet: "bg-violet-500/10 text-violet-700 dark:text-violet-400",
-  };
-
-  return (
+    return (
     <section className="w-full space-y-8">
       {/* Header */}
       <header className="space-y-2 text-center">
@@ -313,7 +307,7 @@ export default function PercentageCalculator() {
               onClick={() => changeTab(t.id)}
               className={`px-3 py-2 text-xs sm:text-sm rounded-lg whitespace-nowrap transition ${
                 tab === t.id
-                  ? "bg-znic-400/25"
+                  ? "bg-zinc-400/25"
                   : "bg-zinc-400/10 hover:bg-zinc-400/20"
               }`}
             >
@@ -347,7 +341,7 @@ export default function PercentageCalculator() {
                   else setPercent(e.target.value);
                 }}
                 placeholder={f.placeholder}
-                className="w-full rounded-xl bg-zinc-400/10 px-3 py-2.5 text-sm outline-none"
+                className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-3 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
               />
             </div>
           ))}
@@ -395,7 +389,7 @@ export default function PercentageCalculator() {
 
           {result.extra && (
             <span
-              className={`inline-block px-2.5 py-1 text-xs rounded-full ${extraColor[result.extra.color] || extraColor.emerald}`}
+              className="inline-block rounded-full bg-zinc-400/10 px-2.5 py-1 text-xs"
             >
               {result.extra.title}: {result.extra.value}
             </span>
