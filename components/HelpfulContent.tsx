@@ -95,19 +95,19 @@ export default function HelpfulContent() {
   if (!guide) return null;
 
   return (
-    <section className="mx-auto w-full max-w-5xl px-4 pb-8 sm:px-6" aria-labelledby="helpful-content-title">
-      <div className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-5 sm:p-6">
-        <h2 id="helpful-content-title" className="text-xl font-semibold">
+    <section className="mx-auto w-full max-w-2xl px-4 pb-6 sm:px-6" aria-labelledby="helpful-content-title">
+      <div className="border-t border-zinc-400/25 pt-6">
+        <h2 id="helpful-content-title" className="text-lg font-bold tracking-tight">
           {guide.title}
         </h2>
         <p className="mt-3 text-sm leading-7 text-zinc-600 dark:text-zinc-300">
           {guide.intro}
         </p>
-        <h3 className="mt-5 text-base font-semibold">কীভাবে ব্যবহার করবেন</h3>
+        <h3 className="mt-6 text-base font-semibold">কীভাবে ব্যবহার করবেন</h3>
         <ol className="mt-2 list-decimal space-y-1.5 pl-5 text-sm leading-6 text-zinc-600 dark:text-zinc-300">
           {guide.steps.map((step) => <li key={step}>{step}</li>)}
         </ol>
-        <div className="mt-5 rounded-xl border border-zinc-400/20 bg-white/50 p-4 text-sm leading-6 dark:bg-zinc-900/30">
+        <div className="mt-5 rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 text-sm leading-6">
           <strong>টিপস:</strong> {guide.tip}
         </div>
       </div>
