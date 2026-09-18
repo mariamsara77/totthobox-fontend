@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 export const metadata: Metadata = {
   title: "তথ্যবক্স — প্রয়োজনীয় সব তথ্য ও ডিজিটাল সেবা এক জায়গায়",
