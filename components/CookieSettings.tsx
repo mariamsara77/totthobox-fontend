@@ -62,9 +62,9 @@ export default function CookieSettings() {
 
       {/* Bottom-right panel */}
       {isOpen && (
-        <div className="fixed bottom-5 right-5 z-50">
+        <div className="fixed bottom-8 right-5 z-50">
           <div
-            className="fixed inset-0 -z-10 bg-black/25 backdrop-blur-[1px]"
+            className="fixed inset-0 -z-10"
             onClick={() => setIsOpen(false)}
           />
 
@@ -72,10 +72,10 @@ export default function CookieSettings() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="cookie-title"
-            className="w-70 overflow-hidden rounded-[28px] border border-zinc-700/40 bg-zinc-950 shadow-2xl shadow-black/50"
+            className="w-100 overflow-hidden rounded-[50px] border border-zinc-700/40 backdrop-blur-xl"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-3.5">
+            <div className="flex items-center justify-between px-8 py-2">
               <h3
                 id="cookie-title"
                 className="text-[14px] font-medium tracking-tight text-zinc-100"
@@ -108,7 +108,7 @@ export default function CookieSettings() {
             <button
               type="button"
               onClick={() => setIsExpanded(!isExpanded)}
-              className="mx-3 flex w-[calc(100%-24px)] items-center justify-between rounded-full px-4 py-2.5 text-left text-[12px] font-medium text-zinc-400 transition hover:bg-zinc-900 hover:text-zinc-200"
+              className="mx-3 flex w-[calc(100%-24px)] items-center justify-between rounded-full px-4 py-2.5 text-left text-[12px] font-medium hover:bg-zinc-400/25 backdrop-blur-lg"
             >
               <span>বিস্তারিত সেটিংস</span>
               <svg
@@ -128,7 +128,7 @@ export default function CookieSettings() {
 
             {/* Options - collapsed by default */}
             {isExpanded && (
-              <div className="mx-3 mb-2 space-y-0 rounded-[20px] bg-zinc-900/60 px-4 py-1">
+              <div className="mx-3 mb-2 space-y-0 rounded-4xl bg-zinc-400/10 px-4 py-1">
                 {/* Necessary */}
                 <div className="flex items-center justify-between py-3">
                   <div>
