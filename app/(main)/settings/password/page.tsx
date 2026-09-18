@@ -62,7 +62,7 @@ export default function PasswordSettingsPage() {
             onChange={(e) =>
               setForm({ ...form, current_password: e.target.value })
             }
-            className="w-full rounded-xl px-4 py-2.5 outline-none bg-zinc-400/10 focus:ring-2"
+            className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
             autoComplete="current-password"
           />
         </div>
@@ -75,7 +75,7 @@ export default function PasswordSettingsPage() {
             type="password"
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
-            className="w-full rounded-xl px-4 py-2.5 outline-none bg-zinc-400/10 focus:ring-2"
+            className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
             autoComplete="new-password"
           />
         </div>
@@ -90,7 +90,7 @@ export default function PasswordSettingsPage() {
             onChange={(e) =>
               setForm({ ...form, password_confirmation: e.target.value })
             }
-            className="w-full rounded-xl px-4 py-2.5 outline-none bg-zinc-400/10 focus:ring-2"
+            className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
             autoComplete="new-password"
           />
         </div>
