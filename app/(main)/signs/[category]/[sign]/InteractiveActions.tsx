@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useAuthModal } from "@/context/AuthModalContext";
 import { ThumbsUp, ThumbsDown, Share2 } from "lucide-react";
 
 interface Props {
@@ -20,6 +21,7 @@ export default function InteractiveActions({
   hasDislike,
   shareTitle,
 }: Props) {
+  const { requireAuth } = useAuthModal();
   const [likeCount, setLikeCount] = useState(initialLike);
   const [dislikeCount, setDislikeCount] = useState(initialDislike);
   const [liked, setLiked] = useState(hasLike);
@@ -28,6 +30,7 @@ export default function InteractiveActions({
   const [message, setMessage] = useState<string | null>(null);
 
   const react = async (type: "like" | "dislike") => {
+    if (!requireAuth(() => react(type), "রিয়্যাকশন দিতে লগইন করুন।")) return;
     setLoading(true);
     setMessage(null);
     try {
@@ -44,7 +47,8 @@ export default function InteractiveActions({
       const json = await res.json();
 
       if (res.status === 401) {
-        setMessage(json.message || "রিয়্যাকশন করার জন্য লগইন করতে হবে।");
+        setLoading(false);
+        requireAuth(() => react(type), "সেশন শেষ হয়েছে। আবার লগইন করুন।");
         return;
       }
 
