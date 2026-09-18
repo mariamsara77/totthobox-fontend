@@ -4,6 +4,15 @@ export const metadata: Metadata = {
   title: "ব্যবহারের শর্তাবলি (Terms of Service) | Totthobox",
   description:
     "Totthobox প্ল্যাটফর্ম ব্যবহারের সম্পূর্ণ নিয়ম ও শর্তাবলি। ব্যবহারকারীর দায়িত্ব, সেবার সীমাবদ্ধতা এবং তথ্যের সঠিকতা সম্পর্কে বিস্তারিত জানুন।",
+  alternates: { canonical: "/terms-of-service" },
+  openGraph: {
+    title: "ব্যবহারের শর্তাবলি | Totthobox",
+    description: "Totthobox-এর সেবা, টুলস, তথ্যের ব্যবহার, ব্যবহারকারীর দায়িত্ব ও দায়মুক্তি সম্পর্কিত শর্তাবলি।",
+    url: "https://totthobox.com/terms-of-service",
+    siteName: "Totthobox",
+    type: "website",
+    locale: "bn_BD",
+  },
   keywords: [
     "ব্যবহারের শর্তাবলি",
     "terms of service",
@@ -14,11 +23,7 @@ export const metadata: Metadata = {
 };
 
 export default function TermsPage() {
-  const lastUpdated = new Date().toLocaleDateString("bn-BD", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  const lastUpdated = "১৮ সেপ্টেম্বর ২০২৬";
 
   return (
     <section>
@@ -222,6 +227,16 @@ export default function TermsPage() {
             এই শর্তাবলি বাংলাদেশের প্রচলিত আইন অনুসারে পরিচালিত ও ব্যাখ্যা করা
             হবে। যেকোনো বিরোধের ক্ষেত্রে বাংলাদেশের আদালতের এখতিয়ার প্রযোজ্য
             হবে।
+          </p>
+        </section>
+
+        <section className="space-y-4">
+          <div className="flex items-center gap-4">
+            <div className="p-2 rounded-lg bg-zinc-400/10">🔒</div>
+            <h2 className="text-xl ">১০. গোপনীয়তা ও যোগাযোগ</h2>
+          </div>
+          <p className="leading-relaxed">
+            ব্যক্তিগত তথ্য, কুকিজ, Google AdSense এবং তৃতীয় পক্ষের বিজ্ঞাপন প্রযুক্তি কীভাবে ব্যবহৃত হয় তা জানতে আমাদের <a href="/privacy-policy" className="text-indigo-600 hover:underline">গোপনীয়তা নীতি</a> দেখুন। কোনো প্রশ্ন, অভিযোগ বা ডেটা-সংক্রান্ত অনুরোধের জন্য <a href="/contact-us" className="text-indigo-600 hover:underline">যোগাযোগ পৃষ্ঠা</a> ব্যবহার করতে পারেন।
           </p>
         </section>
       </div>
