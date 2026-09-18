@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Sidebar from "@/components/Sidebar";
 import { SidebarProvider } from "@/context/SidebarContext";
+import HelpfulContent from "@/components/HelpfulContent";
 import RelatedLinks from "@/components/RelatedLinks";
 
 export const metadata: Metadata = {
@@ -34,6 +35,7 @@ export default function MainLayout({
             </div>
 
             <main className="flex-1 w-full">{children}</main>
+            <HelpfulContent />
             <RelatedLinks />
             <Footer />
           </div>
