@@ -5,6 +5,15 @@ export const metadata: Metadata = {
   title: "গোপনীয়তা নীতি (Privacy Policy) | Totthobox",
   description:
     "Totthobox-এর সম্পূর্ণ গোপনীয়তা নীতি। আমরা কীভাবে আপনার ব্যক্তিগত তথ্য, কুকিজ এবং Google AdSense-এর মাধ্যমে তথ্য সংগ্রহ, ব্যবহার ও সুরক্ষা করি তা বিস্তারিত জানুন।",
+  alternates: { canonical: "/privacy-policy" },
+  openGraph: {
+    title: "গোপনীয়তা নীতি | Totthobox",
+    description: "Totthobox কীভাবে কুকিজ, ব্যবহারকারীর তথ্য এবং Google AdSense-এর বিজ্ঞাপন প্রযুক্তি ব্যবহার করে তা জানুন।",
+    url: "https://totthobox.com/privacy-policy",
+    siteName: "Totthobox",
+    type: "website",
+    locale: "bn_BD",
+  },
   keywords: [
     "গোপনীয়তা নীতি",
     "privacy policy",
@@ -17,11 +26,7 @@ export const metadata: Metadata = {
 };
 
 export default function PrivacyPolicyPage() {
-  const lastUpdated = new Date().toLocaleDateString("bn-BD", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  const lastUpdated = "১৮ সেপ্টেম্বর ২০২৬";
 
   return (
     <section>
@@ -204,7 +209,7 @@ export default function PrivacyPolicyPage() {
             কুকিজ ব্যবহার করে আপনার আগের ভিজিটের ভিত্তিতে বিজ্ঞাপন দেখাতে পারে।
           </p>
           <p>
-            Google AdSense কুকিজ ব্যবহার করে আপনার আগ্রহ অনুযায়ী বিজ্ঞাপন দেখায়।
+            Google AdSense কুকিজ ব্যবহার করতে পারে এবং DoubleClick-এর মতো Google-এর বিজ্ঞাপন প্রযুক্তি আপনার ব্রাউজারে কুকিজ বা অনুরূপ প্রযুক্তি ব্যবহার করতে পারে। Google ও অন্যান্য তৃতীয় পক্ষের বিজ্ঞাপন অংশীদাররা বিজ্ঞাপন পরিবেশন, পরিমাপ ও প্রাসঙ্গিকতা নির্ধারণে এসব প্রযুক্তি ব্যবহার করতে পারে।
             আপনি চাইলে{" "}
             <a
               href="https://www.google.com/settings/ads"
@@ -217,7 +222,7 @@ export default function PrivacyPolicyPage() {
             থেকে ব্যক্তিগতকৃত বিজ্ঞাপন নিয়ন্ত্রণ করতে পারেন।
           </p>
           <p>
-            তৃতীয় পক্ষের বিজ্ঞাপনদাতারা তাদের নিজস্ব গোপনীয়তা নীতি অনুসরণ করে।
+            তৃতীয় পক্ষের বিজ্ঞাপনদাতারা তাদের নিজস্ব গোপনীয়তা নীতি অনুসরণ করে। আমরা বিজ্ঞাপন অংশীদারদের নিজস্ব ডেটা প্রক্রিয়াকরণ নিয়ন্ত্রণ করি না। Google কীভাবে অংশীদার সাইট ও অ্যাপের তথ্য ব্যবহার করে তা জানতে Google-এর "How Google uses information from sites or apps that use our services" পৃষ্ঠা দেখুন।
             আমরা তাদের তথ্য সংগ্রহের পদ্ধতির জন্য দায়ী নই। বিস্তারিত জানতে
             Google-এর গোপনীয়তা নীতি দেখুন:{" "}
             <a
@@ -226,7 +231,7 @@ export default function PrivacyPolicyPage() {
               rel="noopener noreferrer"
               className="text-indigo-600 hover:underline"
             >
-              https://policies.google.com/privacy
+              Google Privacy Policy
             </a>
           </p>
         </section>
@@ -248,7 +253,7 @@ export default function PrivacyPolicyPage() {
             </li>
           </ul>
           <p className="mt-3">
-            আপনি আপনার ব্রাউজার সেটিংস থেকে কুকিজ নিয়ন্ত্রণ বা মুছে ফেলতে পারেন।
+            আপনি আপনার ব্রাউজার সেটিংস থেকে কুকিজ নিয়ন্ত্রণ বা মুছে ফেলতে পারেন। Google-এর ব্যক্তিগতকৃত বিজ্ঞাপন নিয়ন্ত্রণ করতে Google Ads Settings ব্যবহার করতে পারেন। আপনার ব্রাউজার বা Google-এর বিজ্ঞাপন সেটিংসের মাধ্যমে অপ্ট-আউট করলে বিজ্ঞাপনের ধরন পরিবর্তিত হতে পারে, তবে এতে সব বিজ্ঞাপন বন্ধ হবে এমন নিশ্চয়তা নেই।
             তবে কিছু কুকিজ বন্ধ করলে সাইটের কিছু ফিচার সঠিকভাবে কাজ নাও করতে
             পারে।
           </p>
@@ -297,7 +302,7 @@ export default function PrivacyPolicyPage() {
             <li>আপনার সম্পর্কে আমাদের কাছে থাকা তথ্য জানার অধিকার</li>
             <li>ভুল তথ্য সংশোধনের অনুরোধ করার অধিকার</li>
             <li>আপনার তথ্য মুছে ফেলার অনুরোধ করার অধিকার</li>
-            <li>কুকিজ এবং ব্যক্তিগতকৃত বিজ্ঞাপন নিয়ন্ত্রণ করার অধিকার</li>
+            <li>কুকিজ ও ব্যক্তিগতকৃত বিজ্ঞাপন নিয়ন্ত্রণ বা অপ্ট-আউট করার অধিকার</li>
           </ul>
           <p className="mt-3">
             এই অধিকারগুলো প্রয়োগ করতে চাইলে আমাদের সাথে যোগাযোগ করুন।
@@ -314,7 +319,17 @@ export default function PrivacyPolicyPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-xl ">১০. নীতির পরিবর্তন</h2>
+          <h2 className="text-xl ">১০. ডেটা সংরক্ষণ ও অপ্ট-আউট</h2>
+          <p>
+            প্রয়োজনীয় সেবা প্রদান, নিরাপত্তা, আইনগত বাধ্যবাধকতা এবং বৈধ ব্যবসায়িক প্রয়োজন অনুযায়ী প্রয়োজনীয় সময় পর্যন্ত তথ্য সংরক্ষণ করা হতে পারে। আপনি ব্যক্তিগত তথ্য মুছে ফেলা, সংশোধন বা ব্যবহার-সংক্রান্ত অনুরোধ জানাতে যোগাযোগ করতে পারেন।
+          </p>
+          <p>
+            বিজ্ঞাপন ও কুকিজ সংক্রান্ত পছন্দ পরিবর্তনের জন্য Google Ads Settings এবং আপনার ব্রাউজারের কুকিজ সেটিংস ব্যবহার করতে পারেন। ইউরোপীয় অর্থনৈতিক অঞ্চল, যুক্তরাজ্য ও সুইজারল্যান্ডের ব্যবহারকারীদের ক্ষেত্রে প্রযোজ্য হলে Google-এর Consent Management Platform-এর মাধ্যমে সম্মতি দেওয়া বা প্রত্যাহারের সুবিধা প্রযোজ্য হবে।
+          </p>
+        </section>
+
+        <section className="space-y-4">
+          <h2 className="text-xl ">১১. নীতির পরিবর্তন</h2>
           <p>
             আমরা সময় সময় এই গোপনীয়তা নীতি আপডেট করতে পারি। কোনো পরিবর্তন হলে
             আমরা এই পৃষ্ঠায় নতুন তারিখ উল্লেখ করব। নিয়মিত এই পৃষ্ঠা দেখার
