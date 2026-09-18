@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 import NavbarHeader from "@/components/NavbarHeader";
 import Footer from "@/components/Footer";
 import RelatedLinks from "@/components/RelatedLinks";
