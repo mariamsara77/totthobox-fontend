@@ -424,7 +424,7 @@ export default function ProfileSettingsPage() {
             <select
               value={form.division_id}
               onChange={(e) => handleDivisionChange(e.target.value)}
-              className="w-full rounded-xl px-4 py-2.5 outline-none bg-zinc-200 dark:bg-zinc-700 focus:ring-2"
+              className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
             >
               <option value="">নির্বাচন করুন</option>
               {divisions.map((d) => (
@@ -441,7 +441,7 @@ export default function ProfileSettingsPage() {
               value={form.district_id}
               onChange={(e) => handleDistrictChange(e.target.value)}
               disabled={!form.division_id}
-              className="w-full rounded-xl px-4 py-2.5 outline-none bg-zinc-200 dark:bg-zinc-700 focus:ring-2 disabled:opacity-50"
+              className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30 disabled:opacity-50"
             >
               <option value="">নির্বাচন করুন</option>
               {districts.map((d) => (
@@ -458,7 +458,7 @@ export default function ProfileSettingsPage() {
               value={form.thana_id}
               onChange={(e) => setForm({ ...form, thana_id: e.target.value })}
               disabled={!form.district_id}
-              className="w-full rounded-xl px-4 py-2.5 outline-none bg-zinc-200 dark:bg-zinc-700 focus:ring-2 disabled:opacity-50"
+              className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30 disabled:opacity-50"
             >
               <option value="">নির্বাচন করুন</option>
               {thanas.map((t) => (
