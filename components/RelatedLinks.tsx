@@ -73,8 +73,8 @@ const groups: Array<{ matches: string[]; title: string; links: RelatedLink[] }> 
     title: "আরও সফটওয়্যার তথ্য",
     links: [
       { href: "/software/all", label: "সব সফটওয়্যার", description: "বিভিন্ন প্ল্যাটফর্মের সফটওয়্যার।" },
-      { href: "/software/all/windows", label: "Windows", description: "Windows-এর সফটওয়্যার দেখুন।" },
-      { href: "/software/all/android", label: "Android", description: "Android অ্যাপের তথ্য দেখুন।" },
+      { href: "/services", label: "সব সেবা", description: "Totthobox-এর অন্যান্য ডিজিটাল সেবা দেখুন।" },
+      { href: "/pdf-editor", label: "PDF Editor", description: "ব্রাউজারেই PDF সম্পাদনার টুল ব্যবহার করুন।" },
     ],
   },
   {
