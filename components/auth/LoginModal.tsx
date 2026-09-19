@@ -32,6 +32,7 @@ export default function LoginModal({
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const loadingRef = useRef(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -53,7 +54,7 @@ export default function LoginModal({
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        if (!loading) onClose();
+        if (!loadingRef.current) onClose();
         return;
       }
 
@@ -91,7 +92,7 @@ export default function LoginModal({
       previousFocusRef.current?.focus();
       previousFocusRef.current = null;
     };
-  }, [open, onClose, loading]);
+  }, [open, onClose]);
 
   useEffect(() => {
     if (open) setError("");
@@ -108,6 +109,7 @@ export default function LoginModal({
       return;
     }
 
+    loadingRef.current = true;
     setLoading(true);
     setError("");
 
@@ -133,6 +135,7 @@ export default function LoginModal({
           "লগইন করা যায়নি। তথ্যগুলো যাচাই করে আবার চেষ্টা করুন।",
       );
     } finally {
+      loadingRef.current = false;
       setLoading(false);
     }
   };
