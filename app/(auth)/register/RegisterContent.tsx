@@ -213,7 +213,7 @@ export default function RegisterContent() {
               placeholder="আপনার পূর্ণ নাম"
               autoComplete="name"
               className={clsx(
-                "w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-3.5 outline-none transition focus:border-zinc-400/50 focus:ring-2 focus:ring-zinc-400/10",
+                "w-full rounded-full border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 outline-none transition focus:border-zinc-400/50 focus:ring-2 focus:ring-zinc-400/10",
                 errors.name ? "border-red-500" : "border-zinc-400/25",
               )}
             />
@@ -236,7 +236,7 @@ export default function RegisterContent() {
               placeholder="ইমেইল (যেমন: name@example.com)"
               autoComplete="email"
               className={clsx(
-                "w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-3.5 outline-none transition focus:border-zinc-400/50 focus:ring-2 focus:ring-zinc-400/10",
+                "w-full rounded-full border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 outline-none transition focus:border-zinc-400/50 focus:ring-2 focus:ring-zinc-400/10",
                 errors.email ? "border-red-500" : "border-zinc-400/25",
               )}
             />
@@ -259,7 +259,7 @@ export default function RegisterContent() {
               placeholder="পাসওয়ার্ড দিন"
               autoComplete="new-password"
               className={clsx(
-                "w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 pr-20 outline-none transition focus:border-zinc-400/50 focus:ring-2 focus:ring-zinc-400/10",
+                "w-full rounded-full border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 pr-20 outline-none transition focus:border-zinc-400/50 focus:ring-2 focus:ring-zinc-400/10",
                 errors.password ? "border-red-500" : "border-zinc-400/25",
               )}
             />
@@ -296,7 +296,7 @@ export default function RegisterContent() {
               placeholder="পাসওয়ার্ডটি পুনরায় লিখুন"
               autoComplete="new-password"
               className={clsx(
-                "w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 pr-20 outline-none transition focus:border-zinc-400/50 focus:ring-2 focus:ring-zinc-400/10",
+                "w-full rounded-full border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 pr-20 outline-none transition focus:border-zinc-400/50 focus:ring-2 focus:ring-zinc-400/10",
                 errors.password_confirmation
                   ? "border-red-500"
                   : "border-zinc-400/25",
@@ -330,7 +330,7 @@ export default function RegisterContent() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-zinc-400/25 px-4 py-2.5 font-semibold text-zinc-950 transition hover:bg-zinc-400/50 disabled:opacity-60 dark:text-white"
+            className="w-full rounded-full bg-zinc-400/25 px-4 py-2.5 font-semibold text-zinc-950 transition hover:bg-zinc-400/50 disabled:opacity-60 dark:text-white"
           >
             {loading ? "পাঠানো হচ্ছে..." : "ভেরিফিকেশন কোড পাঠান"}
           </button>
@@ -367,7 +367,7 @@ export default function RegisterContent() {
                 setErrors((prev) => ({ ...prev, otp: "" }));
               }}
               placeholder="••••"
-              className="w-full max-w-xs rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-3.5 text-center text-2xl font-bold tracking-[0.4em] outline-none transition focus:border-zinc-400/50 focus:ring-2 focus:ring-zinc-400/10"
+              className="w-full max-w-xs rounded-full border border-zinc-400/25 bg-zinc-400/10 px-4 py-3.5 text-center text-2xl font-bold tracking-[0.4em] outline-none transition focus:border-zinc-400/50 focus:ring-2 focus:ring-zinc-400/10"
             />
           </div>
           {errors.otp && (
@@ -377,7 +377,7 @@ export default function RegisterContent() {
           <button
             type="submit"
             disabled={loading || otp.length !== 4}
-            className="w-full rounded-xl bg-zinc-400/25 px-4 py-2.5 font-semibold text-zinc-950 transition hover:bg-zinc-400/50 disabled:opacity-60 dark:text-white"
+            className="w-full rounded-full bg-zinc-400/25 px-4 py-2.5 font-semibold text-zinc-950 transition hover:bg-zinc-400/50 disabled:opacity-60 dark:text-white"
           >
             {loading ? "যাচাই করা হচ্ছে..." : "যাচাই ও অ্যাকাউন্ট তৈরি"}
           </button>
@@ -406,7 +406,7 @@ export default function RegisterContent() {
               setErrors({});
               setCooldown(0);
             }}
-            className="w-full text-center text-sm text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300"
+            className="w-full rounded-full py-2 text-center text-sm text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300"
           >
             ভুল ইমেইল? তথ্য পরিবর্তন করুন
           </button>
