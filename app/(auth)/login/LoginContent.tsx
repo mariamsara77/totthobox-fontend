@@ -267,7 +267,7 @@ export default function LoginContent() {
                 key={profile.email}
                 type="button"
                 onClick={() => handlePickProfile(profile)}
-                className="group flex items-center gap-3 w-full p-3 rounded-full border border-zinc-400/25 bg-zinc-400/10 hover:bg-zinc-400/25 transition text-left"
+                className="group flex items-center gap-3 w-full p-3 rounded-xl border border-zinc-400/25 bg-zinc-400/10 hover:bg-zinc-400/25 transition text-left"
               >
                 {profile.avatar_url ? (
                   <img
