@@ -127,6 +127,9 @@ export default function ChatPanel({
 
       if (isGuest && guestRemaining <= 0) {
         setError("আপনার বিনামূল্যে সীমা শেষ। আরও ব্যবহারের জন্য লগইন করুন।");
+        openLoginModal({
+          reason: "ফ্রি ব্যবহারের সীমা শেষ হয়েছে। আরও ব্যবহার করতে লগইন করুন।",
+        });
         return;
       }
 
@@ -313,7 +316,14 @@ export default function ChatPanel({
           isGuest={isGuest}
           guestRemaining={guestRemaining}
           onSend={ask}
-          onLogin={() => openLoginModal({ reason: "চ্যাট সেভ করতে লগইন করুন।" })}
+          onLogin={() =>
+            openLoginModal({
+              reason:
+                guestRemaining <= 0
+                  ? "ফ্রি ব্যবহারের সীমা শেষ হয়েছে। আরও ব্যবহার করতে লগইন করুন।"
+                  : "চ্যাট সেভ করতে লগইন করুন।",
+            })
+          }
         />
       </div>
     </div>
