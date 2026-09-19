@@ -64,7 +64,7 @@ function CustomButton({ onLoginSuccess }: Props) {
           setError(null);
           login();
         }}
-        className="flex w-full items-center justify-center gap-3 rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-3.5 text-sm font-medium transition hover:bg-zinc-400/20 disabled:cursor-not-allowed disabled:opacity-60"
+        className="group flex w-full items-center justify-center gap-3 rounded-2xl border border-zinc-400/25 bg-white px-4 py-3.5 text-sm font-semibold text-zinc-800 shadow-sm transition hover:-translate-y-px hover:border-zinc-400/40 hover:bg-zinc-50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800"
       >
         {loading ? (
           <div className="h-5 w-5 animate-spin rounded-full border-2 border-zinc-500 border-t-transparent" />
