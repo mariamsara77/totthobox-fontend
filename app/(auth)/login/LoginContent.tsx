@@ -360,10 +360,10 @@ export default function LoginContent() {
                 value={form.email}
                 onChange={handleChange}
                 placeholder="ইমেইল অ্যাড্রেস"
-                className={`w-full rounded-full py-4 px-6 bg-zinc-400/10 outline-none border ${
+                className={`w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 outline-none transition focus:ring-2 focus:ring-zinc-400/10 ${
                   errors.email
                     ? "border-red-500"
-                    : "border-transparent focus:border-zinc-500"
+                    : "focus:border-zinc-400/50"
                 }`}
               />
               {errors.email && (
@@ -379,7 +379,7 @@ export default function LoginContent() {
                   value={form.password}
                   onChange={handleChange}
                   placeholder="পাসওয়ার্ড"
-                  className={`w-full rounded-full py-4 pl-6 pr-12 bg-zinc-400/10 outline-none border ${
+                  className={`w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 pl-4 pr-11 outline-none transition focus:ring-2 focus:ring-zinc-400/10 ${
                     errors.password
                       ? "border-red-500"
                       : "border-transparent focus:border-zinc-500"
