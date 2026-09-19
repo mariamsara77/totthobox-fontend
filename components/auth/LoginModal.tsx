@@ -238,7 +238,7 @@ export default function LoginModal({
                     }}
                     placeholder="ইমেইল অ্যাড্রেস"
                     aria-label="ইমেইল অ্যাড্রেস"
-                    className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition placeholder:text-zinc-400 focus:border-zinc-400/50 focus:ring-2 focus:ring-zinc-400/10 dark:bg-zinc-900/70"
+                    className="w-full rounded-full border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition placeholder:text-zinc-400 focus:border-zinc-400/50 focus:ring-2 focus:ring-zinc-400/10 dark:bg-zinc-900/70"
                   />
                 </label>
 
@@ -255,7 +255,7 @@ export default function LoginModal({
                       }}
                       placeholder="পাসওয়ার্ড"
                       aria-label="পাসওয়ার্ড"
-                      className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 pr-11 text-sm outline-none transition placeholder:text-zinc-400 focus:border-zinc-400/50 focus:ring-2 focus:ring-zinc-400/10 dark:bg-zinc-900/70"
+                      className="w-full rounded-full border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 pr-11 text-sm outline-none transition placeholder:text-zinc-400 focus:border-zinc-400/50 focus:ring-2 focus:ring-zinc-400/10 dark:bg-zinc-900/70"
                     />
                   </label>
                   <button
@@ -285,7 +285,7 @@ export default function LoginModal({
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-400/25 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-zinc-400/50 disabled:cursor-not-allowed disabled:opacity-60 dark:text-white"
+                  className="flex w-full items-center justify-center gap-2 rounded-full bg-zinc-400/25 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-zinc-400/50 disabled:cursor-not-allowed disabled:opacity-60 dark:text-white"
                 >
                   {loading && <Loader2 className="size-4 animate-spin" />}
                   {loading ? "লগইন হচ্ছে..." : "লগইন করুন"}
