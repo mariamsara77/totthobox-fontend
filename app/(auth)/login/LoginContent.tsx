@@ -164,7 +164,7 @@ export default function LoginContent() {
   // ── Password fallback ─────────────────────────────────────────────────
   if (view.mode === "password") {
     return (
-      <div className="max-w-md mx-auto space-y-6">
+      <div className="mx-auto w-full max-w-md space-y-6">
         <div className="flex items-center gap-3 p-4 rounded-xl bg-zinc-400/10 border border-zinc-400/25">
           {view.profile.avatar_url ? (
             <img
@@ -218,7 +218,7 @@ export default function LoginContent() {
                 setFallbackError("");
               }}
               placeholder="পাসওয়ার্ড"
-              className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 py-2.5 pl-4 pr-11 outline-none focus:border-zinc-400/50 focus:ring-2 focus:ring-zinc-400/10"
+              className="w-full rounded-full border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 pl-4 pr-11 outline-none focus:border-zinc-400/50 focus:ring-2 focus:ring-zinc-400/10"
             />
             <button
               type="button"
@@ -241,7 +241,7 @@ export default function LoginContent() {
           <button
             type="submit"
             disabled={fallbackLoading}
-            className="w-full rounded-xl bg-zinc-400/25 px-4 py-2.5 font-semibold text-zinc-950 hover:bg-zinc-400/50 dark:text-white disabled:opacity-60 transition"
+            className="w-full rounded-full bg-zinc-400/25 px-4 py-2.5 font-semibold text-zinc-950 hover:bg-zinc-400/50 dark:text-white disabled:opacity-60 transition"
           >
             {fallbackLoading ? "অপেক্ষা করুন…" : "লগইন করুন"}
           </button>
@@ -252,7 +252,7 @@ export default function LoginContent() {
 
   // ── Main view ─────────────────────────────────────────────────────────
   return (
-    <div className="space-y-6 max-w-md mx-auto">
+    <div className="mx-auto w-full max-w-md space-y-6">
       <div className="text-center">
         <h1 className="text-2xl font-bold">লগ ইন করুন</h1>
       </div>
@@ -267,7 +267,7 @@ export default function LoginContent() {
                 key={profile.email}
                 type="button"
                 onClick={() => handlePickProfile(profile)}
-                className="group flex items-center gap-3 w-full p-3 rounded-xl border border-zinc-400/25 bg-zinc-400/10 hover:bg-zinc-400/25 transition text-left"
+                className="group flex items-center gap-3 w-full p-3 rounded-full border border-zinc-400/25 bg-zinc-400/10 hover:bg-zinc-400/25 transition text-left"
               >
                 {profile.avatar_url ? (
                   <img
@@ -319,7 +319,7 @@ export default function LoginContent() {
         <button
           type="button"
           onClick={() => setEmailExpanded(true)}
-          className="w-full flex items-center justify-center gap-2 rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 hover:bg-zinc-400/25 transition font-medium"
+          className="w-full flex items-center justify-center gap-2 rounded-full border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 hover:bg-zinc-400/25 transition font-medium"
         >
           <span>ইমেইল দিয়ে লগইন করুন</span>
           <ChevronDown size={16} className="text-zinc-500" />
@@ -360,7 +360,7 @@ export default function LoginContent() {
                 value={form.email}
                 onChange={handleChange}
                 placeholder="ইমেইল অ্যাড্রেস"
-                className={`w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 outline-none transition focus:ring-2 focus:ring-zinc-400/10 ${
+                className={`w-full rounded-full border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 outline-none transition focus:ring-2 focus:ring-zinc-400/10 ${
                   errors.email
                     ? "border-red-500"
                     : "focus:border-zinc-400/50"
@@ -379,7 +379,7 @@ export default function LoginContent() {
                   value={form.password}
                   onChange={handleChange}
                   placeholder="পাসওয়ার্ড"
-                  className={`w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 pl-4 pr-11 outline-none transition focus:ring-2 focus:ring-zinc-400/10 ${
+                  className={`w-full rounded-full border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 pl-4 pr-11 outline-none transition focus:ring-2 focus:ring-zinc-400/10 ${
                     errors.password
                       ? "border-red-500"
                       : "border-transparent focus:border-zinc-500"
@@ -412,7 +412,7 @@ export default function LoginContent() {
             <button
               type="submit"
               disabled={formLoading}
-              className="w-full rounded-xl bg-zinc-400/25 px-4 py-2.5 font-semibold text-zinc-950 hover:bg-zinc-400/50 dark:text-white disabled:opacity-60 transition"
+              className="w-full rounded-full bg-zinc-400/25 px-4 py-2.5 font-semibold text-zinc-950 hover:bg-zinc-400/50 dark:text-white disabled:opacity-60 transition"
             >
               {formLoading ? "অপেক্ষা করুন…" : "লগ ইন করুন"}
             </button>
