@@ -165,7 +165,7 @@ export default function LoginContent() {
   if (view.mode === "password") {
     return (
       <div className="max-w-md mx-auto space-y-6">
-        <div className="flex items-center gap-3 p-4 rounded-2xl bg-zinc-100 dark:bg-zinc-800">
+        <div className="flex items-center gap-3 p-4 rounded-xl bg-zinc-400/10 border border-zinc-400/25">
           {view.profile.avatar_url ? (
             <img
               src={view.profile.avatar_url}
@@ -218,12 +218,12 @@ export default function LoginContent() {
                 setFallbackError("");
               }}
               placeholder="পাসওয়ার্ড"
-              className="w-full rounded-full py-4 pl-6 pr-12 bg-zinc-400/10 outline-none border border-transparent focus:border-zinc-500"
+              className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 py-2.5 pl-4 pr-11 outline-none focus:border-zinc-400/50 focus:ring-2 focus:ring-zinc-400/10"
             />
             <button
               type="button"
               onClick={() => setShowFallbackPass((v) => !v)}
-              className="absolute inset-y-0 right-4 flex items-center text-zinc-400 hover:text-zinc-600"
+              className="absolute inset-y-0 right-4 flex items-center text-zinc-500 hover:text-zinc-950 dark:hover:text-white"
             >
               {showFallbackPass ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
@@ -241,7 +241,7 @@ export default function LoginContent() {
           <button
             type="submit"
             disabled={fallbackLoading}
-            className="w-full rounded-full p-4 font-bold text-white bg-black dark:text-black dark:bg-white disabled:opacity-60 transition"
+            className="w-full rounded-xl bg-zinc-400/25 px-4 py-2.5 font-semibold text-zinc-950 hover:bg-zinc-400/50 dark:text-white disabled:opacity-60 transition"
           >
             {fallbackLoading ? "অপেক্ষা করুন…" : "লগইন করুন"}
           </button>
@@ -267,7 +267,7 @@ export default function LoginContent() {
                 key={profile.email}
                 type="button"
                 onClick={() => handlePickProfile(profile)}
-                className="group flex items-center gap-3 w-full p-3 rounded-2xl bg-zinc-400/10 hover:bg-zinc-400/20 transition text-left"
+                className="group flex items-center gap-3 w-full p-3 rounded-xl border border-zinc-400/25 bg-zinc-400/10 hover:bg-zinc-400/25 transition text-left"
               >
                 {profile.avatar_url ? (
                   <img
@@ -319,7 +319,7 @@ export default function LoginContent() {
         <button
           type="button"
           onClick={() => setEmailExpanded(true)}
-          className="w-full flex items-center justify-center gap-2 rounded-full p-4 bg-zinc-400/10 hover:bg-zinc-400/20 transition font-medium"
+          className="w-full flex items-center justify-center gap-2 rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 hover:bg-zinc-400/25 transition font-medium"
         >
           <span>ইমেইল দিয়ে লগইন করুন</span>
           <ChevronDown size={16} className="text-zinc-500" />
@@ -342,7 +342,7 @@ export default function LoginContent() {
 
           {/* General error */}
           {errors.general && (
-            <div className="p-3 text-sm text-center text-red-500 bg-red-500/10 border border-red-500/20 rounded-xl">
+            <div className="p-3 text-sm text-center text-red-600 bg-red-500/5 border border-red-500/20 rounded-xl dark:text-red-300">
               {errors.general}
             </div>
           )}
@@ -388,7 +388,7 @@ export default function LoginContent() {
                 <button
                   type="button"
                   onClick={() => setShowPass((v) => !v)}
-                  className="absolute inset-y-0 right-4 flex items-center text-zinc-400 hover:text-zinc-600"
+                  className="absolute inset-y-0 right-4 flex items-center text-zinc-500 hover:text-zinc-950 dark:hover:text-white"
                 >
                   {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -412,7 +412,7 @@ export default function LoginContent() {
             <button
               type="submit"
               disabled={formLoading}
-              className="w-full rounded-full p-4 font-bold text-white bg-black dark:text-black dark:bg-white disabled:opacity-60 transition"
+              className="w-full rounded-xl bg-zinc-400/25 px-4 py-2.5 font-semibold text-zinc-950 hover:bg-zinc-400/50 dark:text-white disabled:opacity-60 transition"
             >
               {formLoading ? "অপেক্ষা করুন…" : "লগ ইন করুন"}
             </button>
@@ -425,7 +425,7 @@ export default function LoginContent() {
         <span>অ্যাকাউন্ট নেই? </span>
         <Link
           href="/register"
-          className="font-bold text-blue-600 hover:opacity-80 transition"
+          className="font-medium text-zinc-950 hover:underline dark:text-white transition"
         >
           সাইন আপ করুন
         </Link>
