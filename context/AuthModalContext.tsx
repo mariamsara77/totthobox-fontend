@@ -42,7 +42,7 @@ export function AuthModalProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [reason, setReason] = useState<string | undefined>();
-  const pendingActionRef = useRef<(() => void | Promise<void>) | undefined>();
+  const pendingActionRef = useRef<(() => void | Promise<void>) | undefined>(undefined);
 
   const openLoginModal = useCallback((options?: LoginModalOptions) => {
     pendingActionRef.current = options?.onSuccess;
