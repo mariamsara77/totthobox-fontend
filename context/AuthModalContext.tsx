@@ -42,7 +42,7 @@ export function AuthModalProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [reason, setReason] = useState<string | undefined>();
-  const pendingActionRef = useRef<(() => void | Promise<void>) | undefined>(undefined);
+  const pendingActionRef = useRef<(() => void | Promise<void>) | undefined>();
 
   const openLoginModal = useCallback((options?: LoginModalOptions) => {
     pendingActionRef.current = options?.onSuccess;
@@ -73,6 +73,7 @@ export function AuthModalProvider({ children }: { children: ReactNode }) {
       authReason?: string,
     ) => {
       if (isLoggedIn) return true;
+
       openLoginModal({
         reason: authReason,
         onSuccess: onAuthenticated,
@@ -98,7 +99,11 @@ export function AuthModalProvider({ children }: { children: ReactNode }) {
     const cleanUrl = new URL(window.location.href);
     cleanUrl.searchParams.delete("login");
     cleanUrl.searchParams.delete("returnTo");
-    window.history.replaceState({}, "", cleanUrl.pathname + cleanUrl.search + cleanUrl.hash);
+    window.history.replaceState(
+      {},
+      "",
+      cleanUrl.pathname + cleanUrl.search + cleanUrl.hash,
+    );
   }, [isLoggedIn, openLoginModal, router]);
 
   return (
@@ -111,14 +116,12 @@ export function AuthModalProvider({ children }: { children: ReactNode }) {
       }}
     >
       {children}
-      {isLoginModalOpen && (
-        <LoginModal
-          open
-          reason={reason}
-          onClose={closeLoginModal}
-          onLoginSuccess={completeLogin}
-        />
-      )}
+      <LoginModal
+        open={isLoginModalOpen}
+        reason={reason}
+        onClose={closeLoginModal}
+        onLoginSuccess={completeLogin}
+      />
     </AuthModalContext.Provider>
   );
 }
