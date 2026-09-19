@@ -167,23 +167,23 @@ export default function LoginModal({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.98 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="my-auto w-full max-w-md overflow-hidden rounded-3xl border border-zinc-400/25 bg-white/95 shadow-[0_24px_90px_-24px_rgba(0,0,0,0.45)] backdrop-blur-2xl dark:bg-zinc-950/95"
+            className="my-auto w-full max-w-md overflow-hidden rounded-2xl border border-zinc-400/25 bg-white/95 shadow-2xl backdrop-blur-xl dark:bg-zinc-950/95"
           >
-            <div className="relative border-b border-zinc-400/20 px-5 pb-5 pt-6 sm:px-7">
-              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-zinc-400/60 to-transparent" />
+            <div className="relative border-b border-zinc-400/25 px-4 pb-4 pt-5 sm:px-5">
+              <div className="absolute inset-x-0 top-0 h-px bg-zinc-400/25" />
 
               <button
                 type="button"
                 onClick={onClose}
                 disabled={loading}
                 aria-label="লগইন বন্ধ করুন"
-                className="absolute right-4 top-4 rounded-xl p-2 text-zinc-500 transition hover:bg-zinc-400/10 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:text-white"
+                className="absolute right-3 top-3 rounded-lg p-1.5 text-zinc-500 transition hover:bg-zinc-400/10 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:text-white"
               >
                 <X className="size-5" />
               </button>
 
               <div className="pr-10">
-                <div className="mb-4 inline-flex size-11 items-center justify-center rounded-2xl border border-zinc-400/20 bg-zinc-400/10 shadow-sm">
+                <div className="mb-3 inline-flex size-10 items-center justify-center rounded-xl border border-zinc-400/25 bg-zinc-400/10">
                   <ShieldCheck className="size-5" />
                 </div>
                 <h2
@@ -194,14 +194,14 @@ export default function LoginModal({
                 </h2>
                 <p
                   id={descriptionId}
-                  className="mt-1.5 text-sm leading-6 text-zinc-500 dark:text-zinc-400"
+                  className="mt-1 text-sm leading-5 text-zinc-500 dark:text-zinc-400"
                 >
                   {reason || "আপনার অ্যাকাউন্টে চালিয়ে যেতে লগইন করুন।"}
                 </p>
               </div>
             </div>
 
-            <div className="space-y-5 px-5 py-5 sm:px-7 sm:py-6">
+            <div className="space-y-4 px-4 py-4 sm:px-5 sm:py-5">
               <GoogleLoginButton onLoginSuccess={onLoginSuccess} />
 
               <div className="flex items-center gap-3">
@@ -217,13 +217,13 @@ export default function LoginModal({
                   role="alert"
                   initial={{ opacity: 0, y: -4 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="rounded-2xl border border-red-500/20 bg-red-500/5 px-4 py-3 text-sm leading-6 text-red-700 dark:text-red-300"
+                  className="rounded-xl border border-red-500/20 bg-red-500/5 px-3 py-2.5 text-sm leading-5 text-red-700 dark:text-red-300"
                 >
                   {error}
                 </motion.div>
               )}
 
-              <form onSubmit={submit} noValidate className="space-y-3.5">
+              <form onSubmit={submit} noValidate className="space-y-3">
                 <label className="block">
                   <span className="sr-only">ইমেইল অ্যাড্রেস</span>
                   <input
@@ -238,7 +238,7 @@ export default function LoginModal({
                     }}
                     placeholder="ইমেইল অ্যাড্রেস"
                     aria-label="ইমেইল অ্যাড্রেস"
-                    className="w-full rounded-2xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-3.5 text-sm outline-none transition placeholder:text-zinc-400 focus:border-zinc-500 focus:ring-4 focus:ring-zinc-400/10 dark:bg-zinc-900/70"
+                    className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition placeholder:text-zinc-400 focus:border-zinc-400/50 focus:ring-2 focus:ring-zinc-400/10 dark:bg-zinc-900/70"
                   />
                 </label>
 
@@ -255,14 +255,14 @@ export default function LoginModal({
                       }}
                       placeholder="পাসওয়ার্ড"
                       aria-label="পাসওয়ার্ড"
-                      className="w-full rounded-2xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-3.5 pr-12 text-sm outline-none transition placeholder:text-zinc-400 focus:border-zinc-500 focus:ring-4 focus:ring-zinc-400/10 dark:bg-zinc-900/70"
+                      className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 pr-11 text-sm outline-none transition placeholder:text-zinc-400 focus:border-zinc-400/50 focus:ring-2 focus:ring-zinc-400/10 dark:bg-zinc-900/70"
                     />
                   </label>
                   <button
                     type="button"
                     onClick={() => setShowPassword((value) => !value)}
                     aria-label={showPassword ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখান"}
-                    className="absolute inset-y-0 right-3 flex items-center px-1 text-zinc-500 transition hover:text-zinc-950 dark:hover:text-white"
+                    className="absolute inset-y-0 right-2.5 flex items-center px-1 text-zinc-500 transition hover:text-zinc-950 dark:hover:text-white"
                   >
                     {showPassword ? (
                       <EyeOff className="size-5" />
@@ -285,7 +285,7 @@ export default function LoginModal({
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-zinc-950 px-4 py-3.5 text-sm font-semibold text-white shadow-lg shadow-zinc-950/10 transition hover:-translate-y-px hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-400/25 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-zinc-400/50 disabled:cursor-not-allowed disabled:opacity-60 dark:text-white"
                 >
                   {loading && <Loader2 className="size-4 animate-spin" />}
                   {loading ? "লগইন হচ্ছে..." : "লগইন করুন"}
@@ -297,7 +297,7 @@ export default function LoginModal({
                 <Link
                   href="/register"
                   onClick={onClose}
-                  className="font-semibold text-zinc-950 underline-offset-4 hover:underline dark:text-white"
+                  className="font-medium text-zinc-950 underline-offset-4 hover:underline dark:text-white"
                 >
                   সাইন আপ করুন
                 </Link>
