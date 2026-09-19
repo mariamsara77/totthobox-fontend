@@ -406,7 +406,7 @@ export default function RegisterContent() {
               setErrors({});
               setCooldown(0);
             }}
-            className="w-full rounded-full py-2 text-center text-sm text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300"
+            className="w-full text-center text-sm text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300"
           >
             ভুল ইমেইল? তথ্য পরিবর্তন করুন
           </button>
