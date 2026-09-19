@@ -63,7 +63,11 @@ export function AuthModalProvider({ children }: { children: ReactNode }) {
     setIsLoginModalOpen(false);
 
     if (action) {
-      await action();
+      try {
+        await action();
+      } catch (error) {
+        console.error("Pending authenticated action failed:", error);
+      }
     }
   }, []);
 
