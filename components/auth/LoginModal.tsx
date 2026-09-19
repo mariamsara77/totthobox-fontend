@@ -1,10 +1,12 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
+import { createPortal } from "react-dom";
 import { useEffect, useId, useRef, useState } from "react";
-import { Eye, EyeOff, Loader2, X } from "lucide-react";
+import { Eye, EyeOff, Loader2, ShieldCheck, X } from "lucide-react";
+import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
-import Link from "next/link";
 
 type LoginModalProps = {
   open: boolean;
@@ -25,7 +27,7 @@ export default function LoginModal({
   const emailRef = useRef<HTMLInputElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
-
+  const [mounted, setMounted] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -33,17 +35,25 @@ export default function LoginModal({
   const [error, setError] = useState("");
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
     if (!open) return;
 
-    previousFocusRef.current = document.activeElement as HTMLElement | null;
+    previousFocusRef.current =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
-    const focusTimer = window.setTimeout(() => emailRef.current?.focus(), 0);
+    const focusTimer = window.setTimeout(() => emailRef.current?.focus(), 40);
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && !loading) {
-        onClose();
+      if (event.key === "Escape") {
+        if (!loading) onClose();
         return;
       }
 
@@ -52,9 +62,12 @@ export default function LoginModal({
       const dialog = dialogRef.current;
       if (!dialog) return;
 
-      const focusable = dialog.querySelectorAll<HTMLElement>(
-        'button:not([disabled]), input:not([disabled]), a[href]',
+      const focusable = Array.from(
+        dialog.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), input:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
+        ),
       );
+
       if (!focusable.length) return;
 
       const first = focusable[0];
@@ -75,13 +88,13 @@ export default function LoginModal({
       window.clearTimeout(focusTimer);
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", handleKeyDown);
-      previousFocusRef.current?.focus?.();
+      previousFocusRef.current?.focus();
+      previousFocusRef.current = null;
     };
-  }, [open, loading, onClose]);
+  }, [open, onClose, loading]);
 
   useEffect(() => {
-    if (!open) return;
-    setError("");
+    if (open) setError("");
   }, [open]);
 
   const submit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -89,6 +102,7 @@ export default function LoginModal({
     if (loading) return;
 
     const normalizedEmail = email.trim();
+
     if (!normalizedEmail || !password) {
       setError("ইমেইল এবং পাসওয়ার্ড দিন।");
       return;
@@ -100,153 +114,196 @@ export default function LoginModal({
     try {
       await login(normalizedEmail, password);
       await onLoginSuccess();
-    } catch (err: any) {
-      const message =
-        err?.errors?.email?.[0] ||
-        err?.errors?.password?.[0] ||
-        err?.message ||
-        "লগইন করা যায়নি। তথ্যগুলো যাচাই করে আবার চেষ্টা করুন।";
-      setError(message);
+    } catch (err: unknown) {
+      const data =
+        typeof err === "object" && err !== null
+          ? (err as {
+              errors?: {
+                email?: string[];
+                password?: string[];
+              };
+              message?: string;
+            })
+          : null;
+
+      setError(
+        data?.errors?.email?.[0] ||
+          data?.errors?.password?.[0] ||
+          data?.message ||
+          "লগইন করা যায়নি। তথ্যগুলো যাচাই করে আবার চেষ্টা করুন।",
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  if (!open) return null;
+  if (!mounted) return null;
 
-  return (
-    <div
-      className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/50 p-3 backdrop-blur-sm sm:p-4"
-      role="presentation"
-      onMouseDown={(event) => {
-        if (event.target === event.currentTarget && !loading) onClose();
-      }}
-    >
-      <div
-        ref={dialogRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-        aria-describedby={descriptionId}
-        className="w-full max-w-md overflow-hidden rounded-2xl border border-zinc-400/25 bg-white shadow-2xl dark:bg-zinc-900"
-      >
-        <div className="flex items-start justify-between gap-4 border-b border-zinc-400/25 px-5 py-4 sm:px-6">
-          <div className="min-w-0">
-            <h2 id={titleId} className="text-lg font-bold tracking-tight">
-              লগইন করুন
-            </h2>
-            <p
-              id={descriptionId}
-              className="mt-1 text-sm text-zinc-500 dark:text-zinc-400"
-            >
-              {reason || "আপনার অ্যাকাউন্টে চালিয়ে যেতে লগইন করুন।"}
-            </p>
-          </div>
-
-          <button
-            type="button"
-            onClick={onClose}
-            disabled={loading}
-            aria-label="লগইন বন্ধ করুন"
-            className="shrink-0 rounded-xl p-2 text-zinc-500 transition hover:bg-zinc-400/10 hover:text-zinc-900 disabled:opacity-50 dark:hover:text-white"
+  return createPortal(
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          key="login-modal"
+          className="fixed inset-0 z-[10000] flex min-h-dvh items-center justify-center overflow-y-auto bg-zinc-950/55 p-3 backdrop-blur-md sm:p-5"
+          role="presentation"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.18, ease: "easeOut" }}
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget && !loading) onClose();
+          }}
+        >
+          <motion.div
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={titleId}
+            aria-describedby={descriptionId}
+            initial={{ opacity: 0, y: 14, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.98 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="my-auto w-full max-w-md overflow-hidden rounded-3xl border border-zinc-400/25 bg-white/95 shadow-[0_24px_90px_-24px_rgba(0,0,0,0.45)] backdrop-blur-2xl dark:bg-zinc-950/95"
           >
-            <X className="size-5" />
-          </button>
-        </div>
+            <div className="relative border-b border-zinc-400/20 px-5 pb-5 pt-6 sm:px-7">
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-zinc-400/60 to-transparent" />
 
-        <div className="space-y-4 px-5 py-5 sm:px-6 sm:py-6">
-          <GoogleLoginButton onLoginSuccess={onLoginSuccess} />
-
-          <div className="flex items-center gap-3">
-            <div className="h-px flex-1 bg-zinc-400/25" />
-            <span className="text-xs text-zinc-500">অথবা</span>
-            <div className="h-px flex-1 bg-zinc-400/25" />
-          </div>
-
-          {error && (
-            <div
-              role="alert"
-              className="rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-3 py-2.5 text-sm leading-6"
-            >
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={submit} noValidate className="space-y-3">
-            <input
-              ref={emailRef}
-              type="email"
-              inputMode="email"
-              autoComplete="email"
-              value={email}
-              onChange={(event) => {
-                setEmail(event.target.value);
-                setError("");
-              }}
-              placeholder="ইমেইল অ্যাড্রেস"
-              aria-label="ইমেইল অ্যাড্রেস"
-              className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-3.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
-            />
-
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                autoComplete="current-password"
-                value={password}
-                onChange={(event) => {
-                  setPassword(event.target.value);
-                  setError("");
-                }}
-                placeholder="পাসওয়ার্ড"
-                aria-label="পাসওয়ার্ড"
-                className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-3.5 pr-12 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
-              />
               <button
                 type="button"
-                onClick={() => setShowPassword((value) => !value)}
-                aria-label={showPassword ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখান"}
-                className="absolute inset-y-0 right-3 flex items-center px-1 text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
-              >
-                {showPassword ? (
-                  <EyeOff className="size-5" />
-                ) : (
-                  <Eye className="size-5" />
-                )}
-              </button>
-            </div>
-
-            <div className="flex justify-end">
-              <Link
-                href="/forgot-password"
                 onClick={onClose}
-                className="text-xs text-zinc-500 transition hover:text-zinc-900 dark:hover:text-white"
+                disabled={loading}
+                aria-label="লগইন বন্ধ করুন"
+                className="absolute right-4 top-4 rounded-xl p-2 text-zinc-500 transition hover:bg-zinc-400/10 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:text-white"
               >
-                পাসওয়ার্ড ভুলে গেছেন?
-              </Link>
+                <X className="size-5" />
+              </button>
+
+              <div className="pr-10">
+                <div className="mb-4 inline-flex size-11 items-center justify-center rounded-2xl border border-zinc-400/20 bg-zinc-400/10 shadow-sm">
+                  <ShieldCheck className="size-5" />
+                </div>
+                <h2
+                  id={titleId}
+                  className="text-xl font-semibold tracking-tight text-zinc-950 dark:text-white sm:text-2xl"
+                >
+                  লগইন করুন
+                </h2>
+                <p
+                  id={descriptionId}
+                  className="mt-1.5 text-sm leading-6 text-zinc-500 dark:text-zinc-400"
+                >
+                  {reason || "আপনার অ্যাকাউন্টে চালিয়ে যেতে লগইন করুন।"}
+                </p>
+              </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-black px-4 py-3.5 text-sm font-bold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-black"
-            >
-              {loading && <Loader2 className="size-4 animate-spin" />}
-              {loading ? "লগইন হচ্ছে..." : "লগইন করুন"}
-            </button>
-          </form>
+            <div className="space-y-5 px-5 py-5 sm:px-7 sm:py-6">
+              <GoogleLoginButton onLoginSuccess={onLoginSuccess} />
 
-          <p className="text-center text-sm text-zinc-500 dark:text-zinc-400">
-            অ্যাকাউন্ট নেই?{" "}
-            <Link
-              href="/register"
-              onClick={onClose}
-              className="font-semibold text-zinc-900 hover:underline dark:text-white"
-            >
-              সাইন আপ করুন
-            </Link>
-          </p>
-        </div>
-      </div>
-    </div>
+              <div className="flex items-center gap-3">
+                <div className="h-px flex-1 bg-zinc-400/20" />
+                <span className="text-[11px] font-medium uppercase tracking-wider text-zinc-400">
+                  অথবা
+                </span>
+                <div className="h-px flex-1 bg-zinc-400/20" />
+              </div>
+
+              {error && (
+                <motion.div
+                  role="alert"
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="rounded-2xl border border-red-500/20 bg-red-500/5 px-4 py-3 text-sm leading-6 text-red-700 dark:text-red-300"
+                >
+                  {error}
+                </motion.div>
+              )}
+
+              <form onSubmit={submit} noValidate className="space-y-3.5">
+                <label className="block">
+                  <span className="sr-only">ইমেইল অ্যাড্রেস</span>
+                  <input
+                    ref={emailRef}
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    value={email}
+                    onChange={(event) => {
+                      setEmail(event.target.value);
+                      setError("");
+                    }}
+                    placeholder="ইমেইল অ্যাড্রেস"
+                    aria-label="ইমেইল অ্যাড্রেস"
+                    className="w-full rounded-2xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-3.5 text-sm outline-none transition placeholder:text-zinc-400 focus:border-zinc-500 focus:ring-4 focus:ring-zinc-400/10 dark:bg-zinc-900/70"
+                  />
+                </label>
+
+                <div className="relative">
+                  <label className="block">
+                    <span className="sr-only">পাসওয়ার্ড</span>
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      autoComplete="current-password"
+                      value={password}
+                      onChange={(event) => {
+                        setPassword(event.target.value);
+                        setError("");
+                      }}
+                      placeholder="পাসওয়ার্ড"
+                      aria-label="পাসওয়ার্ড"
+                      className="w-full rounded-2xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-3.5 pr-12 text-sm outline-none transition placeholder:text-zinc-400 focus:border-zinc-500 focus:ring-4 focus:ring-zinc-400/10 dark:bg-zinc-900/70"
+                    />
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((value) => !value)}
+                    aria-label={showPassword ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখান"}
+                    className="absolute inset-y-0 right-3 flex items-center px-1 text-zinc-500 transition hover:text-zinc-950 dark:hover:text-white"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="size-5" />
+                    ) : (
+                      <Eye className="size-5" />
+                    )}
+                  </button>
+                </div>
+
+                <div className="flex justify-end">
+                  <Link
+                    href="/forgot-password"
+                    onClick={onClose}
+                    className="text-xs font-medium text-zinc-500 transition hover:text-zinc-950 dark:hover:text-white"
+                  >
+                    পাসওয়ার্ড ভুলে গেছেন?
+                  </Link>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-zinc-950 px-4 py-3.5 text-sm font-semibold text-white shadow-lg shadow-zinc-950/10 transition hover:-translate-y-px hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200"
+                >
+                  {loading && <Loader2 className="size-4 animate-spin" />}
+                  {loading ? "লগইন হচ্ছে..." : "লগইন করুন"}
+                </button>
+              </form>
+
+              <p className="text-center text-sm text-zinc-500 dark:text-zinc-400">
+                অ্যাকাউন্ট নেই?{" "}
+                <Link
+                  href="/register"
+                  onClick={onClose}
+                  className="font-semibold text-zinc-950 underline-offset-4 hover:underline dark:text-white"
+                >
+                  সাইন আপ করুন
+                </Link>
+              </p>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>,
+    document.body,
   );
 }
