@@ -1,22 +1,28 @@
-// middleware.ts   অথবা proxy.ts (যে নামে ফাইল আছে)
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const protectedPaths = ["/dashboard", "/profile", "/settings"];
+const protectedPaths = ["/dashboard", "/profile", "/settings", "/messages"];
 
 export function proxy(request: NextRequest) {
-  const token = request.cookies.get("auth_token")?.value; // ✅ সঠিক cookie নাম
-  const isProtected = protectedPaths.some((p) =>
-    request.nextUrl.pathname.startsWith(p)
+  const token = request.cookies.get("auth_token")?.value;
+  const pathname = request.nextUrl.pathname;
+  const isProtected = protectedPaths.some((path) =>
+    pathname.startsWith(path),
   );
 
   if (isProtected && !token) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    const loginUrl = new URL("/", request.url);
+    loginUrl.searchParams.set("login", "required");
+    loginUrl.searchParams.set(
+      "returnTo",
+      pathname + request.nextUrl.search,
+    );
+    return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/profile/:path*", "/settings/:path*"],
+  matcher: ["/dashboard/:path*", "/profile/:path*", "/settings/:path*", "/messages/:path*"],
 };

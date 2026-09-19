@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import ChatInput from "./ChatInput";
 import MessageList from "./MessageList";
 import { useAuth } from "@/context/AuthContext";
+import { useAuthModal } from "@/context/AuthModalContext";
 
 export type ChatMessage = {
   id: string | number;
@@ -22,6 +23,7 @@ export default function ChatPanel({
   const router = useRouter();
 
   const { isLoggedIn, loading: authLoading } = useAuth();
+  const { openLoginModal } = useAuthModal();
   const isGuest = !isLoggedIn;
 
   const [uuid, setUuid] = useState<string | null>(initialUuid);
@@ -125,6 +127,9 @@ export default function ChatPanel({
 
       if (isGuest && guestRemaining <= 0) {
         setError("আপনার বিনামূল্যে সীমা শেষ। আরও ব্যবহারের জন্য লগইন করুন।");
+        openLoginModal({
+          reason: "ফ্রি ব্যবহারের সীমা শেষ হয়েছে। আরও ব্যবহার করতে লগইন করুন।",
+        });
         return;
       }
 
@@ -312,7 +317,12 @@ export default function ChatPanel({
           guestRemaining={guestRemaining}
           onSend={ask}
           onLogin={() =>
-            window.dispatchEvent(new CustomEvent("chat:session-created"))
+            openLoginModal({
+              reason:
+                guestRemaining <= 0
+                  ? "ফ্রি ব্যবহারের সীমা শেষ হয়েছে। আরও ব্যবহার করতে লগইন করুন।"
+                  : "চ্যাট সেভ করতে লগইন করুন।",
+            })
           }
         />
       </div>

@@ -4,6 +4,7 @@ import { type ReactNode } from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "@/context/AuthContext";
+import { AuthModalProvider } from "@/context/AuthModalContext";
 import { SettingsModalProvider } from "@/context/SettingsModalContext";
 import { SearchModalProvider } from "@/context/SearchModalContext";
 import { NotificationModalProvider } from "@/context/NotificationModalContext";
@@ -20,6 +21,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
       disableTransitionOnChange
     >
       <AuthProvider>
+        <AuthModalProvider>
         <SettingsModalProvider>
           <SearchModalProvider>
             <NotificationModalProvider>
@@ -40,6 +42,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
             </NotificationModalProvider>
           </SearchModalProvider>
         </SettingsModalProvider>
+        </AuthModalProvider>
       </AuthProvider>
     </NextThemesProvider>
   );

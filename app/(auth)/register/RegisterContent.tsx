@@ -213,8 +213,8 @@ export default function RegisterContent() {
               placeholder="আপনার পূর্ণ নাম"
               autoComplete="name"
               className={clsx(
-                "w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-3.5 outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30",
-                errors.name ? "border-red-500" : "border-transparent",
+                "w-full rounded-full border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 outline-none transition focus:border-zinc-400/50 focus:ring-2 focus:ring-zinc-400/10",
+                errors.name ? "border-red-500" : "border-zinc-400/25",
               )}
             />
             {name && isNameValid && !errors.name && (
@@ -236,8 +236,8 @@ export default function RegisterContent() {
               placeholder="ইমেইল (যেমন: name@example.com)"
               autoComplete="email"
               className={clsx(
-                "w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-3.5 outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30",
-                errors.email ? "border-red-500" : "border-transparent",
+                "w-full rounded-full border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 outline-none transition focus:border-zinc-400/50 focus:ring-2 focus:ring-zinc-400/10",
+                errors.email ? "border-red-500" : "border-zinc-400/25",
               )}
             />
             {email && isEmailValid && !errors.email && (
@@ -259,8 +259,8 @@ export default function RegisterContent() {
               placeholder="পাসওয়ার্ড দিন"
               autoComplete="new-password"
               className={clsx(
-                "w-full rounded-full py-3.5 px-6 pr-20 border bg-zinc-400/10 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition",
-                errors.password ? "border-red-500" : "border-transparent",
+                "w-full rounded-full border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 pr-20 outline-none transition focus:border-zinc-400/50 focus:ring-2 focus:ring-zinc-400/10",
+                errors.password ? "border-red-500" : "border-zinc-400/25",
               )}
             />
             <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3">
@@ -270,7 +270,7 @@ export default function RegisterContent() {
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                className="text-zinc-400 hover:text-zinc-600"
+                className="text-zinc-500 hover:text-zinc-950 dark:hover:text-white"
                 aria-label={
                   showPassword ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখান"
                 }
@@ -296,10 +296,10 @@ export default function RegisterContent() {
               placeholder="পাসওয়ার্ডটি পুনরায় লিখুন"
               autoComplete="new-password"
               className={clsx(
-                "w-full rounded-full py-3.5 px-6 pr-20 border bg-zinc-400/10 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition",
+                "w-full rounded-full border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 pr-20 outline-none transition focus:border-zinc-400/50 focus:ring-2 focus:ring-zinc-400/10",
                 errors.password_confirmation
                   ? "border-red-500"
-                  : "border-transparent",
+                  : "border-zinc-400/25",
               )}
             />
             <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3">
@@ -312,7 +312,7 @@ export default function RegisterContent() {
               <button
                 type="button"
                 onClick={() => setShowConfirm((v) => !v)}
-                className="text-zinc-400 hover:text-zinc-600"
+                className="text-zinc-500 hover:text-zinc-950 dark:hover:text-white"
                 aria-label={
                   showConfirm ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখান"
                 }
@@ -330,7 +330,7 @@ export default function RegisterContent() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-full transition disabled:opacity-60"
+            className="w-full rounded-full bg-zinc-400/25 px-4 py-2.5 font-semibold text-zinc-950 transition hover:bg-zinc-400/50 disabled:opacity-60 dark:text-white"
           >
             {loading ? "পাঠানো হচ্ছে..." : "ভেরিফিকেশন কোড পাঠান"}
           </button>
@@ -345,7 +345,7 @@ export default function RegisterContent() {
               href={emailUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-blue-600 hover:underline font-medium"
+              className="inline-flex items-center gap-1.5 text-zinc-950 hover:underline dark:text-white font-medium"
             >
               <span>{email}</span>
               <ExternalLink size={14} className="opacity-60" />
@@ -367,7 +367,7 @@ export default function RegisterContent() {
                 setErrors((prev) => ({ ...prev, otp: "" }));
               }}
               placeholder="••••"
-              className="w-full max-w-xs rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-3.5 text-center text-2xl font-bold tracking-[0.4em] outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
+              className="w-full max-w-xs rounded-full border border-zinc-400/25 bg-zinc-400/10 px-4 py-3.5 text-center text-2xl font-bold tracking-[0.4em] outline-none transition focus:border-zinc-400/50 focus:ring-2 focus:ring-zinc-400/10"
             />
           </div>
           {errors.otp && (
@@ -377,7 +377,7 @@ export default function RegisterContent() {
           <button
             type="submit"
             disabled={loading || otp.length !== 4}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-full transition disabled:opacity-60"
+            className="w-full rounded-full bg-zinc-400/25 px-4 py-2.5 font-semibold text-zinc-950 transition hover:bg-zinc-400/50 disabled:opacity-60 dark:text-white"
           >
             {loading ? "যাচাই করা হচ্ছে..." : "যাচাই ও অ্যাকাউন্ট তৈরি"}
           </button>
@@ -388,7 +388,7 @@ export default function RegisterContent() {
               type="button"
               onClick={handleResendOtp}
               disabled={cooldown > 0 || resending}
-              className="font-bold text-blue-600 hover:underline disabled:opacity-50 disabled:no-underline disabled:cursor-not-allowed"
+              className="font-bold text-zinc-950 hover:underline dark:text-white disabled:opacity-50 disabled:no-underline disabled:cursor-not-allowed"
             >
               {resending
                 ? "পাঠানো হচ্ছে..."
@@ -425,7 +425,7 @@ export default function RegisterContent() {
             অ্যাকাউন্ট আছে?{" "}
             <Link
               href="/login"
-              className="font-bold text-blue-600 hover:underline"
+              className="font-bold text-zinc-950 hover:underline dark:text-white"
             >
               লগ ইন করুন
             </Link>

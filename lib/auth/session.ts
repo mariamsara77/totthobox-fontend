@@ -58,9 +58,22 @@ export function clearAuthCookies(response: NextResponse): void {
   }
 }
 
-// পুরনো single-cookie helper — backward compat এর জন্য রাখা
+export function setAccessCookie(response: NextResponse, token: string): void {
+  response.cookies.set({
+    name: ACCESS_COOKIE,
+    value: token,
+    httpOnly: true,
+    secure: IS_PROD,
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24,
+  });
+}
+
+// পুরনো single-cookie helper — backward compat এর জন্য রাখা.
+// নতুন OAuth flow-এ এটি ব্যবহার না করে setAccessCookie ব্যবহার করুন।
 export function setAuthCookie(response: NextResponse, token: string): void {
-  setAuthCookies(response, token, "");
+  setAccessCookie(response, token);
 }
 
 export function clearAuthCookie(response: NextResponse): void {

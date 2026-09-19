@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { ThumbsUp, ThumbsDown, Share2 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { useAuthModal } from "@/context/AuthModalContext";
 
 type Props = {
   establishmentId: number;
@@ -23,6 +24,7 @@ export default function InteractiveActions({
   initialData,
 }: Props) {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
+  const { requireAuth } = useAuthModal();
 
   const [likeCount, setLikeCount] = useState(initialData.reactions.like_count);
   const [dislikeCount, setDislikeCount] = useState(
@@ -67,9 +69,7 @@ export default function InteractiveActions({
   }, [establishmentId, isLoggedIn, authLoading]);
 
   const handleReact = async (type: "like" | "dislike") => {
-    if (!isLoggedIn) {
-      alert("রিয়্যাকশন দিতে লগইন করতে হবে");
-      window.location.href = "/login";
+    if (!requireAuth(() => handleReact(type), "রিয়্যাকশন দিতে লগইন করুন।")) {
       return;
     }
 
@@ -91,8 +91,8 @@ export default function InteractiveActions({
       );
 
       if (res.status === 401) {
-        alert("সেশন শেষ হয়ে গেছে। আবার লগইন করুন।");
-        window.location.href = "/login";
+        setLoading(false);
+        requireAuth(() => handleReact(type), "সেশন শেষ হয়েছে। আবার লগইন করুন।");
         return;
       }
 
