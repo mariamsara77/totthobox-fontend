@@ -65,6 +65,17 @@ function getPlainText(value?: string): string {
     .trim();
 }
 
+function getExcerpt(value: string, maxLength: number): string {
+  if (value.length <= maxLength) return value;
+  const candidate = value.slice(0, maxLength);
+  const lastSpace = candidate.lastIndexOf(" ");
+  const excerpt =
+    lastSpace > Math.floor(maxLength * 0.7)
+      ? candidate.slice(0, lastSpace)
+      : candidate;
+  return `${excerpt.trimEnd()}...`;
+}
+
 export default function HistoryShowClient({ history }: Props) {
   const [showCreators, setShowCreators] = useState(false);
   const creatorsRef = useRef<HTMLDivElement>(null);
