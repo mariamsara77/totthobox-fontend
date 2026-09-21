@@ -27,6 +27,9 @@ type History = {
   era?: string;
   start_year?: string | number;
   end_year?: string | number;
+  division?: string;
+  district?: string;
+  thana?: string;
   is_featured?: boolean;
   description?: string;
   image_url?: string;
@@ -353,8 +356,19 @@ export default function HistoryShowClient({ history }: Props) {
             <strong>{history.title}</strong> হলো বাংলাদেশের একটি ঐতিহাসিক স্থান
             {history.era ? ` (${history.era})` : ""}।
           </p>
+          {(history.division || history.district || history.thana) && (
+            <p>
+              অবস্থান: {[history.division, history.district, history.thana]
+                .filter(Boolean)
+                .join(" → ")}
+              ।
+            </p>
+          )}
           {descriptionText && (
-            <p>{descriptionText.slice(0, 320)}{descriptionText.length > 320 ? "..." : ""}</p>
+            <p>
+              {descriptionText.slice(0, 320)}
+              {descriptionText.length > 320 ? "..." : ""}
+            </p>
           )}
           <p>
             এই পেজে স্থানটির সময়কাল, ঐতিহাসিক বিবরণ, ছবি এবং সংশ্লিষ্ট তথ্য
