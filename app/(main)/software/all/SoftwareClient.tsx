@@ -64,6 +64,25 @@ function cleanDescription(description?: string) {
     .trim();
 }
 
+const platformGuidance: Record<string, [string, string]> = {
+  Windows: [
+    "Windows সফটওয়্যার বাছাই করার সময় Windows-এর কোন সংস্করণ সমর্থিত, 32-bit বা 64-bit প্রয়োজন কি না এবং ইনস্টলেশনের জন্য পর্যাপ্ত স্টোরেজ আছে কি না—এসব তথ্য আগে যাচাই করা ভালো। একই সফটওয়্যারের ভিন্ন সংস্করণে সিস্টেম রিকোয়ারমেন্টও আলাদা হতে পারে।",
+    "ইনস্টল করার আগে সফটওয়্যারটির প্রকাশক, লাইসেন্স এবং অফিসিয়াল ওয়েবসাইট যাচাই করুন। বিশেষ করে installer বা setup file কোথা থেকে সংগ্রহ করা হচ্ছে তা নিশ্চিত করা গুরুত্বপূর্ণ।",
+  ],
+  Android: [
+    "Android অ্যাপ বাছাইয়ের ক্ষেত্রে Android-এর প্রয়োজনীয় version, ডিভাইসের storage এবং অ্যাপটি কী ধরনের permission চায় তা দেখা গুরুত্বপূর্ণ। একই নামের অননুমোদিত বা পরিবর্তিত APK-এর বদলে প্রকাশকের নির্ভরযোগ্য উৎস ব্যবহার করা উচিত।",
+    "অ্যাপ ইনস্টল করার আগে developer বা publisher-এর পরিচয়, প্রকাশিত সংস্করণ এবং অফিসিয়াল distribution source মিলিয়ে নিন। প্রয়োজনের বাইরে permission চাইলে সেটিও বিবেচনা করা উচিত।",
+  ],
+  Mac: [
+    "Mac সফটওয়্যার ব্যবহারের আগে আপনার macOS version এবং Mac-এর Apple silicon বা Intel processor-এর সঙ্গে সফটওয়্যারটির সামঞ্জস্য যাচাই করা ভালো। কিছু অ্যাপ নির্দিষ্ট macOS সংস্করণ বা architecture-এর ওপর নির্ভর করতে পারে।",
+    "সফটওয়্যার সংগ্রহের সময় প্রকাশকের অফিসিয়াল উৎস, লাইসেন্স এবং installation package-এর ধরন যাচাই করুন। macOS-এর security settings প্রয়োজন হলে পরিবর্তনের আগে সফটওয়্যারটির উৎস নিশ্চিত করা উচিত।",
+  ],
+  Fonts: [
+    "Font ব্যবহারের ক্ষেত্রে শুধু নাম বা দেখতে কেমন তা নয়, font format, ভাষা বা Unicode support এবং কোন কাজে ব্যবহার করা যাবে—এসব বিষয় গুরুত্বপূর্ণ। বিশেষ করে বাংলা লেখার জন্য প্রয়োজনীয় glyph ও Unicode support আগে যাচাই করা ভালো।",
+    "কোনো font ডাউনলোড বা ওয়েবসাইটে ব্যবহার করার আগে তার licence দেখে নিন। ব্যক্তিগত, বাণিজ্যিক, embedding বা redistribution-এর অনুমতি সব font-এর ক্ষেত্রে এক নয়।",
+  ],
+};
+
 export default function SoftwareClient({ platform = "" }: Props) {
   const router = useRouter();
 
@@ -368,6 +387,10 @@ export default function SoftwareClient({ platform = "" }: Props) {
                 বিস্তারিত পেজে যেখানে প্রযোজ্য সেখানে অফিসিয়াল সোর্সের তথ্য
                 দেওয়া থাকবে।
               </p>
+
+              {platformGuidance[platform]?.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
             </>
           ) : (
             <>
