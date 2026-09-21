@@ -15,6 +15,13 @@ interface Props {
   slug: string;
 }
 
+function getExcerpt(value: string, maxLength: number): string {
+  if (value.length <= maxLength) return value;
+  const candidate = value.slice(0, maxLength);
+  const lastSpace = candidate.lastIndexOf(" ");
+  const excerpt = lastSpace > Math.floor(maxLength * 0.7) ? candidate.slice(0, lastSpace) : candidate;
+  return `${excerpt.trimEnd()}...`;
+}
 export default function DowaShowClient({ initialData, slug }: Props) {
   const { item, views, shareable_text } = initialData;
   const [playing, setPlaying] = useState(false);
@@ -58,7 +65,7 @@ export default function DowaShowClient({ initialData, slug }: Props) {
     .trim();
   const descriptionExcerpt =
     contentExcerpt.length > 320
-      ? `${contentExcerpt.slice(0, 317).trimEnd()}...`
+      ? getExcerpt(contentExcerpt, 320)
       : contentExcerpt;
 
   const breadcrumbSchema = {
