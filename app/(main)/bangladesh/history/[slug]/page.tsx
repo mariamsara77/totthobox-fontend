@@ -10,7 +10,7 @@ async function getHistory(slug: string) {
   const base =
     process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
   const res = await fetch(`${base}/api/history-bd/${slug}`, {
-    cache: "no-store",
+    next: { revalidate: 3600 },
   });
   if (!res.ok) return null;
   const json = await res.json();
