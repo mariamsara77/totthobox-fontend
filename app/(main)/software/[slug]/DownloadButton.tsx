@@ -7,12 +7,14 @@ type Props = {
   appId: string | number;
   name?: string;
   platform?: string;
+  downloadType?: "external" | "local";
 };
 
 export default function DownloadButton({
   appId,
   name = "সফটওয়্যার",
   platform,
+  downloadType = "external",
 }: Props) {
   const [loading, setLoading] = useState(false);
 
@@ -67,12 +69,15 @@ export default function DownloadButton({
         <ExternalLink className="w-4 h-4" />
         {loading
           ? "অফিসিয়াল সোর্স খোঁজা হচ্ছে..."
-          : `${name}${platform ? ` (${platform})` : ""} — অফিসিয়াল ওয়েবসাইট`}
+          : downloadType === "external"
+            ? `${name}${platform ? ` (${platform})` : ""} — অফিসিয়াল ওয়েবসাইট`
+            : `${name}${platform ? ` (${platform})` : ""} — ডাউনলোড`}
       </button>
 
       <p className="text-xs text-center opacity-50 leading-relaxed">
-        তথ্যবক্স কোনো সফটওয়্যার ফাইল হোস্ট করে না। শুধুমাত্র ডেভেলপার/প্রকাশকের
-        অফিসিয়াল ওয়েবসাইটের লিংক প্রদান করা হয়।
+        {downloadType === "external"
+          ? "তথ্যবক্স সফটওয়্যার ফাইল হোস্ট করে না। ডেভেলপার বা প্রকাশকের অফিসিয়াল ওয়েবসাইটে নিয়ে যাওয়া হয়।"
+          : "এই রিসোর্সের ফাইল তথ্যবক্সের নিজস্ব সংরক্ষণ থেকে প্রদান করা হচ্ছে। ব্যবহারের আগে সফটওয়্যারের উৎস ও লাইসেন্স যাচাই করুন।"}
       </p>
     </div>
   );
