@@ -58,7 +58,7 @@ export default function DownloadButton({
           ? error.message
           : downloadType === "external"
             ? "অফিসিয়াল সোর্স পাওয়া যায়নি। পরে আবার চেষ্টা করুন।"
-            : "ডাউনলোড সোর্স পাওয়া যায়নি। পরে আবার চেষ্টা করুন.",
+            : "ডাউনলোড সোর্স পাওয়া যায়নি। পরে আবার চেষ্টা করুন।",
       );
     } finally {
       setLoading(false);
