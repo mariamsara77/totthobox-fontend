@@ -89,7 +89,7 @@ export async function generateMetadata({
   const appDescription = stripHtml(app.description);
   const generatedDescription = `${app.name}${
     app.platform ? ` (${app.platform})` : ""
-  } সম্পর্কে ফিচার, সিস্টেম রিকোয়ারমেন্ট এবং অফিসিয়াল সোর্সের তথ্য.`;
+  } সম্পর্কে ফিচার, সিস্টেম রিকোয়ারমেন্ট এবং অফিসিয়াল সোর্সের তথ্য।`;
 
   const description = makeMetaDescription(
     seo.description || appDescription || generatedDescription,
