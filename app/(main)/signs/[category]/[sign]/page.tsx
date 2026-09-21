@@ -52,7 +52,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
-    robots: {\n      index: cleanDescription.length > 0,\n      follow: true,\n    },\n    openGraph: {
+    robots: {
+      index: cleanDescription.length > 0,
+      follow: true,
+    },\n    openGraph: {
       title,
       description,
       type: "article",
