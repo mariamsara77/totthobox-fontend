@@ -70,6 +70,24 @@ function hasSoftwareContent(item: unknown): boolean {
     .trim().length > 0;
 }
 
+async function fetchPlatforms(): Promise<string[]> {
+  try {
+    const response = await fetch(
+      `${API_BASE}/api/sidebar/software-platforms`,
+      { next: { revalidate: 3600 } },
+    );
+
+    if (!response.ok) return [];
+
+    const json = await response.json();
+    return Array.isArray(json)
+      ? json.filter((value): value is string => typeof value === "string" && value.trim() !== "")
+      : [];
+  } catch {
+    return [];
+  }
+}
+
 async function fetchSlugs(
   endpoint: string,
   includeItem?: (item: unknown) => boolean,
@@ -131,6 +149,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const [
     countries,
+    softwarePlatforms,
     holidays,
     introductions,
     histories,
@@ -142,6 +161,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     apps,
   ] = await Promise.all([
     getAllCountries(),
+    fetchPlatforms(),
     fetchSlugs("/api/holidays"),
     fetchSlugs("/api/intro-bd"),
     fetchSlugs("/api/history-bd"),
@@ -157,6 +177,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...countries.map((country) => ({
       url: `${SITE_URL}/international/country/${encodeURIComponent(country.slug)}`,
       changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...softwarePlatforms.map((platform) => ({
+      url: `${SITE_URL}/software/all/${encodeURIComponent(platform)}`,
+      changeFrequency: "weekly" as const,
       priority: 0.6,
     })),
     ...holidays.map((slug) => ({
