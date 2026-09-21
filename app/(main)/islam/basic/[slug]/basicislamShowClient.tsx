@@ -37,6 +37,27 @@ export default function BasicIslamShowClient({ initialData, slug }: Props) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showCreators]);
 
+  const plainDescription = (item.description_plain || item.description || "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const descriptionExcerpt =
+    plainDescription.length > 320
+      ? `${plainDescription.slice(0, 317).trimEnd()}...`
+      : plainDescription;
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "হোম", item: "https://totthobox.com/" },
+      { "@type": "ListItem", position: 2, name: "ইসলামের মৌলিক জ্ঞান", item: "https://totthobox.com/islam/basic" },
+      { "@type": "ListItem", position: 3, name: item.title, item: `https://totthobox.com/islam/basic/${encodeURIComponent(slug)}` },
+    ],
+  };
+
   // MediaGallery - Single + Multiple
   const media =
     item.media && item.media.length > 0
@@ -160,6 +181,11 @@ export default function BasicIslamShowClient({ initialData, slug }: Props) {
         </div>
       )}
 
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
       {/* Description */}
       <section className="space-y-3">
         <h2 className="text-lg font-bold">বিস্তারিত বিবরণ</h2>
@@ -198,11 +224,14 @@ export default function BasicIslamShowClient({ initialData, slug }: Props) {
         <h2 className="text-lg font-bold">{item.title} সম্পর্কে</h2>
         <div className="text-sm leading-relaxed space-y-2 opacity-90">
           <p>
-            <strong>{item.title}</strong> ইসলামের মৌলিক জ্ঞানের অংশ। দ্বীনের
-            সঠিক ধারণা জানতে এই বিষয়টি গুরুত্বপূর্ণ।
+            <strong>{item.title}</strong> ইসলামের মৌলিক জ্ঞানের একটি বিষয়।
           </p>
+          {descriptionExcerpt && <p>{descriptionExcerpt}</p>}
+          {!descriptionExcerpt && (
+            <p>এই বিষয়ের বিস্তারিত বিবরণ এখনো যোগ করা হয়নি।</p>
+          )}
           <p>
-            উপরের বিবরণ থেকে বিস্তারিত জানুন। আরও বিষয় দেখতে{" "}
+            আরও বিষয় দেখতে{" "}
             <Link href="/islam/basic" className="underline">
               ইসলামের মৌলিক জ্ঞান
             </Link>{" "}
@@ -223,8 +252,8 @@ export default function BasicIslamShowClient({ initialData, slug }: Props) {
             <ChevronDown className="w-4 h-4 group-open:rotate-180 transition shrink-0" />
           </summary>
           <div className="px-4 pb-4 text-sm leading-relaxed border-t border-zinc-400/20 pt-3 opacity-90">
-            এটি ইসলামের মৌলিক জ্ঞানের অংশ। সঠিক ধারণা রাখা গুরুত্বপূর্ণ। উপরের
-            বিবরণে বিস্তারিত ব্যাখ্যা আছে।
+            {descriptionExcerpt ||
+              "এই বিষয়ের বিস্তারিত বিবরণ এখনো যোগ করা হয়নি।"}
           </div>
         </details>
 
