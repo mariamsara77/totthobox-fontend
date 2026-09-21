@@ -54,6 +54,14 @@ type Props = {
   tourism: Tourism;
 };
 
+function getExcerpt(value: string, maxLength: number): string {
+  if (value.length <= maxLength) return value;
+  const candidate = value.slice(0, maxLength);
+  const lastSpace = candidate.lastIndexOf(" ");
+  const excerpt = lastSpace > Math.floor(maxLength * 0.7) ? candidate.slice(0, lastSpace) : candidate;
+  return `${excerpt.trimEnd()}...`;
+}
+
 export default function TourismShowClient({ tourism }: Props) {
   const [showCreators, setShowCreators] = useState(false);
   const creatorsRef = useRef<HTMLDivElement>(null);
@@ -102,7 +110,7 @@ export default function TourismShowClient({ tourism }: Props) {
 
   const descriptionExcerpt =
     plainDescription.length > 320
-      ? `${plainDescription.slice(0, 317).trimEnd()}...`
+      ? getExcerpt(plainDescription, 320)
       : plainDescription;
 
 
