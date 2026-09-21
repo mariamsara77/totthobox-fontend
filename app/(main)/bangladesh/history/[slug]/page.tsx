@@ -33,12 +33,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .replace(/\s+/g, " ")
     .trim();
 
+  // Keep genuinely thin records out of search until their existing source content is enriched.
+  const isThinContent = cleanDescription.length < 180;
+
   const title = `${item.title} | বাংলাদেশের ঐতিহাসিক স্থান | তথ্যবক্স`;
   const description = cleanDescription
     ? cleanDescription.length > 160
       ? `${cleanDescription.slice(0, 157).trimEnd()}...`
       : cleanDescription
-    : `${item.title} সম্পর্কে বাংলাদেশের ইতিহাস ও ঐতিহ্যের তথ্য।`;
+    : undefined;
 
   return {
     title,
@@ -61,7 +64,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       canonical: `https://totthobox.com/bangladesh/history/${encodeURIComponent(item.slug)}`,
     },
     robots: {
-      index: Boolean(cleanDescription),
+      index: !isThinContent,
       follow: true,
     },
   };
