@@ -39,6 +39,27 @@ export default function SignShowClient({ initialData, categorySlug }: Props) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showCreators]);
 
+  const plainDescription = (item.description_plain || item.description || "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  const descriptionExcerpt =
+    plainDescription.length > 320
+      ? `${plainDescription.slice(0, 317).trimEnd()}...`
+      : plainDescription;
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "হোম", item: "https://totthobox.com/" },
+      { "@type": "ListItem", position: 2, name: "ট্রাফিক সাইন", item: "https://totthobox.com/signs/all" },
+      { "@type": "ListItem", position: 3, name: category?.name || categorySlug, item: `https://totthobox.com/signs/${encodeURIComponent(categorySlug)}` },
+      { "@type": "ListItem", position: 4, name: item.name, item: `https://totthobox.com/signs/${encodeURIComponent(categorySlug)}/${encodeURIComponent(item.slug || "")}` },
+    ],
+  };
+
   // MediaGallery - Single + Multiple
   const media =
     item.media && item.media.length > 0
@@ -52,6 +73,11 @@ export default function SignShowClient({ initialData, categorySlug }: Props) {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6 p-4 sm:p-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm">
         <Link href="/" className="hover:underline">
@@ -217,8 +243,12 @@ export default function SignShowClient({ initialData, categorySlug }: Props) {
             <strong>{category?.name || "ট্রাফিক"}</strong> ক্যাটাগরির একটি
             ট্রাফিক সাইন/রোড চিহ্ন।
           </p>
+          {descriptionExcerpt && <p>{descriptionExcerpt}</p>}
+          {!descriptionExcerpt && (
+            <p>এই চিহ্নের বিস্তারিত বিবরণ এখনো যোগ করা হয়নি।</p>
+          )}
           <p>
-            রাস্তায় এই চিহ্ন দেখলে উপরের নির্দেশনা অনুসরণ করুন। আরও সাইন দেখতে{" "}
+            আরও সাইন দেখতে{" "}
             <Link href={`/signs/${categorySlug}`} className="underline">
               {category?.name || "সাইন"}
             </Link>{" "}
