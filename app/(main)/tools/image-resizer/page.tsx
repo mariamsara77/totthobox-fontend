@@ -1,25 +1,10 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import ImageResizer from "@/components/tools/ImageResizer";
 
 export const metadata: Metadata = {
   title: "ছবি রিসাইজ, ক্রপ ও সাইজ কমানোর অনলাইন টুল | Image Resizer | তথ্যবক্স",
   description:
     "যেকোনো ফর্ম, সিভি, ভিসা বা ভার্সিটি অ্যাডমিশনের জন্য ছবির রেজুলেশন (Pixel) ও সাইজ (KB) সহজেই ঠিক করুন। ছবি রিসাইজ, ক্রপ এবং কম্প্রেস করে JPG/PNG/WebP ফরম্যাটে ফ্রিতে ডাউনলোড করুন।",
-  keywords: [
-    "image resizer",
-    "photo crop online",
-    "compress image kb",
-    "300x300 photo maker",
-    "signature resizer",
-    "visa photo resize",
-    "reduce picture size",
-    "ছবির সাইজ কমানো",
-    "ছবি রিসাইজ",
-    "পাসপোর্ট সাইজ ছবি",
-    "cv photo maker",
-    "image format converter",
-    "তথ্যবক্স",
-  ],
   alternates: {
     canonical: "https://totthobox.com/tools/image-resizer",
   },
