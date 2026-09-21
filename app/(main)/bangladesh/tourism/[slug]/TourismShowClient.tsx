@@ -94,6 +94,19 @@ export default function TourismShowClient({ tourism }: Props) {
     .filter(Boolean)
     .join(" • ");
 
+  const plainDescription = (tourism.description || "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const descriptionExcerpt =
+    plainDescription.length > 320
+      ? `${plainDescription.slice(0, 317).trimEnd()}...`
+      : plainDescription;
+
+
+
   // ✅ Holiday পেজের exact প্যাটার্ন (Multiple + Single image support)
   const media =
     tourism.images && tourism.images.length > 0
