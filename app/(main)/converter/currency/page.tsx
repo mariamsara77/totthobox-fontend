@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import CurrencyConverter from "@/components/converter/CurrencyConverter";
 
 // আপনার দেওয়া SEO মেটাডেটা
