@@ -109,13 +109,10 @@ export async function generateMetadata({
     `${app.name}${app.version ? ` v${app.version}` : ""} | তথ্যবক্স`;
 
   const appDescription = stripHtml(app.description);
-  const generatedDescription = `${app.name}${
-    app.platform ? ` (${app.platform})` : ""
-  } সম্পর্কে ফিচার, সিস্টেম রিকোয়ারমেন্ট এবং অফিসিয়াল সোর্সের তথ্য।`;
-
-  const description = makeMetaDescription(
-    seo.description || appDescription || generatedDescription,
-  );
+  const isThinContent = appDescription.length < 120;
+  const description = appDescription
+    ? makeMetaDescription(appDescription)
+    : undefined;
 
   const canonical = `https://totthobox.com/software/${encodeURIComponent(
     app.slug,
@@ -124,7 +121,6 @@ export async function generateMetadata({
   return {
     title,
     description,
-    ...(seo.keywords ? { keywords: seo.keywords } : {}),
     alternates: {
       canonical,
     },
@@ -150,7 +146,7 @@ export async function generateMetadata({
       description,
     },
     robots: {
-      index: Boolean(appDescription),
+      index: !isThinContent,
       follow: true,
     },
   };
