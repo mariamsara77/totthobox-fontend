@@ -31,7 +31,7 @@ export default function SearchTrigger({
       onMouseEnter={(e) => onHover?.(e, "অনুসন্ধান")}
       onMouseLeave={onLeave}
       className={`
-        group flex items-center gap-3 rounded-lg p-2 text-sm
+        group flex items-center gap-3 rounded-xl p-2 text-sm
         transition-colors duration-200
         hover:bg-zinc-400/25
         ${collapsed ? "justify-center px-2" : ""}
