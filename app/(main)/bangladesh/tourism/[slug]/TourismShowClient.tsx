@@ -294,10 +294,19 @@ export default function TourismShowClient({ tourism }: Props) {
                 এটি <strong>{tourism.type_label}</strong> ধরনের পর্যটন কেন্দ্র।
               </>
             )}
+            {location && (
+              <>
+                {" "}
+                এটি <strong>{location}</strong> এলাকায় অবস্থিত।
+              </>
+            )}
           </p>
-          <p>
-            উপরের বিবরণ থেকে বিস্তারিত জানুন এবং আপনার ভ্রমণ পরিকল্পনা করুন।
-          </p>
+          {descriptionExcerpt && <p>{descriptionExcerpt}</p>}
+          {!descriptionExcerpt && (
+            <p>
+              এই স্থানের বিস্তারিত তথ্য এখনো যোগ করা হয়নি।
+            </p>
+          )}
         </div>
       </section>
 
@@ -311,7 +320,8 @@ export default function TourismShowClient({ tourism }: Props) {
             <ChevronDown className="w-4 h-4 group-open:rotate-180 transition shrink-0" />
           </summary>
           <div className="px-4 pb-4 text-sm leading-relaxed border-t border-zinc-400/20 pt-3 opacity-90">
-            উপরের “বিস্তারিত বিবরণ” সেকশনে এই স্থানের পূর্ণাঙ্গ তথ্য লেখা আছে।
+            {descriptionExcerpt ||
+              "এই স্থানের বিস্তারিত তথ্য এখনো যোগ করা হয়নি।"}
           </div>
         </details>
 
