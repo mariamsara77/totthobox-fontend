@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import IntroductionShowClient from "./IntroductionShowClient";
 
@@ -6,15 +6,35 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
-async function getIntro(slug: string) {
+type IntroMeta = {
+  title: string;
+  slug: string;
+  description?: string;
+  intro_category?: string;
+  image_url?: string;
+};
+
+async function getIntro(slug: string): Promise<IntroMeta | null> {
   const base =
     process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
-  const res = await fetch(`${base}/api/intro-bd/${slug}`, {
-    next: { revalidate: 3600 },
-  });
+
+  const res = await fetch(
+    `${base}/api/intro-bd/${encodeURIComponent(slug)}`,
+    { next: { revalidate: 3600 } },
+  );
+
   if (!res.ok) return null;
+
   const json = await res.json();
-  return json.data;
+  return json?.data ?? null;
+}
+
+function getPlainText(value?: string): string {
+  return (value || "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -28,34 +48,38 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  const cleanDesc = (
-    intro.description || `${intro.title} সম্পর্কে বিস্তারিত তথ্য ও পরিচিতি।`
-  )
-    .replace(/<[^>]+>/g, "")
-    .slice(0, 160);
-
+  const cleanDescription = getPlainText(intro.description);
   const title = `${intro.title} | বাংলাদেশের পরিচিতি | তথ্যবক্স`;
+  const description = cleanDescription
+    ? cleanDescription.length > 160
+      ? `${cleanDescription.slice(0, 157).trimEnd()}...`
+      : cleanDescription
+    : `${intro.title} সম্পর্কে বাংলাদেশের পরিচিতির তথ্য।`;
+  const canonical = `https://totthobox.com/bangladesh/introduction/${encodeURIComponent(intro.slug)}`;
 
   return {
     title,
-    description: cleanDesc,
-    keywords: `${intro.title}, বাংলাদেশের পরিচিতি, ${intro.intro_category || ""}, বাংলাদেশ তথ্য, তথ্যবক্স`,
+    description,
+    robots: {
+      index: cleanDescription.length > 0,
+      follow: true,
+    },
     openGraph: {
       title,
-      description: cleanDesc,
+      description,
       images: intro.image_url ? [{ url: intro.image_url }] : [],
       type: "article",
       locale: "bn_BD",
       siteName: "Totthobox",
-      url: `https://totthobox.com/bangladesh/introduction/${intro.slug}`,
+      url: canonical,
     },
     twitter: {
       card: "summary_large_image",
       title,
-      description: cleanDesc,
+      description,
     },
     alternates: {
-      canonical: `https://totthobox.com/bangladesh/introduction/${intro.slug}`,
+      canonical,
     },
   };
 }
