@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import HistoryShowClient from "./HistoryShowClient";
 
@@ -28,12 +28,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  const title = `${item.title} | বাংলাদেশের ঐতিহাসিক স্থান | তথ্যবক্স`;
-  const description = (
-    item.description || `${item.title} সম্পর্কে বিস্তারিত ইতিহাস।`
-  )
+  const cleanDescription = (item.description || "")
     .replace(/<[^>]+>/g, "")
-    .slice(0, 160);
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const title = `${item.title} | বাংলাদেশের ঐতিহাসিক স্থান | তথ্যবক্স`;
+  const description = cleanDescription
+    ? cleanDescription.length > 160
+      ? `${cleanDescription.slice(0, 157).trimEnd()}...`
+      : cleanDescription
+    : `${item.title} সম্পর্কে বাংলাদেশের ইতিহাস ও ঐতিহ্যের তথ্য।`;
 
   return {
     title,
@@ -46,7 +51,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: "article",
       locale: "bn_BD",
       siteName: "Totthobox",
-      url: `https://totthobox.com/bangladesh/history/${item.slug}`,
+      url: `https://totthobox.com/bangladesh/history/${encodeURIComponent(item.slug)}`,
     },
     twitter: {
       card: "summary_large_image",
@@ -54,7 +59,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
     },
     alternates: {
-      canonical: `https://totthobox.com/bangladesh/history/${item.slug}`,
+      canonical: `https://totthobox.com/bangladesh/history/${encodeURIComponent(item.slug)}`,
+    },
+    robots: {
+      index: Boolean(cleanDescription),
+      follow: true,
     },
   };
 }
