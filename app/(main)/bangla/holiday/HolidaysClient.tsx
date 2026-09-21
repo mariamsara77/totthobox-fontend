@@ -29,7 +29,7 @@ type Holiday = {
 /* ───────────────── Skeleton ───────────────── */
 function HolidaySkeleton() {
   return (
-    <div className="rounded-2xl border border-zinc-400/25 bg-zinc-800/80 p-4 animate-pulse">
+    <div className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 animate-pulse">
       <div className="flex gap-4 items-start">
         <div className="w-14 h-14 rounded-xl bg-zinc-400/10 shrink-0" />
         <div className="flex-1 space-y-2.5">
@@ -294,7 +294,6 @@ export default function HolidaysClient() {
         )}
       </section>
 
-      {/* Load More */}
       <InfiniteScrollTrigger
         hasMore={hasMore}
         isLoading={isValidating}
