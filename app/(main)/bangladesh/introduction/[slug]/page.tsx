@@ -7,6 +7,7 @@ type Props = {
 };
 
 type IntroMeta = {
+  id: number;
   title: string;
   slug: string;
   description?: string;
