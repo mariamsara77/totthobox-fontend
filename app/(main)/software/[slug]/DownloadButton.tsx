@@ -41,17 +41,24 @@ export default function DownloadButton({
       const data = await response.json();
 
       if (!response.ok || !data?.download_url) {
-        throw new Error(data?.message || "অফিসিয়াল সোর্স পাওয়া যায়নি।");
+        throw new Error(
+          data?.message ||
+            (downloadType === "external"
+              ? "অফিসিয়াল সোর্স পাওয়া যায়নি।"
+              : "ডাউনলোড সোর্স পাওয়া যায়নি।"),
+        );
       }
 
-      // নতুন ট্যাবে অফিসিয়াল সাইট ওপেন
+      // নতুন ট্যাবে সোর্স ওপেন
       window.open(data.download_url, "_blank", "noopener,noreferrer");
     } catch (error) {
       console.error("Software source error:", error);
       alert(
         error instanceof Error
           ? error.message
-          : "অফিসিয়াল সোর্স পাওয়া যায়নি। পরে আবার চেষ্টা করুন।",
+          : downloadType === "external"
+            ? "অফিসিয়াল সোর্স পাওয়া যায়নি। পরে আবার চেষ্টা করুন।"
+            : "ডাউনলোড সোর্স পাওয়া যায়নি। পরে আবার চেষ্টা করুন.",
       );
     } finally {
       setLoading(false);
