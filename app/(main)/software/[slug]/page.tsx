@@ -174,23 +174,14 @@ export default async function AppShowPage({
     ],
   };
 
-  const softwareSchema = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    name: app.name,
-    url: `https://totthobox.com/software/${encodeURIComponent(app.slug)}`,
-    description: description || undefined,
-    softwareVersion: app.version || undefined,
-    operatingSystem: app.platform || undefined,
-    image: app.icon_url || undefined,
-  };
+
 
   return (
     <main className="max-w-2xl mx-auto space-y-5 p-4 sm:p-6">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify([breadcrumbSchema, softwareSchema]),
+          __html: JSON.stringify(breadcrumbSchema),
         }}
       />
       {/* Breadcrumb */}
