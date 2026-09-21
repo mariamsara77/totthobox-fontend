@@ -377,14 +377,9 @@ export default function HistoryShowClient({ history }: Props) {
           )}
           {descriptionText && (
             <p>
-              {descriptionText.slice(0, 320)}
-              {descriptionText.length > 320 ? "..." : ""}
+              {getExcerpt(descriptionText, 320)}
             </p>
           )}
-          <p>
-            এই পেজে স্থানটির সময়কাল, ঐতিহাসিক বিবরণ, ছবি এবং সংশ্লিষ্ট তথ্য
-            একসঙ্গে পাওয়া যায়।
-          </p>
         </div>
       </section>
 
@@ -398,9 +393,7 @@ export default function HistoryShowClient({ history }: Props) {
             <ChevronDown className="w-4 h-4 group-open:rotate-180 transition shrink-0" />
           </summary>
           <div className="px-4 pb-4 text-sm leading-relaxed border-t border-zinc-400/20 pt-3 opacity-90">
-            {descriptionText
-              ? descriptionText.slice(0, 280) + (descriptionText.length > 280 ? "..." : "")
-              : "এই স্থানের বিস্তারিত তথ্য এখনো যোগ করা হয়নি।"}
+            {descriptionText ? getExcerpt(descriptionText, 280) : "এই স্থানের বিস্তারিত তথ্য এখনো যোগ করা হয়নি।"}
           </div>
         </details>
 
