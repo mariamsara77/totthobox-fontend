@@ -45,19 +45,20 @@ export async function generateMetadata({
     .replace(/<[^>]+>/g, " ")
     .replace(/\s+/g, " ")
     .trim();
+  const isThinContent = cleanDescription.length < 120;
   const title = `${item.title} | ইসলামের মৌলিক জ্ঞান | তথ্যবক্স`;
   const description = cleanDescription
     ? cleanDescription.length > 160
       ? `${cleanDescription.slice(0, 157).trimEnd()}...`
       : cleanDescription
-    : `${item.title} সম্পর্কে ইসলামের মৌলিক জ্ঞানের তথ্য।`;
+    : undefined;
   const canonical = `https://totthobox.com/islam/basic/${encodeURIComponent(item.slug || slug)}`;
 
   return {
     title,
     description,
     robots: {
-      index: cleanDescription.length > 0,
+      index: !isThinContent,
       follow: true,
     },
     openGraph: {
