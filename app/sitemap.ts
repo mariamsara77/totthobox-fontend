@@ -56,7 +56,24 @@ const publicRoutes = [
   "/contact/police",
 ];
 
-async function fetchSlugs(endpoint: string): Promise<string[]> {
+function hasSoftwareContent(item: unknown): boolean {
+  if (!item || typeof item !== "object") return false;
+
+  const description =
+    "description" in item && typeof item.description === "string"
+      ? item.description
+      : "";
+
+  return description
+    .replace(/<[^>]*>/g, "")
+    .replace(/\s+/g, "")
+    .trim().length > 0;
+}
+
+async function fetchSlugs(
+  endpoint: string,
+  includeItem?: (item: unknown) => boolean,
+): Promise<string[]> {
   const slugs: string[] = [];
   const seen = new Set<string>();
   const perPage = 50;
@@ -83,7 +100,12 @@ async function fetchSlugs(endpoint: string): Promise<string[]> {
               : [];
 
       for (const item of source) {
-        if (item && typeof item.slug === "string" && item.slug) {
+        if (
+          item &&
+          typeof item.slug === "string" &&
+          item.slug &&
+          (!includeItem || includeItem(item))
+        ) {
           if (!seen.has(item.slug)) {
             seen.add(item.slug);
             slugs.push(item.slug);
@@ -128,7 +150,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     fetchSlugs("/api/islam/basic"),
     fetchSlugs("/api/islam/dowa"),
     fetchSlugs("/api/people"),
-    fetchSlugs("/api/apps"),
+    fetchSlugs("/api/apps", hasSoftwareContent),
   ]);
 
   const dynamicEntries: MetadataRoute.Sitemap = [
