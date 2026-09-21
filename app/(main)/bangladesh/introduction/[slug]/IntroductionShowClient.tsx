@@ -49,6 +49,13 @@ type Props = {
   intro: Intro;
 };
 
+function getExcerpt(value: string, maxLength: number): string {
+  if (value.length <= maxLength) return value;
+  const candidate = value.slice(0, maxLength);
+  const lastSpace = candidate.lastIndexOf(" ");
+  const excerpt = lastSpace > Math.floor(maxLength * 0.7) ? candidate.slice(0, lastSpace) : candidate;
+  return `${excerpt.trimEnd()}...`;
+}
 export default function IntroductionShowClient({ intro }: Props) {
   const [showCreators, setShowCreators] = useState(false);
   const creatorsRef = useRef<HTMLDivElement>(null);
@@ -83,7 +90,7 @@ export default function IntroductionShowClient({ intro }: Props) {
 
   const descriptionExcerpt =
     plainDescription.length > 320
-      ? `${plainDescription.slice(0, 317).trimEnd()}...`
+      ? getExcerpt(plainDescription, 320)
       : plainDescription;
 
   const breadcrumbSchema = {
@@ -310,15 +317,11 @@ export default function IntroductionShowClient({ intro }: Props) {
       <section className="rounded-2xl bg-zinc-400/10 p-5 space-y-3">
         <h2 className="text-lg font-bold">{intro.title} সম্পর্কে</h2>
         <div className="text-sm leading-relaxed space-y-2 opacity-90">
-          <p>
-            <strong>{intro.title}</strong> হলো বাংলাদেশের পরিচিতির একটি বিষয়।
-            {intro.intro_category && (
-              <>
-                {" "}
-                এটি <strong>{intro.intro_category}</strong> ক্যাটাগরির অন্তর্গত।
-              </>
-            )}
-          </p>
+          {intro.intro_category && (
+            <p>
+              <strong>{intro.title}</strong> ক্যাটাগরি: {intro.intro_category}.
+            </p>
+          )}
           {descriptionExcerpt && <p>{descriptionExcerpt}</p>}
           {!descriptionExcerpt && (
             <p>এই তথ্যের বিস্তারিত বিবরণ এখনো যোগ করা হয়নি।</p>
