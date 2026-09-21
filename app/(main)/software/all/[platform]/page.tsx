@@ -18,6 +18,10 @@ function isAllowedPlatform(value: string): boolean {
   return ALLOWED_PLATFORMS.includes(value as (typeof ALLOWED_PLATFORMS)[number]);
 }
 
+export function generateStaticParams() {
+  return ALLOWED_PLATFORMS.map((platform) => ({ platform }));
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { platform } = await params;
   const platformName = formatPlatformName(platform);
