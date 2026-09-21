@@ -36,14 +36,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${category} | ট্রাফিক সাইন ও চিহ্ন | তথ্যবক্স`,
     description: `${category} ক্যাটাগরির সকল ট্রাফিক সাইন ও চিহ্নের ছবি, নাম এবং অর্থসহ বিস্তারিত বিবরণ পড়ুন।`,
-    keywords: [
-      category,
-      "ট্রাফিক সাইন",
-      "ট্রাফিক চিহ্ন",
-      "রোড সাইন",
-      "ট্রাফিক রুলস",
-      "তথ্যবক্স",
-    ],
     alternates: {
       canonical: `https://totthobox.com/signs/${category}`,
     },
