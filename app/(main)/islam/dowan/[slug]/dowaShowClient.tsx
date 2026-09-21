@@ -41,6 +41,36 @@ export default function DowaShowClient({ initialData, slug }: Props) {
     }
   };
 
+  const plainMeaning = (item.bangla_meaning || "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const plainFojilot = (item.bangla_fojilot || "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const contentExcerpt = (plainMeaning || plainFojilot || item.bangla_text || "")
+    .replace(/\s+/g, " ")
+    .trim();
+  const descriptionExcerpt =
+    contentExcerpt.length > 320
+      ? `${contentExcerpt.slice(0, 317).trimEnd()}...`
+      : contentExcerpt;
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "হোম", item: "https://totthobox.com/" },
+      { "@type": "ListItem", position: 2, name: "দোয়া সংগ্রহ", item: "https://totthobox.com/islam/dowan" },
+      { "@type": "ListItem", position: 3, name: item.bangla_name, item: `https://totthobox.com/islam/dowan/${encodeURIComponent(slug)}` },
+    ],
+  };
+
   // MediaGallery support
   const media =
     item.media && item.media.length > 0
@@ -66,6 +96,11 @@ export default function DowaShowClient({ initialData, slug }: Props) {
         <span>/</span>
         <span className="truncate opacity-70">{item.bangla_name}</span>
       </nav>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
 
       {/* Badges */}
       <div className="flex flex-wrap items-center gap-2">
@@ -210,10 +245,13 @@ export default function DowaShowClient({ initialData, slug }: Props) {
                 (<span className="font-serif">{item.arabic_name}</span>)
               </>
             )}{" "}
-            একটি গুরুত্বপূর্ণ ইসলামিক দোয়া/আমল।
+            দোয়া ও আমলের তথ্য।
           </p>
+          {descriptionExcerpt && <p>{descriptionExcerpt}</p>}
+          {!descriptionExcerpt && (
+            <p>এই দোয়ার বিস্তারিত অর্থ ও ফজিলতের তথ্য এখনো যোগ করা হয়নি।</p>
+          )}
           <p>
-            উপরের আরবি পাঠ, উচ্চারণ, অর্থ ও ফজিলত অনুসরণ করে নিয়মিত পাঠ করুন।
             আরও দোয়া দেখতে{" "}
             <Link href="/islam/dowan" className="underline">
               দোয়া সংগ্রহ
