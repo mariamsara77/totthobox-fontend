@@ -48,6 +48,10 @@ const publicRoutes = [
   "/tools/writing-practice",
   "/tools/zodiac-calculator",
   "/software/all",
+  "/software/all/Windows",
+  "/software/all/Android",
+  "/software/all/Mac",
+  "/software/all/Fonts",
   "/signs/all",
   "/contact/police",
 ];
