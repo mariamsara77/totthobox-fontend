@@ -13,8 +13,8 @@ type PersonMeta = {
   bio?: string;
   image_url?: string;
   categories?: { id: number; name: string }[];
-  current_role?: { title?: string; from_year?: string | null } | null;
-  histories?: { title?: string; from_year?: string | null; to_year?: string | null }[];
+  current_role?: { title: string; from_year?: string | null } | null;
+  histories?: { title: string; from_year?: string | null; to_year?: string | null }[];
 };
 
 async function getPerson(slug: string): Promise<PersonMeta | null> {
