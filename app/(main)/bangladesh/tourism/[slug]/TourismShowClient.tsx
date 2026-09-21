@@ -177,7 +177,7 @@ export default function TourismShowClient({ tourism }: Props) {
           <button
             type="button"
             onClick={() => setShowCreators(!showCreators)}
-            className="p-2 rounded-lg hover:bg-zinc-400/25 transition"
+            className="p-2 rounded-xl hover:bg-zinc-400/25 transition"
             aria-label="তথ্য প্রদানকারীগণ"
           >
             <FaUserPen className="w-5 h-5" />
