@@ -92,6 +92,55 @@ export default function PersonShowClient({ person }: Props) {
   );
   const creators: Creator[] = creatorsData?.data || [];
 
+  const plainBio = (person.bio || "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const bioExcerpt =
+    plainBio.length > 320
+      ? `${plainBio.slice(0, 317).trimEnd()}...`
+      : plainBio;
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "হোম",
+        item: "https://totthobox.com/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "প্রোফাইল আর্কাইভ",
+        item: "https://totthobox.com/bangladesh/public-figure",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: person.name,
+        item: `https://totthobox.com/bangladesh/public-figure/${encodeURIComponent(person.slug)}`,
+      },
+    ],
+  };
+
+  const personSchema = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: person.name,
+    ...(plainBio ? { description: plainBio } : {}),
+    ...(person.image_url ? { image: person.image_url } : {}),
+    ...(person.date_of_birth ? { birthDate: person.date_of_birth } : {}),
+    ...(person.date_of_death ? { deathDate: person.date_of_death } : {}),
+    ...(person.current_role?.title
+      ? { jobTitle: person.current_role.title }
+      : {}),
+  };
+
   const reactions = {
     like_count: person.reactions?.like_count ?? 0,
     dislike_count: person.reactions?.dislike_count ?? 0,
@@ -331,15 +380,41 @@ export default function PersonShowClient({ person }: Props) {
         প্রোফাইল আর্কাইভে ফিরে যান
       </Link>
 
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([breadcrumbSchema, personSchema]),
+        }}
+      />
+
       {/* About */}
       <section className="rounded-2xl bg-zinc-400/10 p-5 space-y-3">
         <h2 className="text-lg font-bold">{person.name} সম্পর্কে</h2>
         <div className="text-sm leading-relaxed space-y-2 opacity-90">
           <p>
-            <strong>{person.name}</strong> হলো বাংলাদেশের একজন বিশিষ্ট
-            ব্যক্তিত্ব। উপরের জীবনবৃত্তান্ত ও কর্মজীবনের ইতিহাস অনুসরণ করে
-            বিস্তারিত জানুন।
+            <strong>{person.name}</strong>
+            {person.current_role?.title && (
+              <>
+                {" "}
+                বর্তমানে <strong>{person.current_role.title}</strong> পদে
+                কর্মরত।
+              </>
+            )}
+            {person.categories && person.categories.length > 0 && (
+              <>
+                {" "}
+                প্রোফাইলটি {person.categories.map((c) => c.name).join(", ")}{" "}
+                শ্রেণির তথ্যের সঙ্গে সম্পর্কিত।
+              </>
+            )}
           </p>
+          {bioExcerpt && <p>{bioExcerpt}</p>}
+          {!bioExcerpt && person.histories && person.histories.length > 0 && (
+            <p>
+              এই প্রোফাইলে {person.histories.length}টি কর্মজীবনের তথ্য নথিভুক্ত
+              রয়েছে।
+            </p>
+          )}
         </div>
       </section>
 
@@ -353,7 +428,8 @@ export default function PersonShowClient({ person }: Props) {
             <ChevronDown className="w-4 h-4 group-open:rotate-180 transition shrink-0" />
           </summary>
           <div className="px-4 pb-4 text-sm leading-relaxed border-t border-zinc-400/20 pt-3 opacity-90">
-            উপরের “জীবন বৃত্তান্ত” সেকশনে এই ব্যক্তির পূর্ণাঙ্গ তথ্য লেখা আছে।
+            {bioExcerpt ||
+              "এই প্রোফাইলে জীবনবৃত্তান্তের বিস্তারিত তথ্য এখনো যোগ করা হয়নি।"}
           </div>
         </details>
 
