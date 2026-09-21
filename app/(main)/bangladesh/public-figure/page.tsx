@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import PeopleClient from "./PeopleClient";
 
 export const metadata: Metadata = {
