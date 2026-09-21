@@ -130,61 +130,51 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const dynamicEntries: MetadataRoute.Sitemap = [
     ...countries.map((country) => ({
       url: `${SITE_URL}/international/country/${encodeURIComponent(country.slug)}`,
-      lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
     ...holidays.map((slug) => ({
       url: `${SITE_URL}/bangla/holiday/${encodeURIComponent(slug)}`,
-      lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
     ...introductions.map((slug) => ({
       url: `${SITE_URL}/bangladesh/introduction/${encodeURIComponent(slug)}`,
-      lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
     ...histories.map((slug) => ({
       url: `${SITE_URL}/bangladesh/history/${encodeURIComponent(slug)}`,
-      lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
     ...tourism.map((slug) => ({
       url: `${SITE_URL}/bangladesh/tourism/${encodeURIComponent(slug)}`,
-      lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
     ...establishments.map((slug) => ({
       url: `${SITE_URL}/bangladesh/establishment/${encodeURIComponent(slug)}`,
-      lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.5,
     })),
     ...islamBasic.map((slug) => ({
       url: `${SITE_URL}/islam/basic/${encodeURIComponent(slug)}`,
-      lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
     ...islamDowa.map((slug) => ({
       url: `${SITE_URL}/islam/dowan/${encodeURIComponent(slug)}`,
-      lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
     ...people.map((slug) => ({
       url: `${SITE_URL}/bangladesh/public-figure/${encodeURIComponent(slug)}`,
-      lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.5,
     })),
     ...apps.map((slug) => ({
       url: `${SITE_URL}/software/${encodeURIComponent(slug)}`,
-      lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.5,
     })),
