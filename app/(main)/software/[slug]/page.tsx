@@ -174,8 +174,6 @@ export default async function AppShowPage({
     ],
   };
 
-
-
   return (
     <main className="max-w-2xl mx-auto space-y-5 p-4 sm:p-6">
       <script
