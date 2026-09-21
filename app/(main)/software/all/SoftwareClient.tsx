@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import useSWRInfinite from "swr/infinite";
 import { Puzzle, Search, X, ArrowRight, ChevronDown } from "lucide-react";
@@ -266,11 +267,13 @@ export default function SoftwareClient({ platform = "" }: Props) {
                     <div className="flex items-start gap-4">
                       <div className="shrink-0">
                         {app.icon_url ? (
-                          <img
+                          <Image
                             src={app.icon_url}
                             alt={`${app.name} icon`}
-                            loading="lazy"
+                            width={64}
+                            height={64}
                             className="w-16 h-16 rounded-xl object-cover border border-zinc-400/25"
+                            sizes="64px"
                           />
                         ) : (
                           <div className="w-16 h-16 rounded-xl bg-zinc-400/10 flex items-center justify-center">
