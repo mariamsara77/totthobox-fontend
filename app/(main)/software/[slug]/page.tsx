@@ -28,7 +28,7 @@ async function getAppData(slug: string) {
 
     const json = await res.json();
 
-    if (!json?.data) {
+    if (!json?.data?.name || !json?.data?.slug) {
       return null;
     }
 
@@ -97,7 +97,7 @@ export async function generateMetadata({
       title,
       description,
       url: canonical,
-      type: "article",
+      type: "website",
       locale: "bn_BD",
       siteName: "তথ্যবক্স",
       images: app.icon_url
@@ -113,6 +113,10 @@ export async function generateMetadata({
       card: "summary_large_image",
       title,
       description,
+    },
+    robots: {
+      index: true,
+      follow: true,
     },
   };
 }
@@ -132,8 +136,50 @@ export default async function AppShowPage({
   const { app, creators } = data;
   const description = stripHtml(app.description);
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "হোম",
+        item: "https://totthobox.com/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Software & Apps",
+        item: "https://totthobox.com/software/all",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: app.name,
+        item: `https://totthobox.com/software/${encodeURIComponent(app.slug)}`,
+      },
+    ],
+  };
+
+  const softwareSchema = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: app.name,
+    url: `https://totthobox.com/software/${encodeURIComponent(app.slug)}`,
+    description: description || undefined,
+    softwareVersion: app.version || undefined,
+    operatingSystem: app.platform || undefined,
+    image: app.icon_url || undefined,
+  };
+
   return (
     <main className="max-w-2xl mx-auto space-y-5 p-4 sm:p-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([breadcrumbSchema, softwareSchema]),
+        }}
+      />
       {/* Breadcrumb */}
       <nav
         aria-label="Breadcrumb"
