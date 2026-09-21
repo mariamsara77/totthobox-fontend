@@ -34,12 +34,34 @@ async function getAppData(slug: string) {
 
     return {
       app: json.data,
-      creators: json.creators || [],
       seo: json.seo || {},
     };
   } catch (error) {
     console.error("Error fetching app:", error);
     return null;
+  }
+}
+
+async function getAppCreators(appId: number) {
+  try {
+    const res = await fetch(
+      `${API_BASE_URL}/api/apps/${appId}/creators`,
+      {
+        next: {
+          revalidate: 3600,
+        },
+      },
+    );
+
+    if (!res.ok) {
+      return [];
+    }
+
+    const json = await res.json();
+    return Array.isArray(json?.data) ? json.data : [];
+  } catch (error) {
+    console.error("Error fetching app creators:", error);
+    return [];
   }
 }
 
@@ -146,7 +168,8 @@ export default async function AppShowPage({
     notFound();
   }
 
-  const { app, creators } = data;
+  const { app } = data;
+  const creators = await getAppCreators(app.id);
   const description = stripHtml(app.description);
 
   const breadcrumbSchema = {
