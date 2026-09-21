@@ -17,6 +17,13 @@ interface Props {
   slug: string;
 }
 
+function getExcerpt(value: string, maxLength: number): string {
+  if (value.length <= maxLength) return value;
+  const candidate = value.slice(0, maxLength);
+  const lastSpace = candidate.lastIndexOf(" ");
+  const excerpt = lastSpace > Math.floor(maxLength * 0.7) ? candidate.slice(0, lastSpace) : candidate;
+  return `${excerpt.trimEnd()}...`;
+}
 export default function BasicIslamShowClient({ initialData, slug }: Props) {
   const { item, creators = [], views } = initialData;
   const [showCreators, setShowCreators] = useState(false);
@@ -45,7 +52,7 @@ export default function BasicIslamShowClient({ initialData, slug }: Props) {
 
   const descriptionExcerpt =
     plainDescription.length > 320
-      ? `${plainDescription.slice(0, 317).trimEnd()}...`
+      ? getExcerpt(plainDescription, 320)
       : plainDescription;
 
   const breadcrumbSchema = {
