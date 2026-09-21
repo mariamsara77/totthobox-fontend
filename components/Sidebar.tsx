@@ -101,7 +101,7 @@ function SidebarItem({
   );
 
   const className = cn(
-    "group flex w-full items-center gap-4 rounded-lg p-2 text-sm",
+    "group flex w-full items-center gap-4 rounded-xl p-2 text-sm",
     isActive ? "bg-zinc-400/25" : "hover:bg-zinc-400/25",
     collapsed && "justify-center px-2",
   );
@@ -299,7 +299,7 @@ export default function Sidebar() {
               <button
                 type="button"
                 onClick={toggleCollapsed}
-                className="hidden rounded-lg p-2 md:flex hover:bg-zinc-400/25"
+                className="hidden rounded-xl p-2 md:flex hover:bg-zinc-400/25"
                 title="Collapse sidebar"
                 aria-label="সাইডবার সংকুচিত করুন"
               >
@@ -312,7 +312,7 @@ export default function Sidebar() {
             <button
               type="button"
               aria-label="সাইডবার প্রসারিত করুন"
-              className="group relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg  hover:bg-zinc-400/25"
+              className="group relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl hover:bg-zinc-400/25"
               onMouseEnter={(e) => handleMouseEnter(e, "Expand Sidebar")}
               onMouseLeave={handleMouseLeave}
               onClick={toggleCollapsed}
@@ -330,7 +330,7 @@ export default function Sidebar() {
             type="button"
             onClick={() => setIsOpen(false)}
             aria-label="সাইডবার বন্ধ করুন"
-            className="rounded-lg p-2 text-zinc-400 hover:bg-zinc-400/25 md:hidden"
+            className="rounded-xl p-2 text-zinc-400 hover:bg-zinc-400/25 md:hidden"
           >
             <X className="size-4" />
           </button>
