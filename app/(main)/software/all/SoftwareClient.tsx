@@ -36,7 +36,7 @@ type Props = {
 
 function AppSkeleton() {
   return (
-    <div className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 animate-pulse">
+    <div className="rounded-2xl bg-zinc-400/10 p-4 animate-pulse">
       <div className="flex items-start gap-4">
         <div className="w-16 h-16 rounded-xl bg-zinc-400/10 shrink-0" />
 
@@ -240,7 +240,7 @@ export default function SoftwareClient({ platform = "" }: Props) {
 
       {/* Error */}
       {error && (
-        <div className="rounded-2xl bg-zinc-400/10 p-5 text-center">
+        <div className="rounded-2xl bg-zinc-400/10 p-4 text-center">
           <p className="text-sm">সফটওয়্যার তথ্য লোড করা সম্ভব হয়নি।</p>
 
           <button
