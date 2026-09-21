@@ -67,6 +67,13 @@ type Props = {
   person: Person;
 };
 
+function getExcerpt(value: string, maxLength: number): string {
+  if (value.length <= maxLength) return value;
+  const candidate = value.slice(0, maxLength);
+  const lastSpace = candidate.lastIndexOf(" ");
+  const excerpt = lastSpace > Math.floor(maxLength * 0.7) ? candidate.slice(0, lastSpace) : candidate;
+  return `${excerpt.trimEnd()}...`;
+}
 export default function PersonShowClient({ person }: Props) {
   const [showCreators, setShowCreators] = useState(false);
   const creatorsRef = useRef<HTMLDivElement>(null);
@@ -100,7 +107,7 @@ export default function PersonShowClient({ person }: Props) {
 
   const bioExcerpt =
     plainBio.length > 320
-      ? `${plainBio.slice(0, 317).trimEnd()}...`
+      ? getExcerpt(plainBio, 320)
       : plainBio;
 
   const breadcrumbSchema = {
