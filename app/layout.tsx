@@ -3,7 +3,6 @@ import { Geist, Geist_Mono, Noto_Sans_Bengali } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { AppProviders } from "./providers";
-import SettingsModalWrapper from "@/components/SettingsModalWrapper";
 import TagManager from "@/components/partials/TagManager";
 import GoogleTranslate from "@/components/GoogleTranslate";
 import VisitorTracker from "@/components/VisitorTracker";
@@ -120,7 +119,6 @@ export default function RootLayout({
         <AppProviders>
           {children}
           <VisitorTracker />
-          <SettingsModalWrapper />
         </AppProviders>
         <InstallPWA />
         <GoogleTranslate />
