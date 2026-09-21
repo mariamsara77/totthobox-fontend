@@ -94,25 +94,43 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const [
     countries,
+    holidays,
+    introductions,
     histories,
     tourism,
     establishments,
     islamBasic,
     islamDowa,
+    people,
     apps,
   ] = await Promise.all([
     getAllCountries(),
+    fetchSlugs("/api/holidays"),
+    fetchSlugs("/api/intro-bd"),
     fetchSlugs("/api/history-bd"),
     fetchSlugs("/api/tourism-bd"),
     fetchSlugs("/api/establishment-bd"),
     fetchSlugs("/api/islam/basic"),
     fetchSlugs("/api/islam/dowa"),
+    fetchSlugs("/api/people"),
     fetchSlugs("/api/apps"),
   ]);
 
   const dynamicEntries: MetadataRoute.Sitemap = [
     ...countries.map((country) => ({
       url: `${SITE_URL}/international/country/${encodeURIComponent(country.slug)}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...holidays.map((slug) => ({
+      url: `${SITE_URL}/bangla/holiday/${encodeURIComponent(slug)}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...introductions.map((slug) => ({
+      url: `${SITE_URL}/bangladesh/introduction/${encodeURIComponent(slug)}`,
       lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.6,
@@ -146,6 +164,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.6,
+    })),
+    ...people.map((slug) => ({
+      url: `${SITE_URL}/bangladesh/public-figure/${encodeURIComponent(slug)}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
     })),
     ...apps.map((slug) => ({
       url: `${SITE_URL}/software/${encodeURIComponent(slug)}`,
