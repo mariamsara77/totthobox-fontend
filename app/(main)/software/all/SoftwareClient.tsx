@@ -240,7 +240,7 @@ export default function SoftwareClient({ platform = "" }: Props) {
 
       {/* Error */}
       {error && (
-        <div className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-5 text-center">
+        <div className="rounded-2xl bg-zinc-400/10 p-5 text-center">
           <p className="text-sm">সফটওয়্যার তথ্য লোড করা সম্ভব হয়নি।</p>
 
           <button
@@ -265,7 +265,7 @@ export default function SoftwareClient({ platform = "" }: Props) {
               <AppSkeleton />
             </>
           ) : apps.length === 0 ? (
-            <div className="text-center py-16">
+            <div className="text-center py-16 rounded-2xl bg-zinc-400/5">
               <p className="text-lg">কোনো সফটওয়্যার বা অ্যাপ পাওয়া যায়নি</p>
 
               <p className="text-sm opacity-60 mt-1">
@@ -280,7 +280,7 @@ export default function SoftwareClient({ platform = "" }: Props) {
                 <Link
                   key={app.id}
                   href={`/software/${app.slug}`}
-                  className="block rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4"
+                  className="block rounded-2xl bg-zinc-400/10 p-4 transition hover:bg-zinc-400/20"
                 >
                   <article>
                     <div className="flex items-start gap-4">
@@ -303,10 +303,10 @@ export default function SoftwareClient({ platform = "" }: Props) {
 
                       <div className="flex-1 min-w-0 space-y-1.5">
                         <div className="flex flex-wrap items-center gap-2">
-                          <h2 className="text-lg line-clamp-1">{app.name}</h2>
+                          <h2 className="text-base font-semibold line-clamp-1">{app.name}</h2>
 
                           {app.platform && (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs border border-zinc-400/30 opacity-70">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs bg-zinc-400/15 opacity-70">
                               {app.platform}
                             </span>
                           )}
