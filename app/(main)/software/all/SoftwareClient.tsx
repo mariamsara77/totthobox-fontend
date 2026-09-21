@@ -341,19 +341,12 @@ export default function SoftwareClient({ platform = "" }: Props) {
         </section>
       )}
 
-      {/* Load More */}
-      {!error && hasMore && !isLoading && (
-        <div className="flex justify-center py-6">
-          <button
-            type="button"
-            onClick={() => setSize(size + 1)}
-            disabled={isValidating}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-zinc-400/10 text-sm hover:bg-zinc-400/25 disabled:opacity-50"
-          >
-            {isValidating ? "লোড হচ্ছে..." : "আরও সফটওয়্যার দেখুন"}
-          </button>
-        </div>
-      )}
+<InfiniteScrollTrigger
+        hasMore={hasMore && !error && !isLoading}
+        isLoading={isValidating}
+        onLoadMore={() => setSize(size + 1)}
+        label="আরও সফটওয়্যার লোড হচ্ছে..."
+      />
 
       {/* Informational SEO Content */}
       <section className="space-y-4 pt-8 border-t border-zinc-400/25">
