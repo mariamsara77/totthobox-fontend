@@ -108,7 +108,7 @@ export default function InteractiveActions({ historyId, initialData }: Props) {
   };
 
   const handleShare = async () => {
-    const url = `${window.location.origin}/bangladesh/tourism/${initialData.slug}`;
+    const url = `${window.location.origin}/bangladesh/history/${initialData.slug}`;
 
     if (navigator.share) {
       try {
