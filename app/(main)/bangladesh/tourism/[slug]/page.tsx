@@ -59,15 +59,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const cleanDescription = getPlainText(item.description);
+  const isThinContent = cleanDescription.length < 180;
   const title = `${item.title} | বাংলাদেশের পর্যটন কেন্দ্র | তথ্যবক্স`;
-  const description = getMetaDescription(item.title, item.description);
+  const description = cleanDescription
+    ? getMetaDescription(item.title, item.description)
+    : undefined;
   const canonical = `https://totthobox.com/bangladesh/tourism/${encodeURIComponent(item.slug)}`;
 
   return {
     title,
     description,
     robots: {
-      index: cleanDescription.length > 0,
+      index: !isThinContent,
       follow: true,
     },
     openGraph: {
