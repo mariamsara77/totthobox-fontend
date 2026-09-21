@@ -332,13 +332,6 @@ export default function HolidaysClient() {
             তথ্য থেকে উপকৃত হতে পারেন।
           </p>
         </div>
-
-        {/* Hidden SEO keywords for crawlers (optional) */}
-        <p className="sr-only">
-          ছুটির তালিকা {selectedYear}, সরকারি ছুটি বাংলাদেশ, ঐচ্ছিক ছুটি, জাতীয়
-          দিবস, ধর্মীয় ছুটি, বাংলাদেশ ক্যালেন্ডার, পাবলিক হলিডে, Bangladesh
-          public holidays, holiday calendar Bangladesh
-        </p>
       </section>
     </div>
   );
