@@ -53,41 +53,52 @@ const publicRoutes = [
 ];
 
 async function fetchSlugs(endpoint: string): Promise<string[]> {
-  try {
-    const response = await fetch(
-      `${API_BASE}${endpoint}${endpoint.includes("?") ? "&" : "?"}limit=1000`,
-      { next: { revalidate: 3600 } },
-    );
+  const slugs: string[] = [];
+  const seen = new Set<string>();
+  const perPage = 50;
 
-    if (!response.ok) return [];
+  for (let page = 1; page <= 100; page += 1) {
+    try {
+      const separator = endpoint.includes("?") ? "&" : "?";
+      const response = await fetch(
+        `${API_BASE}${endpoint}${separator}per_page=${perPage}&page=${page}`,
+        { next: { revalidate: 3600 } },
+      );
 
-    const json = await response.json();
-    const source = Array.isArray(json)
-      ? json
-      : Array.isArray(json?.data)
-        ? json.data
-        : Array.isArray(json?.items)
-          ? json.items
-          : Array.isArray(json?.data?.data)
-            ? json.data.data
-            : [];
+      if (!response.ok) break;
 
-    return source
-      .map((item: { slug?: unknown }) =>
-        typeof item.slug === "string" ? item.slug : "",
-      )
-      .filter(Boolean);
-  } catch {
-    return [];
+      const json = await response.json();
+      const source = Array.isArray(json)
+        ? json
+        : Array.isArray(json?.data)
+          ? json.data
+          : Array.isArray(json?.items)
+            ? json.items
+            : Array.isArray(json?.data?.data)
+              ? json.data.data
+              : [];
+
+      for (const item of source) {
+        if (item && typeof item.slug === "string" && item.slug) {
+          if (!seen.has(item.slug)) {
+            seen.add(item.slug);
+            slugs.push(item.slug);
+          }
+        }
+      }
+
+      if (!json?.meta?.has_more || source.length === 0) break;
+    } catch {
+      break;
+    }
   }
+
+  return slugs;
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const now = new Date();
-
   const staticEntries = publicRoutes.map((path) => ({
     url: `${SITE_URL}${path}`,
-    lastModified: now,
     changeFrequency: path === "/" ? "daily" as const : "weekly" as const,
     priority: path === "/" ? 1 : 0.7,
   }));
