@@ -41,30 +41,30 @@ export async function generateMetadata({
   }
 
   const item = data.item;
+  const cleanDescription = (item.description_plain || item.description || "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
   const title = `${item.title} | ইসলামের মৌলিক জ্ঞান | তথ্যবক্স`;
-  const description =
-    item.description_plain?.slice(0, 160) ||
-    `${item.title} সম্পর্কে বিস্তারিত জানুন। ইসলামের মৌলিক জ্ঞান।`;
+  const description = cleanDescription
+    ? cleanDescription.length > 160
+      ? `${cleanDescription.slice(0, 157).trimEnd()}...`
+      : cleanDescription
+    : `${item.title} সম্পর্কে ইসলামের মৌলিক জ্ঞানের তথ্য।`;
+  const canonical = `https://totthobox.com/islam/basic/${encodeURIComponent(item.slug || slug)}`;
 
   return {
     title,
     description,
-    keywords: [
-      item.title,
-      "ইসলামিক জ্ঞান",
-      "ইসলামের মৌলিক জ্ঞান",
-      "তথ্যবক্স",
-      "ঈমান",
-      "নামাজ",
-      "যাকাত",
-      "হজ",
-      "রোজা",
-    ],
+    robots: {
+      index: cleanDescription.length > 0,
+      follow: true,
+    },
     openGraph: {
       title,
       description,
       type: "article",
-      url: `https://totthobox.com/islam/basic/${slug}`,
+      url: canonical,
       siteName: "Totthobox",
       images: item.first_media_url ? [{ url: item.first_media_url }] : [],
       locale: "bn_BD",
@@ -75,7 +75,7 @@ export async function generateMetadata({
       description,
     },
     alternates: {
-      canonical: `https://totthobox.com/islam/basic/${slug}`,
+      canonical,
     },
   };
 }
