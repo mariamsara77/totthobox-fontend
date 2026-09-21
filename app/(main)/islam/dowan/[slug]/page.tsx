@@ -40,6 +40,10 @@ export async function generateMetadata({
   }
 
   const item = data.item;
+  const cleanArabic = (item.arabic_text || "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
   const cleanMeaning = (item.bangla_meaning || "")
     .replace(/<[^>]+>/g, " ")
     .replace(/\s+/g, " ")
@@ -52,9 +56,8 @@ export async function generateMetadata({
     .replace(/<[^>]+>/g, " ")
     .replace(/\s+/g, " ")
     .trim();
-  const contentLength = cleanText.length + cleanMeaning.length + cleanFojilot.length;
+  const contentLength = cleanArabic.length + cleanText.length + cleanMeaning.length + cleanFojilot.length;
   const hasUsefulContent =
-    (Boolean(item.arabic_text) && contentLength >= 40) ||
     contentLength >= 120;
   const title = `${item.bangla_name} - আরবি, উচ্চারণ, অর্থ ও আমল | দোয়া সংগ্রহ | তথ্যবক্স`;
   const sourceDescription = cleanMeaning || cleanText || cleanFojilot;
