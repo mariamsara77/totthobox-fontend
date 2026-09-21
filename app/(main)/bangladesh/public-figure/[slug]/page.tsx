@@ -54,11 +54,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const cleanBio = getPlainText(person.bio);
   const role = person.current_role?.title?.trim();
   const historyCount = person.histories?.length ?? 0;
-  const hasUsefulContent =
-    cleanBio.length > 0 ||
-    historyCount > 0 ||
-    (person.categories?.length ?? 0) > 0 ||
-    Boolean(role);
+  const hasUsefulContent = cleanBio.length >= 120 || historyCount > 0;
 
   const title = `${person.name} | প্রোফাইল আর্কাইভ | তথ্যবক্স`;
   const fallbackDescription = role
