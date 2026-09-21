@@ -291,25 +291,11 @@ export default function PeopleClient() {
         )}
       </section>
 
-      {/* Load more */}
-      {hasMore && (
-        <div className="flex justify-center pt-2">
-          <button
-            onClick={() => setSize(size + 1)}
-            disabled={isValidating}
-            className="px-6 py-2.5 rounded-xl bg-zinc-400/10 text-sm font-medium hover:bg-zinc-400/20 transition disabled:opacity-50"
-          >
-            {isValidating ? (
-              <span className="flex items-center gap-2">
-                <Loader2 className="w-4 h-4 animate-spin" />
-                লোড হচ্ছে...
-              </span>
-            ) : (
-              "আরও দেখুন"
-            )}
-          </button>
-        </div>
-      )}
+<InfiniteScrollTrigger
+        hasMore={hasMore}
+        isLoading={isValidating}
+        onLoadMore={() => setSize(size + 1)}
+      />
 
       {/* SEO + AdSense Content Block */}
       <section className="space-y-4 pt-8 border-t border-zinc-400/20">
