@@ -43,7 +43,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
-    keywords: `${item.title}, বাংলাদেশ ইতিহাস, ঐতিহাসিক স্থান${item.era ? `, ${item.era}` : ""}, তথ্যবক্স`,
     openGraph: {
       title,
       description,
