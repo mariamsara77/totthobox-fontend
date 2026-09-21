@@ -75,6 +75,42 @@ export default function IntroductionShowClient({ intro }: Props) {
   );
   const creators: Creator[] = creatorsData?.data || [];
 
+  const plainDescription = (intro.description || "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const descriptionExcerpt =
+    plainDescription.length > 320
+      ? `${plainDescription.slice(0, 317).trimEnd()}...`
+      : plainDescription;
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "হোম",
+        item: "https://totthobox.com/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "বাংলাদেশের পরিচিতি",
+        item: "https://totthobox.com/bangladesh/introduction",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: intro.title,
+        item: `https://totthobox.com/bangladesh/introduction/${encodeURIComponent(intro.slug)}`,
+      },
+    ],
+  };
+
   const reactions = {
     like_count: intro.reactions?.like_count ?? intro.like_count ?? 0,
     dislike_count: intro.reactions?.dislike_count ?? intro.dislike_count ?? 0,
@@ -263,12 +299,19 @@ export default function IntroductionShowClient({ intro }: Props) {
         বাংলাদেশের পরিচিতি তালিকায় ফিরে যান
       </Link>
 
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema),
+        }}
+      />
+
       {/* About Section (AdSense friendly) */}
       <section className="rounded-2xl bg-zinc-400/10 p-5 space-y-3">
         <h2 className="text-lg font-bold">{intro.title} সম্পর্কে</h2>
         <div className="text-sm leading-relaxed space-y-2 opacity-90">
           <p>
-            <strong>{intro.title}</strong> হলো বাংলাদেশের পরিচিতির অংশ।
+            <strong>{intro.title}</strong> হলো বাংলাদেশের পরিচিতির একটি বিষয়।
             {intro.intro_category && (
               <>
                 {" "}
@@ -276,10 +319,10 @@ export default function IntroductionShowClient({ intro }: Props) {
               </>
             )}
           </p>
-          <p>
-            উপরের বিবরণ থেকে বিস্তারিত জানুন। তথ্যবক্স থেকে বাংলাদেশ সম্পর্কিত
-            নির্ভরযোগ্য ও হালনাগাদ তথ্য সহজেই পেয়ে যান।
-          </p>
+          {descriptionExcerpt && <p>{descriptionExcerpt}</p>}
+          {!descriptionExcerpt && (
+            <p>এই তথ্যের বিস্তারিত বিবরণ এখনো যোগ করা হয়নি।</p>
+          )}
         </div>
       </section>
 
@@ -293,8 +336,8 @@ export default function IntroductionShowClient({ intro }: Props) {
             <ChevronDown className="w-4 h-4 group-open:rotate-180 transition shrink-0" />
           </summary>
           <div className="px-4 pb-4 text-sm leading-relaxed border-t border-zinc-400/20 pt-3 opacity-90">
-            উপরের “বিস্তারিত বিবরণ” সেকশনে এই তথ্যের পূর্ণাঙ্গ ব্যাখ্যা লেখা
-            আছে।
+            {descriptionExcerpt ||
+              "এই তথ্যের বিস্তারিত বিবরণ এখনো যোগ করা হয়নি।"}
           </div>
         </details>
 
