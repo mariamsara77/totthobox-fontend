@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import WordCounter from "@/components/tools/WordCounter";
 
 export const metadata: Metadata = {
@@ -6,19 +6,6 @@ export const metadata: Metadata = {
     "ওয়ার্ড অ্যান্ড ক্যারেক্টার কাউন্টার - শব্দ, অক্ষর ও লাইন হিসাব | তথ্যবক্স",
   description:
     "অনলাইনে তাৎক্ষণিকভাবে শব্দ, অক্ষর (স্পেসসহ/ছাড়া), বাক্য, প্যারাগ্রাফ, লাইন এবং পড়ার সময় হিসাব করুন। বাংলা ও ইংরেজি দুই ভাষাতেই নিখুঁত কাজ করে। Uppercase, Lowercase, Title Case টুলসহ।",
-  keywords: [
-    "ওয়ার্ড কাউন্টার",
-    "ক্যারেক্টার কাউন্টার",
-    "word counter bangla",
-    "character counter",
-    "শব্দ গণনা",
-    "অক্ষর গণনা",
-    "অনলাইন ওয়ার্ড কাউন্টার",
-    "uppercase",
-    "lowercase",
-    "title case",
-    "তথ্যবক্স",
-  ],
   alternates: {
     canonical: "https://totthobox.com/tools/word-counter",
   },
