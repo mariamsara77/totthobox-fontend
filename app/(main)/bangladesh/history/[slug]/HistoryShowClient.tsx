@@ -55,6 +55,13 @@ type Props = {
   history: History;
 };
 
+function getPlainText(value?: string): string {
+  return (value || "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 export default function HistoryShowClient({ history }: Props) {
   const [showCreators, setShowCreators] = useState(false);
   const creatorsRef = useRef<HTMLDivElement>(null);
@@ -80,6 +87,31 @@ export default function HistoryShowClient({ history }: Props) {
   );
   const creators: Creator[] = creatorsData?.data || [];
 
+  const descriptionText = getPlainText(history.description);
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "হোম",
+        item: "https://totthobox.com/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "বাংলাদেশের ইতিহাস",
+        item: "https://totthobox.com/bangladesh/history",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: history.title,
+      },
+    ],
+  };
+
   const reactions = {
     like_count: history.reactions?.like_count ?? 0,
     dislike_count: history.reactions?.dislike_count ?? 0,
@@ -100,6 +132,12 @@ export default function HistoryShowClient({ history }: Props) {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6 p-4 sm:p-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema),
+        }}
+      />
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm">
         <Link href="/" className="hover:underline">
@@ -315,9 +353,12 @@ export default function HistoryShowClient({ history }: Props) {
             <strong>{history.title}</strong> হলো বাংলাদেশের একটি ঐতিহাসিক স্থান
             {history.era ? ` (${history.era})` : ""}।
           </p>
+          {descriptionText && (
+            <p>{descriptionText.slice(0, 320)}{descriptionText.length > 320 ? "..." : ""}</p>
+          )}
           <p>
-            উপরের বিবরণ থেকে বিস্তারিত জানুন। তথ্যবক্স থেকে নির্ভরযোগ্য তথ্য
-            সহজেই পেয়ে যান।
+            এই পেজে স্থানটির সময়কাল, ঐতিহাসিক বিবরণ, ছবি এবং সংশ্লিষ্ট তথ্য
+            একসঙ্গে পাওয়া যায়।
           </p>
         </div>
       </section>
@@ -332,7 +373,9 @@ export default function HistoryShowClient({ history }: Props) {
             <ChevronDown className="w-4 h-4 group-open:rotate-180 transition shrink-0" />
           </summary>
           <div className="px-4 pb-4 text-sm leading-relaxed border-t border-zinc-400/20 pt-3 opacity-90">
-            উপরের “বিস্তারিত বিবরণ” সেকশনে এই স্থানের পূর্ণাঙ্গ তথ্য লেখা আছে।
+            {descriptionText
+              ? descriptionText.slice(0, 280) + (descriptionText.length > 280 ? "..." : "")
+              : "এই স্থানের বিস্তারিত তথ্য এখনো যোগ করা হয়নি।"}
           </div>
         </details>
 
