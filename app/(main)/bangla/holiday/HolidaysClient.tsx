@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import useSWRInfinite from "swr/infinite";
 import { Calendar, Search, X, ArrowRight, ChevronDown } from "lucide-react";
+import InfiniteScrollTrigger from "@/components/InfiniteScrollTrigger";
 import { FaCalendarMinus } from "react-icons/fa";
 
 const API_BASE =
@@ -294,18 +295,11 @@ export default function HolidaysClient() {
       </section>
 
       {/* Load More */}
-      {hasMore && (
-        <div className="flex justify-center py-6">
-          <button
-            onClick={() => setSize(size + 1)}
-            disabled={isValidating}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-zinc-400/25 bg-zinc-800/80 text-sm hover:bg-zinc-800  disabled:opacity-50"
-          >
-            {isValidating ? "লোড হচ্ছে..." : "আরও দেখুন"}
-          </button>
-        </div>
-      )}
-
+      <InfiniteScrollTrigger
+        hasMore={hasMore}
+        isLoading={isValidating}
+        onLoadMore={() => setSize(size + 1)}
+      />
       {/* SEO Content */}
       <section className="space-y-4 pt-8 border-t border-zinc-400/25">
         <h2 className="text-lg font-bold  flex items-center gap-2">
