@@ -7,6 +7,7 @@ type Props = {
 };
 
 type TourismMeta = {
+  id: number;
   title: string;
   slug: string;
   description?: string;
