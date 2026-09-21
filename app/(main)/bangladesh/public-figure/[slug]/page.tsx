@@ -7,6 +7,7 @@ type Props = {
 };
 
 type PersonMeta = {
+  id: number;
   name: string;
   slug: string;
   bio?: string;
