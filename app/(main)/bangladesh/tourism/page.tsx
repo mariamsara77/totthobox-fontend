@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import TourismClient from "./TourismClient";
 
 export const metadata: Metadata = {
