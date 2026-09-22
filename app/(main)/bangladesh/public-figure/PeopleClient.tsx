@@ -84,7 +84,11 @@ export default function PeopleClient({ initialData }: { initialData: any }) {
     setSize(1);
   }, [debouncedSearch, category, position, status, fromDate, toDate, setSize]);
 
-  const loadMore = useCallback(() => {\n    void setSize((current) => current + 1);\n  }, [setSize]);\n\n  const hasFilters =
+  const loadMore = useCallback(() => {
+    void setSize((current) => current + 1);
+  }, [setSize]);
+
+  const hasFilters =
     !!(search || category || position || fromDate || toDate) ||
     status !== "all";
 
