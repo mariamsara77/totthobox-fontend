@@ -117,7 +117,11 @@ export default function EstablishmentClient({ initialData }: { initialData: any 
     setSize(1);
   }, [debouncedSearch, type, divisionId, districtId, thanaId, setSize]);
 
-  const loadMore = useCallback(() => {\n    void setSize((current) => current + 1);\n  }, [setSize]);\n\n  const hasFilters = !!(search || type || divisionId || districtId || thanaId);
+  const loadMore = useCallback(() => {
+    void setSize((current) => current + 1);
+  }, [setSize]);
+
+  const hasFilters = !!(search || type || divisionId || districtId || thanaId);
 
   const resetFilters = () => {
     setSearch("");
