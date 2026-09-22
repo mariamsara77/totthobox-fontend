@@ -38,7 +38,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const lastFetchAt = useRef(0);
-  const lastFetchAt = useRef(0);
 
   const applyUser = useCallback((nextUser: User | null) => {
     setUser(nextUser);
