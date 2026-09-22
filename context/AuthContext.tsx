@@ -6,6 +6,7 @@ import {
   useEffect,
   useState,
   useCallback,
+  useRef,
   ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
@@ -37,6 +38,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const lastFetchAt = useRef(0);
+  const lastFetchAt = useRef(0);
 
   const applyUser = useCallback((nextUser: User | null) => {
     setUser(nextUser);
@@ -51,7 +53,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const fetchUser = useCallback(async (force = false) => {\n    const now = Date.now();\n    if (!force && lastFetchAt.current && now - lastFetchAt.current < 60000) return;\n    lastFetchAt.current = now;
+  const fetchUser = useCallback(async (force = false) => {
+    const now = Date.now();
+    if (!force && lastFetchAt.current && now - lastFetchAt.current < 60000) return;
+    lastFetchAt.current = now;
     try {
       const res = await fetch("/api/auth/me", { cache: "no-store" });
       const data = await res.json();
