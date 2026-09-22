@@ -155,9 +155,6 @@ export default function GoogleTranslate() {
       .finally(() => {
         window.clearTimeout(timeout);
       });
-
-        // Country detection is best-effort. Never block or alter the original page.
-      });
   }, []);
 
   const handleLanguageChange = (language: string) => {
