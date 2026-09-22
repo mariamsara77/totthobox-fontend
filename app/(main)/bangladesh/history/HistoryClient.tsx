@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import useSWRInfinite from "swr/infinite";
+import Image from "next/image";
 import {
   Landmark,
   Search,
@@ -31,7 +32,7 @@ type Item = {
   image_url?: string;
 };
 
-export default function HistoryClient() {
+export default function HistoryClient({ initialData }: { initialData: any }) {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [era, setEra] = useState("");
@@ -118,7 +119,7 @@ export default function HistoryClient() {
     setSize(1);
   }, [debouncedSearch, era, divisionId, districtId, thanaId, setSize]);
 
-  const hasFilters = !!(search || era || divisionId || districtId || thanaId);
+  const loadMore = useCallback(() => {\n    void setSize((current) => current + 1);\n  }, [setSize]);\n\n  const hasFilters = !!(search || era || divisionId || districtId || thanaId);
 
   const resetFilters = () => {
     setSearch("");
@@ -267,12 +268,7 @@ export default function HistoryClient() {
               <div className="flex gap-4 items-start">
                 <div className="shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-zinc-400/15">
                   {item.image_url ? (
-                    <img
-                      src={item.image_url}
-                      alt={item.title}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                    />
+                    <Image src={item.image_url} alt={item.title} width={64} height={64} sizes="64px" className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center opacity-40">
                       <Landmark className="w-7 h-7" />
@@ -330,7 +326,7 @@ export default function HistoryClient() {
 <InfiniteScrollTrigger
         hasMore={hasMore}
         isLoading={isValidating}
-        onLoadMore={() => setSize(size + 1)}
+        onLoadMore={loadMore}
       />
 
       {/* SEO + AdSense Content Block */}
