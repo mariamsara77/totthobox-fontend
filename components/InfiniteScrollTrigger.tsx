@@ -16,7 +16,7 @@ export default function InfiniteScrollTrigger({
   label = "আরও তথ্য লোড হচ্ছে...",
 }: InfiniteScrollTriggerProps) {
   const triggerRef = useRef<HTMLDivElement | null>(null);
-  const loadingRef = useRef(false);
+  const loadingRef = useRef(false);\n  const loadMoreRef = useRef(onLoadMore);\n\n  useEffect(() => {\n    loadMoreRef.current = onLoadMore;\n  }, [onLoadMore]);
 
   useEffect(() => {
     loadingRef.current = isLoading;
@@ -34,7 +34,7 @@ export default function InfiniteScrollTrigger({
           !loadingRef.current
         ) {
           loadingRef.current = true;
-          onLoadMore();
+          loadMoreRef.current();
         }
       },
       { rootMargin: "500px 0px" },
@@ -42,7 +42,7 @@ export default function InfiniteScrollTrigger({
 
     observer.observe(node);
     return () => observer.disconnect();
-  }, [hasMore, onLoadMore]);
+  }, [hasMore]);
 
   if (!hasMore) return null;
 
