@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import EstablishmentClient from "./EstablishmentClient";
 
 
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function EstablishmentPage() {
+export default async function EstablishmentPage() {
   const initialData = await getInitialData();
   return <EstablishmentClient initialData={initialData} />;
 }
