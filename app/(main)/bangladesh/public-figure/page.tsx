@@ -1,6 +1,18 @@
 import type { Metadata } from "next";
 import PeopleClient from "./PeopleClient";
 
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+
+async function getInitialData() {
+  const response = await fetch(
+    `${API_BASE}/api/people?page=1&per_page=10`,
+    { next: { revalidate: 3600, tags: ["people-list"] } },
+  );
+  if (!response.ok) throw new Error("Failed to load initial people data");
+  return response.json();
+}
+
 export const metadata: Metadata = {
   title: "প্রোফাইল আর্কাইভ: বিশিষ্ট ব্যক্তিবর্গের জীবনী ও কর্মজীবন | তথ্যবক্স",
   description:
@@ -28,5 +40,6 @@ export const metadata: Metadata = {
 };
 
 export default function PublicFigurePage() {
-  return <PeopleClient />;
+  const initialData = await getInitialData();
+  return <PeopleClient initialData={initialData} />;
 }
