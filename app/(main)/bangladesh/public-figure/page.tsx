@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function PublicFigurePage() {
+export default async function PublicFigurePage() {
   const initialData = await getInitialData();
   return <PeopleClient initialData={initialData} />;
 }
