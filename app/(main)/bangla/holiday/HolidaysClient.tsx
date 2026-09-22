@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import useSWRInfinite from "swr/infinite";
+import Image from "next/image";
 import { Calendar, Search, X, ArrowRight, ChevronDown } from "lucide-react";
 import InfiniteScrollTrigger from "@/components/InfiniteScrollTrigger";
 import { FaCalendarMinus } from "react-icons/fa";
@@ -45,7 +46,7 @@ function HolidaySkeleton() {
   );
 }
 
-export default function HolidaysClient() {
+export default function HolidaysClient({ initialData }: { initialData: any }) {
   const [search, setSearch] = useState("");
   const [selectedYear, setSelectedYear] = useState(
     new Date().getFullYear().toString(),
@@ -80,7 +81,7 @@ export default function HolidaysClient() {
   const { data, error, size, setSize, isValidating } = useSWRInfinite(
     getKey,
     fetcher,
-    { revalidateFirstPage: false, revalidateOnFocus: false },
+    { fallbackData: [initialData], revalidateFirstPage: false, revalidateOnFocus: false },
   );
 
   const holidays: Holiday[] = data
@@ -106,7 +107,7 @@ export default function HolidaysClient() {
     setSelectedYear(new Date().getFullYear().toString());
   };
 
-  const hasActiveFilters = !!(search || selectedType || fromDate || toDate);
+  const loadMore = useCallback(() => {\n    void setSize((current) => current + 1);\n  }, [setSize]);\n\n  const hasActiveFilters = !!(search || selectedType || fromDate || toDate);
 
   return (
     <div className="max-w-2xl mx-auto space-y-4 p-4 sm:p-6">
@@ -297,7 +298,7 @@ export default function HolidaysClient() {
       <InfiniteScrollTrigger
         hasMore={hasMore}
         isLoading={isValidating}
-        onLoadMore={() => setSize(size + 1)}
+        onLoadMore={loadMore}
       />
       {/* SEO Content */}
       <section className="space-y-4 pt-8 border-t border-zinc-400/25">
