@@ -94,7 +94,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function PlatformSoftwarePage({ params }: Props) {
+async function getInitialData(platform: string) {\n  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";\n  const response = await fetch(`${baseUrl}/api/apps?platform=${encodeURIComponent(platform)}&page=1&per_page=12`, {\n    next: { revalidate: 3600, tags: [`software:${platform}`] },\n  });\n  if (!response.ok) throw new Error("Failed to load initial software data");\n  return response.json();\n}\n\nexport default async function PlatformSoftwarePage({ params }: Props) {
   const { platform } = await params;
   const platformName = formatPlatformName(platform);
 
@@ -104,5 +104,5 @@ export default async function PlatformSoftwarePage({ params }: Props) {
     notFound();
   }
 
-  return <SoftwareClient platform={platformName} />;
+  const initialData = await getInitialData(platformName);\n  return <SoftwareClient platform={platformName} initialData={initialData} />;
 }
