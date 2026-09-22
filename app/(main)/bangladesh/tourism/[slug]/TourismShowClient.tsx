@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import useSWR from "swr";
@@ -54,6 +56,14 @@ type Props = {
   tourism: Tourism;
 };
 
+function getExcerpt(value: string, maxLength: number): string {
+  if (value.length <= maxLength) return value;
+  const candidate = value.slice(0, maxLength);
+  const lastSpace = candidate.lastIndexOf(" ");
+  const excerpt = lastSpace > Math.floor(maxLength * 0.7) ? candidate.slice(0, lastSpace) : candidate;
+  return `${excerpt.trimEnd()}...`;
+}
+
 export default function TourismShowClient({ tourism }: Props) {
   const [showCreators, setShowCreators] = useState(false);
   const creatorsRef = useRef<HTMLDivElement>(null);
@@ -93,6 +103,19 @@ export default function TourismShowClient({ tourism }: Props) {
   const location = [tourism.thana, tourism.district, tourism.division]
     .filter(Boolean)
     .join(" • ");
+
+  const plainDescription = (tourism.description || "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const descriptionExcerpt =
+    plainDescription.length > 320
+      ? getExcerpt(plainDescription, 320)
+      : plainDescription;
+
+
 
   // ✅ Holiday পেজের exact প্যাটার্ন (Multiple + Single image support)
   const media =
@@ -156,7 +179,7 @@ export default function TourismShowClient({ tourism }: Props) {
           <button
             type="button"
             onClick={() => setShowCreators(!showCreators)}
-            className="p-2 rounded-lg hover:bg-zinc-400/25 transition"
+            className="p-2 rounded-xl hover:bg-zinc-400/25 transition"
             aria-label="তথ্য প্রদানকারীগণ"
           >
             <FaUserPen className="w-5 h-5" />
@@ -198,11 +221,7 @@ export default function TourismShowClient({ tourism }: Props) {
                     <div className="flex items-start gap-3 p-2 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/25 border border-zinc-400/25 transition">
                       <div className="relative">
                         {c.avatar_url ? (
-                          <img
-                            src={c.avatar_url}
-                            alt={c.name}
-                            className="w-12 h-12 rounded-xl object-cover"
-                          />
+                          <Image src={c.avatar_url} alt={c.name} width={48} height={48} sizes="48px" className="w-12 h-12 rounded-xl object-cover" />
                         ) : (
                           <div className="w-12 h-12 rounded-xl bg-zinc-400/15 flex items-center justify-center text-sm font-medium">
                             {c.name?.charAt(0)}
@@ -294,10 +313,19 @@ export default function TourismShowClient({ tourism }: Props) {
                 এটি <strong>{tourism.type_label}</strong> ধরনের পর্যটন কেন্দ্র।
               </>
             )}
+            {location && (
+              <>
+                {" "}
+                এটি <strong>{location}</strong> এলাকায় অবস্থিত।
+              </>
+            )}
           </p>
-          <p>
-            উপরের বিবরণ থেকে বিস্তারিত জানুন এবং আপনার ভ্রমণ পরিকল্পনা করুন।
-          </p>
+          {descriptionExcerpt && <p>{descriptionExcerpt}</p>}
+          {!descriptionExcerpt && (
+            <p>
+              এই স্থানের বিস্তারিত তথ্য এখনো যোগ করা হয়নি।
+            </p>
+          )}
         </div>
       </section>
 
@@ -311,7 +339,8 @@ export default function TourismShowClient({ tourism }: Props) {
             <ChevronDown className="w-4 h-4 group-open:rotate-180 transition shrink-0" />
           </summary>
           <div className="px-4 pb-4 text-sm leading-relaxed border-t border-zinc-400/20 pt-3 opacity-90">
-            উপরের “বিস্তারিত বিবরণ” সেকশনে এই স্থানের পূর্ণাঙ্গ তথ্য লেখা আছে।
+            {descriptionExcerpt ||
+              "এই স্থানের বিস্তারিত তথ্য এখনো যোগ করা হয়নি।"}
           </div>
         </details>
 

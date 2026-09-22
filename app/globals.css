@@ -129,6 +129,9 @@
 .goog-te-banner-frame,
 .goog-te-balloon-frame,
 #goog-gt-tt,
+#gtx-trans,
+.goog-te-menu-frame,
+iframe.goog-te-banner-frame,
 .skiptranslate,
 .goog-te-gadget-icon {
   display: none !important;

@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import useSWRInfinite from "swr/infinite";
+import Image from "next/image";
 import { Calendar, Search, X, ArrowRight, ChevronDown } from "lucide-react";
+import InfiniteScrollTrigger from "@/components/InfiniteScrollTrigger";
 import { FaCalendarMinus } from "react-icons/fa";
 
 const API_BASE =
@@ -28,7 +30,7 @@ type Holiday = {
 /* ───────────────── Skeleton ───────────────── */
 function HolidaySkeleton() {
   return (
-    <div className="rounded-2xl border border-zinc-400/25 bg-zinc-800/80 p-4 animate-pulse">
+    <div className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 animate-pulse">
       <div className="flex gap-4 items-start">
         <div className="w-14 h-14 rounded-xl bg-zinc-400/10 shrink-0" />
         <div className="flex-1 space-y-2.5">
@@ -44,7 +46,7 @@ function HolidaySkeleton() {
   );
 }
 
-export default function HolidaysClient() {
+export default function HolidaysClient({ initialData }: { initialData: any }) {
   const [search, setSearch] = useState("");
   const [selectedYear, setSelectedYear] = useState(
     new Date().getFullYear().toString(),
@@ -79,7 +81,7 @@ export default function HolidaysClient() {
   const { data, error, size, setSize, isValidating } = useSWRInfinite(
     getKey,
     fetcher,
-    { revalidateFirstPage: false, revalidateOnFocus: false },
+    { fallbackData: [initialData], revalidateFirstPage: false, revalidateOnFocus: false },
   );
 
   const holidays: Holiday[] = data
@@ -104,6 +106,10 @@ export default function HolidaysClient() {
     setToDate("");
     setSelectedYear(new Date().getFullYear().toString());
   };
+
+  const loadMore = useCallback(() => {
+    void setSize((current) => current + 1);
+  }, [setSize]);
 
   const hasActiveFilters = !!(search || selectedType || fromDate || toDate);
 
@@ -293,19 +299,11 @@ export default function HolidaysClient() {
         )}
       </section>
 
-      {/* Load More */}
-      {hasMore && (
-        <div className="flex justify-center py-6">
-          <button
-            onClick={() => setSize(size + 1)}
-            disabled={isValidating}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-zinc-400/25 bg-zinc-800/80 text-sm hover:bg-zinc-800  disabled:opacity-50"
-          >
-            {isValidating ? "লোড হচ্ছে..." : "আরও দেখুন"}
-          </button>
-        </div>
-      )}
-
+      <InfiniteScrollTrigger
+        hasMore={hasMore}
+        isLoading={isValidating}
+        onLoadMore={loadMore}
+      />
       {/* SEO Content */}
       <section className="space-y-4 pt-8 border-t border-zinc-400/25">
         <h2 className="text-lg font-bold  flex items-center gap-2">
@@ -332,13 +330,6 @@ export default function HolidaysClient() {
             তথ্য থেকে উপকৃত হতে পারেন।
           </p>
         </div>
-
-        {/* Hidden SEO keywords for crawlers (optional) */}
-        <p className="sr-only">
-          ছুটির তালিকা {selectedYear}, সরকারি ছুটি বাংলাদেশ, ঐচ্ছিক ছুটি, জাতীয়
-          দিবস, ধর্মীয় ছুটি, বাংলাদেশ ক্যালেন্ডার, পাবলিক হলিডে, Bangladesh
-          public holidays, holiday calendar Bangladesh
-        </p>
       </section>
     </div>
   );

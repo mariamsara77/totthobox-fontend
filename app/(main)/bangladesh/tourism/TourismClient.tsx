@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import useSWRInfinite from "swr/infinite";
-import { Map, Search, X, ArrowRight, MapPin, Loader2 } from "lucide-react";
+import { Map, Search, X, ArrowRight, MapPin } from "lucide-react";
+import InfiniteScrollTrigger from "@/components/InfiniteScrollTrigger";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
@@ -20,7 +22,24 @@ type Item = {
   district?: string;
 };
 
-export default function TourismClient() {
+type PageResponse = {
+  data: Item[];
+  meta?: {
+    current_page?: number;
+    per_page?: number;
+    total?: number;
+    last_page?: number;
+    has_more?: boolean;
+  };
+};
+
+type TourismClientProps = {
+  initialData: PageResponse;
+};
+
+export default function TourismClient({
+  initialData,
+}: TourismClientProps) {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [type, setType] = useState("");
@@ -28,13 +47,9 @@ export default function TourismClient() {
   const [districtId, setDistrictId] = useState("");
   const [thanaId, setThanaId] = useState("");
 
-  const [divisions, setDivisions] = useState<{ id: number; name: string }[]>(
-    [],
-  );
+  const [divisions, setDivisions] = useState<{ id: number; name: string }[]>([]);
   const [types, setTypes] = useState<{ value: string; label: string }[]>([]);
-  const [districts, setDistricts] = useState<{ id: number; name: string }[]>(
-    [],
-  );
+  const [districts, setDistricts] = useState<{ id: number; name: string }[]>([]);
   const [thanas, setThanas] = useState<{ id: number; name: string }[]>([]);
 
   useEffect(() => {
@@ -43,7 +58,7 @@ export default function TourismClient() {
   }, [search]);
 
   useEffect(() => {
-    fetch(`${API_BASE}/api/tourism-bd/filters`)
+    fetch(API_BASE + "/api/tourism-bd/filters")
       .then((r) => r.json())
       .then((j) => {
         setDivisions(j.divisions || []);
@@ -59,7 +74,7 @@ export default function TourismClient() {
       setDistricts([]);
       return;
     }
-    fetch(`${API_BASE}/api/tourism-bd/districts?division_id=${divisionId}`)
+    fetch(API_BASE + "/api/tourism-bd/districts?division_id=" + divisionId)
       .then((r) => r.json())
       .then((j) => setDistricts(j.data || []));
   }, [divisionId]);
@@ -70,32 +85,32 @@ export default function TourismClient() {
       setThanas([]);
       return;
     }
-    fetch(`${API_BASE}/api/tourism-bd/thanas?district_id=${districtId}`)
+    fetch(API_BASE + "/api/tourism-bd/thanas?district_id=" + districtId)
       .then((r) => r.json())
       .then((j) => setThanas(j.data || []));
   }, [districtId]);
 
   const getKey = (pageIndex: number, prev: any) => {
     if (prev && !prev.meta?.has_more) return null;
+
     const p = new URLSearchParams();
     p.set("page", String(pageIndex + 1));
-    p.set("per_page", "10");
+    p.set("per_page", "12");
     if (debouncedSearch) p.set("search", debouncedSearch);
     if (type) p.set("type", type);
     if (divisionId) p.set("division_id", divisionId);
     if (districtId) p.set("district_id", districtId);
     if (thanaId) p.set("thana_id", thanaId);
-    return `${API_BASE}/api/tourism-bd?${p.toString()}`;
+
+    return API_BASE + "/api/tourism-bd?" + p.toString();
   };
 
-  const { data, size, setSize, isValidating, error } = useSWRInfinite(
-    getKey,
-    fetcher,
-    {
+  const { data, setSize, isValidating, error } =
+    useSWRInfinite(getKey, fetcher, {
+      fallbackData: [initialData],
       revalidateFirstPage: false,
       revalidateOnFocus: false,
-    },
-  );
+    });
 
   const items: Item[] = data ? data.flatMap((p) => p.data || []) : [];
   const hasMore = data?.[data.length - 1]?.meta?.has_more ?? false;
@@ -106,6 +121,10 @@ export default function TourismClient() {
     setSize(1);
   }, [debouncedSearch, type, divisionId, districtId, thanaId, setSize]);
 
+  const loadMore = useCallback(() => {
+    setSize((currentSize) => currentSize + 1);
+  }, [setSize]);
+
   const hasFilters = !!(search || type || divisionId || districtId || thanaId);
 
   const resetFilters = () => {
@@ -115,7 +134,6 @@ export default function TourismClient() {
     setDistrictId("");
     setThanaId("");
   };
-
   return (
     <div className="max-w-2xl mx-auto space-y-8 px-4 py-6 sm:py-8">
       {/* Header */}
@@ -243,7 +261,7 @@ export default function TourismClient() {
             </p>
           </div>
         ) : (
-          items.map((item) => (
+          items.map((item, index) => (
             <Link
               key={item.id}
               href={`/bangladesh/tourism/${item.slug}`}
@@ -252,11 +270,14 @@ export default function TourismClient() {
               <div className="flex gap-4 items-start">
                 <div className="shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-zinc-400/15">
                   {item.image_url ? (
-                    <img
+                    <Image
                       src={item.image_url}
                       alt={item.title}
+                      width={64}
+                      height={64}
+                      sizes="64px"
                       className="w-full h-full object-cover"
-                      loading="lazy"
+                      priority={index < 2}
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center opacity-40">
@@ -301,25 +322,11 @@ export default function TourismClient() {
         )}
       </section>
 
-      {/* Load more */}
-      {hasMore && (
-        <div className="flex justify-center pt-2">
-          <button
-            onClick={() => setSize(size + 1)}
-            disabled={isValidating}
-            className="px-6 py-2.5 rounded-xl bg-zinc-400/10 text-sm font-medium hover:bg-zinc-400/20 transition disabled:opacity-50"
-          >
-            {isValidating ? (
-              <span className="flex items-center gap-2">
-                <Loader2 className="w-4 h-4 animate-spin" />
-                লোড হচ্ছে...
-              </span>
-            ) : (
-              "আরও দেখুন"
-            )}
-          </button>
-        </div>
-      )}
+<InfiniteScrollTrigger
+        hasMore={hasMore}
+        isLoading={isValidating}
+        onLoadMore={loadMore}
+      />
 
       {/* SEO Content Block - AdSense friendly */}
       <section className="space-y-4 pt-8 border-t border-zinc-400/20">

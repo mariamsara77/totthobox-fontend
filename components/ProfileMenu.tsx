@@ -206,7 +206,7 @@ export default function ProfileMenu({
         aria-expanded={isDropdownOpen}
         className={
           isSidebar
-            ? `flex w-full items-center gap-2 rounded-lg px-2 py-2 transition-colors hover:bg-zinc-400/25 ${
+            ? `flex w-full items-center gap-2 rounded-xl px-2 py-2 transition-colors hover:bg-zinc-400/25 ${
                 collapsed ? "justify-center" : "bg-zinc-400/10 text-left"
               }`
             : "block"

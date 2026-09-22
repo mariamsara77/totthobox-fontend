@@ -84,7 +84,7 @@ export default function Footer() {
 
         {/* Copyright */}
         <div className="text-center space-y-1">
-          <p className="text-sm  text-zinc-300">
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">
             &copy; {new Date().getFullYear()} Totthobox. সর্বস্বত্ব সংরক্ষিত।
           </p>
           <p className="text-xs text-zinc-400">

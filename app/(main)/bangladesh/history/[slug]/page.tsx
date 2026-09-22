@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import HistoryShowClient from "./HistoryShowClient";
 
@@ -10,7 +10,7 @@ async function getHistory(slug: string) {
   const base =
     process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
   const res = await fetch(`${base}/api/history-bd/${slug}`, {
-    cache: "no-store",
+    next: { revalidate: 3600 },
   });
   if (!res.ok) return null;
   const json = await res.json();
@@ -28,17 +28,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  const title = `${item.title} | বাংলাদেশের ঐতিহাসিক স্থান | তথ্যবক্স`;
-  const description = (
-    item.description || `${item.title} সম্পর্কে বিস্তারিত ইতিহাস।`
-  )
+  const cleanDescription = (item.description || "")
     .replace(/<[^>]+>/g, "")
-    .slice(0, 160);
+    .replace(/\s+/g, " ")
+    .trim();
+
+  // Keep genuinely thin records out of search until their existing source content is enriched.
+  const isThinContent = cleanDescription.length < 180;
+
+  const title = `${item.title} | বাংলাদেশের ঐতিহাসিক স্থান | তথ্যবক্স`;
+  const description = cleanDescription
+    ? cleanDescription.length > 160
+      ? `${cleanDescription.slice(0, 157).trimEnd()}...`
+      : cleanDescription
+    : undefined;
 
   return {
     title,
     description,
-    keywords: `${item.title}, বাংলাদেশ ইতিহাস, ঐতিহাসিক স্থান${item.era ? `, ${item.era}` : ""}, তথ্যবক্স`,
     openGraph: {
       title,
       description,
@@ -46,7 +53,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: "article",
       locale: "bn_BD",
       siteName: "Totthobox",
-      url: `https://totthobox.com/bangladesh/history/${item.slug}`,
+      url: `https://totthobox.com/bangladesh/history/${encodeURIComponent(item.slug)}`,
     },
     twitter: {
       card: "summary_large_image",
@@ -54,7 +61,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
     },
     alternates: {
-      canonical: `https://totthobox.com/bangladesh/history/${item.slug}`,
+      canonical: `https://totthobox.com/bangladesh/history/${encodeURIComponent(item.slug)}`,
+    },
+    robots: {
+      index: !isThinContent,
+      follow: true,
     },
   };
 }

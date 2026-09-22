@@ -47,30 +47,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
-    keywords: [
-      bnName,
-      country.name,
-      `${bnName} দেশ`,
-      `${country.name} country`,
-      `${bnName} রাজধানী`,
-      `${country.name} capital`,
-      `${bnName} জনসংখ্যা`,
-      `${country.name} population`,
-      `${bnName} আয়তন`,
-      `${country.name} area`,
-      `${bnName} মানচিত্র`,
-      `${country.name} map`,
-      `${bnName} পতাকা`,
-      `${country.name} flag`,
-      `${bnName} ভাষা`,
-      `${country.name} languages`,
-      `${bnName} মুদ্রা`,
-      `${country.name} currency`,
-      "বিশ্বকোষ",
-      "দেশের তথ্য",
-      "country facts",
-      "Totthobox",
-    ],
     openGraph: {
       title,
       description,
@@ -123,7 +99,37 @@ export default async function CountryPage({ params }: Props) {
 
   return (
     <>
-      {/* JSON-LD Place */}
+      {/* JSON-LD Breadcrumb + Place */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              {
+                "@type": "ListItem",
+                position: 1,
+                name: "হোম",
+                item: "https://totthobox.com/",
+              },
+              {
+                "@type": "ListItem",
+                position: 2,
+                name: "বিশ্বকোষ",
+                item: "https://totthobox.com/international/all-country",
+              },
+              {
+                "@type": "ListItem",
+                position: 3,
+                name: country.name,
+                item: `https://totthobox.com/international/country/${encodeURIComponent(country.slug)}`,
+              },
+            ],
+          }),
+        }}
+      />
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -678,7 +684,7 @@ export default async function CountryPage({ params }: Props) {
         {/* Back */}
         <div className="flex flex-wrap justify-between items-center gap-4 pt-4 border-t border-zinc-400/25">
           <Link
-            href="/international"
+            href="/international/all-country"
             className="inline-flex items-center gap-2 text-sm  hover:underline"
           >
             ← সকল দেশে ফিরুন
