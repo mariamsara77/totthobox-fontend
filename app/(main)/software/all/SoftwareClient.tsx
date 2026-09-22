@@ -123,7 +123,8 @@ export default function SoftwareClient({ platform = "", initialData }: Props) {
     getKey,
     fetcher,
     {
-      fallbackData: [initialData],\n      revalidateFirstPage: false,
+      fallbackData: [initialData],
+      revalidateFirstPage: false,
       revalidateOnFocus: false,
       keepPreviousData: true,
     },
@@ -144,7 +145,11 @@ export default function SoftwareClient({ platform = "", initialData }: Props) {
     }
   }, [debouncedSearch, platform, setSize]);
 
-  const loadMore = useCallback(() => {\n    void setSize((current) => current + 1);\n  }, [setSize]);\n\n  const resetFilters = () => {
+  const loadMore = useCallback(() => {
+    void setSize((current) => current + 1);
+  }, [setSize]);
+
+  const resetFilters = () => {
     setSearch("");
     router.push("/software/all");
   };
