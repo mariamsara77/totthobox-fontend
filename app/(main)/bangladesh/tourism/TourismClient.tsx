@@ -260,7 +260,7 @@ export default function TourismClient({
             </p>
           </div>
         ) : (
-          items.map((item) => (
+          items.map((item, index) => (
             <Link
               key={item.id}
               href={`/bangladesh/tourism/${item.slug}`}
@@ -269,11 +269,14 @@ export default function TourismClient({
               <div className="flex gap-4 items-start">
                 <div className="shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-zinc-400/15">
                   {item.image_url ? (
-                    <img
+                    <Image
                       src={item.image_url}
                       alt={item.title}
+                      width={64}
+                      height={64}
+                      sizes="64px"
                       className="w-full h-full object-cover"
-                      loading="lazy"
+                      priority={index < 2}
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center opacity-40">
@@ -321,7 +324,7 @@ export default function TourismClient({
 <InfiniteScrollTrigger
         hasMore={hasMore}
         isLoading={isValidating}
-        onLoadMore={() => setSize(size + 1)}
+        onLoadMore={loadMore}
       />
 
       {/* SEO Content Block - AdSense friendly */}
