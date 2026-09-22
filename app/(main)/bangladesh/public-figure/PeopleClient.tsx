@@ -70,6 +70,7 @@ export default function PeopleClient({ initialData }: { initialData: any }) {
     getKey,
     fetcher,
     {
+      fallbackData: [initialData],
       revalidateFirstPage: false,
       revalidateOnFocus: false,
     },
