@@ -105,6 +105,7 @@ export default function HistoryClient({ initialData }: { initialData: any }) {
     getKey,
     fetcher,
     {
+      fallbackData: [initialData],
       revalidateFirstPage: false,
       revalidateOnFocus: false,
     },
