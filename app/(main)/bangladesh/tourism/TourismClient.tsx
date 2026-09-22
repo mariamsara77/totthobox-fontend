@@ -105,7 +105,7 @@ export default function TourismClient({
     return API_BASE + "/api/tourism-bd?" + p.toString();
   };
 
-  const { data, size, setSize, isValidating, error } =
+  const { data, setSize, isValidating, error } =
     useSWRInfinite<PageResponse>(getKey, fetcher, {
       fallbackData: [initialData],
       revalidateFirstPage: false,
