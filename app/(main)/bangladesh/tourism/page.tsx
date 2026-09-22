@@ -25,6 +25,65 @@ export const metadata: Metadata = {
   },
 };
 
-export default function TourismPage() {
-  return <TourismClient />;
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+
+type TourismItem = {
+  id: number;
+  title: string;
+  slug: string;
+  type_label?: string;
+  description?: string;
+  image_url?: string;
+  thana?: string;
+  district?: string;
+};
+
+type TourismPageResponse = {
+  data: TourismItem[];
+  meta?: {
+    current_page?: number;
+    per_page?: number;
+    total?: number;
+    last_page?: number;
+    has_more?: boolean;
+  };
+};
+
+async function getInitialTourism(): Promise<TourismPageResponse> {
+  const params = new URLSearchParams({
+    page: "1",
+    per_page: "12",
+  });
+
+  const response = await fetch(
+    API_BASE + "/api/tourism-bd?" + params.toString(),
+    {
+      next: {
+        revalidate: 3600,
+        tags: ["tourism-list"],
+      },
+    },
+  );
+
+  if (!response.ok) {
+    return {
+      data: [],
+      meta: {
+        current_page: 1,
+        per_page: 12,
+        total: 0,
+        last_page: 1,
+        has_more: false,
+      },
+    };
+  }
+
+  return response.json();
+}
+
+export default async function TourismPage() {
+  const initialData = await getInitialTourism();
+
+  return <TourismClient initialData={initialData} />;
 }
