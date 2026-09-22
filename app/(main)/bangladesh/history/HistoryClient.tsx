@@ -119,7 +119,11 @@ export default function HistoryClient({ initialData }: { initialData: any }) {
     setSize(1);
   }, [debouncedSearch, era, divisionId, districtId, thanaId, setSize]);
 
-  const loadMore = useCallback(() => {\n    void setSize((current) => current + 1);\n  }, [setSize]);\n\n  const hasFilters = !!(search || era || divisionId || districtId || thanaId);
+  const loadMore = useCallback(() => {
+    void setSize((current) => current + 1);
+  }, [setSize]);
+
+  const hasFilters = !!(search || era || divisionId || districtId || thanaId);
 
   const resetFilters = () => {
     setSearch("");
