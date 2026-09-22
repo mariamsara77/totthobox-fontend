@@ -90,7 +90,7 @@ export default function TourismClient({
       .then((j) => setThanas(j.data || []));
   }, [districtId]);
 
-  const getKey = (pageIndex: number, prev: PageResponse | null) => {
+  const getKey = (pageIndex: number, prev: any) => {
     if (prev && !prev.meta?.has_more) return null;
 
     const p = new URLSearchParams();
@@ -106,7 +106,7 @@ export default function TourismClient({
   };
 
   const { data, setSize, isValidating, error } =
-    useSWRInfinite<PageResponse>(getKey, fetcher, {
+    useSWRInfinite(getKey, fetcher, {
       fallbackData: [initialData],
       revalidateFirstPage: false,
       revalidateOnFocus: false,
