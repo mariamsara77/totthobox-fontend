@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -84,7 +84,7 @@ const platformGuidance: Record<string, [string, string]> = {
   ],
 };
 
-export default function SoftwareClient({ platform = "" }: Props) {
+export default function SoftwareClient({ platform = "", initialData }: Props) {
   const router = useRouter();
 
   const [search, setSearch] = useState("");
@@ -123,7 +123,7 @@ export default function SoftwareClient({ platform = "" }: Props) {
     getKey,
     fetcher,
     {
-      revalidateFirstPage: false,
+      fallbackData: [initialData],\n      revalidateFirstPage: false,
       revalidateOnFocus: false,
       keepPreviousData: true,
     },
@@ -144,7 +144,7 @@ export default function SoftwareClient({ platform = "" }: Props) {
     }
   }, [debouncedSearch, platform, setSize]);
 
-  const resetFilters = () => {
+  const loadMore = useCallback(() => {\n    void setSize((current) => current + 1);\n  }, [setSize]);\n\n  const resetFilters = () => {
     setSearch("");
     router.push("/software/all");
   };
@@ -344,7 +344,7 @@ export default function SoftwareClient({ platform = "" }: Props) {
 <InfiniteScrollTrigger
         hasMore={hasMore && !error && !isLoading}
         isLoading={isValidating}
-        onLoadMore={() => setSize(size + 1)}
+        onLoadMore={loadMore}
         label="আরও সফটওয়্যার লোড হচ্ছে..."
       />
 
