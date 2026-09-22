@@ -1,6 +1,18 @@
 import { Metadata } from "next";
 import EstablishmentClient from "./EstablishmentClient";
 
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+
+async function getInitialData() {
+  const response = await fetch(
+    `${API_BASE}/api/establishment-bd?page=1&per_page=10`,
+    { next: { revalidate: 3600, tags: ["establishment-bd-list"] } },
+  );
+  if (!response.ok) throw new Error("Failed to load initial establishment-bd data");
+  return response.json();
+}
+
 export const metadata: Metadata = {
   title: "বাংলাদেশের সকল গুরুত্বপূর্ণ স্থাপনা ও প্রতিষ্ঠান | তথ্যবক্স",
   description:
@@ -35,5 +47,6 @@ export const metadata: Metadata = {
 };
 
 export default function EstablishmentPage() {
-  return <EstablishmentClient />;
+  const initialData = await getInitialData();
+  return <EstablishmentClient initialData={initialData} />;
 }
