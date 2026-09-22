@@ -134,7 +134,8 @@ export default function TourismClient({
     setDistrictId("");
     setThanaId("");
   };
-  return (\n    <div className="max-w-2xl mx-auto space-y-8 px-4 py-6 sm:py-8">
+  return (
+    <div className="max-w-2xl mx-auto space-y-8 px-4 py-6 sm:py-8">
       {/* Header */}
       <header className="space-y-2">
         <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2.5 tracking-tight">
