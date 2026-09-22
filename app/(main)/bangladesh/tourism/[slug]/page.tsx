@@ -21,7 +21,12 @@ async function getTourism(slug: string): Promise<TourismMeta | null> {
 
   const res = await fetch(
     `${base}/api/tourism-bd/${encodeURIComponent(slug)}`,
-    { cache: "no-store" },
+    {
+      next: {
+        revalidate: 3600,
+        tags: [`tourism:${slug}`],
+      },
+    },
   );
 
   if (!res.ok) return null;
