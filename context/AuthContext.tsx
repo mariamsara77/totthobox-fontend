@@ -68,9 +68,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [applyUser]);
 
   useEffect(() => {
-    fetchUser();
-    window.addEventListener("focus", fetchUser);
-    return () => window.removeEventListener("focus", fetchUser);
+    fetchUser(true);
+    const handleFocus = () => {
+      void fetchUser();
+    };
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
   }, [fetchUser]);
 
   // ── Email + password login ─────────────────────────────────────────────
