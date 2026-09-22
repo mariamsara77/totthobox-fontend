@@ -36,6 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const lastFetchAt = useRef(0);
 
   const applyUser = useCallback((nextUser: User | null) => {
     setUser(nextUser);
@@ -50,7 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const fetchUser = useCallback(async () => {
+  const fetchUser = useCallback(async (force = false) => {\n    const now = Date.now();\n    if (!force && lastFetchAt.current && now - lastFetchAt.current < 60000) return;\n    lastFetchAt.current = now;
     try {
       const res = await fetch("/api/auth/me", { cache: "no-store" });
       const data = await res.json();
@@ -111,7 +112,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         login,
         loginWithRefresh,
         logout,
-        mutateUser: fetchUser,
+        mutateUser: () => fetchUser(true),
       }}
     >
       {children}
