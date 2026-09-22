@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function HistoryPage() {
+export default async function HistoryPage() {
   const initialData = await getInitialData();
   return <HistoryClient initialData={initialData} />;
 }
