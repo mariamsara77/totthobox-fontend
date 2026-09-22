@@ -103,6 +103,7 @@ export default function EstablishmentClient({ initialData }: { initialData: any 
     getKey,
     fetcher,
     {
+      fallbackData: [initialData],
       revalidateFirstPage: false,
       revalidateOnFocus: false,
     },
