@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import useSWRInfinite from "swr/infinite";
+import Image from "next/image";
 import { Users, Search, X, ArrowRight, Briefcase, Loader2 } from "lucide-react";
 import InfiniteScrollTrigger from "@/components/InfiniteScrollTrigger";
 
@@ -21,7 +22,7 @@ type PersonItem = {
   role_from_year?: string | null;
 };
 
-export default function PeopleClient() {
+export default function PeopleClient({ initialData }: { initialData: any }) {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [category, setCategory] = useState("");
@@ -83,7 +84,7 @@ export default function PeopleClient() {
     setSize(1);
   }, [debouncedSearch, category, position, status, fromDate, toDate, setSize]);
 
-  const hasFilters =
+  const loadMore = useCallback(() => {\n    void setSize((current) => current + 1);\n  }, [setSize]);\n\n  const hasFilters =
     !!(search || category || position || fromDate || toDate) ||
     status !== "all";
 
@@ -229,12 +230,7 @@ export default function PeopleClient() {
               <div className="flex gap-4 items-start">
                 <div className="shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-zinc-400/15">
                   {person.image_url ? (
-                    <img
-                      src={person.image_url}
-                      alt={person.name}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                    />
+                    <Image src={person.image_url} alt={person.name} width={64} height={64} sizes="64px" className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-lg font-medium opacity-60">
                       {person.name?.charAt(0)}
@@ -294,7 +290,7 @@ export default function PeopleClient() {
 <InfiniteScrollTrigger
         hasMore={hasMore}
         isLoading={isValidating}
-        onLoadMore={() => setSize(size + 1)}
+        onLoadMore={loadMore}
       />
 
       {/* SEO + AdSense Content Block */}
