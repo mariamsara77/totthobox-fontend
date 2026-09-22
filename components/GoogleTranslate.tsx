@@ -91,6 +91,8 @@ export default function GoogleTranslate() {
 
     const existingTranslation = readCookie("googtrans");
     const savedPreference = window.localStorage.getItem("totthobox-translate-language");
+    const manualPreference =
+      window.localStorage.getItem("totthobox-translate-manual") === "1";
 
     if (existingTranslation) {
       const currentLanguage = existingTranslation.split("/").pop() || "bn";
@@ -104,9 +106,13 @@ export default function GoogleTranslate() {
 
     window.sessionStorage.setItem("totthobox-geo-translate-checked", "1");
 
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 2500);
+
     void fetch("https://ipapi.co/json/", {
       method: "GET",
       cache: "no-store",
+      signal: controller.signal,
       headers: { Accept: "application/json" },
     })
       .then(async (response) => {
@@ -118,6 +124,10 @@ export default function GoogleTranslate() {
         setCountry(countryCode);
 
         if (countryCode === "BD") {
+          if (!manualPreference) {
+            clearTranslationCookie();
+            window.localStorage.removeItem("totthobox-translate-language");
+          }
           return;
         }
 
@@ -141,13 +151,18 @@ export default function GoogleTranslate() {
         setTranslationCookie(preferredLanguage);
         window.location.reload();
       })
-      .catch(() => {
+      .catch(() => {})
+      .finally(() => {
+        window.clearTimeout(timeout);
+      });
+
         // Country detection is best-effort. Never block or alter the original page.
       });
   }, []);
 
   const handleLanguageChange = (language: string) => {
     window.localStorage.setItem("totthobox-translate-language", language);
+    window.localStorage.setItem("totthobox-translate-manual", "1");
     setTargetLanguage(language);
     reloadForLanguage(language);
   };
