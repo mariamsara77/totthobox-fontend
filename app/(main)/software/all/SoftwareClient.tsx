@@ -33,6 +33,7 @@ type App = {
 
 type Props = {
   platform?: string;
+  initialData?: any;
 };
 
 function AppSkeleton() {
