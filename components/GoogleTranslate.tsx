@@ -10,7 +10,7 @@ export default function GoogleTranslate() {
 
       <Script
         id="google-translate-init"
-        strategy="afterInteractive"
+        strategy="lazyOnload"
         dangerouslySetInnerHTML={{
           __html: `
             function googleTranslateElementInit() {
