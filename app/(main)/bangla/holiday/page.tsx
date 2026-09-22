@@ -1,4 +1,4 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import HolidaysClient from './HolidaysClient';
 
 
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   keywords: 'ছুটির তালিকা, সরকারি ছুটি, বাংলাদেশ ক্যালেন্ডার, ঐচ্ছিক ছুটি',
 };
 
-export default function HolidaysPage() {
+export default async function HolidaysPage() {
   const initialData = await getInitialData();
   return <HolidaysClient initialData={initialData} />;
 }
