@@ -79,7 +79,10 @@ async function fetchPlatforms(): Promise<string[]> {
 
     const json = await response.json();
     return Array.isArray(json)
-      ? json.filter((value): value is string => typeof value === "string" && value.trim() !== "")
+      ? json.filter(
+          (value): value is string =>
+            typeof value === "string" && value.trim() !== "",
+        )
       : [];
   } catch {
     return [];
@@ -101,8 +104,6 @@ function extractItems(json: unknown): unknown[] {
     if (Array.isArray(json.data.items)) return json.data.items;
     if (Array.isArray(json.data.data)) return json.data.data;
 
-    // /api/intro-bd returns grouped data:
-    // { data: { categoryA: [...], categoryB: [...] } }
     return Object.values(json.data).flatMap((value) =>
       Array.isArray(value) ? value : [],
     );
@@ -150,18 +151,14 @@ async function fetchSlugs(
       const source = extractItems(json);
 
       for (const item of source) {
-        if (
-          item &&
-          typeof item.slug === "string" &&
-          item.slug.trim() &&
-          (!includeItem || includeItem(item))
-        ) {
-          const slug = item.slug.trim();
+        if (!isRecord(item)) continue;
 
-          if (!seen.has(slug)) {
-            seen.add(slug);
-            slugs.push(slug);
-          }
+        const slug = typeof item.slug === "string" ? item.slug.trim() : "";
+        if (!slug || (includeItem && !includeItem(item))) continue;
+
+        if (!seen.has(slug)) {
+          seen.add(slug);
+          slugs.push(slug);
         }
       }
 
@@ -177,7 +174,7 @@ async function fetchSlugs(
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticEntries = publicRoutes.map((path) => ({
     url: `${SITE_URL}${path}`,
-    changeFrequency: path === "/" ? "daily" as const : "weekly" as const,
+    changeFrequency: path === "/" ? ("daily" as const) : ("weekly" as const),
     priority: path === "/" ? 1 : 0.7,
   }));
 
