@@ -5,6 +5,8 @@ const SITE_URL = "https://totthobox.com";
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
+export const revalidate = 0;
+
 const publicRoutes = [
   "/",
   "/about-us",
@@ -84,16 +86,23 @@ async function fetchPlatforms(): Promise<string[]> {
   }
 }
 
-function extractItems(json: any): unknown[] {
-  if (Array.isArray(json)) return json;
-  if (Array.isArray(json?.data)) return json.data;
-  if (Array.isArray(json?.data?.items)) return json.data.items;
-  if (Array.isArray(json?.data?.data)) return json.data.data;
-  if (Array.isArray(json?.items)) return json.items;
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
 
-  // /api/intro-bd returns grouped data:
-  // { data: { categoryA: [...], categoryB: [...] } }
-  if (json?.data && typeof json.data === "object") {
+function extractItems(json: unknown): unknown[] {
+  if (Array.isArray(json)) return json;
+  if (!isRecord(json)) return [];
+
+  if (Array.isArray(json.data)) return json.data;
+  if (Array.isArray(json.items)) return json.items;
+
+  if (isRecord(json.data)) {
+    if (Array.isArray(json.data.items)) return json.data.items;
+    if (Array.isArray(json.data.data)) return json.data.data;
+
+    // /api/intro-bd returns grouped data:
+    // { data: { categoryA: [...], categoryB: [...] } }
     return Object.values(json.data).flatMap((value) =>
       Array.isArray(value) ? value : [],
     );
@@ -102,14 +111,16 @@ function extractItems(json: any): unknown[] {
   return [];
 }
 
-function hasMorePages(json: any): boolean {
-  if (typeof json?.meta?.has_more === "boolean") {
+function hasMorePages(json: unknown): boolean {
+  if (!isRecord(json) || !isRecord(json.meta)) return false;
+
+  if (typeof json.meta.has_more === "boolean") {
     return json.meta.has_more;
   }
 
   if (
-    typeof json?.meta?.current_page === "number" &&
-    typeof json?.meta?.last_page === "number"
+    typeof json.meta.current_page === "number" &&
+    typeof json.meta.last_page === "number"
   ) {
     return json.meta.current_page < json.meta.last_page;
   }
