@@ -70,7 +70,7 @@ async function fetchPlatforms(): Promise<string[]> {
   try {
     const response = await fetch(
       `${API_BASE}/api/sidebar/software-platforms`,
-      { next: { revalidate: 3600 } },
+      { cache: "no-store" },
     );
 
     if (!response.ok) return [];
@@ -84,6 +84,39 @@ async function fetchPlatforms(): Promise<string[]> {
   }
 }
 
+function extractItems(json: any): unknown[] {
+  if (Array.isArray(json)) return json;
+  if (Array.isArray(json?.data)) return json.data;
+  if (Array.isArray(json?.data?.items)) return json.data.items;
+  if (Array.isArray(json?.data?.data)) return json.data.data;
+  if (Array.isArray(json?.items)) return json.items;
+
+  // /api/intro-bd returns grouped data:
+  // { data: { categoryA: [...], categoryB: [...] } }
+  if (json?.data && typeof json.data === "object") {
+    return Object.values(json.data).flatMap((value) =>
+      Array.isArray(value) ? value : [],
+    );
+  }
+
+  return [];
+}
+
+function hasMorePages(json: any): boolean {
+  if (typeof json?.meta?.has_more === "boolean") {
+    return json.meta.has_more;
+  }
+
+  if (
+    typeof json?.meta?.current_page === "number" &&
+    typeof json?.meta?.last_page === "number"
+  ) {
+    return json.meta.current_page < json.meta.last_page;
+  }
+
+  return false;
+}
+
 async function fetchSlugs(
   endpoint: string,
   includeItem?: (item: unknown) => boolean,
@@ -92,42 +125,36 @@ async function fetchSlugs(
   const seen = new Set<string>();
   const perPage = 50;
 
-  for (let page = 1; page <= 100; page += 1) {
+  for (let page = 1; page <= 1000; page += 1) {
     try {
       const separator = endpoint.includes("?") ? "&" : "?";
       const response = await fetch(
         `${API_BASE}${endpoint}${separator}per_page=${perPage}&page=${page}`,
-        { next: { revalidate: 3600 } },
+        { cache: "no-store" },
       );
 
       if (!response.ok) break;
 
       const json = await response.json();
-      const source = Array.isArray(json)
-        ? json
-        : Array.isArray(json?.data)
-          ? json.data
-          : Array.isArray(json?.items)
-            ? json.items
-            : Array.isArray(json?.data?.data)
-              ? json.data.data
-              : [];
+      const source = extractItems(json);
 
       for (const item of source) {
         if (
           item &&
           typeof item.slug === "string" &&
-          item.slug &&
+          item.slug.trim() &&
           (!includeItem || includeItem(item))
         ) {
-          if (!seen.has(item.slug)) {
-            seen.add(item.slug);
-            slugs.push(item.slug);
+          const slug = item.slug.trim();
+
+          if (!seen.has(slug)) {
+            seen.add(slug);
+            slugs.push(slug);
           }
         }
       }
 
-      if (!json?.meta?.has_more || source.length === 0) break;
+      if (source.length === 0 || !hasMorePages(json)) break;
     } catch {
       break;
     }
