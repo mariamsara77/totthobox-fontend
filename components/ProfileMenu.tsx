@@ -150,9 +150,9 @@ export default function ProfileMenu({
   // ========== Loading ==========
   if (isAuthLoading && !showLoginFallback) {
     return isSidebar ? (
-      <div className="h-10 w-full animate-pulse rounded-lg bg-zinc-400/10" />
+      <div className="h-10 w-full animate-pulse rounded-xl bg-[var(--brand-surface)]" />
     ) : (
-      <div className="h-10 w-10 animate-pulse rounded-full bg-zinc-400/20" />
+      <div className="h-10 w-10 animate-pulse rounded-full bg-[var(--brand-surface)]" />
     );
   }
 
@@ -165,7 +165,7 @@ export default function ProfileMenu({
           onClick={() => openLoginModal()}
           onMouseEnter={(e) => collapsed && onHover?.(e, "লগইন")}
           onMouseLeave={onLeave}
-          className={`flex w-full items-center gap-4 rounded-lg px-3 py-2.5 text-left text-sm transition-all hover:bg-zinc-400/25 ${
+          className={`flex w-full items-center gap-4 rounded-lg px-3 py-2.5 text-left text-sm transition-all hover:bg-[var(--brand-surface)] ${
             collapsed ? "justify-center" : ""
           }`}
         >
@@ -179,7 +179,7 @@ export default function ProfileMenu({
       <button
         type="button"
         onClick={() => openLoginModal()}
-        className="flex items-center gap-2 rounded-xl bg-[var(--brand-surface)] px-4 py-2.5 text-sm font-medium ring-1 ring-[var(--brand-border)] transition-all hover:bg-[var(--brand-primary)] hover:text-white"
+        className="flex items-center gap-2 rounded-xl bg-[var(--brand-primary)] px-4 py-2.5 text-sm font-bold text-white shadow-[0_10px_22px_var(--brand-glow)] transition-all hover:bg-[var(--brand-primary-strong)]"
       >
         <UserIcon size={16} />
         লগইন
@@ -191,7 +191,7 @@ export default function ProfileMenu({
     user.avatar_url ||
     `https://ui-avatars.com/api/?name=${encodeURIComponent(
       user.name,
-    )}&background=10b981&color=fff`;
+    )}&background=087f73&color=fff`;
 
   return (
     <>
@@ -206,7 +206,7 @@ export default function ProfileMenu({
         aria-expanded={isDropdownOpen}
         className={
           isSidebar
-            ? `flex w-full items-center gap-2 rounded-xl px-2 py-2 transition-colors hover:bg-zinc-400/25 ${
+            ? `flex w-full items-center gap-2 rounded-xl px-2 py-2 transition-colors hover:bg-[var(--brand-surface)] ${
                 collapsed ? "justify-center" : "bg-zinc-400/10 text-left"
               }`
             : "block"
@@ -251,7 +251,7 @@ export default function ProfileMenu({
                 backdropFilter: "blur(20px) saturate(180%)",
                 WebkitBackdropFilter: "blur(20px) saturate(180%)",
               }}
-              className="overflow-hidden rounded-2xl border border-white/60 bg-white/90 shadow-[0_24px_70px_rgba(15,23,42,0.16)] dark:border-white/10 dark:bg-zinc-900/95"
+              className="overflow-hidden rounded-[1.35rem] border border-[var(--brand-border)] bg-white/92 shadow-[0_28px_80px_rgb(6_32_28_/_0.20)] dark:border-white/10 dark:bg-zinc-900/95"
             >
               {/* Header */}
               <div className="flex items-center gap-3 border-b border-[var(--brand-border)] px-4 py-4">
@@ -259,7 +259,7 @@ export default function ProfileMenu({
                   src={avatarSrc}
                   alt={user.name}
                   referrerPolicy="no-referrer"
-                  className="h-12 w-12 rounded-xl object-cover"
+                  className="h-12 w-12 rounded-2xl object-cover ring-1 ring-[var(--brand-border)]"
                 />
                 <div className="flex min-w-0 flex-col overflow-hidden">
                   <span className="truncate text-sm font-semibold text-zinc-900 dark:text-white">
