@@ -122,12 +122,12 @@ export default function RelatedLinks() {
 
   return (
     <section
-      className="mx-auto w-full max-w-4xl px-4 pb-8 pt-10 sm:px-6 sm:pt-12"
+      className="mx-auto w-full max-w-5xl px-4 pb-9 pt-12 sm:px-6 sm:pt-14 lg:px-8"
       aria-labelledby="related-pages-title"
     >
       <div className="border-t border-[var(--brand-border)] pt-8">
         <div className="mb-5">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--brand-primary)]">
+          <p className="eyebrow text-[10px] font-bold uppercase sm:text-xs">
             Continue exploring
           </p>
           <h2
@@ -149,10 +149,10 @@ export default function RelatedLinks() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="group block rounded-2xl border border-zinc-200/70 bg-white/60 p-4 shadow-sm backdrop-blur-xl transition hover:-translate-y-0.5 hover:border-[var(--brand-border)] hover:shadow-[0_18px_40px_var(--brand-glow)] dark:border-white/10 dark:bg-white/[0.035]"
+                  className="group surface-panel block rounded-[1.35rem] p-4 transition hover:-translate-y-1 sm:p-5"
                 >
                   <div className="flex items-start gap-3">
-                    <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[var(--brand-surface)] text-[var(--brand-primary-strong)]">
+                    <span className="feature-icon flex size-10 shrink-0 items-center justify-center rounded-2xl">
                       <Icon className="size-4" aria-hidden="true" />
                     </span>
                     <span className="min-w-0 flex-1">
