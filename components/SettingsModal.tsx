@@ -39,13 +39,13 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       role="dialog"
       aria-modal="true"
       aria-labelledby="settings-modal-title"
-      className="fixed inset-0 z-100 flex items-center justify-center bg-black/20 px-4 py-6 backdrop-blur-[2px] transition-opacity duration-300 dark:bg-black/50"
+      className="fixed inset-0 z-100 flex items-center justify-center bg-zinc-950/20 px-4 py-6 backdrop-blur-md transition-opacity duration-300 dark:bg-black/60"
       onClick={onClose}
     >
       <div
         ref={modalRef}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md transform rounded-2xl border border-zinc-200/80 bg-white/95 p-4 shadow-2xl backdrop-blur-xl transition-transform dark:border-zinc-700/80 dark:bg-zinc-900/95"
+        className="w-full max-w-md transform rounded-2xl border border-zinc-200/80 bg-white/90 p-4 shadow-2xl backdrop-blur-xl transition-transform dark:border-zinc-700/80 dark:bg-zinc-950/92"
       >
         <div className="flex items-center justify-between border-b border-zinc-200 pb-4 dark:border-zinc-700">
           <div className="flex items-center gap-2 text-lg font-medium">
@@ -73,7 +73,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
           <button
             type="button"
             onClick={onClose}
-            className="rounded-xl bg-zinc-400/10 px-4 py-2 text-sm font-medium transition-colors hover:bg-zinc-400/25"
+            className="rounded-xl bg-[var(--brand-surface)] px-4 py-2 text-sm font-medium text-[var(--brand-primary-strong)] ring-1 ring-[var(--brand-border)] transition hover:bg-[var(--brand-primary)] hover:text-white"
           >
             বন্ধ করুন
           </button>
