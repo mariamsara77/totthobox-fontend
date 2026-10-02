@@ -52,7 +52,7 @@ export default function InstallPWA() {
   return (
     <button
       onClick={handleInstallClick}
-      className="pwa-fixed-bottom fixed right-4 z-50 flex items-center gap-2 rounded-full bg-gradient-to-r from-[var(--brand-primary-strong)] to-[var(--brand-secondary)] px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-[var(--brand-glow)] transition hover:-translate-y-0.5 hover:shadow-xl md:hidden"
+      className="pwa-fixed-bottom fixed right-4 z-50 flex min-h-11 items-center gap-2 rounded-2xl bg-[var(--brand-primary)] px-4 py-2.5 text-sm font-bold text-white shadow-[0_14px_28px_var(--brand-glow)] transition hover:-translate-y-0.5 hover:bg-[var(--brand-primary-strong)] md:hidden"
     >
       <Smartphone size={16} strokeWidth={2.2} />
       অ্যাপ ইনস্টল করুন
