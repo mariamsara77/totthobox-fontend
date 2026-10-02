@@ -39,16 +39,16 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       role="dialog"
       aria-modal="true"
       aria-labelledby="settings-modal-title"
-      className="fixed inset-0 z-100 flex items-center justify-center bg-zinc-950/20 px-4 py-6 backdrop-blur-md transition-opacity duration-300 dark:bg-black/60"
+      className="fixed inset-0 z-100 flex items-center justify-center bg-[#06201c]/35 px-4 py-6 backdrop-blur-lg transition-opacity duration-300 dark:bg-black/70"
       onClick={onClose}
     >
       <div
         ref={modalRef}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md transform rounded-2xl border border-zinc-200/80 bg-white/90 p-4 shadow-2xl backdrop-blur-xl transition-transform dark:border-zinc-700/80 dark:bg-zinc-950/92"
+        className="surface-panel w-full max-w-md transform rounded-[1.6rem] p-4 shadow-[0_28px_90px_rgb(6_32_28_/_0.22)] transition-transform sm:p-5"
       >
         <div className="flex items-center justify-between border-b border-zinc-200 pb-4 dark:border-zinc-700">
-          <div className="flex items-center gap-2 text-lg font-medium">
+          <div className="flex items-center gap-2 text-lg font-extrabold">
             <IoSettings className="h-5 w-5 text-zinc-600 dark:text-zinc-400" />
             <span id="settings-modal-title">সেটিংস</span>
           </div>
@@ -58,7 +58,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             ref={closeButtonRef}
             onClick={onClose}
             aria-label="সেটিংস বন্ধ করুন"
-            className="rounded-lg p-1.5 opacity-50 transition-colors hover:bg-zinc-400/10 hover:opacity-100"
+            className="nav-icon-button flex size-9 items-center justify-center rounded-xl"
           >
             <X className="h-5 w-5" />
           </button>
@@ -69,11 +69,11 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
           <LanguageSelect />
         </div>
 
-        <div className="flex justify-end border-t border-zinc-100 pt-4 dark:border-zinc-800">
+        <div className="flex justify-end border-t border-[var(--brand-border)] pt-4">
           <button
             type="button"
             onClick={onClose}
-            className="rounded-xl bg-[var(--brand-surface)] px-4 py-2 text-sm font-medium text-[var(--brand-primary-strong)] ring-1 ring-[var(--brand-border)] transition hover:bg-[var(--brand-primary)] hover:text-white"
+            className="rounded-xl bg-[var(--brand-primary)] px-4 py-2.5 text-sm font-bold text-white shadow-[0_10px_20px_var(--brand-glow)] transition hover:bg-[var(--brand-primary-strong)]"
           >
             বন্ধ করুন
           </button>
