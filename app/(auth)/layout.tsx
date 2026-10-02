@@ -13,7 +13,7 @@ export default function AuthLayout({
           </Link>
         </header>
 
-        <main>{children}</main>
+        <main className="w-full"><div className="surface-panel rounded-[1.8rem] p-5 sm:p-7">{children}</div></main>
       </div>
     </div>
   );
