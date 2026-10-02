@@ -11,77 +11,64 @@ declare global {
 
 const ANALYTICS_ID = "G-HGE2T2J8ZT";
 
-function scheduleIdle(callback: () => void) {
-  const requestIdle = (
-    window as Window & {
-      requestIdleCallback?: (
-        callback: IdleRequestCallback,
-        options?: IdleRequestOptions,
-      ) => number;
-    }
-  ).requestIdleCallback;
+function loadAnalytics() {
+  if (document.querySelector('script[data-totthobox-analytics="1"]')) return;
+  if (document.querySelector('script[src*="googletagmanager.com/gtag/js"]')) return;
 
-  if (requestIdle) return requestIdle(callback, { timeout: 7000 });
-  return window.setTimeout(callback, 3000);
-}
+  window.dataLayer = window.dataLayer || [];
+  window.gtag =
+    window.gtag ||
+    function gtag(...args: unknown[]) {
+      window.dataLayer?.push(args);
+    };
 
-function cancelIdle(handle: number) {
-  const cancelIdle = (
-    window as Window & {
-      cancelIdleCallback?: (handle: number) => void;
-    }
-  ).cancelIdleCallback;
+  window.gtag("js", new Date());
+  window.gtag("config", ANALYTICS_ID);
 
-  if (cancelIdle) cancelIdle(handle);
-  else window.clearTimeout(handle);
+  const script = document.createElement("script");
+  script.async = true;
+  script.src =
+    "https://www.googletagmanager.com/gtag/js?id=" + ANALYTICS_ID;
+  script.dataset.totthoboxAnalytics = "1";
+  script.crossOrigin = "anonymous";
+  document.head.appendChild(script);
 }
 
 export default function TagManager() {
   useEffect(() => {
-    let idleHandle = 0;
-    let cancelled = false;
+    let started = false;
+    let fallbackTimer = 0;
+    const events = ["pointerdown", "touchstart", "keydown", "scroll"] as const;
 
     const start = () => {
-      if (
-        cancelled ||
-        document.querySelector('script[data-totthobox-analytics="1"]')
-      ) {
-        return;
-      }
-
-      window.dataLayer = window.dataLayer || [];
-      window.gtag =
-        window.gtag ||
-        function gtag(...args: unknown[]) {
-          window.dataLayer?.push(args);
-        };
-
-      window.gtag("js", new Date());
-      window.gtag("config", ANALYTICS_ID);
-
-      const script = document.createElement("script");
-      script.async = true;
-      script.src =
-        "https://www.googletagmanager.com/gtag/js?id=" + ANALYTICS_ID;
-      script.dataset.totthoboxAnalytics = "1";
-      script.crossOrigin = "anonymous";
-      document.head.appendChild(script);
+      if (started) return;
+      started = true;
+      events.forEach((event) => window.removeEventListener(event, start, true));
+      window.clearTimeout(fallbackTimer);
+      loadAnalytics();
     };
 
-    const handleLoad = () => {
-      idleHandle = scheduleIdle(start);
+    events.forEach((event) =>
+      window.addEventListener(event, start, {
+        capture: true,
+        passive: true,
+      }),
+    );
+
+    const armFallback = () => {
+      fallbackTimer = window.setTimeout(start, 15000);
     };
 
     if (document.readyState === "complete") {
-      handleLoad();
+      armFallback();
     } else {
-      window.addEventListener("load", handleLoad, { once: true });
+      window.addEventListener("load", armFallback, { once: true });
     }
 
     return () => {
-      cancelled = true;
-      window.removeEventListener("load", handleLoad);
-      if (idleHandle) cancelIdle(idleHandle);
+      events.forEach((event) => window.removeEventListener(event, start, true));
+      window.removeEventListener("load", armFallback);
+      window.clearTimeout(fallbackTimer);
     };
   }, []);
 
