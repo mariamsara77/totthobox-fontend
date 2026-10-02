@@ -53,6 +53,9 @@ const nextConfig: NextConfig = {
   },
 
   experimental: {
+    // Inline the small route CSS manifests into HTML so the first render does
+    // not wait on separate render-blocking stylesheet requests.
+    inlineCss: true,
     optimizePackageImports: ["lucide-react", "react-icons"],
   },
 };
