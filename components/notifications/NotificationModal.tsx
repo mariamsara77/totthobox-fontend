@@ -79,7 +79,7 @@ function NotificationRow({
       onClick={onClick}
       className={`group flex w-full items-start gap-3 rounded-xl px-3 py-3 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/60 active:scale-[0.98] ${
         item.is_unread
-          ? "bg-indigo-50/60 hover:bg-indigo-50 dark:bg-indigo-500/[0.07] dark:hover:bg-indigo-500/10"
+          ? "bg-[var(--brand-surface)] hover:bg-[var(--brand-surface)] dark:bg-[var(--brand-surface)]"
           : "hover:bg-zinc-400/10"
       }`}
     >
@@ -124,7 +124,7 @@ function NotificationRow({
 
       {item.is_unread && (
         <div className="mt-2 flex shrink-0 items-center">
-          <span className="size-2 rounded-full bg-indigo-500" />
+          <span className="size-2 rounded-full bg-[var(--brand-primary)]" />
         </div>
       )}
     </button>
@@ -381,14 +381,14 @@ export function NotificationModal({ open, onClose, onCountChange }: Props) {
         role="dialog"
         aria-modal="true"
         aria-label="নোটিফিকেশন"
-        className={`relative flex h-full w-full max-w-100 flex-col overflow-hidden rounded-2xl border border-zinc-400/25 shadow-2xl backdrop-blur-xl transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`surface-panel relative flex h-full w-full max-w-100 flex-col overflow-hidden rounded-[1.5rem] shadow-[0_30px_100px_rgb(6_32_28_/_0.24)] backdrop-blur-2xl transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           entered
             ? "translate-x-0 scale-100 opacity-100"
             : "translate-x-8 scale-[0.97] opacity-0"
         }`}
       >
         {/* Header */}
-        <div className="shrink-0 border-b border-zinc-400/25 px-4 pb-3 pt-4">
+        <div className="shrink-0 px-4 pb-3 pt-4">
           <div className="mb-3 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2.5">
               <div className="flex size-9 items-center justify-center rounded-xl bg-zinc-400/10">
@@ -411,7 +411,7 @@ export function NotificationModal({ open, onClose, onCountChange }: Props) {
                   onClick={() => void handleMarkAll()}
                   disabled={markingAll}
                   title="সব পড়া হিসেবে মার্ক করুন"
-                  className="flex size-8 items-center justify-center rounded-lg text-indigo-600 transition-all duration-200 hover:bg-indigo-50 active:scale-90 disabled:opacity-50 dark:hover:bg-indigo-500/10"
+                  className="flex size-8 items-center justify-center rounded-lg text-[var(--brand-primary-strong)] transition-all duration-200 hover:bg-indigo-50 active:scale-90 disabled:opacity-50 dark:hover:bg-indigo-500/10"
                 >
                   {markingAll ? (
                     <Loader2 className="size-4 animate-spin" />
