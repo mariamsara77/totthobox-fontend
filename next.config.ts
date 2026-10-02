@@ -74,6 +74,10 @@ const withPWA = withPWAInit({
   aggressiveFrontEndNavCaching: true,
   reloadOnOnline: true,
   extendDefaultRuntimeCaching: true,
+  // Use the existing offline page when a document navigation cannot reach the network.
+  fallbacks: {
+    document: "/offline",
+  },
   workboxOptions: {
     runtimeCaching: [apiNetworkOnlyCaching],
   },
