@@ -103,7 +103,7 @@ function SidebarItem({
   const className = cn(
     "group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200",
     isActive
-      ? "bg-[var(--brand-surface)] text-[var(--brand-primary-strong)] shadow-sm ring-1 ring-[var(--brand-border)]"
+      ? "bg-[var(--brand-primary)] text-white shadow-[0_10px_22px_var(--brand-glow)]"
       : "text-zinc-600 hover:bg-[var(--brand-surface)] hover:text-[var(--brand-primary-strong)] dark:text-zinc-300",
     collapsed && "justify-center px-2",
   );
@@ -266,7 +266,7 @@ export default function Sidebar() {
       {/* Sidebar */}
       <aside
         className={cn(
-          "pwa-safe-top fixed top-0 left-0 z-100 flex h-dvh flex-col border-r border-white/60 bg-white/80 shadow-[12px_0_45px_rgba(15,23,42,0.06)] backdrop-blur-2xl transition-all duration-300 ease-in-out dark:border-white/10 dark:bg-zinc-950/80",
+          "pwa-safe-top fixed top-0 left-0 z-100 flex h-dvh flex-col border-r border-[var(--brand-border)] bg-[var(--nav-background)] shadow-[18px_0_55px_rgb(8_60_55_/_0.07)] backdrop-blur-2xl transition-all duration-300 ease-in-out",
           isOpen ? "translate-x-0" : "-translate-x-full",
           "md:sticky md:top-0 md:translate-x-0",
           collapsed ? "md:w-16" : "md:w-64",
@@ -293,9 +293,9 @@ export default function Sidebar() {
         >
           {!collapsed && (
             <>
-              <Link href="/" className="flex items-center gap-2 text-xl font-bold tracking-tight">
-                <BrandIcon className="h-6 w-6 shrink-0" />
-                <span className="truncate">Totthobox</span>
+              <Link href="/" className="group flex items-center gap-3">
+                <BrandIcon className="brand-mark size-10 rounded-[1rem] p-2 transition group-hover:-translate-y-0.5" />
+                <span className="brand-wordmark truncate text-lg font-black tracking-[-0.02em]">Totthobox</span>
               </Link>
 
               <button
@@ -314,7 +314,7 @@ export default function Sidebar() {
             <button
               type="button"
               aria-label="সাইডবার প্রসারিত করুন"
-              className="group relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl bg-[var(--brand-surface)] ring-1 ring-[var(--brand-border)] hover:bg-[var(--brand-primary)] hover:text-white"
+              className="brand-mark group relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-2xl ring-0 hover:brightness-105"
               onMouseEnter={(e) => handleMouseEnter(e, "Expand Sidebar")}
               onMouseLeave={handleMouseLeave}
               onClick={toggleCollapsed}
