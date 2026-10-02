@@ -79,7 +79,7 @@ function scheduleIdle(callback: () => void) {
   ).requestIdleCallback;
 
   if (requestIdle) return requestIdle(callback, { timeout: 5000 });
-  return window.setTimeout(callback, 10000);
+  return window.setTimeout(callback, 15000);
 }
 
 function cancelIdle(handle: number) {
@@ -169,7 +169,7 @@ export default function GoogleTranslate() {
           );
           window.localStorage.removeItem("totthobox-translate-manual");
           setTranslationCookie(preferredLanguage);
-          window.location.reload();
+          setShouldLoadTranslator(true);
         })
         .catch(() => {})
         .finally(() => {
