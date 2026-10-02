@@ -83,10 +83,7 @@ export function AuthModalProvider({ children }: { children: ReactNode }) {
       authReason?: string,
     ) => {
       if (isLoggedIn) return true;
-      openLoginModal({
-        reason: authReason,
-        onSuccess: onAuthenticated,
-      });
+      openLoginModal({ reason: authReason, onSuccess: onAuthenticated });
       return false;
     },
     [isLoggedIn, openLoginModal],
@@ -99,7 +96,6 @@ export function AuthModalProvider({ children }: { children: ReactNode }) {
     if (params.get("login") !== "required") return;
 
     const returnTo = getSafeReturnTo(params.get("returnTo"));
-
     openLoginModal({
       reason: "এই পেজটি দেখতে লগইন করতে হবে।",
       onSuccess: returnTo ? () => router.push(returnTo) : undefined,
@@ -125,12 +121,14 @@ export function AuthModalProvider({ children }: { children: ReactNode }) {
       }}
     >
       {children}
-      <LoginModal
-        open={isLoginModalOpen}
-        reason={reason}
-        onClose={closeLoginModal}
-        onLoginSuccess={completeLogin}
-      />
+      {isLoginModalOpen ? (
+        <LoginModal
+          open={isLoginModalOpen}
+          reason={reason}
+          onClose={closeLoginModal}
+          onLoginSuccess={completeLogin}
+        />
+      ) : null}
     </AuthModalContext.Provider>
   );
 }
