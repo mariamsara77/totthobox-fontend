@@ -8,7 +8,6 @@ export default function NetworkStatus() {
   const hideTimer = useRef<NodeJS.Timeout | null>(null);
 
   const showToast = (offline: boolean) => {
-    // আগের টাইমার ক্লিয়ার
     if (hideTimer.current) {
       clearTimeout(hideTimer.current);
     }
@@ -16,7 +15,6 @@ export default function NetworkStatus() {
     setIsOffline(offline);
     setVisible(true);
 
-    // ৪ সেকেন্ড পর হাইড
     hideTimer.current = setTimeout(() => {
       setVisible(false);
     }, 4000);
@@ -26,8 +24,7 @@ export default function NetworkStatus() {
     const handleOffline = () => showToast(true);
     const handleOnline = () => showToast(false);
 
-    // প্রথম লোডে অফলাইন থাকলে
-    if (typeof window !== "undefined" && !navigator.onLine) {
+    if (!navigator.onLine) {
       showToast(true);
     }
 
@@ -44,21 +41,24 @@ export default function NetworkStatus() {
   if (!visible) return null;
 
   return (
-    <div className="pwa-fixed-bottom fixed left-1/2 z-9999 -translate-x-1/2 px-4">
+    <div
+      className="pwa-fixed-bottom fixed left-1/2 z-9999 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 px-0"
+      role="status"
+      aria-live="polite"
+    >
       <div
         className={`
-          flex items-center gap-3 rounded-2xl px-5 py-3.5 shadow-lg
-          backdrop-blur-xl border text-sm font-medium
+          flex items-center gap-3 rounded-2xl border px-4 py-3.5
+          text-sm font-medium shadow-lg backdrop-blur-xl
           transition-all duration-300
           ${
             isOffline
-              ? "border-zinc-400/25"
-              : "bg-emerald-600/95 text-white border-emerald-400/25"
+              ? "border-zinc-300/70 bg-white/95 text-zinc-900 dark:border-zinc-700/70 dark:bg-zinc-900/95 dark:text-zinc-100"
+              : "border-emerald-400/25 bg-emerald-600/95 text-white"
           }
         `}
       >
-        {/* Icon */}
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/10">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-black/5 dark:bg-white/10">
           {isOffline ? (
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -67,6 +67,7 @@ export default function NetworkStatus() {
               viewBox="0 0 24 24"
               stroke="currentColor"
               strokeWidth={2}
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"
@@ -82,6 +83,7 @@ export default function NetworkStatus() {
               viewBox="0 0 24 24"
               stroke="currentColor"
               strokeWidth={2}
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"
@@ -92,8 +94,7 @@ export default function NetworkStatus() {
           )}
         </div>
 
-        {/* Message */}
-        <span>
+        <span className="min-w-0 whitespace-normal leading-5">
           {isOffline
             ? "আপনি বর্তমানে অফলাইনে আছেন। কিছু তথ্য আপডেট নাও হতে পারে।"
             : "আবার অনলাইন হয়েছেন।"}
