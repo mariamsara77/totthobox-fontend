@@ -78,9 +78,9 @@ export default function LanguageSelect() {
     languages.find((language) => language.code === currentLang) ?? languages[0];
 
   return (
-    <section className="rounded-2xl border border-zinc-200/80 bg-zinc-400/5 p-4 dark:border-zinc-700/80 dark:bg-zinc-400/5">
+    <section className="rounded-2xl border border-zinc-200/80 bg-white/55 p-4 shadow-sm dark:border-white/10 dark:bg-white/[0.035]">
       <div className="flex items-start gap-3">
-        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-zinc-400/10 text-zinc-700 dark:text-zinc-200">
+        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[var(--brand-surface)] text-[var(--brand-primary-strong)]">
           <Languages className="size-5" aria-hidden="true" />
         </div>
 
@@ -94,7 +94,7 @@ export default function LanguageSelect() {
                 বর্তমান ভাষা: {selected.label}
               </p>
             </div>
-            <span className="rounded-full bg-zinc-400/10 px-2 py-1 text-[10px] font-medium text-zinc-500 dark:text-zinc-400">
+            <span className="rounded-full bg-[var(--brand-surface)] px-2 py-1 text-[10px] font-medium text-zinc-500 dark:text-zinc-400">
               {currentLang === "bn" ? "Original" : "Translated"}
             </span>
           </div>
@@ -106,7 +106,7 @@ export default function LanguageSelect() {
             id="totthobox-language"
             value={currentLang}
             onChange={(event) => handleLanguageChange(event.target.value)}
-            className="mt-3 w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-800 outline-none transition-colors focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/15 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+            className="mt-3 w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-800 outline-none transition-colors focus:border-[var(--brand-primary)] focus:ring-2 focus:ring-[var(--brand-glow)] dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
           >
             {languages.map((language) => (
               <option key={language.code} value={language.code}>
