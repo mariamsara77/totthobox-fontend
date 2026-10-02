@@ -2,7 +2,8 @@
 
 import { useEffect } from "react";
 
-const ADSENSE_ID = "ca-pub-9522604367420521";
+const ADSENSE_ID =
+  process.env.NEXT_PUBLIC_ADSENSE_ID || "ca-pub-9522604367420521";
 const SCRIPT_SELECTOR = 'script[data-totthobox-adsense="1"]';
 
 function loadAdSense() {
@@ -22,7 +23,12 @@ function loadAdSense() {
 export default function DeferredAdSense() {
   useEffect(() => {
     let loaded = false;
-    const interactionEvents = ["pointerdown", "touchstart", "keydown", "scroll"] as const;
+    const interactionEvents = [
+      "pointerdown",
+      "touchstart",
+      "keydown",
+      "scroll",
+    ] as const;
     let fallbackTimer = 0;
 
     const start = () => {
@@ -36,7 +42,6 @@ export default function DeferredAdSense() {
 
       loadAdSense();
     };
-
 
     interactionEvents.forEach((event) =>
       window.addEventListener(event, start, {
