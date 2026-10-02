@@ -147,7 +147,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <main className="mx-auto w-full max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
         <section aria-labelledby="services-title">
           <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
@@ -227,7 +227,7 @@ export default function HomePage() {
             </div>
           </aside>
         </section>
-      </main>
+      </div>
     </div>
   );
 }
