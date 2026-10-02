@@ -146,14 +146,14 @@ export default function SearchModal({ onClose }: SearchModalProps) {
       <div
         ref={modalRef}
         onClick={(e) => e.stopPropagation()}
-        className={`relative w-full max-w-2xl overflow-hidden rounded-2xl border border-zinc-400/25 shadow-2xl backdrop-blur-xl transition-all duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`surface-panel relative w-full max-w-2xl overflow-hidden rounded-[1.6rem] shadow-[0_30px_100px_rgb(6_32_28_/_0.22)] backdrop-blur-2xl transition-all duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           entered
             ? "translate-y-0 scale-100 opacity-100"
             : "translate-y-4 scale-[0.97] opacity-0"
         }`}
       >
         {/* Header */}
-        <div className="relative border-b border-zinc-400/25">
+        <div className="relative">
           <SearchInput
             value={search}
             onChange={setSearch}
@@ -208,7 +208,7 @@ export default function SearchModal({ onClose }: SearchModalProps) {
         {/* Footer */}
         {(showResults || showNoResults) && (
           <div
-            className={`flex items-center justify-between border-t border-zinc-400/15 px-4 py-2 text-[11px] text-zinc-500 transition-all duration-300 delay-100 ${
+            className={`flex items-center justify-between border-t border-[var(--brand-border)] px-4 py-2 text-[11px] text-zinc-500 transition-all duration-300 delay-100 ${
               entered ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
             }`}
           >
