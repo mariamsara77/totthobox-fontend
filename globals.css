@@ -832,3 +832,24 @@ body {
   border-color: transparent;
 }
 
+
+
+/* Unboxed separators: hierarchy should come from space and tone, not heavy rules. */
+.site-page hr {
+  height: 1px;
+  border: 0 !important;
+  background: linear-gradient(90deg, transparent, rgb(8 127 115 / 0.09), transparent);
+}
+
+.dark .site-page hr {
+  background: linear-gradient(90deg, transparent, rgb(66 197 182 / 0.11), transparent);
+}
+
+/* Quiet utility backgrounds keep old page components visually coherent. */
+.site-page :where(.bg-zinc-50, .bg-zinc-100, .bg-zinc-200) {
+  background-color: rgb(8 127 115 / 0.035);
+}
+
+.dark .site-page :where(.dark\:bg-zinc-800, .dark\:bg-zinc-900, .dark\:bg-zinc-950) {
+  background-color: rgb(66 197 182 / 0.035);
+}
