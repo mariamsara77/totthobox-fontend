@@ -13,9 +13,7 @@ export default function ThemeToggle() {
   }, []);
 
   if (!mounted) {
-    return (
-      <div className="h-10 w-full rounded-xl bg-zinc-400/10 animate-pulse" />
-    );
+    return <div className="h-12 w-full animate-pulse rounded-2xl bg-zinc-400/10" />;
   }
 
   const themes = [
@@ -25,19 +23,27 @@ export default function ThemeToggle() {
   ];
 
   return (
-    <div className="flex w-full gap-2 items-center rounded-xl p-1 backdrop-blur-sm border border-zinc-400/25 bg-zinc-400/10">
+    <div
+      className="grid w-full grid-cols-3 gap-1 rounded-2xl border border-[var(--brand-border)] bg-[var(--brand-surface)] p-1"
+      role="group"
+      aria-label="থিম নির্বাচন"
+    >
       {themes.map(({ id, label, icon: Icon }) => {
         const isActive = theme === id;
+
         return (
           <button
             key={id}
             type="button"
             onClick={() => setTheme(id)}
-            className={`flex flex-1 items-center justify-center gap-2 rounded-lg p-2 text-sm transition-all duration-200 ${
-              isActive ? "bg-zinc-400/25" : "hover:bg-zinc-400/10"
+            aria-pressed={isActive}
+            className={`flex min-w-0 items-center justify-center gap-1.5 rounded-xl px-2 py-2.5 text-xs font-medium transition-all sm:text-sm ${
+              isActive
+                ? "bg-gradient-to-r from-[var(--brand-primary-strong)] to-[var(--brand-secondary)] text-white shadow-md shadow-[var(--brand-glow)]"
+                : "text-zinc-600 hover:bg-white/70 dark:text-zinc-300 dark:hover:bg-white/10"
             }`}
           >
-            <Icon className="h-4 w-4 shrink-0" />
+            <Icon className="size-4 shrink-0" />
             <span className="truncate">{label}</span>
           </button>
         );
