@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useNotificationModal } from "@/context/NotificationModalContext";
 import { getUnreadCount } from "@/lib/notifications";
 
 function scheduleIdle(callback: () => void) {
@@ -31,6 +32,7 @@ function cancelIdle(handle: number) {
 
 export default function LiveNotificationSync() {
   const { user, isLoggedIn } = useAuth();
+  const { setUnreadCount } = useNotificationModal();
 
   useEffect(() => {
     if (!user?.id || !isLoggedIn) return;
@@ -48,7 +50,9 @@ export default function LiveNotificationSync() {
 
           const channel = echo.private("user." + user.id);
           const refresh = () => {
-            void getUnreadCount().catch(() => undefined);
+            void getUnreadCount()
+              .then(setUnreadCount)
+              .catch(() => undefined);
           };
 
           channel.notification(refresh);
@@ -69,7 +73,7 @@ export default function LiveNotificationSync() {
       cancelIdle(idleHandle);
       cleanup?.();
     };
-  }, [user?.id, isLoggedIn]);
+  }, [user?.id, isLoggedIn, setUnreadCount]);
 
   return null;
 }
