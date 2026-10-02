@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function AiLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div>
+    <div className="site-page site-page-ai">
       <AiChatShell>{children}</AiChatShell>
     </div>
   );
