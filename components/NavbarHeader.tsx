@@ -3,7 +3,7 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useEffect } from "react";
-import { IoChatbubble, IoSettings } from "react-icons/io5";
+import { MessageCircle, Settings } from "lucide-react";
 import ProfileMenu from "./ProfileMenu";
 import { useSettingsModal } from "@/context/SettingsModalContext";
 import { useNotificationModal } from "@/context/NotificationModalContext";
@@ -30,19 +30,14 @@ export default function Navbar() {
       return;
     }
 
-    getUnreadCount()
-      .then(setUnreadCount)
-      .catch(() => undefined);
+    getUnreadCount().then(setUnreadCount).catch(() => undefined);
   }, [isLoggedIn, setUnreadCount]);
 
   return (
     <header className="z-60 w-full border-b border-zinc-400/25 backdrop-blur-xl">
       <div className="flex h-16 items-center justify-between px-4 sm:px-6">
         <div className="flex items-center gap-4">
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-xl font-semibold"
-          >
+          <Link href="/" className="flex items-center gap-2 text-xl font-semibold">
             <BrandIcon className="h-6 w-6" />
             Totthobox
           </Link>
@@ -58,7 +53,7 @@ export default function Navbar() {
                 aria-label="মেসেজ"
                 className="flex items-center gap-2 rounded-xl p-2 transition-colors hover:bg-zinc-400/25"
               >
-                <IoChatbubble className="h-5 w-5" />
+                <MessageCircle className="h-5 w-5" aria-hidden="true" />
               </Link>
 
               <NotificationBell
@@ -75,7 +70,7 @@ export default function Navbar() {
             className="flex items-center gap-2 rounded-xl p-2 transition-colors hover:bg-zinc-400/25"
             aria-label="Settings"
           >
-            <IoSettings className="h-5 w-5" />
+            <Settings className="h-5 w-5" aria-hidden="true" />
           </button>
 
           <ProfileMenu />
