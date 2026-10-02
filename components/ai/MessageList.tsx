@@ -65,10 +65,10 @@ export default function MessageList({
       >
         {messages.length === 0 && !isTyping && (
           <div className="flex flex-col items-center justify-center h-full gap-4 select-none py-16">
-            <div className="p-3 rounded-2xl bg-zinc-400/10">
+            <div className="feature-icon flex size-12 items-center justify-center rounded-2xl">
               <Sparkles className="size-6" />
             </div>
-            <p className="text-sm  ">আমি আপনাকে কিভাবে সাহায্য করতে পারি?</p>
+            <p className="text-sm font-semibold">আমি আপনাকে কিভাবে সাহায্য করতে পারি?</p>
             <p className="text-xs ">ছবি paste করুন বা drag করে আনুন</p>
             {isGuest && (
               <p className="text-xs ">
