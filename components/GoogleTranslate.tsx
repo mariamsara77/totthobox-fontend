@@ -79,7 +79,7 @@ function scheduleIdle(callback: () => void) {
   ).requestIdleCallback;
 
   if (requestIdle) return requestIdle(callback, { timeout: 5000 });
-  return window.setTimeout(callback, 2500);
+  return window.setTimeout(callback, 10000);
 }
 
 function cancelIdle(handle: number) {
@@ -127,7 +127,7 @@ export default function GoogleTranslate() {
       controller = new AbortController();
       const timeout = window.setTimeout(() => controller?.abort(), 2500);
 
-      void fetch("https://ipapi.co/json/", {
+      void fetch("/api/geo", {
         method: "GET",
         cache: "no-store",
         signal: controller.signal,
@@ -137,8 +137,8 @@ export default function GoogleTranslate() {
           if (!response.ok) throw new Error("Country lookup failed");
           return response.json();
         })
-        .then((geo: { country_code?: string; languages?: string }) => {
-          const countryCode = geo.country_code?.toUpperCase() || "";
+        .then((geo: { country?: string }) => {
+          const countryCode = geo.country?.toUpperCase() || "";
 
           if (countryCode === "BD") {
             if (!manualPreference) {
@@ -151,9 +151,7 @@ export default function GoogleTranslate() {
 
           if (existingTranslation || savedPreference) return;
 
-          const preferredLanguage = normalizeLanguage(
-            geo.languages?.split(",")[0]?.split(";")[0],
-          );
+          const preferredLanguage = normalizeLanguage(navigator.language);
 
           if (
             !preferredLanguage ||
