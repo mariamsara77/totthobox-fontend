@@ -40,8 +40,6 @@
 /* =========================================
    Native Form Controls / Theme Consistency
    ========================================= */
-/* Native select popovers can ignore Tailwind utility colors unless the
-   browser is explicitly told which color scheme the control belongs to. */
 select {
   color-scheme: light;
 }
@@ -63,38 +61,171 @@ select optgroup {
 }
 
 /* =========================================
-   Mobile & PWA Touch UX (Safe for Desktop)
+   Totthobox Premium Design System
    ========================================= */
-
-/* ১. সব টাচ স্ক্রিন (মোবাইল/ট্যাবলেট) ডিভাইসের জন্য */
-@media (pointer: coarse) {
-  html, body {
-    touch-action: manipulation; /* ৩০২০ms ডাবল-ট্যাপ জুম ডিলে বন্ধ করবে */
-    -webkit-tap-highlight-color: transparent; /* ক্লিকের সময় কালচে ব্লু হাইলাইট বন্ধ */
-  }
-
-  /* শুধু UI কন্ট্রোলে সিলেকশন বন্ধ, মূল টেক্সট/আর্টিকেল সিলেক্টেবল থাকবে */
-  button, a, nav, input, select, [role="button"] {
-    -webkit-user-select: none;
-    user-select: none;
-  }
+:root {
+  --brand-primary: #635bff;
+  --brand-primary-strong: #5146e5;
+  --brand-secondary: #0ea5e9;
+  --brand-glow: rgb(99 91 255 / 0.18);
+  --brand-surface: rgb(99 91 255 / 0.07);
+  --brand-border: rgb(99 91 255 / 0.16);
+  --page-background: #f7f8fc;
+  --page-foreground: #111827;
 }
 
-/* ২. শুধু ইনস্টল করা PWA Standalone App-এর জন্য */
-@media (display-mode: standalone) {
-  body {
-    overscroll-behavior-y: none; /* PWA-তে অনাকাঙ্ক্ষিত পুল-টু-রিফ্রেশ বন্ধ করবে */
-  }
+.dark {
+  --brand-primary: #8b83ff;
+  --brand-primary-strong: #756cff;
+  --brand-secondary: #38bdf8;
+  --brand-glow: rgb(139 131 255 / 0.20);
+  --brand-surface: rgb(139 131 255 / 0.09);
+  --brand-border: rgb(139 131 255 / 0.20);
+  --page-background: #070a13;
+  --page-foreground: #f4f4f5;
 }
 
-/* =========================================
-   Scrollbar (lightweight)
-   ========================================= */
-/* শুধুমাত্র ডেস্কটপ/মাউস ডিভাইসের জন্য */
+html {
+  scroll-behavior: smooth;
+  background: var(--page-background);
+}
+
+body {
+  background:
+    radial-gradient(circle at 15% -10%, var(--brand-glow), transparent 34rem),
+    radial-gradient(circle at 90% 5%, rgb(14 165 233 / 0.08), transparent 30rem),
+    var(--page-background);
+  color: var(--page-foreground);
+  min-height: 100dvh;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgb(99 91 255 / 0.22);
+  color: inherit;
+}
+
+.dark ::selection {
+  background: rgb(139 131 255 / 0.28);
+}
+
+/* Shared premium surfaces generated from the existing zinc utility vocabulary. */
+:where(.bg-zinc-400\/5) {
+  background: var(--brand-surface);
+}
+
+:where(.bg-zinc-400\/10) {
+  background:
+    linear-gradient(145deg, rgb(255 255 255 / 0.72), rgb(255 255 255 / 0.38)),
+    var(--brand-surface);
+  box-shadow: 0 10px 30px rgb(15 23 42 / 0.035);
+}
+
+:where(.dark .bg-zinc-400\/10) {
+  background:
+    linear-gradient(145deg, rgb(255 255 255 / 0.055), rgb(255 255 255 / 0.018)),
+    var(--brand-surface);
+  box-shadow: 0 16px 40px rgb(0 0 0 / 0.20);
+}
+
+:where(.bg-zinc-400\/25) {
+  background: rgb(99 91 255 / 0.11);
+}
+
+:where(.dark .bg-zinc-400\/25) {
+  background: rgb(139 131 255 / 0.14);
+}
+
+:where(.border-zinc-400\/25) {
+  border-color: var(--brand-border);
+}
+
+:where(.rounded-2xl.bg-zinc-400\/10),
+:where(.rounded-3xl.bg-zinc-400\/10) {
+  border: 1px solid var(--brand-border);
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease;
+}
+
+:where(a.rounded-2xl.bg-zinc-400\/10):hover,
+:where(a.rounded-3xl.bg-zinc-400\/10):hover {
+  border-color: rgb(99 91 255 / 0.28);
+  box-shadow: 0 18px 45px rgb(15 23 42 / 0.08);
+  transform: translateY(-2px);
+}
+
+.dark :where(a.rounded-2xl.bg-zinc-400\/10):hover,
+.dark :where(a.rounded-3xl.bg-zinc-400\/10):hover {
+  border-color: rgb(139 131 255 / 0.34);
+  box-shadow: 0 20px 50px rgb(0 0 0 / 0.28);
+}
+
+/* Global interactive controls: keep existing markup, refresh the visual language. */
+input:not([type="checkbox"]):not([type="radio"]),
+textarea,
+select {
+  border-color: var(--brand-border);
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):focus,
+textarea:focus,
+select:focus {
+  border-color: rgb(99 91 255 / 0.48) !important;
+  box-shadow: 0 0 0 4px rgb(99 91 255 / 0.10);
+}
+
+.dark input:not([type="checkbox"]):not([type="radio"]):focus,
+.dark textarea:focus,
+.dark select:focus {
+  border-color: rgb(139 131 255 / 0.56) !important;
+  box-shadow: 0 0 0 4px rgb(139 131 255 / 0.12);
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+/* Brand treatment for primary-looking existing neutral action controls. */
+:where(button.bg-zinc-400\/10),
+:where(a.bg-zinc-400\/10) {
+  transition:
+    transform 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+:where(button.bg-zinc-400\/10):hover,
+:where(a.bg-zinc-400\/10):hover {
+  box-shadow: 0 10px 24px rgb(99 91 255 / 0.08);
+}
+
+/* Make common content headings feel deliberate without changing document semantics. */
+main h1 {
+  letter-spacing: -0.025em;
+}
+
+main h2,
+main h3 {
+  letter-spacing: -0.018em;
+}
+
+/* Premium scrollbar */
 @media (hover: hover) and (pointer: fine) {
   ::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
+    width: 6px;
+    height: 6px;
   }
 
   ::-webkit-scrollbar-track {
@@ -102,37 +233,65 @@ select optgroup {
   }
 
   ::-webkit-scrollbar-thumb {
-    background-color: transparent;
-    border-radius: 20px;
-    border: 2px solid transparent;
+    background: rgb(99 91 255 / 0.18);
+    border: 1px solid transparent;
+    border-radius: 999px;
     background-clip: padding-box;
   }
 
-  *:hover::-webkit-scrollbar-thumb {
-    background-color: rgba(150, 150, 150, 0.3);
-  }
-
   ::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(150, 150, 150, 0.6) !important;
+    background: rgb(99 91 255 / 0.35);
   }
 
-  .dark *:hover::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.2);
+  .dark ::-webkit-scrollbar-thumb {
+    background: rgb(139 131 255 / 0.22);
   }
-  
+
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: rgb(139 131 255 / 0.40);
+  }
+
   * {
     scrollbar-width: thin;
-    scrollbar-color: transparent transparent;
+    scrollbar-color: rgb(99 91 255 / 0.18) transparent;
   }
-  
-  *:hover {
-    scrollbar-color: rgba(150, 150, 150, 0.3) transparent;
+
+  .dark * {
+    scrollbar-color: rgb(139 131 255 / 0.22) transparent;
   }
 }
 
-/* স্মল স্ক্রিনের জন্য স্ক্রলবার হাইড */
+/* =========================================
+   Mobile & PWA Touch UX
+   ========================================= */
+@media (pointer: coarse) {
+  html,
+  body {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button,
+  a,
+  nav,
+  input,
+  select,
+  [role="button"] {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+}
+
+@media (display-mode: standalone) {
+  body {
+    overscroll-behavior-y: none;
+  }
+}
+
 @media screen and (max-width: 768px) {
-  *, html, body {
+  *,
+  html,
+  body {
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
   }
@@ -165,7 +324,6 @@ iframe.goog-te-banner-frame,
 body {
   top: 0 !important;
   position: static !important;
-  min-height: 100dvh;
 }
 
 .goog-text-highlight {
