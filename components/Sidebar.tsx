@@ -101,7 +101,7 @@ function SidebarItem({
   );
 
   const className = cn(
-    "group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200",
+    "group flex w-full items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
     isActive
       ? "bg-[var(--brand-primary)] text-white shadow-[0_10px_22px_var(--brand-glow)]"
       : "text-zinc-600 hover:bg-[var(--brand-surface)] hover:text-[var(--brand-primary-strong)] dark:text-zinc-300",
@@ -294,7 +294,9 @@ export default function Sidebar() {
           {!collapsed && (
             <>
               <Link href="/" className="group flex items-center gap-3">
-                <BrandIcon className="brand-mark size-10 rounded-[1rem] p-2 transition group-hover:-translate-y-0.5" />
+                <span className="brand-mark flex size-10 shrink-0 items-center justify-center rounded-[1rem] p-2 transition group-hover:-translate-y-0.5">
+                  <BrandIcon className="size-6" />
+                </span>
                 <span className="brand-wordmark truncate text-lg font-black tracking-[-0.02em]">Totthobox</span>
               </Link>
 
