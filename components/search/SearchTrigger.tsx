@@ -31,14 +31,14 @@ export default function SearchTrigger({
       onMouseEnter={(e) => onHover?.(e, "অনুসন্ধান")}
       onMouseLeave={onLeave}
       className={`
-        group flex items-center gap-3 rounded-xl p-2 text-sm
+        nav-icon-button group flex items-center gap-3 rounded-2xl p-2 text-sm
         transition-colors duration-200
-        hover:bg-zinc-400/25
+        hover:bg-[var(--brand-surface)]
         ${collapsed ? "justify-center px-2" : ""}
         ${className}
       `}
     >
-      <FaMagnifyingGlass className="h-5 w-5 shrink-0" />
+      <FaMagnifyingGlass className="h-4.5 w-4.5 shrink-0" />
 
       {/* Label only when sidebar is expanded and showLabel is true */}
       {!collapsed && showLabel && <span className="truncate">অনুসন্ধান</span>}
