@@ -143,6 +143,7 @@ export default function HomePage() {
                 <Link
                   key={index}
                   href={service.href}
+                  prefetch={false}
                   className="relative flex flex-col items-center h-full p-4 text-center transition-all duration-200 group rounded-3xl bg-zinc-400/10 hover:bg-zinc-400/25"
                 >
                   <div className="mb-4 transition-transform duration-200 transform group-hover:scale-110 ">
