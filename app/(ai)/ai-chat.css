@@ -20,15 +20,15 @@
 }
 .totthobox-scrollbar::-webkit-scrollbar { width: 6px; }
 .totthobox-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.12);
+  background: rgb(8 127 115 / 0.22);
   border-radius: 999px;
 }
 .dark .totthobox-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgb(66 197 182 / 0.24);
 }
 .ai-prose pre code.hljs {
-  padding: 0.9rem 1.1rem !important;
+  padding: 0.9rem 1.1rem !important;\n  background: rgb(7 25 22 / 0.78) !important;\n  border: 1px solid rgb(66 197 182 / 0.12) !important;
   font-size: 0.79rem !important;
   line-height: 1.65 !important;
-  border-radius: 0 !important;
+  border-radius: 0.85rem !important;
 }
