@@ -11,14 +11,14 @@ export default function Navbar() {
   const { setIsOpen, isCollapsed, toggleCollapsed } = useSidebar();
 
   return (
-    <header className="pwa-safe-top w-full border-b border-white/50 bg-white/75 shadow-[0_8px_30px_rgba(15,23,42,0.04)] backdrop-blur-2xl dark:border-white/10 dark:bg-zinc-950/70">
-      <div className="flex h-16 items-center justify-between px-4 sm:px-6">
-        <div className="flex items-center gap-2">
+    <header className="site-header pwa-safe-top w-full border-b bg-transparent">
+      <div className="flex h-[4.25rem] items-center justify-between px-4 sm:px-6">
+        <div className="flex items-center gap-2.5">
           <button
             type="button"
             onClick={() => setIsOpen(true)}
             aria-label="সাইডবার খুলুন"
-            className="flex size-10 items-center justify-center rounded-xl text-zinc-600 transition hover:bg-[var(--brand-surface)] hover:text-[var(--brand-primary-strong)] dark:text-zinc-300 md:hidden"
+            className="nav-icon-button flex size-10 items-center justify-center rounded-2xl md:hidden"
           >
             <Menu className="size-6" />
           </button>
@@ -27,24 +27,24 @@ export default function Navbar() {
             <button
               type="button"
               onClick={toggleCollapsed}
-              className="hidden size-10 items-center justify-center rounded-xl text-zinc-600 transition hover:bg-[var(--brand-surface)] hover:text-[var(--brand-primary-strong)] dark:text-zinc-300 md:flex"
+              className="nav-icon-button hidden size-10 items-center justify-center rounded-2xl md:flex"
               title="Expand sidebar"
             >
               <PanelLeft className="size-5" />
             </button>
           )}
 
-          <Link href="/" className="group flex items-center gap-2" aria-label="Totthobox হোম">
-            <span className="flex size-9 items-center justify-center rounded-xl bg-[var(--brand-surface)] text-[var(--brand-primary-strong)] ring-1 ring-[var(--brand-border)] transition group-hover:scale-105">
+          <Link href="/" className="group flex items-center gap-2.5" aria-label="Totthobox হোম">
+            <span className="brand-mark size-9 rounded-[0.9rem] transition duration-200 group-hover:-translate-y-0.5">
               <BrandIcon className="size-6" />
             </span>
-            <span className="hidden text-base font-bold tracking-tight sm:inline">
+            <span className="brand-wordmark hidden text-base font-black tracking-[-0.02em] sm:inline">
               Totthobox
             </span>
           </Link>
         </div>
 
-        <div className="flex items-center gap-1 sm:gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2.5">
           <SearchTrigger />
           <ProfileMenu />
         </div>
