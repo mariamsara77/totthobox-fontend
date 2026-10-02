@@ -20,11 +20,11 @@ export default function ErrorPage({
   digest,
 }: ErrorPageProps) {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="site-page min-h-screen flex flex-col">
       <NavbarHeader />
 
       <main className="flex flex-1 flex-col items-center justify-center px-4 py-16 text-center">
-        <div className="select-none text-7xl font-bold tracking-tighter text-zinc-200 dark:text-zinc-800">
+        <div className="select-none text-7xl font-black tracking-tighter text-[var(--brand-primary)] opacity-15">
           {code}
         </div>
 
@@ -46,7 +46,7 @@ export default function ErrorPage({
           {showRetry && onRetry && (
             <button
               onClick={onRetry}
-              className="rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-emerald-500"
+              className="rounded-2xl bg-[var(--brand-primary)] px-5 py-3 text-sm font-bold text-white shadow-[0_12px_24px_var(--brand-glow)] transition hover:bg-[var(--brand-primary-strong)]"
             >
               আবার চেষ্টা করুন
             </button>
@@ -54,7 +54,7 @@ export default function ErrorPage({
 
           <Link
             href="/"
-            className="rounded-xl border border-zinc-300 bg-white px-5 py-2.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
+            className="rounded-2xl bg-[var(--brand-surface)] px-5 py-3 text-sm font-bold text-[var(--brand-primary-strong)] transition hover:bg-[var(--brand-primary)] hover:text-white"
           >
             হোম পেজে ফিরে যান
           </Link>
