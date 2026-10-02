@@ -10,53 +10,29 @@ import { useAuth } from "@/context/AuthContext";
 import BrandIcon from "@/components/BrandIcon";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { getUnreadCount } from "@/lib/notifications";
-import { getEcho } from "@/lib/echo";
+import LiveNotificationSync from "@/components/notifications/LiveNotificationSync";
 import { SearchTrigger } from "@/components/search";
 
 export default function Navbar() {
   const { openSettingsModal } = useSettingsModal();
   const { openNotificationModal, unreadCount, setUnreadCount } =
     useNotificationModal();
-  const { isLoggedIn, user } = useAuth();
+  const { isLoggedIn } = useAuth();
 
-  // Initial unread count
   useEffect(() => {
     if (!isLoggedIn) {
       setUnreadCount(0);
       return;
     }
+
     getUnreadCount()
       .then(setUnreadCount)
       .catch(() => undefined);
   }, [isLoggedIn, setUnreadCount]);
 
-  // Live notification updates
-  useEffect(() => {
-    if (!user?.id || !isLoggedIn) return;
-    const echo = getEcho();
-    if (!echo) return;
-
-    const channel = echo.private(`user.${user.id}`);
-    const refresh = () =>
-      getUnreadCount()
-        .then(setUnreadCount)
-        .catch(() => undefined);
-
-    channel.notification(refresh);
-    channel.listen(".NotificationCreated", refresh);
-
-    return () => {
-      channel.stopListening(
-        ".Illuminate\\Notifications\\Events\\BroadcastNotificationCreated",
-      );
-      channel.stopListening(".NotificationCreated");
-    };
-  }, [user?.id, isLoggedIn, setUnreadCount]);
-
   return (
     <header className="z-60 w-full border-b border-zinc-400/25 backdrop-blur-xl">
       <div className="flex h-16 items-center justify-between px-4 sm:px-6">
-        {/* Brand */}
         <div className="flex items-center gap-4">
           <Link
             href="/"
@@ -67,7 +43,6 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Right side */}
         <div className="flex items-center gap-1 sm:gap-2">
           <SearchTrigger />
 
@@ -85,6 +60,7 @@ export default function Navbar() {
                 count={unreadCount}
                 onClick={openNotificationModal}
               />
+              <LiveNotificationSync />
             </>
           )}
 
