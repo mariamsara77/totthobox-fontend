@@ -179,7 +179,7 @@ export default function ProfileMenu({
       <button
         type="button"
         onClick={() => openLoginModal()}
-        className="flex items-center gap-2 rounded-xl bg-zinc-400/10 px-4 py-2.5 text-sm transition-all hover:bg-zinc-400/25"
+        className="flex items-center gap-2 rounded-xl bg-[var(--brand-surface)] px-4 py-2.5 text-sm font-medium ring-1 ring-[var(--brand-border)] transition-all hover:bg-[var(--brand-primary)] hover:text-white"
       >
         <UserIcon size={16} />
         লগইন
@@ -251,10 +251,10 @@ export default function ProfileMenu({
                 backdropFilter: "blur(20px) saturate(180%)",
                 WebkitBackdropFilter: "blur(20px) saturate(180%)",
               }}
-              className="overflow-hidden rounded-2xl border border-zinc-400/25  shadow-2xl"
+              className="overflow-hidden rounded-2xl border border-white/60 bg-white/90 shadow-[0_24px_70px_rgba(15,23,42,0.16)] dark:border-white/10 dark:bg-zinc-900/95"
             >
               {/* Header */}
-              <div className="flex items-center gap-3 px-4 py-3">
+              <div className="flex items-center gap-3 border-b border-[var(--brand-border)] px-4 py-4">
                 <img
                   src={avatarSrc}
                   alt={user.name}
@@ -276,7 +276,7 @@ export default function ProfileMenu({
               <div className="space-y-1 p-2">
                 <Link
                   href="/settings/profile"
-                  className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-colors hover:bg-zinc-500/10"
+                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors hover:bg-[var(--brand-surface)] hover:text-[var(--brand-primary-strong)]"
                   onClick={() => setIsDropdownOpen(false)}
                   role="menuitem"
                 >
@@ -286,7 +286,7 @@ export default function ProfileMenu({
 
                 <Link
                   href={`/messages/${user.slug || user.id}`}
-                  className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-colors hover:bg-zinc-500/10"
+                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors hover:bg-[var(--brand-surface)] hover:text-[var(--brand-primary-strong)]"
                   onClick={() => setIsDropdownOpen(false)}
                   role="menuitem"
                 >
@@ -302,7 +302,7 @@ export default function ProfileMenu({
                   type="button"
                   onClick={handleLogout}
                   disabled={isLoggingOut}
-                  className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50 dark:text-red-400 dark:hover:bg-red-500/10"
+                  className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50 dark:text-red-400 dark:hover:bg-red-500/10"
                   role="menuitem"
                 >
                   <LogOut className="size-5" />
