@@ -9,9 +9,9 @@ export default function Adsense() {
   return (
     <Script
       async
-      src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${pId}`}
+      src={"https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=" + pId}
       crossOrigin="anonymous"
-      strategy="afterInteractive" // পেজ লোড ফাস্ট করবে
+      strategy="lazyOnload"
     />
   );
 }
