@@ -64,10 +64,10 @@ function CustomButton({ onLoginSuccess }: Props) {
           setError(null);
           login();
         }}
-        className="group flex w-full items-center justify-center gap-3 rounded-full border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-zinc-400/25 disabled:cursor-not-allowed disabled:opacity-60 dark:text-zinc-100"
+        className="group flex min-h-12 w-full items-center justify-center gap-3 rounded-2xl bg-white/75 px-4 py-3 text-sm font-bold text-zinc-900 shadow-[0_10px_26px_rgb(16_37_35_/_0.05)] ring-1 ring-[var(--brand-border)] transition hover:-translate-y-0.5 hover:bg-white disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white/[0.035] dark:text-zinc-100"
       >
         {loading ? (
-          <div className="h-5 w-5 animate-spin rounded-full border-2 border-zinc-500 border-t-transparent" />
+          <div className="h-5 w-5 animate-spin rounded-full border-2 border-[var(--brand-primary)] border-t-transparent" />
         ) : (
           <svg className="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
