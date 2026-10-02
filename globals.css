@@ -569,3 +569,234 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* ==========================================================
+   Second-pass UI polish: quiet chrome, consistent rhythm,
+   subtle depth, accessible controls and stable surfaces.
+   ========================================================== */
+
+.site-page {
+  min-width: 0;
+  isolation: isolate;
+}
+
+.site-page main,
+.site-page > main {
+  min-width: 0;
+}
+
+.site-page :where(section.border, article.border, aside.border, div.border) {
+  border-color: rgb(8 127 115 / 0.07) !important;
+}
+
+.dark .site-page :where(section.border, article.border, aside.border, div.border) {
+  border-color: rgb(66 197 182 / 0.09) !important;
+}
+
+.site-page :where(section.border-t, article.border-t, aside.border-t, div.border-t) {
+  border-top-color: transparent !important;
+  background-image: linear-gradient(90deg, transparent, rgb(8 127 115 / 0.08), transparent);
+  background-repeat: no-repeat;
+  background-position: top;
+  background-size: 100% 1px;
+}
+
+.dark .site-page :where(section.border-t, article.border-t, aside.border-t, div.border-t) {
+  background-image: linear-gradient(90deg, transparent, rgb(66 197 182 / 0.10), transparent);
+}
+
+.site-page :where(section.border-b, article.border-b, aside.border-b, div.border-b) {
+  border-bottom-color: transparent !important;
+  background-image: linear-gradient(90deg, transparent, rgb(8 127 115 / 0.07), transparent);
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-size: 100% 1px;
+}
+
+.dark .site-page :where(section.border-b, article.border-b, aside.border-b, div.border-b) {
+  background-image: linear-gradient(90deg, transparent, rgb(66 197 182 / 0.09), transparent);
+}
+
+/* Quiet all legacy panel outlines while retaining form-field affordances. */
+.site-page :where(section.rounded-xl, section.rounded-2xl, section.rounded-3xl),
+.site-page :where(article.rounded-xl, article.rounded-2xl, article.rounded-3xl),
+.site-page :where(aside.rounded-xl, aside.rounded-2xl, aside.rounded-3xl) {
+  border-color: rgb(8 127 115 / 0.07) !important;
+  box-shadow: 0 16px 42px rgb(16 37 35 / 0.045);
+}
+
+.dark .site-page :where(section.rounded-xl, section.rounded-2xl, section.rounded-3xl),
+.dark .site-page :where(article.rounded-xl, article.rounded-2xl, article.rounded-3xl),
+.dark .site-page :where(aside.rounded-xl, aside.rounded-2xl, aside.rounded-3xl) {
+  border-color: rgb(66 197 182 / 0.08) !important;
+  box-shadow: 0 18px 54px rgb(0 0 0 / 0.19);
+}
+
+/* Never let outlines stack: old utility borders become soft inset separators. */
+.site-page :where(.border-zinc-200, .border-zinc-200\/60, .border-zinc-300, .border-zinc-400\/25, .border-white\/50, .border-white\/60) {
+  border-color: rgb(8 127 115 / 0.075) !important;
+}
+
+.dark .site-page :where(.border-zinc-200, .border-zinc-200\/60, .border-zinc-300, .border-zinc-400\/25, .border-white\/50, .border-white\/60) {
+  border-color: rgb(66 197 182 / 0.09) !important;
+}
+
+/* Form controls: tactile, legible and deliberately lighter than surrounding cards. */
+.site-page :where(input:not([type="checkbox"]):not([type="radio"]), textarea, select) {
+  min-height: 2.75rem;
+  color: var(--page-foreground);
+  background-color: rgb(255 255 255 / 0.72);
+  border-color: rgb(8 127 115 / 0.12) !important;
+  box-shadow: inset 0 1px 1px rgb(16 37 35 / 0.025);
+}
+
+.dark .site-page :where(input:not([type="checkbox"]):not([type="radio"]), textarea, select) {
+  background-color: rgb(7 25 22 / 0.74);
+  border-color: rgb(66 197 182 / 0.14) !important;
+  box-shadow: inset 0 1px 1px rgb(0 0 0 / 0.18);
+}
+
+.site-page :where(input:not([type="checkbox"]):not([type="radio"]), textarea, select):focus {
+  background-color: rgb(255 255 255 / 0.92);
+}
+
+.dark .site-page :where(input:not([type="checkbox"]):not([type="radio"]), textarea, select):focus {
+  background-color: rgb(9 31 27 / 0.94);
+}
+
+.site-page :where(input::placeholder, textarea::placeholder) {
+  color: rgb(77 102 98 / 0.72);
+}
+
+.dark .site-page :where(input::placeholder, textarea::placeholder) {
+  color: rgb(168 194 189 / 0.66);
+}
+
+.site-page :where(button, a[role="button"]) {
+  min-height: 2.65rem;
+}
+
+.site-page :where(button.rounded-lg, button.rounded-xl, button.rounded-2xl),
+.site-page :where(a.rounded-lg, a.rounded-xl, a.rounded-2xl) {
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+.site-page :where(button.rounded-lg:hover, button.rounded-xl:hover, button.rounded-2xl:hover),
+.site-page :where(a.rounded-lg:hover, a.rounded-xl:hover, a.rounded-2xl:hover) {
+  transform: translateY(-1px);
+}
+
+/* Legacy indigo/emerald interactive accents collapse into the new brand. */
+.site-page :where(.text-indigo-600, .text-indigo-500) {
+  color: var(--brand-primary-strong) !important;
+}
+
+.dark .site-page :where(.text-indigo-600, .text-indigo-500) {
+  color: var(--brand-primary) !important;
+}
+
+.site-page :where(.text-emerald-600, .text-emerald-500) {
+  color: var(--brand-primary-strong) !important;
+}
+
+.dark .site-page :where(.text-emerald-600, .text-emerald-500) {
+  color: var(--brand-primary) !important;
+}
+
+/* Soft status surfaces instead of boxed notification chrome. */
+.site-page :where(.bg-indigo-50, .bg-indigo-100) {
+  background: rgb(8 127 115 / 0.07) !important;
+}
+
+.dark .site-page :where(.dark\:bg-indigo-500\/\[0\.07\]) {
+  background: rgb(66 197 182 / 0.08) !important;
+}
+
+.site-page :where(.bg-emerald-50, .bg-emerald-100) {
+  background: rgb(8 127 115 / 0.065) !important;
+}
+
+/* Stable ad placeholder contract for future ad units. */
+.ad-safe-zone,
+.adsbygoogle,
+.adsbygoogle[data-ad-status] {
+  min-height: 180px;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.ad-safe-zone {
+  display: grid;
+  place-items: center;
+  color: rgb(77 102 98 / 0.55);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
+.dark .ad-safe-zone {
+  color: rgb(168 194 189 / 0.48);
+}
+
+/* Modal surfaces: one depth language across settings/search/auth/notifications. */
+:where([role="dialog"]) {
+  box-shadow: 0 28px 90px rgb(6 32 28 / 0.20);
+  border-color: rgb(8 127 115 / 0.08) !important;
+}
+
+.dark :where([role="dialog"]) {
+  box-shadow: 0 30px 95px rgb(0 0 0 / 0.38);
+  border-color: rgb(66 197 182 / 0.10) !important;
+}
+
+/* Search and notification lists feel like one continuous surface. */
+.site-page :where(.divide-y > :not([hidden]) ~ :not([hidden])) {
+  border-color: rgb(8 127 115 / 0.065) !important;
+}
+
+.dark .site-page :where(.divide-y > :not([hidden]) ~ :not([hidden])) {
+  border-color: rgb(66 197 182 / 0.08) !important;
+}
+
+/* Images and media cards inherit the same soft finishing. */
+.site-page :where(img.rounded-lg, img.rounded-xl, img.rounded-2xl) {
+  border-color: transparent !important;
+  box-shadow: 0 10px 28px rgb(16 37 35 / 0.07);
+}
+
+.dark .site-page :where(img.rounded-lg, img.rounded-xl, img.rounded-2xl) {
+  box-shadow: 0 12px 34px rgb(0 0 0 / 0.22);
+}
+
+/* Consistent article typography without changing semantic levels. */
+.site-page :where(p, li) {
+  text-wrap: pretty;
+}
+
+.site-page :where(ul, ol) {
+  padding-inline-start: 1.25rem;
+}
+
+.site-page :where(h1, h2, h3) {
+  text-wrap: balance;
+}
+
+/* Full-bleed specialist workspaces intentionally bypass card styling. */
+.site-page-ai,
+.site-page-chat {
+  background:
+    radial-gradient(circle at 15% 0%, rgb(19 142 160 / 0.09), transparent 28rem),
+    var(--page-background);
+}
+
+/* Reduced motion remains respected for the sweep. */
+@media (prefers-reduced-motion: reduce) {
+  .site-page :where(button, a) {
+    transform: none !important;
+  }
+}
