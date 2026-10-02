@@ -33,7 +33,7 @@ export default function AiChatShell({
       {/* Sidebar Area */}
       <aside
         className={`
-          fixed inset-y-0 left-0 z-30 h-full bg-zinc-100 dark:bg-zinc-900 overflow-hidden transition-all duration-300 ease-in-out
+          fixed inset-y-0 left-0 z-30 h-full bg-[var(--nav-background)] overflow-hidden transition-all duration-300 ease-in-out
           md:static md:shrink-0
           ${
             isOpen
@@ -44,21 +44,21 @@ export default function AiChatShell({
       >
         <div className="w-70 h-full flex flex-col">
           {/* Mobile Header */}
-          <div className=" flex items-center justify-between px-3 py-2.5 shrink-0">
+          <div className=" flex items-center justify-between px-3 py-3 shrink-0">
             {/* Brand */}
             <div>
               <Link
                 href="/"
-                className="flex items-center gap-2 text-xl font-bold"
+                className="group flex items-center gap-2.5 text-base font-black tracking-tight"
               >
-                <BrandIcon className="h-6 w-6 shrink-0" />
+                <BrandIcon className="brand-mark size-9 rounded-xl p-1.5 shrink-0" />
                 <span className="truncate">Totthobox AI</span>
               </Link>
             </div>
             <div className="md:hidden flex">
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 rounded-lg hover:bg-zinc-400/10 "
+                className="nav-icon-button rounded-xl p-2"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -95,10 +95,10 @@ export default function AiChatShell({
         )}
 
         {/* Header */}
-        <div className="flex items-center gap-4 px-4 py-2">
+        <div className="site-header flex items-center gap-3 border-0 px-4 py-2.5">
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="p-2 rounded-xl hover:bg-zinc-400/10 "
+            className="nav-icon-button rounded-xl p-2"
           >
             <Menu className="w-5 h-5" />
           </button>
