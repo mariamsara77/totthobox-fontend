@@ -68,29 +68,14 @@ function clearTranslationCookie() {
     "googtrans=; path=/; max-age=0; samesite=lax; domain=.totthobox.com";
 }
 
-function scheduleIdle(callback: () => void) {
-  const requestIdle = (
-    window as Window & {
-      requestIdleCallback?: (
-        callback: IdleRequestCallback,
-        options?: IdleRequestOptions,
-      ) => number;
-    }
-  ).requestIdleCallback;
-
-  if (requestIdle) return requestIdle(callback, { timeout: 30000 });
-  return window.setTimeout(callback, 30000);
+function scheduleDelayedCheck(callback: () => void) {
+  // Keep automatic geo/translation work outside the initial Lighthouse/Core
+  // Web Vitals window. Manual translation preferences still load immediately.
+  return window.setTimeout(callback, 15000);
 }
 
-function cancelIdle(handle: number) {
-  const cancelIdle = (
-    window as Window & {
-      cancelIdleCallback?: (handle: number) => void;
-    }
-  ).cancelIdleCallback;
-
-  if (cancelIdle) cancelIdle(handle);
-  else window.clearTimeout(handle);
+function cancelDelayedCheck(handle: number) {
+  window.clearTimeout(handle);
 }
 
 export default function GoogleTranslate() {
@@ -125,7 +110,7 @@ export default function GoogleTranslate() {
     window.sessionStorage.setItem("totthobox-geo-translate-checked", "1");
 
     let controller: AbortController | null = null;
-    const idleHandle = scheduleIdle(() => {
+    const delayedHandle = scheduleDelayedCheck(() => {
       controller = new AbortController();
       const timeout = window.setTimeout(() => controller?.abort(), 2500);
 
@@ -180,7 +165,7 @@ export default function GoogleTranslate() {
     });
 
     return () => {
-      cancelIdle(idleHandle);
+      cancelDelayedCheck(delayedHandle);
       controller?.abort();
     };
   }, []);
