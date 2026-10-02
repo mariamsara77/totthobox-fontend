@@ -2,11 +2,23 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowRight, BookOpen, Calculator, Compass, Globe2, Heart, Wrench } from "lucide-react";
+import {
+  ArrowRight,
+  BookOpen,
+  Calculator,
+  Compass,
+  Globe2,
+  Heart,
+  Wrench,
+} from "lucide-react";
 
 type RelatedItem = { href: string; label: string; description: string };
 
-const groups: { match: (path: string) => boolean; title: string; items: RelatedItem[] }[] = [
+const groups: {
+  match: (path: string) => boolean;
+  title: string;
+  items: RelatedItem[];
+}[] = [
   {
     match: (p) => p.startsWith("/bangla/"),
     title: "আরও দেখুন",
@@ -109,18 +121,26 @@ export default function RelatedLinks() {
   if (!items.length) return null;
 
   return (
-    <section className="mx-auto w-full max-w-2xl px-4 pb-8 pt-6 sm:px-6 sm:pt-8" aria-labelledby="related-pages-title">
-      <div className="border-t border-zinc-400/25 pt-6">
-        <div className="mb-4 space-y-1">
-          <div>
-            <h2 id="related-pages-title" className="text-lg font-bold tracking-tight">
-              {group.title}
-            </h2>
-            <p className="text-sm leading-6 text-zinc-500 dark:text-zinc-400">
-              Totthobox-এর একই বিষয়ের আরও প্রয়োজনীয় তথ্য ও টুলস।
-            </p>
-          </div>
+    <section
+      className="mx-auto w-full max-w-4xl px-4 pb-8 pt-10 sm:px-6 sm:pt-12"
+      aria-labelledby="related-pages-title"
+    >
+      <div className="border-t border-[var(--brand-border)] pt-8">
+        <div className="mb-5">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--brand-primary)]">
+            Continue exploring
+          </p>
+          <h2
+            id="related-pages-title"
+            className="mt-1 text-xl font-bold tracking-tight sm:text-2xl"
+          >
+            {group.title}
+          </h2>
+          <p className="mt-1 text-sm leading-6 text-zinc-500 dark:text-zinc-400">
+            Totthobox-এর একই বিষয়ের আরও প্রয়োজনীয় তথ্য ও টুলস।
+          </p>
         </div>
+
         <nav aria-label={group.title}>
           <div className="grid gap-3 sm:grid-cols-2">
             {items.map((item) => {
@@ -129,16 +149,19 @@ export default function RelatedLinks() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="group block rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 transition-colors hover:bg-zinc-400/20 active:bg-zinc-400/25"
+                  className="group block rounded-2xl border border-zinc-200/70 bg-white/60 p-4 shadow-sm backdrop-blur-xl transition hover:-translate-y-0.5 hover:border-[var(--brand-border)] hover:shadow-[0_18px_40px_var(--brand-glow)] dark:border-white/10 dark:bg-white/[0.035]"
                 >
                   <div className="flex items-start gap-3">
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-zinc-400/15 text-zinc-600 dark:text-zinc-300">
-                      <Icon className="h-4 w-4" aria-hidden="true" />
+                    <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[var(--brand-surface)] text-[var(--brand-primary-strong)]">
+                      <Icon className="size-4" aria-hidden="true" />
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="flex items-center gap-1 text-sm font-semibold leading-5">
                         {item.label}
-                        <ArrowRight className="h-3.5 w-3.5 opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100" aria-hidden="true" />
+                        <ArrowRight
+                          className="size-3.5 opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100"
+                          aria-hidden="true"
+                        />
                       </span>
                       <span className="mt-1 block text-sm leading-5 text-zinc-500 dark:text-zinc-400">
                         {item.description}
