@@ -9,9 +9,9 @@ export default function GlobalError({
 }) {
   return (
     <html lang="bn">
-      <body className="bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
-        <div className="flex min-h-screen flex-col items-center justify-center px-4 text-center">
-          <div className="text-7xl font-bold tracking-tighter text-zinc-200 dark:text-zinc-800">
+      <body className="bg-[var(--page-background)] text-[var(--page-foreground)]">
+        <div className="site-page flex min-h-screen flex-col items-center justify-center px-4 py-10 text-center">
+          <div className="text-7xl font-black tracking-tighter text-[var(--brand-primary)] opacity-15">
             Error
           </div>
 
@@ -31,7 +31,7 @@ export default function GlobalError({
 
           <button
             onClick={() => reset()}
-            className="mt-8 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-emerald-500"
+            className="mt-8 rounded-2xl bg-[var(--brand-primary)] px-5 py-3 text-sm font-bold text-white shadow-[0_12px_24px_var(--brand-glow)] hover:bg-[var(--brand-primary-strong)]"
           >
             আবার চেষ্টা করুন
           </button>
