@@ -35,12 +35,11 @@ const nextConfig: NextConfig = {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=()",
           },
-          // HSTS শুধুমাত্র প্রোডাকশনে সক্রিয় থাকবে
           ...(!isDev
             ? [
                 {
                   key: "Strict-Transport-Security",
-                  value: "max-age=31536000; includeSubDomains",
+                  value: "max-age=31536000; includeSubDomains; preload",
                 },
               ]
             : []),
@@ -74,7 +73,6 @@ const withPWA = withPWAInit({
   aggressiveFrontEndNavCaching: true,
   reloadOnOnline: true,
   extendDefaultRuntimeCaching: true,
-  // Use the existing offline page when a document navigation cannot reach the network.
   fallbacks: {
     document: "/offline",
   },
@@ -83,6 +81,4 @@ const withPWA = withPWAInit({
   },
 });
 
-// Dev মোডে সরাসরি pure nextConfig এক্সপোর্ট হবে (Turbopack ফুল স্পিডে চলবে)
-// Production মোডে PWA প্লাগইন যুক্ত হয়ে সার্ভিস ওয়ার্কার তৈরি করবে
 export default isDev ? nextConfig : withPWA(nextConfig);
