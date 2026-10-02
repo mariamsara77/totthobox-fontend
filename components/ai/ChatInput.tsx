@@ -79,7 +79,7 @@ export default function ChatInput({
     <div className="text-center">
       {/* গেস্ট নোটিফিকেশন বার */}
       {isGuest && (
-        <div className="mb-2 flex items-center justify-between rounded-xl bg-zinc-400/10 p-2 text-xs">
+        <div className="mb-2 flex items-center justify-between rounded-2xl bg-[var(--brand-surface)] p-2.5 text-xs">
           <span>
             বিনা মূল্যে বাকি আছে: <strong>{guestRemaining}</strong> টি উত্তর
           </span>
@@ -87,7 +87,7 @@ export default function ChatInput({
             <button
               type="button"
               onClick={onLogin}
-              className="flex items-center gap-1 text-emerald-600 hover:underline dark:text-emerald-400"
+              className="flex items-center gap-1 font-semibold text-[var(--brand-primary-strong)] hover:underline dark:text-[var(--brand-primary)]"
             >
               <LogIn className="w-3.5 h-3.5" />
               লগইন করুন
@@ -115,7 +115,7 @@ export default function ChatInput({
       )}
 
       {/* ইনপুট বক্স */}
-      <div className="flex items-end gap-2 rounded-2xl bg-zinc-400/10 p-2">
+      <div className="surface-panel flex items-end gap-2 rounded-[1.4rem] p-2">
         <input
           type="file"
           ref={fileInputRef}
@@ -127,7 +127,7 @@ export default function ChatInput({
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={disabled}
-          className="rounded-xl p-2 text-zinc-500 transition-colors hover:bg-zinc-400/25 disabled:opacity-50 dark:text-zinc-400"
+          className="nav-icon-button rounded-xl p-2 disabled:opacity-50"
           title="ছবি যুক্ত করুন"
         >
           <ImageIcon className="w-5 h-5" />
@@ -147,12 +147,12 @@ export default function ChatInput({
           type="button"
           onClick={handleSubmit}
           disabled={disabled || (!text.trim() && !imageBase64)}
-          className="m-1 rounded-xl bg-zinc-400/10 p-2 transition-colors hover:bg-zinc-400/25 disabled:opacity-50"
+          className="m-1 rounded-xl bg-[var(--brand-primary)] p-2 text-white shadow-[0_8px_18px_var(--brand-glow)] transition-colors hover:bg-[var(--brand-primary-strong)] disabled:opacity-50"
         >
           <Send className="w-4 h-4" />
         </button>
       </div>
-      <span className="text-xs text-zinc-500">
+      <span className="text-xs text-zinc-500 dark:text-zinc-400">
         উত্তর যাচাই করে ব্যবহার করুন।
       </span>
     </div>
