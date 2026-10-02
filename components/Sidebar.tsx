@@ -20,9 +20,6 @@ import {
   FaTachometerAlt,
   FaDatabase,
   FaBolt,
-  FaShoppingCart,
-  FaPlus,
-  FaNewspaper,
 } from "react-icons/fa";
 import { TfiExchangeVertical } from "react-icons/tfi";
 import { GoNumber } from "react-icons/go";
@@ -31,7 +28,6 @@ import { MdEditDocument, MdCurrencyExchange } from "react-icons/md";
 import { GrMultimedia } from "react-icons/gr";
 import { FaFileImport } from "react-icons/fa6";
 import {
-  Settings,
   Flag,
   Map as LucideMap,
   BookOpen,
