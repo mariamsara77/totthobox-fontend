@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useEffect } from "react";
 import { IoChatbubble, IoSettings } from "react-icons/io5";
 import ProfileMenu from "./ProfileMenu";
@@ -10,8 +11,12 @@ import { useAuth } from "@/context/AuthContext";
 import BrandIcon from "@/components/BrandIcon";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { getUnreadCount } from "@/lib/notifications";
-import LiveNotificationSync from "@/components/notifications/LiveNotificationSync";
 import { SearchTrigger } from "@/components/search";
+
+const LiveNotificationSync = dynamic(
+  () => import("@/components/notifications/LiveNotificationSync"),
+  { ssr: false },
+);
 
 export default function Navbar() {
   const { openSettingsModal } = useSettingsModal();
