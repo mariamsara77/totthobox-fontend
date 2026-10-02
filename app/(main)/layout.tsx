@@ -26,7 +26,7 @@ export default function MainLayout({ children }: Readonly<{ children: React.Reac
             <div className="sticky top-0 z-50 md:hidden" style={{ isolation: "isolate" }}>
               <Navbar />
             </div>
-            <main className="min-w-0 flex-1 w-full">{children}</main>
+            <main className="site-page site-page-main min-w-0 flex-1 w-full">{children}</main>
             <HelpfulContent />
             <RelatedLinks />
             <Footer />
