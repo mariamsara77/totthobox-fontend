@@ -23,8 +23,6 @@ import {
   FaShoppingCart,
   FaPlus,
   FaNewspaper,
-  FaFlag,
-  FaBookOpen,
 } from "react-icons/fa";
 import { TfiExchangeVertical } from "react-icons/tfi";
 import { GoNumber } from "react-icons/go";
@@ -48,9 +46,6 @@ import {
   Presentation,
   SquareActivity,
   Paperclip,
-  ShoppingCart,
-  Plus,
-  Newspaper,
   User,
   Lock,
   Trash2,
