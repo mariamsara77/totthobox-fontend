@@ -24,7 +24,7 @@ export default function ThemeToggle() {
 
   return (
     <div
-      className="grid w-full grid-cols-3 gap-1 rounded-2xl border border-[var(--brand-border)] bg-[var(--brand-surface)] p-1"
+      className="grid w-full grid-cols-3 gap-1.5 rounded-[1.25rem] border border-[var(--brand-border)] bg-[var(--brand-surface)] p-1.5"
       role="group"
       aria-label="থিম নির্বাচন"
     >
@@ -37,10 +37,10 @@ export default function ThemeToggle() {
             type="button"
             onClick={() => setTheme(id)}
             aria-pressed={isActive}
-            className={`flex min-w-0 items-center justify-center gap-1.5 rounded-xl px-2 py-2.5 text-xs font-medium transition-all sm:text-sm ${
+            className={`flex min-w-0 items-center justify-center gap-1.5 rounded-xl px-2 py-2.5 text-xs font-semibold transition-all sm:text-sm ${
               isActive
-                ? "bg-gradient-to-r from-[var(--brand-primary-strong)] to-[var(--brand-secondary)] text-white shadow-md shadow-[var(--brand-glow)]"
-                : "text-zinc-600 hover:bg-white/70 dark:text-zinc-300 dark:hover:bg-white/10"
+                ? "bg-[var(--brand-primary)] text-white shadow-[0_8px_18px_var(--brand-glow)]"
+                : "text-zinc-600 hover:bg-white/75 dark:text-zinc-300 dark:hover:bg-white/10"
             }`}
           >
             <Icon className="size-4 shrink-0" />
