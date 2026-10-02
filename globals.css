@@ -221,6 +221,58 @@ main h3 {
   letter-spacing: -0.018em;
 }
 
+/* Primary actions inherit the new brand language without changing their behavior. */
+:where(button.bg-emerald-600),
+:where(a.bg-emerald-600),
+:where(button.bg-indigo-600),
+:where(a.bg-indigo-600),
+:where(button.bg-blue-600),
+:where(a.bg-blue-600) {
+  background-image: linear-gradient(
+    135deg,
+    var(--brand-primary-strong),
+    var(--brand-primary) 52%,
+    var(--brand-secondary)
+  );
+  border-color: transparent !important;
+  box-shadow: 0 10px 25px var(--brand-glow);
+}
+
+:where(button.bg-zinc-900),
+:where(a.bg-zinc-900) {
+  background-image: linear-gradient(
+    135deg,
+    #17172e,
+    #24204d
+  );
+  box-shadow: 0 10px 25px rgb(37 34 86 / 0.18);
+}
+
+.dark :where(button.bg-zinc-900),
+.dark :where(a.bg-zinc-900) {
+  background-image: linear-gradient(
+    135deg,
+    var(--brand-primary-strong),
+    var(--brand-secondary)
+  );
+}
+
+/* Keep stacked mobile layouts visually calm and prevent accidental horizontal overflow. */
+main,
+.app-shell {
+  min-width: 0;
+}
+
+img,
+video,
+canvas {
+  max-width: 100%;
+}
+
+html {
+  scroll-padding-top: 5rem;
+}
+
 /* Premium scrollbar */
 @media (hover: hover) and (pointer: fine) {
   ::-webkit-scrollbar {
@@ -346,4 +398,19 @@ body {
 
 .pwa-screen-height {
   height: 100dvh;
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
