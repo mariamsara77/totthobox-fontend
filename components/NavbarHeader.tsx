@@ -19,18 +19,17 @@ export default function Navbar() {
     useNotificationModal();
   const { isLoggedIn, user } = useAuth();
 
-  // Initial unread count
   useEffect(() => {
     if (!isLoggedIn) {
       setUnreadCount(0);
       return;
     }
+
     getUnreadCount()
       .then(setUnreadCount)
       .catch(() => undefined);
   }, [isLoggedIn, setUnreadCount]);
 
-  // Live notification updates
   useEffect(() => {
     if (!user?.id || !isLoggedIn) return;
     const echo = getEcho();
@@ -54,20 +53,21 @@ export default function Navbar() {
   }, [user?.id, isLoggedIn, setUnreadCount]);
 
   return (
-    <header className="z-60 w-full border-b border-zinc-400/25 backdrop-blur-xl">
-      <div className="flex h-16 items-center justify-between px-4 sm:px-6">
-        {/* Brand */}
-        <div className="flex items-center gap-4">
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-xl font-semibold"
-          >
-            <BrandIcon className="h-6 w-6" />
+    <header className="w-full border-b border-white/50 bg-white/70 shadow-[0_8px_30px_rgba(15,23,42,0.04)] backdrop-blur-2xl dark:border-white/10 dark:bg-zinc-950/65">
+      <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-4 sm:px-6">
+        <Link
+          href="/"
+          className="group flex items-center gap-2.5"
+          aria-label="Totthobox হোম"
+        >
+          <span className="flex size-9 items-center justify-center rounded-xl bg-[var(--brand-surface)] text-[var(--brand-primary-strong)] ring-1 ring-[var(--brand-border)] transition group-hover:scale-105">
+            <BrandIcon className="size-6" />
+          </span>
+          <span className="text-base font-bold tracking-tight sm:text-lg">
             Totthobox
-          </Link>
-        </div>
+          </span>
+        </Link>
 
-        {/* Right side */}
         <div className="flex items-center gap-1 sm:gap-2">
           <SearchTrigger />
 
@@ -76,9 +76,9 @@ export default function Navbar() {
               <Link
                 href="/messages"
                 aria-label="মেসেজ"
-                className="flex items-center gap-2 rounded-xl p-2 transition-colors hover:bg-zinc-400/25"
+                className="flex size-10 items-center justify-center rounded-xl text-zinc-600 transition hover:bg-[var(--brand-surface)] hover:text-[var(--brand-primary-strong)] dark:text-zinc-300"
               >
-                <IoChatbubble className="h-5 w-5" />
+                <IoChatbubble className="size-5" />
               </Link>
 
               <NotificationBell
@@ -91,10 +91,10 @@ export default function Navbar() {
           <button
             type="button"
             onClick={openSettingsModal}
-            className="flex items-center gap-2 rounded-xl p-2 transition-colors hover:bg-zinc-400/25"
+            className="flex size-10 items-center justify-center rounded-xl text-zinc-600 transition hover:bg-[var(--brand-surface)] hover:text-[var(--brand-primary-strong)] dark:text-zinc-300"
             aria-label="Settings"
           >
-            <IoSettings className="h-5 w-5" />
+            <IoSettings className="size-5" />
           </button>
 
           <ProfileMenu />
