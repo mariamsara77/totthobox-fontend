@@ -168,10 +168,10 @@ export default function LoginModal({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.98 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="my-auto w-full max-w-md overflow-hidden rounded-2xl border border-zinc-400/25 shadow-2xl backdrop-blur-xl "
+            className="surface-panel my-auto w-full max-w-md overflow-hidden rounded-[1.6rem] shadow-[0_30px_100px_rgb(6_32_28_/_0.24)] backdrop-blur-2xl"
           >
-            <div className="relative border-b border-zinc-400/25 px-4 pb-4 pt-5 sm:px-5">
-              <div className="absolute inset-x-0 top-0 h-px bg-zinc-400/25" />
+            <div className="relative px-4 pb-4 pt-5 sm:px-5">
+              <div className="absolute inset-x-8 top-0 h-0.5 rounded-full bg-gradient-to-r from-[var(--brand-primary)] via-[var(--brand-secondary)] to-[var(--brand-highlight)] opacity-80" />
 
               <button
                 type="button"
@@ -187,7 +187,7 @@ export default function LoginModal({
                 <div className="flex justify-center">
                   <Link
                     href="/"
-                    className="mb-3 inline-flex size-14 items-center justify-center rounded-xl border border-zinc-400/25 bg-zinc-400/10"
+                    className="brand-mark mb-3 inline-flex size-14 items-center justify-center rounded-[1.15rem] p-2"
                   >
                     <BrandIcon className="size-12" />
                   </Link>
