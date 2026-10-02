@@ -18,7 +18,7 @@ export default function HomeLayout({ children }: Readonly<{ children: React.Reac
     <div className="app-shell min-h-dvh">
       <div className="flex min-h-dvh">
         <div className="flex min-w-0 flex-1 flex-col">
-          <div className="sticky top-0 z-50">
+          <div className="sticky top-0 z-50" style={{ isolation: "isolate" }}>
             <NavbarHeader />
           </div>
           <main className="min-w-0 flex-1 w-full">{children}</main>
