@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Sidebar from "@/components/Sidebar";
@@ -16,25 +16,17 @@ export const metadata: Metadata = {
     "Totthobox হলো একটি আধুনিক ডিজিটাল ইনফরমেশন ও ইউটিলিটি সার্ভিস প্ল্যাটফর্ম। প্রয়োজনীয় সকল তথ্য ও সেবা সহজে পেতে ভিজিট করুন।",
 };
 
-export default function MainLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function MainLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div>
+    <div className="app-shell min-h-dvh">
       <SidebarProvider>
-        <div className="flex">
-          {/* Sidebar */}
+        <div className="flex min-h-dvh">
           <Sidebar />
-
-          {/* Main content area */}
           <div className="flex min-w-0 flex-1 flex-col">
-            <div className="md:hidden sticky top-0 z-50">
+            <div className="sticky top-0 z-50 md:hidden">
               <Navbar />
             </div>
-
-            <main className="flex-1 w-full">{children}</main>
+            <main className="min-w-0 flex-1 w-full">{children}</main>
             <HelpfulContent />
             <RelatedLinks />
             <Footer />
