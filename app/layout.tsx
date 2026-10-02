@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Noto_Sans_Bengali } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 import { AppProviders } from "./providers";
 import TagManager from "@/components/partials/TagManager";
 import GoogleTranslate from "@/components/GoogleTranslate";
+import DeferredAdSense from "@/components/DeferredAdSense";
 import DeferredVisitorTracker from "@/components/DeferredVisitorTracker";
 import InstallPWA from "@/components/InstallPWA";
 import NetworkStatus from "@/components/NetworkStatus";
@@ -105,13 +105,7 @@ export default function RootLayout({
         suppressHydrationWarning
         className="antialiased bg-white dark:bg-zinc-800"
       >
-        <Script
-          id="adsense-runtime"
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9522604367420521"
-          crossOrigin="anonymous"
-          strategy="lazyOnload"
-        />
+        <DeferredAdSense />
 
         <SiteStructuredData />
         <TagManager />
