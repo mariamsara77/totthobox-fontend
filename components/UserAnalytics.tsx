@@ -37,15 +37,15 @@ export default function UserAnalytics() {
 
   return (
     <div className="flex items-center justify-center py-2">
-      <div className="flex items-center gap-4 rounded-full border border-zinc-400/25 px-4 py-2">
+      <div className="flex items-center gap-3 rounded-2xl border border-[var(--brand-border)] bg-white/62 px-4 py-2.5 shadow-[0_10px_24px_rgb(8_60_55_/_0.05)] backdrop-blur-xl dark:bg-white/[0.035]">
         <span className="relative flex">
-          <span className="absolute h-full w-full animate-ping rounded-full bg-zinc-700 opacity-75"></span>
-          <span className="relative rounded-full bg-zinc-900"></span>
+          <span className="absolute h-full w-full animate-ping rounded-full bg-[var(--brand-highlight)] opacity-45"></span>
+          <span className="relative size-2 rounded-full bg-[var(--brand-primary)]"></span>
         </span>
 
         <p className="text-sm">
           প্ল্যাটফর্মটি ব্যবহার করেছেন{" "}
-          <span className="text-base font-semibold">
+          <span className="min-w-18 text-base font-black tabular-nums">
             {loading ? "..." : `${totalUsers}+`}
           </span>{" "}
           জন মানুষ
