@@ -78,8 +78,8 @@ function scheduleIdle(callback: () => void) {
     }
   ).requestIdleCallback;
 
-  if (requestIdle) return requestIdle(callback, { timeout: 5000 });
-  return window.setTimeout(callback, 15000);
+  if (requestIdle) return requestIdle(callback, { timeout: 30000 });
+  return window.setTimeout(callback, 30000);
 }
 
 function cancelIdle(handle: number) {
@@ -115,6 +115,8 @@ export default function GoogleTranslate() {
     if (hasActivePreference) {
       setShouldLoadTranslator(true);
     }
+
+    if (manualPreference) return;
 
     if (window.sessionStorage.getItem("totthobox-geo-translate-checked")) {
       return;
