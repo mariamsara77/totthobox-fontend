@@ -101,8 +101,10 @@ function SidebarItem({
   );
 
   const className = cn(
-    "group flex w-full items-center gap-4 rounded-xl p-2 text-sm",
-    isActive ? "bg-zinc-400/25" : "hover:bg-zinc-400/25",
+    "group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200",
+    isActive
+      ? "bg-[var(--brand-surface)] text-[var(--brand-primary-strong)] shadow-sm ring-1 ring-[var(--brand-border)]"
+      : "text-zinc-600 hover:bg-[var(--brand-surface)] hover:text-[var(--brand-primary-strong)] dark:text-zinc-300",
     collapsed && "justify-center px-2",
   );
 
@@ -264,7 +266,7 @@ export default function Sidebar() {
       {/* Sidebar */}
       <aside
         className={cn(
-          "pwa-safe-top fixed top-0 left-0 z-100 flex h-dvh flex-col backdrop-blur-xl border-r border-zinc-400/25 transition-all duration-300 ease-in-out",
+          "pwa-safe-top fixed top-0 left-0 z-100 flex h-dvh flex-col border-r border-white/60 bg-white/80 shadow-[12px_0_45px_rgba(15,23,42,0.06)] backdrop-blur-2xl transition-all duration-300 ease-in-out dark:border-white/10 dark:bg-zinc-950/80",
           isOpen ? "translate-x-0" : "-translate-x-full",
           "md:sticky md:top-0 md:translate-x-0",
           collapsed ? "md:w-16" : "md:w-64",
@@ -275,7 +277,7 @@ export default function Sidebar() {
         {/* Global Tooltip */}
         {collapsed && tooltip && (
           <div
-            className="fixed left-18 z-60 -translate-y-1/2 whitespace-nowrap rounded-xl bg-black dark:bg-white p-2 text-xs text-white dark:text-black"
+            className="fixed left-18 z-60 -translate-y-1/2 whitespace-nowrap rounded-xl border border-[var(--brand-border)] bg-zinc-950 p-2.5 text-xs font-medium text-white shadow-xl dark:bg-white dark:text-zinc-950"
             style={{ top: tooltip.top }}
           >
             {tooltip.label}
@@ -291,7 +293,7 @@ export default function Sidebar() {
         >
           {!collapsed && (
             <>
-              <Link href="/" className="flex items-center gap-2 text-xl ">
+              <Link href="/" className="flex items-center gap-2 text-xl font-bold tracking-tight">
                 <BrandIcon className="h-6 w-6 shrink-0" />
                 <span className="truncate">Totthobox</span>
               </Link>
@@ -299,7 +301,7 @@ export default function Sidebar() {
               <button
                 type="button"
                 onClick={toggleCollapsed}
-                className="hidden rounded-xl p-2 md:flex hover:bg-zinc-400/25"
+                className="hidden rounded-xl p-2 text-zinc-500 transition hover:bg-[var(--brand-surface)] hover:text-[var(--brand-primary-strong)] md:flex"
                 title="Collapse sidebar"
                 aria-label="সাইডবার সংকুচিত করুন"
               >
@@ -312,7 +314,7 @@ export default function Sidebar() {
             <button
               type="button"
               aria-label="সাইডবার প্রসারিত করুন"
-              className="group relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl hover:bg-zinc-400/25"
+              className="group relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl bg-[var(--brand-surface)] ring-1 ring-[var(--brand-border)] hover:bg-[var(--brand-primary)] hover:text-white"
               onMouseEnter={(e) => handleMouseEnter(e, "Expand Sidebar")}
               onMouseLeave={handleMouseLeave}
               onClick={toggleCollapsed}
@@ -330,7 +332,7 @@ export default function Sidebar() {
             type="button"
             onClick={() => setIsOpen(false)}
             aria-label="সাইডবার বন্ধ করুন"
-            className="rounded-xl p-2 text-zinc-400 hover:bg-zinc-400/25 md:hidden"
+            className="rounded-xl p-2 text-zinc-400 transition hover:bg-[var(--brand-surface)] hover:text-[var(--brand-primary-strong)] md:hidden"
           >
             <X className="size-4" />
           </button>
