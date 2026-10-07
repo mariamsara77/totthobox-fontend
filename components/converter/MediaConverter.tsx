@@ -13,8 +13,7 @@ import {
   AlertCircle,
   ChevronDown,
 } from "lucide-react";
-import { FFmpeg } from "@ffmpeg/ffmpeg";
-import { fetchFile, toBlobURL } from "@ffmpeg/util";
+import type { FFmpeg } from "@ffmpeg/ffmpeg";
 
 // ─── Simple cn helper (no external file needed) ───────────
 function cn(...classes: (string | boolean | undefined | null)[]) {
@@ -71,15 +70,24 @@ export default function MediaConverter() {
 
   // ─── Load FFmpeg (once) ─────────────────────────────────
   useEffect(() => {
+    let cancelled = false;
+
     const load = async () => {
-      const ffmpeg = new FFmpeg();
-      ffmpegRef.current = ffmpeg;
-
-      ffmpeg.on("progress", ({ progress: p }) => {
-        setProgress(Math.round(p * 100));
-      });
-
       try {
+        const [{ FFmpeg }, { toBlobURL }] = await Promise.all([
+          import("@ffmpeg/ffmpeg"),
+          import("@ffmpeg/util"),
+        ]);
+
+        if (cancelled) return;
+
+        const ffmpeg = new FFmpeg();
+        ffmpegRef.current = ffmpeg;
+
+        ffmpeg.on("progress", ({ progress: p }) => {
+          setProgress(Math.round(p * 100));
+        });
+
         const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
         await ffmpeg.load({
           coreURL: await toBlobURL(
@@ -91,16 +99,25 @@ export default function MediaConverter() {
             "application/wasm",
           ),
         });
+
+        if (cancelled) return;
+
         setLoaded(true);
         setStatus("ready");
       } catch (err) {
+        if (cancelled) return;
+
         console.error("FFmpeg load failed", err);
         setErrorMessage("Failed to load converter engine. Please refresh.");
         setStatus("failed");
       }
     };
 
-    load();
+    void load();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   // ─── Detect format when file changes ────────────────────
