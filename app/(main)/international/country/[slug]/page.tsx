@@ -523,7 +523,7 @@ export default async function CountryPage({ params }: Props) {
               {neighbors.map((nb) => (
                 <Link
                   key={nb.cca3}
-                  href={`/international/${nb.slug}`}
+                  href={`/international/country/${encodeURIComponent(nb.slug)}`}
                   className="flex items-center gap-2 p-2 rounded-lg bg-zinc-400/10 hover:border hover:border-zinc-400/25 transition-all group"
                 >
                   {nb.flag && (
