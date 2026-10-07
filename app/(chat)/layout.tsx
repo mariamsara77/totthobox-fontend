@@ -1,12 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Noto_Sans_Bengali } from "next/font/google";
 import { ChatLayoutProvider } from "@/context/ChatLayoutContext";
-
-const bengali = Noto_Sans_Bengali({
-  subsets: ["bengali"],
-  variable: "--font-chat-bengali",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: {
@@ -25,7 +18,7 @@ export const viewport: Viewport = {
 export default function ChatLayout({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className={`${bengali.variable} chat-layout-root pwa-screen-height min-h-0 w-full overflow-hidden overscroll-none`}
+      className={`chat-layout-root pwa-screen-height min-h-0 w-full overflow-hidden overscroll-none`}
     >
       <ChatLayoutProvider>
         <main className="flex h-full min-h-0 w-full min-w-0 overflow-hidden">
