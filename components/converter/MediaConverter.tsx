@@ -173,6 +173,7 @@ export default function MediaConverter() {
     const outputName = `output.${targetFormat}`;
 
     try {
+      const { fetchFile } = await import("@ffmpeg/util");
       await ffmpeg.writeFile(inputName, await fetchFile(file));
 
       let command: string[] = ["-i", inputName];
