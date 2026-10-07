@@ -227,10 +227,12 @@ export default function MediaConverter() {
 
       await ffmpeg.deleteFile(inputName);
       await ffmpeg.deleteFile(outputName);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
       setErrorMessage(
-        err?.message || "Conversion failed. Try a different format.",
+        err instanceof Error
+          ? err.message
+          : "Conversion failed. Try a different format.",
       );
       setStatus("failed");
     }
