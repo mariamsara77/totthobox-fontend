@@ -314,9 +314,9 @@ export default function AdvancedDocumentConverter() {
       const url = URL.createObjectURL(blob);
       setResultUrl(url);
       setResultName(`Totthobox_${name}`);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setError(err.message || "কনভার্সন ব্যর্থ হয়েছে");
+      setError(err instanceof Error ? err.message : "কনভার্সন ব্যর্থ হয়েছে");
     } finally {
       setProcessing(false);
     }
