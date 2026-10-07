@@ -1,10 +1,6 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { PDFDocument, degrees } from "pdf-lib";
-import mammoth from "mammoth";
-import * as XLSX from "xlsx";
-import { jsPDF } from "jspdf";
 import {
   Upload,
   FileText,
@@ -93,6 +89,7 @@ export default function AdvancedDocumentConverter() {
   };
 
   const mergePDFs = async () => {
+    const { PDFDocument } = await import("pdf-lib");
     const pdfFiles = files.filter((f) => f.name.toLowerCase().endsWith(".pdf"));
     if (pdfFiles.length < 2) throw new Error("কমপক্ষে ২টি PDF লাগবে");
 
@@ -111,6 +108,7 @@ export default function AdvancedDocumentConverter() {
   };
 
   const splitPDF = async () => {
+    const { PDFDocument } = await import("pdf-lib");
     if (files.length !== 1 || !files[0].name.toLowerCase().endsWith(".pdf")) {
       throw new Error("শুধু একটি PDF সিলেক্ট করুন");
     }
@@ -174,6 +172,7 @@ export default function AdvancedDocumentConverter() {
   };
 
   const imagesToPDF = async () => {
+    const { PDFDocument } = await import("pdf-lib");
     const imgs = files.filter(
       (f) => f.type.startsWith("image/") || /\.(png|jpe?g|webp)$/i.test(f.name),
     );
@@ -204,6 +203,7 @@ export default function AdvancedDocumentConverter() {
   };
 
   const rotatePDF = async () => {
+    const { PDFDocument, degrees } = await import("pdf-lib");
     if (files.length !== 1) throw new Error("একটি PDF সিলেক্ট করুন");
     const bytes = await files[0].file.arrayBuffer();
     const pdf = await PDFDocument.load(bytes);
@@ -216,6 +216,7 @@ export default function AdvancedDocumentConverter() {
   };
 
   const docxToHtml = async () => {
+    const { default: mammoth } = await import("mammoth");
     if (files.length !== 1 || !/\.(docx)$/i.test(files[0].name)) {
       throw new Error("একটি DOCX ফাইল সিলেক্ট করুন");
     }
@@ -226,6 +227,7 @@ export default function AdvancedDocumentConverter() {
   };
 
   const excelTools = async () => {
+    const XLSX = await import("xlsx");
     if (files.length !== 1) throw new Error("একটি Excel/CSV ফাইল সিলেক্ট করুন");
     const data = await files[0].file.arrayBuffer();
     const workbook = XLSX.read(data);
@@ -247,6 +249,7 @@ export default function AdvancedDocumentConverter() {
   };
 
   const textToPDF = async () => {
+    const { jsPDF } = await import("jspdf");
     if (files.length !== 1) throw new Error("একটি টেক্সট ফাইল সিলেক্ট করুন");
     const text = await files[0].file.text();
     const doc = new jsPDF();
