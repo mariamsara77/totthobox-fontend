@@ -177,3 +177,18 @@ body {
   pointer-events: none !important;
   z-index: -1 !important;
 }
+
+/* =========================================
+   Native Select Dark Mode
+   ========================================= */
+select,
+select option {
+  color-scheme: light;
+}
+
+.dark select,
+.dark select option {
+  color-scheme: dark;
+  background-color: var(--color-zinc-900);
+  color: var(--color-zinc-50);
+}
