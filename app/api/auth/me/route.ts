@@ -9,10 +9,14 @@ export async function GET(request: NextRequest) {
 
   const { status, data } = await laravelJson("/v1/user", { token });
 
-  if (status !== 200) {
+  if (status === 401 || status === 403) {
     const response = NextResponse.json({ user: null });
     clearAuthCookies(response);
     return response;
+  }
+
+  if (status < 200 || status >= 300 || !data?.user) {
+    return NextResponse.json({ user: null }, { status: 503 });
   }
 
   return NextResponse.json({ user: data!.user });
