@@ -1,7 +1,6 @@
 // lib/tracker.ts
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL || "https://admin.totthobox.com/api";
+const API_BASE = "/api";
 
 type TrackPayload = Record<string, unknown>;
 
@@ -17,6 +16,7 @@ type QueuedTrackingItem = {
 };
 
 type TrackingEventPayload = {
+  event_uuid: string;
   category: string;
   action: string;
   js_visitor_id: string;
@@ -171,6 +171,7 @@ class VisitorTracker {
   ): void {
     this.scheduleSend(() => {
       this.send(`${API_BASE}/tracking/event`, {
+        event_uuid: this.makeId("evt_"),
         category,
         action,
         js_visitor_id: this.visitorId,
@@ -221,6 +222,7 @@ class VisitorTracker {
       trackedUrl.searchParams.delete("token");
 
       this.send(`${API_BASE}/tracking/event`, {
+        event_uuid: this.makeId("evt_"),
         category: "page",
         action: "view",
         js_visitor_id: this.visitorId,
@@ -263,18 +265,34 @@ class VisitorTracker {
         key: item.data.action,
         value: item.data.payload,
         timestamp: item.ts,
-        id: item.data.js_visitor_id,
+        id: item.data.event_uuid,
       }));
 
-      this.send(`${API_BASE}/tracking/sync`, {
+      const json = JSON.stringify({
+        event_uuid: this.makeId("evt_"),
         category: "offline",
         action: "sync",
         js_visitor_id: this.visitorId,
         session_id: this.sessionId,
-        payload: { activities },
+        activities,
       });
 
-      this.storage("tracking_queue", JSON.stringify([]));
+      void fetch(`${API_BASE}/tracking/sync`, {
+        method: "POST",
+        keepalive: true,
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: json,
+      })
+        .then((response) => {
+          if (response.ok) {
+            this.storage("tracking_queue", JSON.stringify([]));
+          }
+        })
+        .catch(() => undefined);
     } catch {
       // Invalid local tracking data is safely ignored.
     }
