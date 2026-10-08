@@ -387,29 +387,19 @@ export default function Sidebar() {
               showLabel={true}
             />
 
-            <SidebarItem
-              href="/news/headlines"
-              icon={FaNewspaper}
-              label="সংবাদ"
-              isActive={pathname.startsWith("/news")}
-              collapsed={collapsed}
-              onHover={handleMouseEnter}
-              onLeave={handleMouseLeave}
-            />
-
             {/* ===================== NEWS ===================== */}
             {pathname.startsWith("/news") && (
               <div className="space-y-1">
                 {!collapsed && (
                   <h3 className="mb-2 px-3 text-xs uppercase tracking-wider text-zinc-400">
-                    সংবাদমাধ্যম
+                    সংবাদ
                   </h3>
                 )}
 
                 <SidebarItem
-                  href="/news"
+                  href="/news/headlines"
                   icon={FaNewspaper}
-                  label="সব খবর"
+                  label="সংবাদ শিরোনাম"
                   isActive={pathname === "/news/headlines"}
                   collapsed={collapsed}
                   onHover={handleMouseEnter}
@@ -445,11 +435,11 @@ export default function Sidebar() {
                 {(newsSources.en || []).map((source) => (
                   <SidebarItem
                     key={source.source_key}
-                    href={"/news/source/" + source.source_key}
+                    href={"/news/" + sourceSlug(source.source_key)}
                     icon={FaNewspaper}
                     label={source.source_name}
                     badge={source.total}
-                    isActive={pathname === "/news/source/" + source.source_key}
+                    isActive={pathname === "/news/" + sourceSlug(source.source_key)}
                     collapsed={collapsed}
                     onHover={handleMouseEnter}
                     onLeave={handleMouseLeave}
