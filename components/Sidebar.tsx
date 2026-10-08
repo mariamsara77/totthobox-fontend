@@ -386,6 +386,16 @@ export default function Sidebar() {
               showLabel={true}
             />
 
+            <SidebarItem
+              href="/news"
+              icon={FaNewspaper}
+              label="সংবাদ"
+              isActive={pathname.startsWith("/news")}
+              collapsed={collapsed}
+              onHover={handleMouseEnter}
+              onLeave={handleMouseLeave}
+            />
+
             {/* ===================== NEWS ===================== */}
             {pathname.startsWith("/news") && (
               <div className="space-y-1">
