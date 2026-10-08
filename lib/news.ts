@@ -105,7 +105,6 @@ export async function getNews(params: {
         hours: params.hours,
         page: params.page || 1,
         per_page: params.per_page || 18,
-        diverse: 1,
       }),
       {
         next: { revalidate: 180, tags: ["news-feed"] },
