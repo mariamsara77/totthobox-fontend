@@ -9,13 +9,11 @@ export type NewsSource = {
 export type NewsItem = {
   id: number;
   title: string;
-  summary?: string | null;
   slug: string;
   source_url: string;
   source_name: string;
   source_key: string;
   category?: string | null;
-  image_url?: string | null;
   language: "bn" | "en";
   published_at?: string | null;
   story_group?: string | null;
