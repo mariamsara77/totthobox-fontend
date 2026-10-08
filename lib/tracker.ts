@@ -89,6 +89,14 @@ class VisitorTracker {
     return `${prefix}${randomId}`;
   }
 
+  private makeEventUuid(): string {
+    if (typeof crypto.randomUUID === "function") {
+      return crypto.randomUUID();
+    }
+
+    return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 14)}-${Math.random().toString(36).slice(2, 14)}`.slice(0, 36);
+  }
+
   private getId(key: string, prefix: string, useSessionStorage: boolean): string {
     const existingId = this.storage(key, undefined, useSessionStorage);
 
@@ -171,7 +179,7 @@ class VisitorTracker {
   ): void {
     this.scheduleSend(() => {
       this.send(`${API_BASE}/tracking/event`, {
-        event_uuid: this.makeId("evt_"),
+        event_uuid: this.makeEventUuid(),
         category,
         action,
         js_visitor_id: this.visitorId,
