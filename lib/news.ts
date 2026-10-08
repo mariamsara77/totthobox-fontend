@@ -43,6 +43,29 @@ export type NewsSourceResponse = {
 const API_BASE =
   (process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com").replace(/\/$/, "");
 
+const SOURCE_SLUGS: Record<string, string> = {
+  prothom_alo: "prothom-alo",
+  kalerkantho: "kaler-kantho",
+  samakal: "samakal",
+  jugantor: "jugantor",
+  ittefaq: "daily-ittefaq",
+  manabzamin: "manabzamin",
+  somoy_news: "somoy-news",
+  daily_star: "the-daily-star",
+  bdnews24: "bdnews24",
+  financial_express: "the-financial-express",
+  new_age: "new-age",
+};
+
+export function sourceSlug(sourceKey: string): string {
+  return SOURCE_SLUGS[sourceKey] || sourceKey.replace(/_/g, "-");
+}
+
+export function sourceKeyFromSlug(slug: string): string | null {
+  const entry = Object.entries(SOURCE_SLUGS).find(([, value]) => value === slug);
+  return entry?.[0] ?? null;
+}
+
 function buildUrl(path: string, params: Record<string, string | number | undefined>) {
   const url = new URL(API_BASE + path);
   for (const [key, value] of Object.entries(params)) {
