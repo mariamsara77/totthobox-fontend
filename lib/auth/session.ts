@@ -76,6 +76,18 @@ export function setAuthCookie(response: NextResponse, token: string): void {
   setAccessCookie(response, token);
 }
 
+export function clearAccessCookie(response: NextResponse): void {
+  response.cookies.set({
+    name: ACCESS_COOKIE,
+    value: "",
+    httpOnly: true,
+    secure: IS_PROD,
+    sameSite: "lax",
+    path: "/",
+    maxAge: 0,
+  });
+}
+
 export function clearAuthCookie(response: NextResponse): void {
   clearAuthCookies(response);
 }
