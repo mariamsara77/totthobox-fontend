@@ -66,17 +66,18 @@ function NewsCard({ item }: { item: NewsItem }) {
         </div>
       </div>
 
-      <h2 className="text-base font-semibold leading-7 text-zinc-900 dark:text-zinc-100">
+      <a
+        href={item.source_url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-base font-semibold leading-7 text-zinc-900 hover:underline dark:text-zinc-100"
+      >
         {item.title}
-      </h2>
+      </a>
 
-      {item.summary ? (
+      {item.summary && (
         <p className="mt-3 line-clamp-3 text-sm leading-6 text-zinc-600 dark:text-zinc-300">
           {item.summary}
-        </p>
-      ) : (
-        <p className="mt-3 text-sm leading-6 text-zinc-500 dark:text-zinc-400">
-          এই কার্ডে কেবল মূল সংবাদমাধ্যমের শিরোনাম ও প্রকাশ-তথ্য দেখানো হচ্ছে। সম্পূর্ণ প্রতিবেদনটি মূল উৎসে পড়ুন।
         </p>
       )}
 
