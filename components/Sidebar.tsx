@@ -72,7 +72,7 @@ type NewsSourceItem = {
   total: number;
 };
 
-const DEFAULT_NEWS_SOURCES = {
+const DEFAULT_NEWS_SOURCES: { bn: NewsSourceItem[]; en: NewsSourceItem[] } = {
   bn: [
     { source_key: "prothom_alo", source_name: "Prothom Alo", language: "bn", total: 0 },
     { source_key: "kalerkantho", source_name: "Kaler Kantho", language: "bn", total: 0 },
@@ -171,9 +171,9 @@ export default function Sidebar() {
 
   // ========== Dynamic Data States ==========
   const [newsSources, setNewsSources] = useState<{
-    bn?: NewsSourceItem[];
-    en?: NewsSourceItem[];
-  }>({});
+    bn: NewsSourceItem[];
+    en: NewsSourceItem[];
+  }>(DEFAULT_NEWS_SOURCES);
   const [buysellCategories, setBuysellCategories] = useState<any[]>([]);
   const [contactCategories, setContactCategories] = useState<any[]>([]);
   const [signCategories, setSignCategories] = useState<any[]>([]);
