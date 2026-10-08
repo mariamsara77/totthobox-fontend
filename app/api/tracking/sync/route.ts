@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { laravelFetch } from "@/lib/server/laravel";
+import { getAuthToken } from "@/lib/auth/session";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.text();
+    const token = await getAuthToken();
 
     const response = await laravelFetch("/tracking/sync", {
+      token,
       method: "POST",
       headers: {
         "Content-Type":
