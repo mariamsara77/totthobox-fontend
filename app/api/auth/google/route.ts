@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { laravelJson } from "@/lib/server/laravel";
-import { setAccessCookie } from "@/lib/auth/session";
+import { setAuthCookies } from "@/lib/auth/session";
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
@@ -18,7 +18,14 @@ export async function POST(request: Request) {
     return NextResponse.json(data ?? { message: "Google login failed." }, { status });
   }
 
-  const response = NextResponse.json({ user: data!.user });
-  setAccessCookie(response, data!.token);
+  if (!data?.access_token || !data?.refresh_token) {
+    return NextResponse.json(
+      { message: "Google login response was incomplete." },
+      { status: 502 },
+    );
+  }
+
+  const response = NextResponse.json({ user: data.user });
+  setAuthCookies(response, data.access_token, data.refresh_token);
   return response;
 }
