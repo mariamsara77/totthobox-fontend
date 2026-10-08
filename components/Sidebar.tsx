@@ -257,8 +257,8 @@ export default function Sidebar() {
           if (res.ok) {
             const data = await res.json();
             setNewsSources({
-              bn: Array.isArray(data?.bn) ? data.bn : DEFAULT_NEWS_SOURCES.bn,
-              en: Array.isArray(data?.en) ? data.en : DEFAULT_NEWS_SOURCES.en,
+              bn: Array.isArray(data?.bn) && data.bn.length ? data.bn : DEFAULT_NEWS_SOURCES.bn,
+              en: Array.isArray(data?.en) && data.en.length ? data.en : DEFAULT_NEWS_SOURCES.en,
             });
           }
         }
