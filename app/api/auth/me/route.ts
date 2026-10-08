@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { laravelJson } from "@/lib/server/laravel";
-import { clearAuthCookies } from "@/lib/auth/session";
+import { clearAccessCookie } from "@/lib/auth/session";
 
 export async function GET(request: NextRequest) {
   const token = request.cookies.get("auth_token")?.value ?? null;
@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
 
   if (status === 401 || status === 403) {
     const response = NextResponse.json({ user: null });
-    clearAuthCookies(response);
+    clearAccessCookie(response);
     return response;
   }
 
