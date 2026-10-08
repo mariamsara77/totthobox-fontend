@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import BrandIcon from "@/components/BrandIcon";
 import SearchTrigger from "@/components/search/SearchTrigger";
+import { sourceSlug } from "@/lib/news";
 
 // React Icons
 import {
@@ -387,7 +388,7 @@ export default function Sidebar() {
             />
 
             <SidebarItem
-              href="/news"
+              href="/news/headlines"
               icon={FaNewspaper}
               label="সংবাদ"
               isActive={pathname.startsWith("/news")}
@@ -409,7 +410,7 @@ export default function Sidebar() {
                   href="/news"
                   icon={FaNewspaper}
                   label="সব খবর"
-                  isActive={pathname === "/news"}
+                  isActive={pathname === "/news/headlines"}
                   collapsed={collapsed}
                   onHover={handleMouseEnter}
                   onLeave={handleMouseLeave}
@@ -424,11 +425,11 @@ export default function Sidebar() {
                 {(newsSources.bn || []).map((source) => (
                   <SidebarItem
                     key={source.source_key}
-                    href={"/news/source/" + source.source_key}
+                    href={"/news/" + sourceSlug(source.source_key)}
                     icon={FaNewspaper}
                     label={source.source_name}
                     badge={source.total}
-                    isActive={pathname === "/news/source/" + source.source_key}
+                    isActive={pathname === "/news/" + sourceSlug(source.source_key)}
                     collapsed={collapsed}
                     onHover={handleMouseEnter}
                     onLeave={handleMouseLeave}
