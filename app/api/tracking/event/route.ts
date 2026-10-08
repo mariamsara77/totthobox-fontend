@@ -1,48 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
+import { laravelFetch } from "@/lib/server/laravel";
 
-type TrackingPayload = Record<string, unknown>;
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    const body: unknown = await req.json();
+    const body = await request.text();
 
-    if (!isRecord(body)) {
-      return NextResponse.json(
-        { status: "error", message: "Invalid tracking payload." },
-        { status: 400 },
-      );
-    }
+    const response = await laravelFetch("/tracking/event", {
+      method: "POST",
+      headers: {
+        "Content-Type":
+          request.headers.get("content-type") || "application/json",
+      },
+      body,
+    });
 
-    const category = typeof body.category === "string" ? body.category : null;
-    const action = typeof body.action === "string" ? body.action : null;
-    const visitorId =
-      typeof body.js_visitor_id === "string" ? body.js_visitor_id : null;
-    const sessionId =
-      typeof body.session_id === "string" ? body.session_id : null;
-    const payload = isRecord(body.payload)
-      ? (body.payload as TrackingPayload)
-      : {};
+    const contentType = response.headers.get("content-type") || "";
+    const data = contentType.includes("application/json")
+      ? await response.json().catch(() => null)
+      : await response.text();
 
-    if (!category || !action || !visitorId || !sessionId) {
-      return NextResponse.json(
-        { status: "error", message: "Required tracking fields are missing." },
-        { status: 400 },
-      );
-    }
-
-    // This endpoint intentionally accepts tracking data without blocking the UI.
-    // Persistence belongs to the configured analytics/backend service.
-    void payload;
-
-    return NextResponse.json({ status: "success" }, { status: 202 });
+    return contentType.includes("application/json")
+      ? NextResponse.json(data, { status: response.status })
+      : new NextResponse(data as string, { status: response.status });
   } catch {
     return NextResponse.json(
-      { status: "error", message: "Unable to process tracking event." },
-      { status: 400 },
+      { status: "error", message: "Tracking service unavailable." },
+      { status: 502 },
     );
   }
 }
