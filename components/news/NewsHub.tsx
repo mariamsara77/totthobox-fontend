@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { Newspaper, ExternalLink, Clock3, Languages, Layers3, Search } from "lucide-react";
 import type { NewsItem, NewsSource, NewsSourceResponse } from "@/lib/news";
