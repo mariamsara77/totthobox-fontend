@@ -20,6 +20,7 @@ type Props = {
     language?: string;
     category?: string;
     hours?: string;
+    page?: string;
   };
   basePath: string;
 };
@@ -31,15 +32,43 @@ function formatTime(value?: string | null, language: "bn" | "en" = "bn") {
     return new Intl.DateTimeFormat(language === "bn" ? "bn-BD" : "en-BD", {
       dateStyle: "medium",
       timeStyle: "short",
+      timeZone: "Asia/Dhaka",
     }).format(new Date(value));
   } catch {
     return value;
   }
 }
 
+const NEWS_CATEGORY_LABELS: Record<string, string> = {
+  national: "জাতীয়",
+  politics: "রাজনীতি",
+  international: "আন্তর্জাতিক",
+  economy: "অর্থনীতি",
+  business: "ব্যবসা",
+  sports: "খেলাধুলা",
+  entertainment: "বিনোদন",
+  latest: "সর্বশেষ",
+  "top news": "শীর্ষ সংবাদ",
+  world: "বিশ্ব",
+  technology: "প্রযুক্তি",
+  health: "স্বাস্থ্য",
+  education: "শিক্ষা",
+  culture: "সংস্কৃতি",
+};
+
+function formatCategory(value: string, language: "bn" | "en"): string {
+  if (language === "en") return value;
+
+  return NEWS_CATEGORY_LABELS[value.trim().toLocaleLowerCase()] ?? value;
+}
+
 function buildPageUrl(basePath: string, filters: Props["filters"], page: number) {
   const params = new URLSearchParams();
-  if (filters.source) params.set("source", filters.source);
+  // Source-specific routes already encode the database-managed source slug.
+  // Keep the source query parameter only on the all-headlines route.
+  if (basePath === "/news/headlines" && filters.source) {
+    params.set("source", filters.source);
+  }
   if (filters.search) params.set("search", filters.search);
   if (filters.language) params.set("language", filters.language);
   if (filters.category) params.set("category", filters.category);
@@ -179,7 +208,7 @@ function NewsCard({ item }: { item: NewsItem }) {
             </Link>
             {item.category ? (
               <span className="rounded-md bg-zinc-400/15 px-2 py-0.5">
-                {item.category}
+                {formatCategory(item.category, item.language)}
               </span>
             ) : null}
             <span>{formatTime(item.published_at, item.language)}</span>
