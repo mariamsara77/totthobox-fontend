@@ -5,7 +5,7 @@ const SITE_URL = "https://totthobox.com";
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
-export const revalidate = 0;
+export const revalidate = 3600;
 
 const publicRoutes = [
   "/",
@@ -72,7 +72,7 @@ async function fetchPlatforms(): Promise<string[]> {
   try {
     const response = await fetch(
       `${API_BASE}/api/sidebar/software-platforms`,
-      { cache: "no-store" },
+      { next: { revalidate: 3600 } },
     );
 
     if (!response.ok) return [];
@@ -142,7 +142,7 @@ async function fetchSlugs(
       const separator = endpoint.includes("?") ? "&" : "?";
       const response = await fetch(
         `${API_BASE}${endpoint}${separator}per_page=${perPage}&page=${page}`,
-        { cache: "no-store" },
+        { next: { revalidate: 3600 } },
       );
 
       if (!response.ok) break;

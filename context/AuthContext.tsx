@@ -58,10 +58,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     lastFetchAt.current = now;
     try {
       const res = await fetch("/api/auth/me", { cache: "no-store" });
-      const data = await res.json();
-      applyUser(data.user ?? null);
+
+      if (res.status === 401) {
+        const refresh = await fetch("/api/auth/refresh", { method: "POST" });
+
+        if (refresh.ok) {
+          const refreshed = await refresh.json().catch(() => null);
+          applyUser(refreshed?.user ?? null);
+          return;
+        }
+
+        applyUser(null);
+        return;
+      }
+
+      if (res.ok) {
+        const data = await res.json().catch(() => null);
+        applyUser(data?.user ?? null);
+      }
+      // Keep the current user on transient 5xx/network failures.
     } catch {
-      setUser(null);
+      // Preserve the current user during transient connectivity failures.
     } finally {
       setIsLoading(false);
     }

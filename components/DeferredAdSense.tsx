@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 const ADSENSE_ID =
   process.env.NEXT_PUBLIC_ADSENSE_ID || "ca-pub-9522604367420521";
@@ -21,7 +22,10 @@ function loadAdSense() {
 }
 
 export default function DeferredAdSense() {
+  const pathname = usePathname();
+
   useEffect(() => {
+    if (pathname.startsWith("/news")) return;
     let loaded = false;
     const interactionEvents = [
       "pointerdown",
@@ -68,7 +72,7 @@ export default function DeferredAdSense() {
       window.removeEventListener("load", armFallback);
       window.clearTimeout(fallbackTimer);
     };
-  }, []);
+  }, [pathname]);
 
   return null;
 }

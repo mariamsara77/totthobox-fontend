@@ -29,6 +29,7 @@ import {
   MapPin,
   Globe,
   BookOpen,
+  Newspaper,
   GraduationCap,
   ShieldAlert,
   Sparkles,
@@ -37,6 +38,12 @@ import UserAnalytics from "@/components/UserAnalytics";
 
 // সার্ভিস লিস্টের ড্যাটা
 const services = [
+  {
+    href: "/news/headlines",
+    icon: Newspaper,
+    label: "সংবাদ শিরোনাম",
+    details: "দেশের বিভিন্ন সংবাদমাধ্যমের সাম্প্রতিক শিরোনাম এক জায়গায়।",
+  },
   {
     href: "/bangla/calendar",
     icon: Calendar,

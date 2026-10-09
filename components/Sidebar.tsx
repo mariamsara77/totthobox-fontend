@@ -65,6 +65,15 @@ function cn(...classes: (string | boolean | undefined | null)[]) {
   return classes.filter(Boolean).join(" ");
 }
 
+type NewsSourceItem = {
+  source_key: string;
+  slug: string;
+  source_name: string;
+  language: "bn" | "en";
+  total: number;
+};
+
+
 type SidebarItemProps = {
   href?: string;
   onClick?: () => void;
@@ -145,9 +154,10 @@ export default function Sidebar() {
   const [isExtraConvertersOpen, setIsExtraConvertersOpen] = useState(false);
 
   // ========== Dynamic Data States ==========
-  const [newsSources, setNewsSources] = useState<{ bn?: any[]; en?: any[] }>(
-    {},
-  );
+  const [newsSources, setNewsSources] = useState<{
+    bn: NewsSourceItem[];
+    en: NewsSourceItem[];
+  }>({ bn: [], en: [] });
   const [buysellCategories, setBuysellCategories] = useState<any[]>([]);
   const [contactCategories, setContactCategories] = useState<any[]>([]);
   const [signCategories, setSignCategories] = useState<any[]>([]);
@@ -155,8 +165,13 @@ export default function Sidebar() {
   const [softwarePlatforms, setSoftwarePlatforms] = useState<string[]>([]);
 
   // API Base URL
-  const API_URL =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+  // Accept either the backend origin or an origin ending in /api.
+  // Sidebar API paths below already include /api, so avoid accidentally requesting /api/api/...
+  const API_URL = (
+    process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com"
+  )
+    .replace(/\/+$/, "")
+    .replace(/\/api$/i, "");
 
   // Mobile scroll lock
   useEffect(() => {
@@ -215,12 +230,25 @@ export default function Sidebar() {
         }
 
         if (pathname.startsWith("/software")) {
-          const res = await fetch(`${API_URL}/api/sidebar/software-platforms`, {
+          const res = await fetch(API_URL + "/api/sidebar/software-platforms", {
             signal: controller.signal,
           });
           if (res.ok) {
             const data = await res.json();
             setSoftwarePlatforms(Array.isArray(data) ? data : []);
+          }
+        }
+
+        if (pathname.startsWith("/news")) {
+          const res = await fetch(API_URL + "/api/sidebar/news-sources", {
+            signal: controller.signal,
+          });
+          if (res.ok) {
+            const data = await res.json();
+            setNewsSources({
+              bn: Array.isArray(data?.bn) ? data.bn : [],
+              en: Array.isArray(data?.en) ? data.en : [],
+            });
           }
         }
       } catch (error: any) {
@@ -346,6 +374,67 @@ export default function Sidebar() {
               onLeave={handleMouseLeave}
               showLabel={true}
             />
+
+            {/* ===================== NEWS ===================== */}
+            {pathname.startsWith("/news") && (
+              <div className="space-y-1">
+                {!collapsed && (
+                  <h3 className="mb-2 px-3 text-xs uppercase tracking-wider text-zinc-400">
+                    সংবাদ
+                  </h3>
+                )}
+
+                <SidebarItem
+                  href="/news/headlines"
+                  icon={FaNewspaper}
+                  label="সংবাদ শিরোনাম"
+                  isActive={pathname === "/news/headlines"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+
+                {!!newsSources.bn?.length && !collapsed && (
+                  <div className="px-3 pt-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+                    বাংলা সংবাদ মাধ্যম
+                  </div>
+                )}
+
+                {(newsSources.bn || []).map((source) => (
+                  <SidebarItem
+                    key={source.source_key}
+                    href={"/news/" + source.slug}
+                    icon={FaNewspaper}
+                    label={source.source_name}
+                    badge={source.total}
+                    isActive={pathname === "/news/" + source.slug}
+                    collapsed={collapsed}
+                    onHover={handleMouseEnter}
+                    onLeave={handleMouseLeave}
+                  />
+                ))}
+
+                {!!newsSources.en?.length && !collapsed && (
+                  <div className="mt-3 px-3 pt-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+                    English Media
+                  </div>
+                )}
+
+                {(newsSources.en || []).map((source) => (
+                  <SidebarItem
+                    key={source.source_key}
+                    href={"/news/" + source.slug}
+                    icon={FaNewspaper}
+                    label={source.source_name}
+                    badge={source.total}
+                    isActive={pathname === "/news/" + source.slug}
+                    collapsed={collapsed}
+                    onHover={handleMouseEnter}
+                    onLeave={handleMouseLeave}
+                  />
+                ))}
+              </div>
+            )}
             {/* ===================== CALENDAR ===================== */}
             {pathname.startsWith("/bangla/") && (
               <div className="space-y-1">

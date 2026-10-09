@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { laravelJson } from "@/lib/server/laravel";
-import { setAuthCookie } from "@/lib/auth/session";
+import { setAuthCookies } from "@/lib/auth/session";
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
@@ -14,7 +14,14 @@ export async function POST(request: Request) {
     return NextResponse.json(data, { status });
   }
 
-  const response = NextResponse.json({ user: data!.user });
-  setAuthCookie(response, data!.token);
+  if (!data?.access_token || !data?.refresh_token) {
+    return NextResponse.json(
+      { message: "Registration session could not be established." },
+      { status: 502 },
+    );
+  }
+
+  const response = NextResponse.json({ user: data.user });
+  setAuthCookies(response, data.access_token, data.refresh_token);
   return response;
 }

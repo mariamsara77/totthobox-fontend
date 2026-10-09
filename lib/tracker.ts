@@ -1,7 +1,6 @@
 // lib/tracker.ts
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL || "https://admin.totthobox.com/api";
+const API_BASE = "/api";
 
 type TrackPayload = Record<string, unknown>;
 
@@ -17,6 +16,7 @@ type QueuedTrackingItem = {
 };
 
 type TrackingEventPayload = {
+  event_uuid: string;
   category: string;
   action: string;
   js_visitor_id: string;
@@ -87,6 +87,23 @@ class VisitorTracker {
         : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 
     return `${prefix}${randomId}`;
+  }
+
+  private makeEventUuid(): string {
+    if (typeof crypto.randomUUID === "function") {
+      return crypto.randomUUID();
+    }
+
+    const bytes = new Uint8Array(16);
+    crypto.getRandomValues(bytes);
+    bytes[6] = (bytes[6] & 0x0f) | 0x40;
+    bytes[8] = (bytes[8] & 0x3f) | 0x80;
+
+    const hex = Array.from(bytes, (byte) =>
+      byte.toString(16).padStart(2, "0"),
+    ).join("");
+
+    return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
   }
 
   private getId(key: string, prefix: string, useSessionStorage: boolean): string {
@@ -171,6 +188,7 @@ class VisitorTracker {
   ): void {
     this.scheduleSend(() => {
       this.send(`${API_BASE}/tracking/event`, {
+        event_uuid: this.makeEventUuid(),
         category,
         action,
         js_visitor_id: this.visitorId,
@@ -221,6 +239,7 @@ class VisitorTracker {
       trackedUrl.searchParams.delete("token");
 
       this.send(`${API_BASE}/tracking/event`, {
+        event_uuid: this.makeEventUuid(),
         category: "page",
         action: "view",
         js_visitor_id: this.visitorId,
@@ -263,18 +282,34 @@ class VisitorTracker {
         key: item.data.action,
         value: item.data.payload,
         timestamp: item.ts,
-        id: item.data.js_visitor_id,
+        id: item.data.event_uuid,
       }));
 
-      this.send(`${API_BASE}/tracking/sync`, {
+      const json = JSON.stringify({
+        event_uuid: this.makeId("evt_"),
         category: "offline",
         action: "sync",
         js_visitor_id: this.visitorId,
         session_id: this.sessionId,
-        payload: { activities },
+        activities,
       });
 
-      this.storage("tracking_queue", JSON.stringify([]));
+      void fetch(`${API_BASE}/tracking/sync`, {
+        method: "POST",
+        keepalive: true,
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: json,
+      })
+        .then((response) => {
+          if (response.ok) {
+            this.storage("tracking_queue", JSON.stringify([]));
+          }
+        })
+        .catch(() => undefined);
     } catch {
       // Invalid local tracking data is safely ignored.
     }
