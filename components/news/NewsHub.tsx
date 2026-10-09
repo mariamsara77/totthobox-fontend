@@ -215,7 +215,14 @@ function NewsCard({ item }: { item: NewsItem }) {
           </div>
 
           <h2 className="text-base font-semibold leading-6 tracking-tight sm:text-lg">
-            {item.title}
+            <a
+              href={item.source_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:underline focus-visible:underline"
+            >
+              {item.title}
+            </a>
           </h2>
 
           {item.coverage_count > 1 ? (
