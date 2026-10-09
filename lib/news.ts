@@ -75,9 +75,37 @@ export async function getNewsSources(): Promise<NewsSourceResponse> {
     if (!response.ok) return { bn: [], en: [] };
 
     const json = await response.json();
+    const normalizeSources = (items: unknown): NewsSource[] => {
+      if (!Array.isArray(items)) return [];
+
+      return items
+        .filter(
+          (source): source is Record<string, unknown> =>
+            typeof source === "object" &&
+            source !== null &&
+            typeof (source as Record<string, unknown>).key === "string",
+        )
+        .map((source) => {
+          const key = source.key as string;
+          const slug =
+            typeof source.slug === "string" && source.slug
+              ? source.slug
+              : sourceSlug(key);
+
+          return {
+            key,
+            slug,
+            name: typeof source.name === "string" ? source.name : key,
+            language: source.language === "en" ? "en" : "bn",
+            home_url: typeof source.home_url === "string" ? source.home_url : "",
+            total: Number(source.total || 0),
+          };
+        });
+    };
+
     return {
-      bn: Array.isArray(json?.bn) ? json.bn : [],
-      en: Array.isArray(json?.en) ? json.en : [],
+      bn: normalizeSources(json?.bn),
+      en: normalizeSources(json?.en),
     };
   } catch {
     return { bn: [], en: [] };
@@ -119,7 +147,7 @@ export async function getNews(params: {
         per_page: params.per_page || 18,
       }),
       {
-        next: { revalidate: 180, tags: ["news-feed"] },
+        next: { revalidate: 60, tags: ["news-feed"] },
       },
     );
 
