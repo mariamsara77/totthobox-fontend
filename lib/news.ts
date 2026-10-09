@@ -107,36 +107,57 @@ export async function getNews(params: {
     },
   };
 
+  const url = buildUrl("/api/news", {
+    source: params.source,
+    language: params.language,
+    category: params.category,
+    search: params.search,
+    hours: params.hours,
+    page: params.page || 1,
+    per_page: params.per_page || 18,
+  });
+
   try {
-    const response = await fetch(
-      buildUrl("/api/news", {
-        source: params.source,
-        language: params.language,
-        category: params.category,
-        search: params.search,
-        hours: params.hours,
-        page: params.page || 1,
-        per_page: params.per_page || 18,
-      }),
-      {
-        next: { revalidate: 180, tags: ["news-feed"] },
-      },
-    );
+    let response: Response;
+
+    try {
+      response = await fetch(url, {
+        next: { revalidate: 60, tags: ["news-feed"] },
+      });
+    } catch {
+      // Retry network failures once without Next's data cache.
+      response = await fetch(url, { cache: "no-store" });
+    }
+
+    if (!response.ok) {
+      // A temporary upstream/edge failure should not leave the page stuck on
+      // a cached error state. Retry only on failure to avoid extra normal traffic.
+      response = await fetch(url, { cache: "no-store" });
+    }
 
     if (!response.ok) return empty;
 
     const json = await response.json();
+    if (
+      !json ||
+      !Array.isArray(json.data) ||
+      !json.meta ||
+      typeof json.meta !== "object"
+    ) {
+      return empty;
+    }
+
     return {
-      data: Array.isArray(json?.data) ? json.data : [],
+      data: json.data,
       error: false,
       meta: {
-        current_page: Number(json?.meta?.current_page || 1),
-        last_page: Number(json?.meta?.last_page || 1),
-        per_page: Number(json?.meta?.per_page || 18),
-        total: Number(json?.meta?.total || 0),
-        from: json?.meta?.from ?? null,
-        to: json?.meta?.to ?? null,
-        has_more: Boolean(json?.meta?.has_more),
+        current_page: Number(json.meta.current_page || 1),
+        last_page: Number(json.meta.last_page || 1),
+        per_page: Number(json.meta.per_page || 18),
+        total: Number(json.meta.total || 0),
+        from: json.meta.from ?? null,
+        to: json.meta.to ?? null,
+        has_more: Boolean(json.meta.has_more),
       },
     };
   } catch {
