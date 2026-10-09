@@ -232,11 +232,9 @@ export default function DocumentScanner({ onClose, onCreatePDF }: Props) {
   };
 
   const removePage = (id: number) => {
-    setPages((current) => {
-      const target = current.find((page) => page.id === id);
-      if (target) URL.revokeObjectURL(target.previewUrl);
-      return current.filter((page) => page.id !== id);
-    });
+    const target = pagesRef.current.find((page) => page.id === id);
+    if (target) URL.revokeObjectURL(target.previewUrl);
+    setPages((current) => current.filter((page) => page.id !== id));
   };
 
   const createPdf = async () => {
