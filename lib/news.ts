@@ -45,7 +45,7 @@ export type NewsSourceResponse = {
 };
 
 const API_BASE = (
-  process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com"
+  process.env.NEXT_PUBLIC_API_BASE_URL || process.env.NEXT_PUBLIC_API_URL || "https://admin.totthobox.com"
 )
   .replace(/\/+$/, "")
   .replace(/\/api$/i, "");
