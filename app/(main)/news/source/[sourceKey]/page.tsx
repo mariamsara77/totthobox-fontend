@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { sourceSlug } from "@/lib/news";
+import { getNewsSources } from "@/lib/news";
 
 export default async function LegacyNewsSourceRedirect({
   params,
@@ -7,5 +7,10 @@ export default async function LegacyNewsSourceRedirect({
   params: Promise<{ sourceKey: string }>;
 }) {
   const { sourceKey } = await params;
-  redirect("/news/" + sourceSlug(sourceKey));
+  const sources = await getNewsSources();
+  const source = [...sources.bn, ...sources.en].find(
+    (item) => item.key === sourceKey || item.slug === sourceKey,
+  );
+
+  redirect(source ? "/news/" + source.slug : "/news/headlines");
 }
