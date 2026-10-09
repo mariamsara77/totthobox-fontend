@@ -375,6 +375,16 @@ export default function Sidebar() {
               showLabel={true}
             />
 
+            <SidebarItem
+              href="/pdf-editor"
+              icon={MdEditDocument}
+              label="PDF এডিটর"
+              isActive={pathname === "/pdf-editor"}
+              collapsed={collapsed}
+              onHover={handleMouseEnter}
+              onLeave={handleMouseLeave}
+            />
+
             {/* ===================== NEWS ===================== */}
             {pathname.startsWith("/news") && (
               <div className="space-y-1">
