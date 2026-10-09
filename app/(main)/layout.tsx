@@ -11,13 +11,12 @@ const configuredApiBase =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
   process.env.NEXT_PUBLIC_API_URL ||
   "https://admin.totthobox.com";
-const apiBase = (
-  /^https?:\\/\\//i.test(configuredApiBase)
+let apiBase =
+  configuredApiBase.startsWith("https://") || configuredApiBase.startsWith("http://")
     ? configuredApiBase
-    : "https://admin.totthobox.com"
-)
-  .replace(/\\/+$/, "")
-  .replace(/\\/api$/i, "");
+    : "https://admin.totthobox.com";
+while (apiBase.endsWith("/")) apiBase = apiBase.slice(0, -1);
+if (apiBase.toLowerCase().endsWith("/api")) apiBase = apiBase.slice(0, -4);
 
 async function getInitialContactCategories() {
   try {
