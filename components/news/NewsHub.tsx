@@ -41,7 +41,6 @@ function buildPageUrl(basePath: string, filters: Props["filters"], page: number)
   const params = new URLSearchParams();
   if (filters.source) params.set("source", filters.source);
   if (filters.search) params.set("search", filters.search);
-  if (filters.source) params.set("source", filters.source);
   if (filters.language) params.set("language", filters.language);
   if (filters.category) params.set("category", filters.category);
   if (filters.hours) params.set("hours", filters.hours);
