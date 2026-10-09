@@ -37,9 +37,26 @@ function formatTime(value?: string | null, language: "bn" | "en" = "bn") {
   }
 }
 
+function categoryLabel(value: string, language: "bn" | "en") {
+  const labels: Record<string, { bn: string; en: string }> = {
+    national: { bn: "জাতীয়", en: "National" },
+    politics: { bn: "রাজনীতি", en: "Politics" },
+    international: { bn: "আন্তর্জাতিক", en: "International" },
+    economy: { bn: "অর্থনীতি", en: "Economy" },
+    business: { bn: "ব্যবসা", en: "Business" },
+    sports: { bn: "খেলাধুলা", en: "Sports" },
+    entertainment: { bn: "বিনোদন", en: "Entertainment" },
+    latest: { bn: "সর্বশেষ", en: "Latest" },
+  };
+
+  return labels[value.trim().toLowerCase()]?.[language] ?? value;
+}
+
 function buildPageUrl(basePath: string, filters: Props["filters"], page: number) {
   const params = new URLSearchParams();
-  if (filters.source) params.set("source", filters.source);
+  if (basePath === "/news/headlines" && filters.source) {
+    params.set("source", filters.source);
+  }
   if (filters.search) params.set("search", filters.search);
   if (filters.language) params.set("language", filters.language);
   if (filters.category) params.set("category", filters.category);
@@ -179,14 +196,21 @@ function NewsCard({ item }: { item: NewsItem }) {
             </Link>
             {item.category ? (
               <span className="rounded-md bg-zinc-400/15 px-2 py-0.5">
-                {item.category}
+                {categoryLabel(item.category, item.language)}
               </span>
             ) : null}
             <span>{formatTime(item.published_at, item.language)}</span>
           </div>
 
           <h2 className="text-base font-semibold leading-6 tracking-tight sm:text-lg">
-            {item.title}
+            <a
+              href={item.source_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-sm outline-offset-4 transition-colors hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600 dark:hover:text-blue-300"
+            >
+              {item.title}
+            </a>
           </h2>
 
           {item.coverage_count > 1 ? (
@@ -233,7 +257,7 @@ export default function NewsHub({
     : "বিভিন্ন সংবাদমাধ্যমের সাম্প্রতিক সংবাদ শিরোনাম এক জায়গায় দেখুন এবং মূল সংবাদমাধ্যমে সম্পূর্ণ প্রতিবেদন পড়ুন।";
 
   return (
-    <div className="mx-auto max-w-2xl space-y-8 px-4 py-6 sm:py-8">
+    <div className="mx-auto max-w-3xl space-y-8 px-4 py-6 sm:py-8">
       <header className="space-y-2">
         <h1 className="flex items-center gap-2.5 text-2xl font-bold tracking-tight sm:text-3xl">
           <Newspaper className="size-7" aria-hidden="true" />
