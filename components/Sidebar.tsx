@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import BrandIcon from "@/components/BrandIcon";
 import SearchTrigger from "@/components/search/SearchTrigger";
+import { normalizeContactCategories, type ContactSidebarCategory } from "@/lib/contact-categories";
 
 // React Icons
 import {
@@ -84,55 +85,6 @@ type NewsSourcePayloadItem = {
   language?: unknown;
   total?: unknown;
 };
-
-type ContactCategoryItem = {
-  id?: string | number;
-  slug: string;
-  name: string;
-};
-
-function normalizeContactCategories(value: unknown): ContactCategoryItem[] {
-  let rows: unknown = value;
-
-  // Support the direct Laravel array response and common API envelopes.
-  if (rows && typeof rows === "object" && !Array.isArray(rows)) {
-    const payload = rows as { data?: unknown; categories?: unknown };
-    rows = Array.isArray(payload.data) ? payload.data : payload.categories;
-  }
-  if (!Array.isArray(rows)) return [];
-
-  return rows.flatMap((item) => {
-    if (!item || typeof item !== "object") return [];
-    const category = item as {
-      id?: unknown;
-      slug?: unknown;
-      name?: unknown;
-      title?: unknown;
-      is_active?: unknown;
-      status?: unknown;
-    };
-    const slug = typeof category.slug === "string" ? category.slug.trim() : "";
-    const name =
-      typeof category.name === "string"
-        ? category.name.trim()
-        : typeof category.title === "string"
-          ? category.title.trim()
-          : "";
-
-    if (!slug || !name || category.is_active === false || category.status === "inactive") {
-      return [];
-    }
-
-    return [{
-      id:
-        typeof category.id === "string" || typeof category.id === "number"
-          ? category.id
-          : undefined,
-      slug,
-      name,
-    }];
-  });
-}
 
 function normalizeNewsSources(value: unknown): {
   bn: NewsSourceItem[];
@@ -254,7 +206,11 @@ function SidebarItem({
 }
 
 // ====================== MAIN COMPONENT ======================
-export default function Sidebar() {
+export default function Sidebar({
+  initialContactCategories = [],
+}: {
+  initialContactCategories?: ContactSidebarCategory[];
+}) {
   const { openSettingsModal } = useSettingsModal();
   const pathname = usePathname();
   const { isOpen, setIsOpen, isCollapsed, toggleCollapsed } = useSidebar();
@@ -271,7 +227,7 @@ export default function Sidebar() {
     en: NewsSourceItem[];
   }>({ bn: [], en: [] });
   const [buysellCategories, setBuysellCategories] = useState<any[]>([]);
-  const [contactCategories, setContactCategories] = useState<any[]>([]);
+  const [contactCategories, setContactCategories] = useState<ContactSidebarCategory[]>(initialContactCategories);
   const [signCategories, setSignCategories] = useState<any[]>([]);
   const [excelChapters, setExcelChapters] = useState<Record<string, any[]>>({});
   const [softwarePlatforms, setSoftwarePlatforms] = useState<string[]>([]);
