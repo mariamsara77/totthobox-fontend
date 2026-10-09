@@ -374,6 +374,15 @@ export default function Sidebar() {
               onLeave={handleMouseLeave}
               showLabel={true}
             />
+            <SidebarItem
+              href="/pdf-editor"
+              icon={MdEditDocument}
+              label="PDF Editor"
+              isActive={pathname.startsWith("/pdf-editor")}
+              collapsed={collapsed}
+              onHover={handleMouseEnter}
+              onLeave={handleMouseLeave}
+            />
 
             {/* ===================== NEWS ===================== */}
             {pathname.startsWith("/news") && (
