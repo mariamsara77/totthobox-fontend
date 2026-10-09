@@ -2,8 +2,11 @@ import type { MetadataRoute } from "next";
 import { getAllCountries } from "@/lib/countries";
 
 const SITE_URL = "https://totthobox.com";
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+const API_BASE = (
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com"
+)
+  .replace(/\/+$/, "")
+  .replace(/\/api$/i, "");
 
 export const revalidate = 3600;
 
@@ -112,21 +115,56 @@ function extractItems(json: unknown): unknown[] {
   return [];
 }
 
-function hasMorePages(json: unknown): boolean {
-  if (!isRecord(json) || !isRecord(json.meta)) return false;
+function hasMorePages(json: unknown): boolean | null {
+  if (!isRecord(json)) return null;
 
-  if (typeof json.meta.has_more === "boolean") {
-    return json.meta.has_more;
+  const candidates: unknown[] = [json.meta, json.pagination];
+  if (isRecord(json.data)) {
+    candidates.push(json.data.meta, json.data.pagination);
+  }
+
+  for (const candidate of candidates) {
+    if (!isRecord(candidate)) continue;
+
+    if (typeof candidate.has_more === "boolean") return candidate.has_more;
+    if (typeof candidate.hasMore === "boolean") return candidate.hasMore;
+
+    if (
+      typeof candidate.current_page === "number" &&
+      typeof candidate.last_page === "number"
+    ) {
+      return candidate.current_page < candidate.last_page;
+    }
+
+    if ("next_page_url" in candidate) {
+      return typeof candidate.next_page_url === "string" &&
+        candidate.next_page_url.length > 0;
+    }
+
+    if (isRecord(candidate.links) && "next" in candidate.links) {
+      return typeof candidate.links.next === "string" &&
+        candidate.links.next.length > 0;
+    }
   }
 
   if (
-    typeof json.meta.current_page === "number" &&
-    typeof json.meta.last_page === "number"
+    typeof json.current_page === "number" &&
+    typeof json.last_page === "number"
   ) {
-    return json.meta.current_page < json.meta.last_page;
+    return json.current_page < json.last_page;
   }
 
-  return false;
+  if ("next_page_url" in json) {
+    return typeof json.next_page_url === "string" &&
+      json.next_page_url.length > 0;
+  }
+
+  if (isRecord(json.links) && "next" in json.links) {
+    return typeof json.links.next === "string" &&
+      json.links.next.length > 0;
+  }
+
+  return null;
 }
 
 async function fetchSlugs(
@@ -136,6 +174,8 @@ async function fetchSlugs(
   const slugs: string[] = [];
   const seen = new Set<string>();
   const perPage = 50;
+
+  let previousPageSignature = "";
 
   for (let page = 1; page <= 1000; page += 1) {
     try {
@@ -149,6 +189,16 @@ async function fetchSlugs(
 
       const json = await response.json();
       const source = extractItems(json);
+      const pageSignature = source
+        .map((item) =>
+          isRecord(item) && typeof item.slug === "string" ? item.slug : "",
+        )
+        .filter(Boolean)
+        .join("\u001f");
+
+      // A repeated page usually means an endpoint ignored the page parameter.
+      if (pageSignature !== "" && pageSignature === previousPageSignature) break;
+      previousPageSignature = pageSignature;
 
       for (const item of source) {
         if (!isRecord(item)) continue;
@@ -162,7 +212,14 @@ async function fetchSlugs(
         }
       }
 
-      if (source.length === 0 || !hasMorePages(json)) break;
+      const hasMore = hasMorePages(json);
+      if (
+        source.length === 0 ||
+        hasMore === false ||
+        (hasMore === null && source.length < perPage)
+      ) {
+        break;
+      }
     } catch {
       break;
     }
@@ -199,7 +256,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     fetchSlugs("/api/tourism-bd"),
     fetchSlugs("/api/establishment-bd"),
     fetchSlugs("/api/islam/basic"),
-    fetchSlugs("/api/islam/dowa"),
+    fetchSlugs("/api/islam/dowan"),
     fetchSlugs("/api/people"),
     fetchSlugs("/api/apps", hasSoftwareContent),
   ]);
