@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import BrandIcon from "@/components/BrandIcon";
 import SearchTrigger from "@/components/search/SearchTrigger";
-import { sourceSlug } from "@/lib/news";
 
 // React Icons
 import {
@@ -68,28 +67,12 @@ function cn(...classes: (string | boolean | undefined | null)[]) {
 
 type NewsSourceItem = {
   source_key: string;
+  slug: string;
   source_name: string;
   language: "bn" | "en";
   total: number;
 };
 
-const DEFAULT_NEWS_SOURCES: { bn: NewsSourceItem[]; en: NewsSourceItem[] } = {
-  bn: [
-    { source_key: "prothom_alo", source_name: "Prothom Alo", language: "bn", total: 0 },
-    { source_key: "kalerkantho", source_name: "Kaler Kantho", language: "bn", total: 0 },
-    { source_key: "samakal", source_name: "Samakal", language: "bn", total: 0 },
-    { source_key: "jugantor", source_name: "Jugantor", language: "bn", total: 0 },
-    { source_key: "ittefaq", source_name: "Daily Ittefaq", language: "bn", total: 0 },
-    { source_key: "manabzamin", source_name: "Manabzamin", language: "bn", total: 0 },
-    { source_key: "somoy_news", source_name: "Somoy News", language: "bn", total: 0 },
-  ],
-  en: [
-    { source_key: "daily_star", source_name: "The Daily Star", language: "en", total: 0 },
-    { source_key: "bdnews24", source_name: "bdnews24", language: "en", total: 0 },
-    { source_key: "financial_express", source_name: "The Financial Express", language: "en", total: 0 },
-    { source_key: "new_age", source_name: "New Age", language: "en", total: 0 },
-  ],
-};
 
 type SidebarItemProps = {
   href?: string;
@@ -174,7 +157,7 @@ export default function Sidebar() {
   const [newsSources, setNewsSources] = useState<{
     bn: NewsSourceItem[];
     en: NewsSourceItem[];
-  }>(DEFAULT_NEWS_SOURCES);
+  }>({ bn: [], en: [] });
   const [buysellCategories, setBuysellCategories] = useState<any[]>([]);
   const [contactCategories, setContactCategories] = useState<any[]>([]);
   const [signCategories, setSignCategories] = useState<any[]>([]);
@@ -258,8 +241,8 @@ export default function Sidebar() {
           if (res.ok) {
             const data = await res.json();
             setNewsSources({
-              bn: Array.isArray(data?.bn) && data.bn.length ? data.bn : DEFAULT_NEWS_SOURCES.bn,
-              en: Array.isArray(data?.en) && data.en.length ? data.en : DEFAULT_NEWS_SOURCES.en,
+              bn: Array.isArray(data?.bn) ? data.bn : [],
+              en: Array.isArray(data?.en) ? data.en : [],
             });
           }
         }
@@ -415,11 +398,11 @@ export default function Sidebar() {
                 {(newsSources.bn || []).map((source) => (
                   <SidebarItem
                     key={source.source_key}
-                    href={"/news/" + sourceSlug(source.source_key)}
+                    href={"/news/" + source.slug}
                     icon={FaNewspaper}
                     label={source.source_name}
                     badge={source.total}
-                    isActive={pathname === "/news/" + sourceSlug(source.source_key)}
+                    isActive={pathname === "/news/" + source.slug}
                     collapsed={collapsed}
                     onHover={handleMouseEnter}
                     onLeave={handleMouseLeave}
@@ -435,11 +418,11 @@ export default function Sidebar() {
                 {(newsSources.en || []).map((source) => (
                   <SidebarItem
                     key={source.source_key}
-                    href={"/news/" + sourceSlug(source.source_key)}
+                    href={"/news/" + source.slug}
                     icon={FaNewspaper}
                     label={source.source_name}
                     badge={source.total}
-                    isActive={pathname === "/news/" + sourceSlug(source.source_key)}
+                    isActive={pathname === "/news/" + source.slug}
                     collapsed={collapsed}
                     onHover={handleMouseEnter}
                     onLeave={handleMouseLeave}
