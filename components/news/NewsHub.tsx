@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Newspaper, ExternalLink, Clock3, Layers3, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import type { NewsItem, NewsSource, NewsSourceResponse } from "@/lib/news";
 import { NEWS_CATEGORIES, sourceSlug } from "@/lib/news";
+import NewsThumbnail from "@/components/news/NewsThumbnail";
 
 type Props = {
   items: NewsItem[];
@@ -161,52 +162,55 @@ function FilterBar({ filters, basePath, sources }: Pick<Props, "filters" | "base
 
 function NewsCard({ item }: { item: NewsItem }) {
   return (
-    <article className="space-y-4 rounded-2xl bg-zinc-400/10 p-4 transition hover:bg-zinc-400/15 sm:p-5">
-      <div className="flex items-start gap-3">
-        <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-zinc-400/15">
-          <Newspaper className="size-5 opacity-70" aria-hidden="true" />
-        </span>
+    <article className="rounded-2xl bg-zinc-400/10 p-4 transition hover:bg-zinc-400/20 sm:p-5">
+      <div className="flex items-start gap-4">
+        <NewsThumbnail src={item.image_url} alt={item.title} />
 
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs opacity-55">
+        <div className="min-w-0 flex-1 space-y-2">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-zinc-500 dark:text-zinc-400">
             <Link
               href={"/news/" + sourceSlug(item.source_key)}
               className="font-semibold hover:underline"
             >
               {item.source_name}
             </Link>
-            {item.category ? <span>• {item.category}</span> : null}
-            <span>• {formatTime(item.published_at, item.language)}</span>
+            {item.category ? (
+              <span className="rounded-md bg-zinc-400/15 px-2 py-0.5">
+                {item.category}
+              </span>
+            ) : null}
+            <span>{formatTime(item.published_at, item.language)}</span>
           </div>
 
-          <h2 className="mt-2 text-base font-bold leading-7 tracking-tight sm:text-lg">
+          <h2 className="text-base font-semibold leading-6 tracking-tight sm:text-lg">
             {item.title}
           </h2>
+
+          {item.coverage_count > 1 ? (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-zinc-400/15 px-2.5 py-1 text-xs text-zinc-600 dark:text-zinc-300">
+              <Layers3 className="size-3.5" aria-hidden="true" />
+              {item.coverage_count}টি মাধ্যমে একই খবর
+            </span>
+          ) : null}
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 text-xs opacity-60">
-        {item.coverage_count > 1 ? (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-zinc-400/15 px-2.5 py-1">
-            <Layers3 className="size-3.5" aria-hidden="true" />
-            {item.coverage_count}টি মাধ্যমে একই খবর
-          </span>
-        ) : null}
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-zinc-400/15 px-2.5 py-1">
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-zinc-400/20 pt-3">
+        <span className="inline-flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
           <Clock3 className="size-3.5" aria-hidden="true" />
-          মূল উৎস
+          মূল সংবাদমাধ্যম
         </span>
-      </div>
 
-      <a
-        href={item.source_url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-400/25 px-4 py-2.5 text-sm font-semibold transition hover:bg-zinc-400/40"
-      >
-        মূল সংবাদ পড়ুন
-        <ExternalLink className="size-4" aria-hidden="true" />
-      </a>
+        <a
+          href={item.source_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-zinc-400/15 px-3.5 py-2 text-sm font-medium transition hover:bg-zinc-400/25"
+        >
+          মূল সংবাদ পড়ুন
+          <ExternalLink className="size-4" aria-hidden="true" />
+        </a>
+      </div>
     </article>
   );
 }
