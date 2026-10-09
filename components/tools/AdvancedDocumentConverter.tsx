@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { convertPdfToDocx } from "./pdfToDocx";
+import { createStoredZip } from "@/lib/createStoredZip";
 import {
   Upload,
   FileText,
@@ -151,26 +152,47 @@ export default function AdvancedDocumentConverter() {
 
     const bytes = await files[0].file.arrayBuffer();
     const pdf = await pdfjs.getDocument({ data: bytes }).promise;
-    const images: Blob[] = [];
+    const images: { name: string; content: Uint8Array }[] = [];
 
-    for (let i = 1; i <= pdf.numPages; i++) {
-      setProgress(Math.round((i / pdf.numPages) * 90));
-      const page = await pdf.getPage(i);
-      const viewport = page.getViewport({ scale: 2 });
-      const canvas = document.createElement("canvas");
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-      const ctx = canvas.getContext("2d")!;
+    try {
+      for (let i = 1; i <= pdf.numPages; i++) {
+        setProgress(Math.round((i / pdf.numPages) * 90));
+        const page = await pdf.getPage(i);
+        const viewport = page.getViewport({ scale: 2 });
+        const canvas = document.createElement("canvas");
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const ctx = canvas.getContext("2d");
 
-      await page.render({ canvasContext: ctx, viewport } as any).promise;
+        if (!ctx) throw new Error("ছবি তৈরির জন্য Canvas চালু করা যায়নি।");
 
-      const blob = await new Promise<Blob>((res) =>
-        canvas.toBlob((b) => res(b!), "image/png"),
-      );
-      images.push(blob);
+        try {
+          await page.render({ canvasContext: ctx, viewport } as any).promise;
+          const blob = await new Promise<Blob>((resolve, reject) => {
+            canvas.toBlob((result) => {
+              if (result) resolve(result);
+              else reject(new Error(`PDF-এর ${i} নম্বর পৃষ্ঠা PNG করা যায়নি।`));
+            }, "image/png");
+          });
+          images.push({
+            name: `page-${String(i).padStart(3, "0")}.png`,
+            content: new Uint8Array(await blob.arrayBuffer()),
+          });
+        } finally {
+          canvas.width = 0;
+          canvas.height = 0;
+        }
+      }
+    } finally {
+      await pdf.destroy();
     }
 
-    return images[0];
+    const zipBytes = createStoredZip(images);
+    const exactBuffer = zipBytes.buffer.slice(
+      zipBytes.byteOffset,
+      zipBytes.byteOffset + zipBytes.byteLength,
+    ) as ArrayBuffer;
+    return new Blob([exactBuffer], { type: "application/zip" });
   };
 
   const imagesToPDF = async () => {
@@ -286,7 +308,7 @@ export default function AdvancedDocumentConverter() {
           break;
         case "pdf-to-images":
           blob = await pdfToImages();
-          name = "page-1.png";
+          name = "pages.zip";
           break;
         case "pdf-to-docx":
           if (files.length !== 1) {
