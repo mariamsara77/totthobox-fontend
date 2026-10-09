@@ -8,6 +8,8 @@ import { PageCanvas } from "./PageCanvas";
 import { Upload, Loader2, Camera } from "lucide-react";
 
 const MAX_UPLOAD_BYTES = 50 * 1024 * 1024;
+const MAX_BATCH_UPLOAD_BYTES = 100 * 1024 * 1024;
+const MAX_BATCH_FILES = 20;
 const A4_WIDTH = 595.28;
 const A4_HEIGHT = 841.89;
 const PAGE_MARGIN = 24;
@@ -16,7 +18,6 @@ export default function PdfEditor() {
   const {
     file,
     numPages,
-    currentPage,
     isLoading,
     error,
     setFile,
@@ -29,56 +30,105 @@ export default function PdfEditor() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
 
-  const preparePdfFile = async (selectedFile: File): Promise<File> => {
-    const name = selectedFile.name.toLowerCase();
-    const isPng = selectedFile.type === "image/png" || name.endsWith(".png");
-    const isJpeg =
-      selectedFile.type === "image/jpeg" ||
-      selectedFile.type === "image/jpg" ||
-      /\.(jpe?g)$/.test(name);
-    const isPdf = selectedFile.type === "application/pdf" || name.endsWith(".pdf");
+  const preparePdfFiles = async (selectedFiles: File[]): Promise<File> => {
+    if (selectedFiles.length === 0) {
+      throw new Error("কমপক্ষে একটি PDF বা ছবি নির্বাচন করুন।");
+    }
+    if (selectedFiles.length > MAX_BATCH_FILES) {
+      throw new Error("একবারে সর্বোচ্চ ২০টি PDF/ছবি একত্র করা যাবে।");
+    }
 
-    if (!isPdf && !isPng && !isJpeg) {
+    const totalBytes = selectedFiles.reduce((total, item) => total + item.size, 0);
+    if (selectedFiles.some((item) => item.size > MAX_UPLOAD_BYTES)) {
+      throw new Error("প্রতিটি ফাইলের আকার সর্বোচ্চ ৫০ MB হতে পারবে।");
+    }
+    if (totalBytes > MAX_BATCH_UPLOAD_BYTES) {
+      throw new Error("একবারে নির্বাচিত সব ফাইলের মোট আকার সর্বোচ্চ ১০০ MB হতে পারবে।");
+    }
+
+    const getKind = (selectedFile: File): "pdf" | "png" | "jpeg" | null => {
+      const name = selectedFile.name.toLowerCase();
+      if (selectedFile.type === "application/pdf" || name.endsWith(".pdf")) return "pdf";
+      if (selectedFile.type === "image/png" || name.endsWith(".png")) return "png";
+      if (
+        selectedFile.type === "image/jpeg" ||
+        selectedFile.type === "image/jpg" ||
+        /\.(jpe?g)$/.test(name)
+      ) {
+        return "jpeg";
+      }
+      return null;
+    };
+
+    const kinds = selectedFiles.map(getKind);
+    if (kinds.some((kind) => kind === null)) {
       throw new Error("শুধু PDF, JPG বা PNG ফাইল ব্যবহার করুন।");
     }
-    if (selectedFile.size > MAX_UPLOAD_BYTES) {
-      throw new Error("ফাইলের আকার সর্বোচ্চ ৫০ MB হতে পারবে।");
+
+    if (selectedFiles.length === 1 && kinds[0] === "pdf") {
+      return selectedFiles[0];
     }
-    if (isPdf) return selectedFile;
 
     const { PDFDocument } = await import("pdf-lib");
-    const imagePdf = await PDFDocument.create();
-    const bytes = await selectedFile.arrayBuffer();
-    const image = isPng
-      ? await imagePdf.embedPng(bytes)
-      : await imagePdf.embedJpg(bytes);
-    const page = imagePdf.addPage([A4_WIDTH, A4_HEIGHT]);
-    const maxWidth = A4_WIDTH - PAGE_MARGIN * 2;
-    const maxHeight = A4_HEIGHT - PAGE_MARGIN * 2;
-    const ratio = Math.min(maxWidth / image.width, maxHeight / image.height);
-    const width = image.width * ratio;
-    const height = image.height * ratio;
+    const mergedPdf = await PDFDocument.create();
 
-    page.drawImage(image, {
-      x: (A4_WIDTH - width) / 2,
-      y: (A4_HEIGHT - height) / 2,
-      width,
-      height,
-    });
+    for (let index = 0; index < selectedFiles.length; index += 1) {
+      const selectedFile = selectedFiles[index];
+      const kind = kinds[index];
 
-    const pdfBytes = await imagePdf.save();
-    const pdfName = selectedFile.name.replace(/\.(png|jpe?g)$/i, "") || "scan";
-    return new File([pdfBytes as unknown as BlobPart], pdfName + ".pdf", {
+      if (kind === "pdf") {
+        const sourcePdf = await PDFDocument.load(await selectedFile.arrayBuffer());
+        const copiedPages = await mergedPdf.copyPages(
+          sourcePdf,
+          sourcePdf.getPageIndices(),
+        );
+        copiedPages.forEach((page) => mergedPdf.addPage(page));
+        continue;
+      }
+
+      const bytes = await selectedFile.arrayBuffer();
+      const image =
+        kind === "png"
+          ? await mergedPdf.embedPng(bytes)
+          : await mergedPdf.embedJpg(bytes);
+
+      // Match A4 orientation to the captured image to reduce unnecessary whitespace.
+      const landscape = image.width / image.height > 1.1;
+      const pageWidth = landscape ? A4_HEIGHT : A4_WIDTH;
+      const pageHeight = landscape ? A4_WIDTH : A4_HEIGHT;
+      const page = mergedPdf.addPage([pageWidth, pageHeight]);
+      const maxWidth = pageWidth - PAGE_MARGIN * 2;
+      const maxHeight = pageHeight - PAGE_MARGIN * 2;
+      const ratio = Math.min(maxWidth / image.width, maxHeight / image.height);
+      const width = image.width * ratio;
+      const height = image.height * ratio;
+
+      page.drawImage(image, {
+        x: (pageWidth - width) / 2,
+        y: (pageHeight - height) / 2,
+        width,
+        height,
+      });
+    }
+
+    if (mergedPdf.getPageCount() === 0) {
+      throw new Error("নির্বাচিত ফাইল থেকে কোনো PDF পৃষ্ঠা তৈরি করা যায়নি।");
+    }
+
+    const pdfBytes = await mergedPdf.save();
+    const firstName =
+      selectedFiles[0].name.replace(/\.(pdf|png|jpe?g)$/i, "") || "document";
+    const suffix = selectedFiles.length > 1 ? "_merged" : "_scan";
+    return new File([pdfBytes as unknown as BlobPart], firstName + suffix + ".pdf", {
       type: "application/pdf",
     });
   };
-
-  const loadPdf = async (selectedFile: File) => {
+  const loadFiles = async (selectedFiles: File[]) => {
     setLoading(true);
     setError(null);
 
     try {
-      const preparedFile = await preparePdfFile(selectedFile);
+      const preparedFile = await preparePdfFiles(selectedFiles);
       const pdfjs = await import("pdfjs-dist");
       pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
@@ -102,9 +152,9 @@ export default function PdfEditor() {
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = event.currentTarget.files?.[0];
+    const selectedFiles = Array.from(event.currentTarget.files || []);
     event.currentTarget.value = "";
-    if (selectedFile) void loadPdf(selectedFile);
+    if (selectedFiles.length) void loadFiles(selectedFiles);
   };
 
   return (
@@ -112,6 +162,7 @@ export default function PdfEditor() {
       <input
         ref={fileInputRef}
         type="file"
+        multiple
         accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png"
         className="hidden"
         onChange={handleFileChange}
@@ -165,7 +216,7 @@ export default function PdfEditor() {
             PDF এডিটর ও ডকুমেন্ট স্ক্যানার
           </h1>
           <p className="mb-8 max-w-lg text-sm leading-6 text-zinc-600 dark:text-zinc-400">
-            PDF খুলুন, অথবা JPG/PNG স্ক্যান করা ছবি থেকে একটি A4 PDF তৈরি করুন। ফাইল আপনার ব্রাউজারেই প্রক্রিয়া করা হয়।
+            এক বা একাধিক PDF একত্র করুন, অথবা একাধিক JPG/PNG স্ক্যান থেকে বহু-পৃষ্ঠার PDF বানান। ফাইল আপনার ব্রাউজারেই প্রক্রিয়া করা হয়।
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <button
@@ -193,7 +244,7 @@ export default function PdfEditor() {
             </p>
           ) : null}
           <p className="mt-5 text-xs text-zinc-500">
-            সর্বোচ্চ ফাইল আকার ৫০ MB · PDF, JPG ও PNG
+            সর্বোচ্চ ২০টি ফাইল · প্রতিটি ৫০ MB · মোট ১০০ MB · PDF, JPG ও PNG
           </p>
         </div>
       )}
