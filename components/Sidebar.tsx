@@ -142,7 +142,6 @@ type SidebarItemProps = {
 };
 
 function SidebarItem({
-  const { setIsOpen } = useSidebar();
   href,
   onClick,
   icon: Icon,
@@ -153,6 +152,7 @@ function SidebarItem({
   onLeave,
   badge,
 }: SidebarItemProps) {
+  const { setIsOpen } = useSidebar();
   const content = (
     <>
       <Icon className={cn("h-5 w-5 shrink-0", isActive ? "" : "")} />
