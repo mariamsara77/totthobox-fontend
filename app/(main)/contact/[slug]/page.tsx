@@ -1,20 +1,71 @@
 import { Metadata } from "next";
 import ContactClient from "./ContactClient";
 
+type ContactCategory = {
+  id: number;
+  name: string;
+  slug: string;
+  icon?: string;
+  description?: string;
+};
+
 type Props = {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ search?: string }>;
 };
 
-async function getCategory(slug: string) {
-  const base =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
-  const res = await fetch(`${base}/api/contacts/categories/${slug}`, {
-    next: { revalidate: 3600 },
-  });
-  if (!res.ok) return null;
-  const json = await res.json();
-  return json.data;
+async function getCategory(slug: string): Promise<ContactCategory | null> {
+  const configuredBase =
+    process.env.NEXT_PUBLIC_API_BASE_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    "https://admin.totthobox.com";
+  let base =
+    configuredBase.startsWith("https://") || configuredBase.startsWith("http://")
+      ? configuredBase
+      : "https://admin.totthobox.com";
+  while (base.endsWith("/")) base = base.slice(0, -1);
+  if (base.toLowerCase().endsWith("/api")) base = base.slice(0, -4);
+
+  try {
+    const res = await fetch(
+      `${base}/api/contacts/categories/${encodeURIComponent(slug)}`,
+      {
+        next: { revalidate: 300, tags: [`contact-category:${slug}`] },
+        signal: AbortSignal.timeout(1500),
+      },
+    );
+    if (!res.ok) return null;
+    const json: unknown = await res.json();
+    if (!json || typeof json !== "object" || !("data" in json)) return null;
+
+    const data = json.data;
+    if (!data || typeof data !== "object") return null;
+
+    const record = data as Record<string, unknown>;
+    const id = typeof record.id === "number" ? record.id : Number(record.id);
+    if (
+      !Number.isSafeInteger(id) ||
+      id <= 0 ||
+      typeof record.name !== "string" ||
+      !record.name.trim() ||
+      typeof record.slug !== "string" ||
+      !record.slug.trim()
+    ) {
+      return null;
+    }
+
+    return {
+      id,
+      name: record.name.trim(),
+      slug: record.slug.trim(),
+      ...(typeof record.icon === "string" ? { icon: record.icon } : {}),
+      ...(typeof record.description === "string"
+        ? { description: record.description }
+        : {}),
+    };
+  } catch {
+    return null;
+  }
 }
 
 export async function generateMetadata({

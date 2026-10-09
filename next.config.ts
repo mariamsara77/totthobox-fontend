@@ -60,6 +60,18 @@ const nextConfig: NextConfig = {
   },
 };
 
+const publicNewsApiCaching: RuntimeCaching = {
+  urlPattern: /^https:\/\/admin\.totthobox\.com\/api\/news(?:\/(?:sources|[A-Za-z0-9][A-Za-z0-9-]*))?(?:\?.*)?$/i,
+  handler: "NetworkFirst",
+  method: "GET",
+  options: {
+    cacheName: "public-news-api-v1",
+    networkTimeoutSeconds: 3,
+    cacheableResponse: { statuses: [0, 200] },
+    expiration: { maxEntries: 40, maxAgeSeconds: 300 },
+  },
+};
+
 const apiNetworkOnlyCaching: RuntimeCaching = {
   handler: "NetworkOnly",
   method: "GET",
@@ -80,7 +92,7 @@ const withPWA = withPWAInit({
     document: "/offline",
   },
   workboxOptions: {
-    runtimeCaching: [apiNetworkOnlyCaching],
+    runtimeCaching: [publicNewsApiCaching, apiNetworkOnlyCaching],
   },
 });
 
