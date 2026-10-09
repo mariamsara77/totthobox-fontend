@@ -229,8 +229,14 @@ export default function Sidebar() {
   // API Base URL
   // Accept either the backend origin or an origin ending in /api.
   // Sidebar API paths below already include /api, so avoid accidentally requesting /api/api/...
+  const configuredApiBase =
+    process.env.NEXT_PUBLIC_API_BASE_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    "https://admin.totthobox.com";
   const API_URL = (
-    process.env.NEXT_PUBLIC_API_BASE_URL || process.env.NEXT_PUBLIC_API_URL || "https://admin.totthobox.com"
+    /^https?:\/\//i.test(configuredApiBase)
+      ? configuredApiBase
+      : "https://admin.totthobox.com"
   )
     .replace(/\/+$/, "")
     .replace(/\/api$/i, "");
