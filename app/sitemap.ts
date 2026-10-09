@@ -2,11 +2,16 @@ import type { MetadataRoute } from "next";
 import { getAllCountries } from "@/lib/countries";
 
 const SITE_URL = "https://totthobox.com";
-const API_BASE = (
-  process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com"
-)
-  .replace(/\/+$/, "")
-  .replace(/\/api$/i, "");
+const configuredApiBase =
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://admin.totthobox.com";
+let API_BASE =
+  configuredApiBase.startsWith("https://") || configuredApiBase.startsWith("http://")
+    ? configuredApiBase
+    : "https://admin.totthobox.com";
+while (API_BASE.endsWith("/")) API_BASE = API_BASE.slice(0, -1);
+if (API_BASE.toLowerCase().endsWith("/api")) API_BASE = API_BASE.slice(0, -4);
 
 export const revalidate = 3600;
 
