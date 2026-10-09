@@ -315,7 +315,7 @@ export default function Sidebar() {
                 );
               }
             }
-          } catch (error) {
+          } catch {
             if (controller.signal.aborted) return;
           }
 
@@ -359,7 +359,7 @@ export default function Sidebar() {
             if (response.ok) {
               normalized = normalizeNewsSources(await response.json());
             }
-          } catch (error) {
+          } catch {
             if (controller.signal.aborted) return;
           }
 
