@@ -42,7 +42,7 @@ export default async function NewsHeadlinesPage({
     search: first(params.search),
     language: first(params.language),
     category: first(params.category),
-    hours: first(params.hours) || "48",
+    hours: first(params.hours),
   };
 
   const [news, sources] = await Promise.all([
