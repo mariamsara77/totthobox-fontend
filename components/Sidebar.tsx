@@ -786,6 +786,24 @@ export default function Sidebar() {
                   </h3>
                 )}
                 <SidebarItem
+                  href="/pdf-editor"
+                  icon={MdEditDocument}
+                  label="PDF Editor ও Scanner"
+                  isActive={pathname.startsWith("/pdf-editor")}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SidebarItem
+                  href="/converter/document"
+                  icon={MdEditDocument}
+                  label="PDF ও Word কনভার্টার"
+                  isActive={pathname === "/converter/document"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SidebarItem
                   href="/tools/image-resizer"
                   icon={RiImageEditFill}
                   label="Image Resizer"
