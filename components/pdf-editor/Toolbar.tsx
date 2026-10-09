@@ -15,6 +15,7 @@ import {
   Undo2,
   Redo2,
   Upload,
+  Camera,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -34,9 +35,10 @@ const tools: { id: Tool; icon: any; label: string }[] = [
 
 interface ToolbarProps {
   onNewFile?: () => void;
+  onScanDocuments?: () => void;
 }
 
-export function Toolbar({ onNewFile }: ToolbarProps) {
+export function Toolbar({ onNewFile, onScanDocuments }: ToolbarProps) {
   const {
     tool,
     setTool,
@@ -261,11 +263,25 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
 
         {onNewFile && (
           <button
+            type="button"
             onClick={onNewFile}
-            title="Open another PDF"
-            className="p-2 rounded-lg hover:bg-zinc-900 hover:bg-zinc-800"
+            title="অন্য PDF খুলুন"
+            aria-label="অন্য PDF খুলুন"
+            className="rounded-lg p-2 transition hover:bg-zinc-800"
           >
             <Upload className="size-5" />
+          </button>
+        )}
+
+        {onScanDocuments && (
+          <button
+            type="button"
+            onClick={onScanDocuments}
+            title="ক্যামেরায় ডকুমেন্ট স্ক্যান করুন"
+            aria-label="ক্যামেরায় ডকুমেন্ট স্ক্যান করুন"
+            className="rounded-lg p-2 transition hover:bg-zinc-800"
+          >
+            <Camera className="size-5" />
           </button>
         )}
 
