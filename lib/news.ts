@@ -56,8 +56,8 @@ const API_BASE = (
   .replace(/\/+$/, "")
   .replace(/\/api$/i, "");
 
-// Source URL slugs are maintained in the backend news_sources database table.
-// This helper is only for old, unknown URLs where no catalogue record exists.
+// Source URL slugs are maintained in config/news_sources.php.
+// This helper is only for unknown source keys with no configured slug.
 export function sourceSlug(sourceKey: string): string {
   return sourceKey.replace(/_/g, "-");
 }
@@ -75,15 +75,16 @@ function buildUrl(path: string, params: Record<string, string | number | undefin
 export async function getNewsSources(): Promise<NewsSourceResponse> {
   try {
     const response = await fetch(API_BASE + "/api/news/sources", {
+      cache: "force-cache",
       next: { revalidate: 60, tags: ["news-sources"] },
     });
-
     if (!response.ok) return { bn: [], en: [] };
-
-    const json = await response.json();
+    const json: unknown = await response.json();
+    if (!json || typeof json !== "object") return { bn: [], en: [] };
+    const payload = json as Partial<NewsSourceResponse>;
     return {
-      bn: Array.isArray(json?.bn) ? json.bn : [],
-      en: Array.isArray(json?.en) ? json.en : [],
+      bn: Array.isArray(payload.bn) ? payload.bn : [],
+      en: Array.isArray(payload.en) ? payload.en : [],
     };
   } catch {
     return { bn: [], en: [] };
@@ -124,48 +125,27 @@ export async function getNews(params: {
   });
 
   try {
-    let response: Response | null = null;
-
-    try {
-      response = await fetch(url, {
-        next: { revalidate: 180, tags: ["news-feed"] },
-      });
-    } catch {
-      // Recover from transient network failures with one uncached request.
-    }
-
-    if (!response || !response.ok) {
-      try {
-        // Retry only when the normal request fails; healthy traffic stays cached.
-        response = await fetch(url, { cache: "no-store" });
-      } catch {
-        return empty;
-      }
-    }
-
+    const response = await fetch(url, {
+      cache: "force-cache",
+      next: { revalidate: 180, tags: ["news-feed"] },
+    });
     if (!response.ok) return empty;
-
-    const json = await response.json();
-    if (
-      !json ||
-      !Array.isArray(json.data) ||
-      !json.meta ||
-      typeof json.meta !== "object"
-    ) {
-      return empty;
-    }
-
+    const json: unknown = await response.json();
+    if (!json || typeof json !== "object") return empty;
+    const payload = json as { data?: unknown; meta?: unknown };
+    if (!Array.isArray(payload.data) || !payload.meta || typeof payload.meta !== "object") return empty;
+    const meta = payload.meta as Record<string, unknown>;
     return {
-      data: json.data,
+      data: payload.data as NewsItem[],
       error: false,
       meta: {
-        current_page: Number(json.meta.current_page || 1),
-        last_page: Number(json.meta.last_page || 1),
-        per_page: Number(json.meta.per_page || 18),
-        total: Number(json.meta.total || 0),
-        from: json.meta.from ?? null,
-        to: json.meta.to ?? null,
-        has_more: Boolean(json.meta.has_more),
+        current_page: Number(meta.current_page ?? 1),
+        last_page: Number(meta.last_page ?? 1),
+        per_page: Number(meta.per_page ?? 18),
+        total: Number(meta.total ?? 0),
+        from: typeof meta.from === "number" ? meta.from : null,
+        to: typeof meta.to === "number" ? meta.to : null,
+        has_more: Boolean(meta.has_more),
       },
     };
   } catch {
