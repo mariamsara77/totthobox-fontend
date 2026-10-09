@@ -4,12 +4,12 @@ import PdfEditor from "@/components/pdf-editor/PdfEditor";
 export const metadata: Metadata = {
   title: "PDF এডিটর ও PDF টুলস | তথ্যবক্স",
   description:
-    "ব্রাউজারেই PDF-এ লেখা যোগ, হাইলাইট, ড্রইং, স্বাক্ষর, পৃষ্ঠা ঘোরানো এবং সম্পাদিত PDF ডাউনলোড করুন। আপনার ফাইল সার্ভারে আপলোড করা হয় না।",
+    "ক্যামেরায় একাধিক ডকুমেন্ট পৃষ্ঠা স্ক্যান করুন, PDF-এ লেখা, হাইলাইট ও স্বাক্ষর যোগ করুন, পৃষ্ঠা ঘোরান এবং সম্পাদিত PDF ডাউনলোড করুন। ফাইল ব্রাউজারেই প্রসেস হয়।",
   alternates: { canonical: "https://totthobox.com/pdf-editor" },
   openGraph: {
     title: "PDF এডিটর ও PDF টুলস | তথ্যবক্স",
     description:
-      "ব্রাউজারেই PDF সম্পাদনা করুন। লেখা, হাইলাইট, ড্রইং, স্বাক্ষর ও পৃষ্ঠা ঘোরানোর সুবিধা।",
+      "ক্যামেরায় পৃষ্ঠা স্ক্যান, PDF-এ লেখা ও স্বাক্ষর যোগ, হাইলাইট, পৃষ্ঠা ঘোরানো এবং ডাউনলোড—সব ব্রাউজারেই করুন।",
     url: "https://totthobox.com/pdf-editor",
     siteName: "Totthobox",
     type: "website",
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "PDF এডিটর ও PDF টুলস | তথ্যবক্স",
     description:
-      "ব্রাউজারেই PDF সম্পাদনা করুন—কোনো ফাইল সার্ভারে আপলোড নয়।",
+      "ডকুমেন্ট স্ক্যান ও PDF সম্পাদনা করুন—কোনো ফাইল সার্ভারে আপলোড নয়।",
   },
 };
 
