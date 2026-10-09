@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import NewsHub from "@/components/news/NewsHub";
-import { getNews, getNewsSources, sourceKeyFromSlug } from "@/lib/news";
+import { getNews, getNewsSources } from "@/lib/news";
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -15,12 +15,9 @@ function first(value: string | string[] | undefined): string | undefined {
 }
 
 async function getSource(sourceSlug: string) {
-  const key = sourceKeyFromSlug(sourceSlug);
-  if (!key) return null;
-
   const sources = await getNewsSources();
-  const source = [...sources.bn, ...sources.en].find((item) => item.key === key);
-  return source ? { key, source, sources } : null;
+  const source = [...sources.bn, ...sources.en].find((item) => item.slug === sourceSlug);
+  return source ? { key: source.key, source, sources } : null;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -71,7 +68,7 @@ export default async function NewsSourcePage({ params, searchParams }: Props) {
     search: first(query.search),
     language: first(query.language),
     category: first(query.category),
-    hours: first(query.hours) || "48",
+    hours: first(query.hours),
   };
 
   const news = await getNews(filters);
