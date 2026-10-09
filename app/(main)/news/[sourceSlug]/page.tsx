@@ -76,6 +76,7 @@ export default async function NewsSourcePage({ params, searchParams }: Props) {
   return (
     <NewsHub
       items={news.data}
+      error={news.error}
       meta={{
         current_page: news.meta.current_page,
         last_page: news.meta.last_page,
