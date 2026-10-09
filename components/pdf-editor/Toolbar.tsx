@@ -70,11 +70,13 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
       const a = document.createElement("a");
       a.href = url;
       a.download = `edited_${file.name}`;
+      document.body.appendChild(a);
       a.click();
-      URL.revokeObjectURL(url);
+      a.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
     } catch (err) {
       console.error(err);
-      alert("Export failed");
+      alert(err instanceof Error ? err.message : "PDF এক্সপোর্ট করা যায়নি। আবার চেষ্টা করুন।");
     }
   };
 
