@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { convertPdfToDocx } from "./pdfToDocx";
 import {
   Upload,
   FileText,
@@ -23,6 +24,7 @@ type Tool =
   | "pdf-merge"
   | "pdf-split"
   | "pdf-to-images"
+  | "pdf-to-docx"
   | "images-to-pdf"
   | "pdf-rotate"
   | "docx-to-html"
@@ -286,6 +288,13 @@ export default function AdvancedDocumentConverter() {
           blob = await pdfToImages();
           name = "page-1.png";
           break;
+        case "pdf-to-docx":
+          if (files.length !== 1) {
+            throw new Error("একটি PDF ফাইল নির্বাচন করুন।");
+          }
+          blob = await convertPdfToDocx(files[0].file, setProgress);
+          name = "converted.docx";
+          break;
         case "images-to-pdf":
           blob = await imagesToPDF();
           name = "images.pdf";
@@ -353,6 +362,12 @@ export default function AdvancedDocumentConverter() {
       id: "pdf-to-images" as const,
       label: "PDF → Images",
       icon: ImageIcon,
+      accept: ".pdf",
+    },
+    {
+      id: "pdf-to-docx" as const,
+      label: "PDF → Word",
+      icon: FileType,
       accept: ".pdf",
     },
     {
@@ -483,6 +498,12 @@ export default function AdvancedDocumentConverter() {
         </div>
       )}
 
+      {activeTool === "pdf-to-docx" && (
+        <p className="rounded-xl bg-zinc-400/10 px-4 py-3 text-sm leading-6 text-zinc-600 dark:text-zinc-300">
+          নির্বাচনযোগ্য লেখা থাকা PDF থেকে একটি সম্পাদনাযোগ্য Word (.docx) ফাইল তৈরি হবে। এই ফিচার স্ক্যান করা ছবির OCR বা মূল পৃষ্ঠার হুবহু নকশা পুনরুদ্ধার করে না; ফাইল আপনার ব্রাউজারেই প্রসেস হয়।
+        </p>
+      )}
+
       {/* Tool specific options */}
       {activeTool === "pdf-split" && (
         <div>
@@ -598,7 +619,7 @@ export default function AdvancedDocumentConverter() {
         <div className="leading-relaxed">
           <p>
             <strong>
-              PDF Merge, Split, Rotate, Images ↔ PDF, DOCX → HTML, Excel →
+              PDF Merge, Split, Rotate, PDF → Word, Images ↔ PDF, DOCX → HTML, Excel →
               CSV/JSON
             </strong>{" "}
             সহ সব টুল এক জায়গায়। সম্পূর্ণ ব্রাউজারে কাজ করে — কোনো ফাইল সার্ভারে
