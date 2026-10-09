@@ -19,7 +19,7 @@ export default function Navbar() {
             type="button"
             onClick={() => setIsOpen(true)}
             aria-label="সাইডবার খুলুন"
-            className="rounded-lg p-2 hover:opacity-50 md:hidden"
+            className="rounded-xl p-2 transition-colors hover:bg-zinc-400/25 md:hidden"
           >
             <Menu className="h-6 w-6" />
           </button>
@@ -28,7 +28,7 @@ export default function Navbar() {
           {isCollapsed && (
             <button
               onClick={toggleCollapsed}
-              className="hidden rounded-lg p-2  hover:opacity-50 md:flex"
+              className="hidden rounded-xl p-2 transition-colors hover:bg-zinc-400/25 md:flex"
               title="Expand sidebar"
             >
               <PanelLeft className="h-5 w-5" />

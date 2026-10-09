@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import useSWR from "swr";
@@ -49,6 +51,13 @@ type Props = {
   intro: Intro;
 };
 
+function getExcerpt(value: string, maxLength: number): string {
+  if (value.length <= maxLength) return value;
+  const candidate = value.slice(0, maxLength);
+  const lastSpace = candidate.lastIndexOf(" ");
+  const excerpt = lastSpace > Math.floor(maxLength * 0.7) ? candidate.slice(0, lastSpace) : candidate;
+  return `${excerpt.trimEnd()}...`;
+}
 export default function IntroductionShowClient({ intro }: Props) {
   const [showCreators, setShowCreators] = useState(false);
   const creatorsRef = useRef<HTMLDivElement>(null);
@@ -74,6 +83,42 @@ export default function IntroductionShowClient({ intro }: Props) {
     fetcher,
   );
   const creators: Creator[] = creatorsData?.data || [];
+
+  const plainDescription = (intro.description || "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const descriptionExcerpt =
+    plainDescription.length > 320
+      ? getExcerpt(plainDescription, 320)
+      : plainDescription;
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "হোম",
+        item: "https://totthobox.com/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "বাংলাদেশের পরিচিতি",
+        item: "https://totthobox.com/bangladesh/introduction",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: intro.title,
+        item: `https://totthobox.com/bangladesh/introduction/${encodeURIComponent(intro.slug)}`,
+      },
+    ],
+  };
 
   const reactions = {
     like_count: intro.reactions?.like_count ?? intro.like_count ?? 0,
@@ -137,7 +182,7 @@ export default function IntroductionShowClient({ intro }: Props) {
           <button
             type="button"
             onClick={() => setShowCreators(!showCreators)}
-            className="p-2 rounded-lg hover:bg-zinc-400/25 transition"
+            className="p-2 rounded-xl hover:bg-zinc-400/25 transition"
             aria-label="তথ্য প্রদানকারীগণ"
           >
             <FaUserPen className="w-5 h-5" />
@@ -179,11 +224,7 @@ export default function IntroductionShowClient({ intro }: Props) {
                     <div className="flex items-start gap-3 p-2 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/25 border border-zinc-400/25 transition">
                       <div className="relative">
                         {c.avatar_url ? (
-                          <img
-                            src={c.avatar_url}
-                            alt={c.name}
-                            className="w-12 h-12 rounded-xl object-cover"
-                          />
+                          <Image src={c.avatar_url} alt={c.name} width={48} height={48} sizes="48px" className="w-12 h-12 rounded-xl object-cover" />
                         ) : (
                           <div className="w-12 h-12 rounded-xl bg-zinc-400/15 flex items-center justify-center text-sm font-medium">
                             {c.name?.charAt(0)}
@@ -263,23 +304,26 @@ export default function IntroductionShowClient({ intro }: Props) {
         বাংলাদেশের পরিচিতি তালিকায় ফিরে যান
       </Link>
 
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema),
+        }}
+      />
+
       {/* About Section (AdSense friendly) */}
       <section className="rounded-2xl bg-zinc-400/10 p-5 space-y-3">
         <h2 className="text-lg font-bold">{intro.title} সম্পর্কে</h2>
         <div className="text-sm leading-relaxed space-y-2 opacity-90">
-          <p>
-            <strong>{intro.title}</strong> হলো বাংলাদেশের পরিচিতির অংশ।
-            {intro.intro_category && (
-              <>
-                {" "}
-                এটি <strong>{intro.intro_category}</strong> ক্যাটাগরির অন্তর্গত।
-              </>
-            )}
-          </p>
-          <p>
-            উপরের বিবরণ থেকে বিস্তারিত জানুন। তথ্যবক্স থেকে বাংলাদেশ সম্পর্কিত
-            নির্ভরযোগ্য ও হালনাগাদ তথ্য সহজেই পেয়ে যান।
-          </p>
+          {intro.intro_category && (
+            <p>
+              <strong>{intro.title}</strong> ক্যাটাগরি: {intro.intro_category}.
+            </p>
+          )}
+          {descriptionExcerpt && <p>{descriptionExcerpt}</p>}
+          {!descriptionExcerpt && (
+            <p>এই তথ্যের বিস্তারিত বিবরণ এখনো যোগ করা হয়নি।</p>
+          )}
         </div>
       </section>
 
@@ -293,8 +337,8 @@ export default function IntroductionShowClient({ intro }: Props) {
             <ChevronDown className="w-4 h-4 group-open:rotate-180 transition shrink-0" />
           </summary>
           <div className="px-4 pb-4 text-sm leading-relaxed border-t border-zinc-400/20 pt-3 opacity-90">
-            উপরের “বিস্তারিত বিবরণ” সেকশনে এই তথ্যের পূর্ণাঙ্গ ব্যাখ্যা লেখা
-            আছে।
+            {descriptionExcerpt ||
+              "এই তথ্যের বিস্তারিত বিবরণ এখনো যোগ করা হয়নি।"}
           </div>
         </details>
 

@@ -7,12 +7,14 @@ type Props = {
   appId: string | number;
   name?: string;
   platform?: string;
+  downloadType?: "external" | "local";
 };
 
 export default function DownloadButton({
   appId,
   name = "সফটওয়্যার",
   platform,
+  downloadType = "external",
 }: Props) {
   const [loading, setLoading] = useState(false);
 
@@ -39,17 +41,24 @@ export default function DownloadButton({
       const data = await response.json();
 
       if (!response.ok || !data?.download_url) {
-        throw new Error(data?.message || "অফিসিয়াল সোর্স পাওয়া যায়নি।");
+        throw new Error(
+          data?.message ||
+            (downloadType === "external"
+              ? "অফিসিয়াল সোর্স পাওয়া যায়নি।"
+              : "ডাউনলোড সোর্স পাওয়া যায়নি।"),
+        );
       }
 
-      // নতুন ট্যাবে অফিসিয়াল সাইট ওপেন
+      // নতুন ট্যাবে সোর্স ওপেন
       window.open(data.download_url, "_blank", "noopener,noreferrer");
     } catch (error) {
       console.error("Software source error:", error);
       alert(
         error instanceof Error
           ? error.message
-          : "অফিসিয়াল সোর্স পাওয়া যায়নি। পরে আবার চেষ্টা করুন।",
+          : downloadType === "external"
+            ? "অফিসিয়াল সোর্স পাওয়া যায়নি। পরে আবার চেষ্টা করুন।"
+            : "ডাউনলোড সোর্স পাওয়া যায়নি। পরে আবার চেষ্টা করুন।",
       );
     } finally {
       setLoading(false);
@@ -67,12 +76,15 @@ export default function DownloadButton({
         <ExternalLink className="w-4 h-4" />
         {loading
           ? "অফিসিয়াল সোর্স খোঁজা হচ্ছে..."
-          : `${name}${platform ? ` (${platform})` : ""} — অফিসিয়াল ওয়েবসাইট`}
+          : downloadType === "external"
+            ? `${name}${platform ? ` (${platform})` : ""} — অফিসিয়াল ওয়েবসাইট`
+            : `${name}${platform ? ` (${platform})` : ""} — ডাউনলোড`}
       </button>
 
       <p className="text-xs text-center opacity-50 leading-relaxed">
-        তথ্যবক্স কোনো সফটওয়্যার ফাইল হোস্ট করে না। শুধুমাত্র ডেভেলপার/প্রকাশকের
-        অফিসিয়াল ওয়েবসাইটের লিংক প্রদান করা হয়।
+        {downloadType === "external"
+          ? "তথ্যবক্স সফটওয়্যার ফাইল হোস্ট করে না। ডেভেলপার বা প্রকাশকের অফিসিয়াল ওয়েবসাইটে নিয়ে যাওয়া হয়।"
+          : "এই রিসোর্সের ফাইল তথ্যবক্সের নিজস্ব সংরক্ষণ থেকে প্রদান করা হচ্ছে। ব্যবহারের আগে সফটওয়্যারের উৎস ও লাইসেন্স যাচাই করুন।"}
       </p>
     </div>
   );

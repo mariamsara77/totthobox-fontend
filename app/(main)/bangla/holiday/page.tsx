@@ -1,5 +1,17 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import HolidaysClient from './HolidaysClient';
+
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+
+async function getInitialData() {
+  const response = await fetch(
+    `${API_BASE}/api/holidays?page=1&per_page=15`,
+    { next: { revalidate: 3600, tags: ["holidays-list"] } },
+  );
+  if (!response.ok) throw new Error("Failed to load initial holidays data");
+  return response.json();
+}
 
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/bangla/holiday" },
@@ -10,6 +22,7 @@ export const metadata: Metadata = {
   keywords: 'ছুটির তালিকা, সরকারি ছুটি, বাংলাদেশ ক্যালেন্ডার, ঐচ্ছিক ছুটি',
 };
 
-export default function HolidaysPage() {
-  return <HolidaysClient />;
+export default async function HolidaysPage() {
+  const initialData = await getInitialData();
+  return <HolidaysClient initialData={initialData} />;
 }

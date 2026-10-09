@@ -37,27 +37,30 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const item = data.item;
   const cat = data.category;
+  const cleanDescription = (item.description_plain || item.description || "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
   const title = `${item.name} | ${cat.name} | ট্রাফিক সাইন | তথ্যবক্স`;
-  const description =
-    item.description_plain?.slice(0, 160) ||
-    `${item.name} ট্রাফিক সাইনের অর্থ, ব্যবহার ও বিস্তারিত ব্যাখ্যা।`;
+  const description = cleanDescription
+    ? cleanDescription.length > 160
+      ? `${cleanDescription.slice(0, 157).trimEnd()}...`
+      : cleanDescription
+    : `${item.name} ট্রাফিক সাইনের অর্থ ও ব্যবহার।`;
+  const canonical = `https://totthobox.com/signs/${encodeURIComponent(category)}/${encodeURIComponent(sign)}`;
 
   return {
     title,
     description,
-    keywords: [
-      item.name,
-      cat.name,
-      "ট্রাফিক সাইন",
-      "রোড সাইন",
-      "ট্রাফিক চিহ্ন",
-      "তথ্যবক্স",
-    ],
+    robots: {
+      index: cleanDescription.length > 0,
+      follow: true,
+    },
     openGraph: {
       title,
       description,
       type: "article",
-      url: `https://totthobox.com/signs/${category}/${sign}`,
+      url: canonical,
       siteName: "Totthobox",
       images: item.first_media_url ? [{ url: item.first_media_url }] : [],
       locale: "bn_BD",
@@ -68,7 +71,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
     },
     alternates: {
-      canonical: `https://totthobox.com/signs/${category}/${sign}`,
+      canonical,
     },
   };
 }

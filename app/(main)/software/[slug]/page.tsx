@@ -28,18 +28,40 @@ async function getAppData(slug: string) {
 
     const json = await res.json();
 
-    if (!json?.data) {
+    if (!json?.data?.name || !json?.data?.slug) {
       return null;
     }
 
     return {
       app: json.data,
-      creators: json.creators || [],
       seo: json.seo || {},
     };
   } catch (error) {
     console.error("Error fetching app:", error);
     return null;
+  }
+}
+
+async function getAppCreators(appId: number) {
+  try {
+    const res = await fetch(
+      `${API_BASE_URL}/api/apps/${appId}/creators`,
+      {
+        next: {
+          revalidate: 3600,
+        },
+      },
+    );
+
+    if (!res.ok) {
+      return [];
+    }
+
+    const json = await res.json();
+    return Array.isArray(json?.data) ? json.data : [];
+  } catch (error) {
+    console.error("Error fetching app creators:", error);
+    return [];
   }
 }
 
@@ -49,6 +71,16 @@ function stripHtml(value?: string) {
     .replace(/<[^>]*>/g, "")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function makeMetaDescription(value: string): string {
+  const normalized = value.trim();
+
+  if (normalized.length <= 160) {
+    return normalized;
+  }
+
+  return `${normalized.slice(0, 157).trimEnd()}...`;
 }
 
 export async function generateMetadata({
@@ -76,11 +108,11 @@ export async function generateMetadata({
     seo.title ||
     `${app.name}${app.version ? ` v${app.version}` : ""} | তথ্যবক্স`;
 
-  const description =
-    seo.description ||
-    `${app.name}${
-      app.platform ? ` (${app.platform})` : ""
-    } সম্পর্কে ফিচার, সিস্টেম রিকোয়ারমেন্ট এবং অফিসিয়াল সোর্সের তথ্য।`;
+  const appDescription = stripHtml(app.description);
+  const isThinContent = appDescription.length < 120;
+  const description = appDescription
+    ? makeMetaDescription(appDescription)
+    : undefined;
 
   const canonical = `https://totthobox.com/software/${encodeURIComponent(
     app.slug,
@@ -89,7 +121,6 @@ export async function generateMetadata({
   return {
     title,
     description,
-    ...(seo.keywords ? { keywords: seo.keywords } : {}),
     alternates: {
       canonical,
     },
@@ -97,7 +128,7 @@ export async function generateMetadata({
       title,
       description,
       url: canonical,
-      type: "article",
+      type: "website",
       locale: "bn_BD",
       siteName: "তথ্যবক্স",
       images: app.icon_url
@@ -114,6 +145,10 @@ export async function generateMetadata({
       title,
       description,
     },
+    robots: {
+      index: !isThinContent,
+      follow: true,
+    },
   };
 }
 
@@ -129,11 +164,43 @@ export default async function AppShowPage({
     notFound();
   }
 
-  const { app, creators } = data;
+  const { app } = data;
+  const creators = await getAppCreators(app.id);
   const description = stripHtml(app.description);
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "হোম",
+        item: "https://totthobox.com/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Software & Apps",
+        item: "https://totthobox.com/software/all",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: app.name,
+        item: `https://totthobox.com/software/${encodeURIComponent(app.slug)}`,
+      },
+    ],
+  };
 
   return (
     <main className="max-w-2xl mx-auto space-y-5 p-4 sm:p-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema),
+        }}
+      />
       {/* Breadcrumb */}
       <nav
         aria-label="Breadcrumb"
@@ -213,6 +280,7 @@ export default async function AppShowPage({
           appId={app.id}
           name={app.name}
           platform={app.platform}
+          downloadType={app.download_type === "local" ? "local" : "external"}
         />
       </section>
 
@@ -277,11 +345,18 @@ export default async function AppShowPage({
           গুরুত্বপূর্ণ নোটিশ
         </h2>
         <p className="text-sm opacity-80 leading-relaxed">
-          তথ্যবক্স শুধুমাত্র সফটওয়্যার সম্পর্কিত তথ্য প্রদান করে। আমরা কোনো
-          সফটওয়্যার ফাইল হোস্ট, ডিস্ট্রিবিউট বা ডাউনলোড লিংক সরবরাহ করি না।
-          যেকোনো সফটওয়্যার সংগ্রহ করার আগে অবশ্যই সংশ্লিষ্ট ডেভেলপার বা
-          প্রকাশকের <strong>অফিসিয়াল ওয়েবসাইট</strong> থেকে সংগ্রহ করুন এবং
-          লাইসেন্স যাচাই করুন।
+          তথ্যবক্স শুধুমাত্র সফটওয়্যার সম্পর্কিত তথ্য প্রদান করে।          {app.download_type === "local" ? (
+            <>
+              এই রিসোর্সের ফাইল তথ্যবক্সের নিজস্ব সংরক্ষণ থেকে প্রদান করা হচ্ছে।
+              ব্যবহার করার আগে সফটওয়্যারের উৎস ও লাইসেন্স যাচাই করুন।
+            </>
+          ) : (
+            <>
+              আমরা সফটওয়্যার ফাইল হোস্ট করি না; সংশ্লিষ্ট ডেভেলপার বা
+              প্রকাশকের <strong>অফিসিয়াল ওয়েবসাইট</strong>-এ নিয়ে যাওয়া হয়।
+              সফটওয়্যার সংগ্রহের আগে লাইসেন্স যাচাই করুন।
+            </>
+          )}
         </p>
       </section>
 

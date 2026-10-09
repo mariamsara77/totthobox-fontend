@@ -1,5 +1,15 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import IntroductionClient from "./IntroductionClient";
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+
+async function getInitialData() {
+  const response = await fetch(`${API_BASE}/api/intro-bd`, {
+    next: { revalidate: 3600, tags: ["introduction-list"] },
+  });
+  if (!response.ok) throw new Error("Failed to load initial introduction data");
+  return response.json();
+}
 
 export const metadata: Metadata = {
   title: "বাংলাদেশের পরিচিতি | বিভাগ, জেলা ও সাধারণ তথ্য | তথ্যবক্স",
@@ -34,6 +44,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function IntroductionPage() {
-  return <IntroductionClient />;
+export default async function IntroductionPage() {
+  const initialData = await getInitialData();
+  return <IntroductionClient initialData={initialData} />;
 }

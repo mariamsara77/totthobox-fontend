@@ -6,16 +6,6 @@ export const metadata: Metadata = {
     "লেখা প্র্যাকটিস ও ড্রয়িং টুল - হাতের লেখা শেখার সেরা প্ল্যাটফর্ম | তথ্যবক্স",
   description:
     "Totthobox-এর উন্নত ড্রয়িং এবং রাইটিং টুলের মাধ্যমে বাংলা ও ইংরেজি অক্ষর লেখা প্র্যাকটিস করুন। শিশুদের হাতের লেখা উন্নত করতে এবং ডিজিটাল ড্রয়িংয়ের জন্য সেরা অনলাইন প্ল্যাটফর্ম।",
-  keywords: [
-    "লেখা প্র্যাকটিস",
-    "হাতের লেখা শেখা",
-    "বাংলা অক্ষর ট্রেসিং",
-    "ডিজিটাল ড্রয়িং বোর্ড",
-    "writing practice online",
-    "bangla handwriting practice",
-    "online drawing tool",
-    "তথ্যবক্স",
-  ],
   alternates: {
     canonical: "https://totthobox.com/tools/writing-practice",
   },

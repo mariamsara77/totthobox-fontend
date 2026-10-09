@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import useSWR from "swr";
@@ -27,6 +29,9 @@ type History = {
   era?: string;
   start_year?: string | number;
   end_year?: string | number;
+  division?: string;
+  district?: string;
+  thana?: string;
   is_featured?: boolean;
   description?: string;
   image_url?: string;
@@ -55,6 +60,24 @@ type Props = {
   history: History;
 };
 
+function getPlainText(value?: string): string {
+  return (value || "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function getExcerpt(value: string, maxLength: number): string {
+  if (value.length <= maxLength) return value;
+  const candidate = value.slice(0, maxLength);
+  const lastSpace = candidate.lastIndexOf(" ");
+  const excerpt =
+    lastSpace > Math.floor(maxLength * 0.7)
+      ? candidate.slice(0, lastSpace)
+      : candidate;
+  return `${excerpt.trimEnd()}...`;
+}
+
 export default function HistoryShowClient({ history }: Props) {
   const [showCreators, setShowCreators] = useState(false);
   const creatorsRef = useRef<HTMLDivElement>(null);
@@ -80,6 +103,31 @@ export default function HistoryShowClient({ history }: Props) {
   );
   const creators: Creator[] = creatorsData?.data || [];
 
+  const descriptionText = getPlainText(history.description);
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "হোম",
+        item: "https://totthobox.com/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "বাংলাদেশের ইতিহাস",
+        item: "https://totthobox.com/bangladesh/history",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: history.title,
+      },
+    ],
+  };
+
   const reactions = {
     like_count: history.reactions?.like_count ?? 0,
     dislike_count: history.reactions?.dislike_count ?? 0,
@@ -100,6 +148,12 @@ export default function HistoryShowClient({ history }: Props) {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6 p-4 sm:p-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema),
+        }}
+      />
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm">
         <Link href="/" className="hover:underline">
@@ -155,7 +209,7 @@ export default function HistoryShowClient({ history }: Props) {
           <button
             type="button"
             onClick={() => setShowCreators(!showCreators)}
-            className="p-2 rounded-lg hover:bg-zinc-400/25 transition"
+            className="p-2 rounded-xl hover:bg-zinc-400/25 transition"
             aria-label="তথ্য প্রদানকারীগণ"
           >
             <FaUserPen className="w-5 h-5" />
@@ -197,11 +251,7 @@ export default function HistoryShowClient({ history }: Props) {
                     <div className="flex items-start gap-3 p-2 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/25 border border-zinc-400/25 transition">
                       <div className="relative">
                         {c.avatar_url ? (
-                          <img
-                            src={c.avatar_url}
-                            alt={c.name}
-                            className="w-12 h-12 rounded-xl object-cover"
-                          />
+                          <Image src={c.avatar_url} alt={c.name} width={48} height={48} sizes="48px" className="w-12 h-12 rounded-xl object-cover" />
                         ) : (
                           <div className="w-12 h-12 rounded-xl bg-zinc-400/15 flex items-center justify-center text-sm font-medium">
                             {c.name?.charAt(0)}
@@ -315,10 +365,19 @@ export default function HistoryShowClient({ history }: Props) {
             <strong>{history.title}</strong> হলো বাংলাদেশের একটি ঐতিহাসিক স্থান
             {history.era ? ` (${history.era})` : ""}।
           </p>
-          <p>
-            উপরের বিবরণ থেকে বিস্তারিত জানুন। তথ্যবক্স থেকে নির্ভরযোগ্য তথ্য
-            সহজেই পেয়ে যান।
-          </p>
+          {(history.division || history.district || history.thana) && (
+            <p>
+              অবস্থান: {[history.division, history.district, history.thana]
+                .filter(Boolean)
+                .join(" → ")}
+              ।
+            </p>
+          )}
+          {descriptionText && (
+            <p>
+              {getExcerpt(descriptionText, 320)}
+            </p>
+          )}
         </div>
       </section>
 
@@ -332,7 +391,7 @@ export default function HistoryShowClient({ history }: Props) {
             <ChevronDown className="w-4 h-4 group-open:rotate-180 transition shrink-0" />
           </summary>
           <div className="px-4 pb-4 text-sm leading-relaxed border-t border-zinc-400/20 pt-3 opacity-90">
-            উপরের “বিস্তারিত বিবরণ” সেকশনে এই স্থানের পূর্ণাঙ্গ তথ্য লেখা আছে।
+            {descriptionText ? getExcerpt(descriptionText, 280) : "এই স্থানের বিস্তারিত তথ্য এখনো যোগ করা হয়নি।"}
           </div>
         </details>
 

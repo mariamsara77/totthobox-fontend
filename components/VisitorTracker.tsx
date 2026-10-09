@@ -81,12 +81,6 @@ export default function VisitorTracker() {
 
       const data = await res.json().catch(() => null);
 
-      console.log("[PWA] Response:", {
-        status: res.status,
-        ok: res.ok,
-        data,
-      });
-
       if (res.ok) {
         lastSynced.current = {
           isPwa: isPWA,
@@ -96,7 +90,7 @@ export default function VisitorTracker() {
         lastSynced.current = { isPwa: null, hasInstalled: null };
       }
     } catch (error: any) {
-      console.error("[PWA] Fetch Error:", error?.message || error);
+
       lastSynced.current = { isPwa: null, hasInstalled: null };
     } finally {
       isSyncing.current = false;

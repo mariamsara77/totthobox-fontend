@@ -5,21 +5,6 @@ export const metadata: Metadata = {
   title: "Free Online Image Converter | JPG, PNG, WEBP, SVG, GIF, AVIF, BMP, ICO",
   description:
     "Convert image files online fast, free, and securely. Easily convert JPG, PNG, WebP, GIF, SVG, BMP, AVIF, and ICO to any format. No upload required — everything runs in your browser. 100% private & free.",
-  keywords: [
-    "image converter",
-    "jpg to png",
-    "webp converter",
-    "png to jpg",
-    "convert image online",
-    "free image converter",
-    "webp to png",
-    "avif converter",
-    "bmp to png",
-    "svg converter",
-    "ico converter",
-    "online image converter",
-    "browser image converter",
-  ],
   openGraph: {
     title: "Free Online Image Converter | JPG, PNG, WEBP, SVG, AVIF & More",
     description:

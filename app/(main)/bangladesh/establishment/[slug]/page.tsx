@@ -200,7 +200,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     */
 
     robots: {
-      index: true,
+      index: stripHtml(item.description || "").length > 0,
       follow: true,
 
       googleBot: {

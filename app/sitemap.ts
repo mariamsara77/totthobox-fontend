@@ -5,6 +5,8 @@ const SITE_URL = "https://totthobox.com";
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
+export const revalidate = 3600;
+
 const publicRoutes = [
   "/",
   "/about-us",
@@ -52,104 +54,209 @@ const publicRoutes = [
   "/contact/police",
 ];
 
-async function fetchSlugs(endpoint: string): Promise<string[]> {
+function hasSoftwareContent(item: unknown): boolean {
+  if (!item || typeof item !== "object") return false;
+
+  const description =
+    "description" in item && typeof item.description === "string"
+      ? item.description
+      : "";
+
+  return description
+    .replace(/<[^>]*>/g, "")
+    .replace(/\s+/g, "")
+    .trim().length > 0;
+}
+
+async function fetchPlatforms(): Promise<string[]> {
   try {
     const response = await fetch(
-      `${API_BASE}${endpoint}${endpoint.includes("?") ? "&" : "?"}limit=1000`,
+      `${API_BASE}/api/sidebar/software-platforms`,
       { next: { revalidate: 3600 } },
     );
 
     if (!response.ok) return [];
 
     const json = await response.json();
-    const source = Array.isArray(json)
-      ? json
-      : Array.isArray(json?.data)
-        ? json.data
-        : Array.isArray(json?.items)
-          ? json.items
-          : Array.isArray(json?.data?.data)
-            ? json.data.data
-            : [];
-
-    return source
-      .map((item: { slug?: unknown }) =>
-        typeof item.slug === "string" ? item.slug : "",
-      )
-      .filter(Boolean);
+    return Array.isArray(json)
+      ? json.filter(
+          (value): value is string =>
+            typeof value === "string" && value.trim() !== "",
+        )
+      : [];
   } catch {
     return [];
   }
 }
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const now = new Date();
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
 
+function extractItems(json: unknown): unknown[] {
+  if (Array.isArray(json)) return json;
+  if (!isRecord(json)) return [];
+
+  if (Array.isArray(json.data)) return json.data;
+  if (Array.isArray(json.items)) return json.items;
+
+  if (isRecord(json.data)) {
+    if (Array.isArray(json.data.items)) return json.data.items;
+    if (Array.isArray(json.data.data)) return json.data.data;
+
+    return Object.values(json.data).flatMap((value) =>
+      Array.isArray(value) ? value : [],
+    );
+  }
+
+  return [];
+}
+
+function hasMorePages(json: unknown): boolean {
+  if (!isRecord(json) || !isRecord(json.meta)) return false;
+
+  if (typeof json.meta.has_more === "boolean") {
+    return json.meta.has_more;
+  }
+
+  if (
+    typeof json.meta.current_page === "number" &&
+    typeof json.meta.last_page === "number"
+  ) {
+    return json.meta.current_page < json.meta.last_page;
+  }
+
+  return false;
+}
+
+async function fetchSlugs(
+  endpoint: string,
+  includeItem?: (item: unknown) => boolean,
+): Promise<string[]> {
+  const slugs: string[] = [];
+  const seen = new Set<string>();
+  const perPage = 50;
+
+  for (let page = 1; page <= 1000; page += 1) {
+    try {
+      const separator = endpoint.includes("?") ? "&" : "?";
+      const response = await fetch(
+        `${API_BASE}${endpoint}${separator}per_page=${perPage}&page=${page}`,
+        { next: { revalidate: 3600 } },
+      );
+
+      if (!response.ok) break;
+
+      const json = await response.json();
+      const source = extractItems(json);
+
+      for (const item of source) {
+        if (!isRecord(item)) continue;
+
+        const slug = typeof item.slug === "string" ? item.slug.trim() : "";
+        if (!slug || (includeItem && !includeItem(item))) continue;
+
+        if (!seen.has(slug)) {
+          seen.add(slug);
+          slugs.push(slug);
+        }
+      }
+
+      if (source.length === 0 || !hasMorePages(json)) break;
+    } catch {
+      break;
+    }
+  }
+
+  return slugs;
+}
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticEntries = publicRoutes.map((path) => ({
     url: `${SITE_URL}${path}`,
-    lastModified: now,
-    changeFrequency: path === "/" ? "daily" as const : "weekly" as const,
+    changeFrequency: path === "/" ? ("daily" as const) : ("weekly" as const),
     priority: path === "/" ? 1 : 0.7,
   }));
 
   const [
     countries,
+    softwarePlatforms,
+    holidays,
+    introductions,
     histories,
     tourism,
     establishments,
     islamBasic,
     islamDowa,
+    people,
     apps,
   ] = await Promise.all([
     getAllCountries(),
+    fetchPlatforms(),
+    fetchSlugs("/api/holidays"),
+    fetchSlugs("/api/intro-bd"),
     fetchSlugs("/api/history-bd"),
     fetchSlugs("/api/tourism-bd"),
     fetchSlugs("/api/establishment-bd"),
     fetchSlugs("/api/islam/basic"),
     fetchSlugs("/api/islam/dowa"),
-    fetchSlugs("/api/apps"),
+    fetchSlugs("/api/people"),
+    fetchSlugs("/api/apps", hasSoftwareContent),
   ]);
 
   const dynamicEntries: MetadataRoute.Sitemap = [
     ...countries.map((country) => ({
       url: `${SITE_URL}/international/country/${encodeURIComponent(country.slug)}`,
-      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...softwarePlatforms.map((platform) => ({
+      url: `${SITE_URL}/software/all/${encodeURIComponent(platform)}`,
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+    })),
+    ...holidays.map((slug) => ({
+      url: `${SITE_URL}/bangla/holiday/${encodeURIComponent(slug)}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...introductions.map((slug) => ({
+      url: `${SITE_URL}/bangladesh/introduction/${encodeURIComponent(slug)}`,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
     ...histories.map((slug) => ({
       url: `${SITE_URL}/bangladesh/history/${encodeURIComponent(slug)}`,
-      lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
     ...tourism.map((slug) => ({
       url: `${SITE_URL}/bangladesh/tourism/${encodeURIComponent(slug)}`,
-      lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
     ...establishments.map((slug) => ({
       url: `${SITE_URL}/bangladesh/establishment/${encodeURIComponent(slug)}`,
-      lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.5,
     })),
     ...islamBasic.map((slug) => ({
       url: `${SITE_URL}/islam/basic/${encodeURIComponent(slug)}`,
-      lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
     ...islamDowa.map((slug) => ({
       url: `${SITE_URL}/islam/dowan/${encodeURIComponent(slug)}`,
-      lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
+    ...people.map((slug) => ({
+      url: `${SITE_URL}/bangladesh/public-figure/${encodeURIComponent(slug)}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    })),
     ...apps.map((slug) => ({
       url: `${SITE_URL}/software/${encodeURIComponent(slug)}`,
-      lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.5,
     })),

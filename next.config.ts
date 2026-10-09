@@ -35,12 +35,11 @@ const nextConfig: NextConfig = {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=()",
           },
-          // HSTS শুধুমাত্র প্রোডাকশনে সক্রিয় থাকবে
           ...(!isDev
             ? [
                 {
                   key: "Strict-Transport-Security",
-                  value: "max-age=31536000; includeSubDomains",
+                  value: "max-age=31536000; includeSubDomains; preload",
                 },
               ]
             : []),
@@ -54,6 +53,9 @@ const nextConfig: NextConfig = {
   },
 
   experimental: {
+    // Inline the small route CSS manifests into HTML so the first render does
+    // not wait on separate render-blocking stylesheet requests.
+    inlineCss: true,
     optimizePackageImports: ["lucide-react", "react-icons"],
   },
 };
@@ -74,11 +76,12 @@ const withPWA = withPWAInit({
   aggressiveFrontEndNavCaching: true,
   reloadOnOnline: true,
   extendDefaultRuntimeCaching: true,
+  fallbacks: {
+    document: "/offline",
+  },
   workboxOptions: {
     runtimeCaching: [apiNetworkOnlyCaching],
   },
 });
 
-// Dev মোডে সরাসরি pure nextConfig এক্সপোর্ট হবে (Turbopack ফুল স্পিডে চলবে)
-// Production মোডে PWA প্লাগইন যুক্ত হয়ে সার্ভিস ওয়ার্কার তৈরি করবে
 export default isDev ? nextConfig : withPWA(nextConfig);

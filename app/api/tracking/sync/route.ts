@@ -1,66 +1,34 @@
 import { NextRequest, NextResponse } from "next/server";
+import { laravelFetch } from "@/lib/server/laravel";
+import { getAuthToken } from "@/lib/auth/session";
 
-type TrackingActivity = {
-  type: string;
-  key: string;
-  value: unknown;
-  timestamp: number;
-  id: string | null;
-};
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-function normalizeActivities(value: unknown): TrackingActivity[] {
-  if (!Array.isArray(value)) return [];
-
-  return value.filter((item): item is TrackingActivity => {
-    if (!isRecord(item)) return false;
-
-    return (
-      typeof item.type === "string" &&
-      typeof item.key === "string" &&
-      typeof item.timestamp === "number" &&
-      (typeof item.id === "string" || item.id === null)
-    );
-  });
-}
-
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    const body: unknown = await req.json();
+    const body = await request.text();
+    const token = await getAuthToken();
 
-    if (!isRecord(body)) {
-      return NextResponse.json(
-        { status: "error", message: "Invalid sync payload." },
-        { status: 400 },
-      );
-    }
+    const response = await laravelFetch("/tracking/sync", {
+      token,
+      method: "POST",
+      headers: {
+        "Content-Type":
+          request.headers.get("content-type") || "application/json",
+      },
+      body,
+    });
 
-    const directActivities = normalizeActivities(body.activities);
-    const nestedPayload = isRecord(body.payload) ? body.payload : null;
-    const nestedActivities = normalizeActivities(nestedPayload?.activities);
-    const activities = directActivities.length
-      ? directActivities
-      : nestedActivities;
+    const contentType = response.headers.get("content-type") || "";
+    const data = contentType.includes("application/json")
+      ? await response.json().catch(() => null)
+      : await response.text();
 
-    if (!activities.length) {
-      return NextResponse.json(
-        { status: "success", synced: 0 },
-        { status: 202 },
-      );
-    }
-
-    // Persistence belongs to the configured analytics/backend service.
-    return NextResponse.json(
-      { status: "success", synced: activities.length },
-      { status: 202 },
-    );
+    return contentType.includes("application/json")
+      ? NextResponse.json(data, { status: response.status })
+      : new NextResponse(data as string, { status: response.status });
   } catch {
     return NextResponse.json(
-      { status: "error", message: "Unable to process tracking sync." },
-      { status: 400 },
+      { status: "error", message: "Tracking service unavailable." },
+      { status: 502 },
     );
   }
 }

@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import useSWR from "swr";
@@ -180,7 +182,7 @@ export default function EstablishmentShowClient({ establishment }: Props) {
           <button
             type="button"
             onClick={() => setShowCreators((prev) => !prev)}
-            className="p-2 rounded-lg hover:bg-zinc-400/25 transition"
+            className="p-2 rounded-xl hover:bg-zinc-400/25 transition"
             aria-label="তথ্য প্রদানকারীগণ"
             aria-expanded={showCreators}
           >
@@ -226,11 +228,7 @@ export default function EstablishmentShowClient({ establishment }: Props) {
                     <div className="flex items-start gap-3 p-2 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/25 border border-zinc-400/25 transition">
                       <div className="relative">
                         {creator.avatar_url ? (
-                          <img
-                            src={creator.avatar_url}
-                            alt={creator.name}
-                            className="w-12 h-12 rounded-xl object-cover"
-                          />
+                          <Image src={creator.avatar_url} alt={creator.name} width={48} height={48} sizes="48px" className="w-12 h-12 rounded-xl object-cover" />
                         ) : (
                           <div className="w-12 h-12 rounded-xl bg-zinc-400/15 flex items-center justify-center text-sm font-medium">
                             {creator.name?.charAt(0)}

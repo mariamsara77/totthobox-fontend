@@ -29,6 +29,7 @@ import {
   MapPin,
   Globe,
   BookOpen,
+  Newspaper,
   GraduationCap,
   ShieldAlert,
   Sparkles,
@@ -37,6 +38,12 @@ import UserAnalytics from "@/components/UserAnalytics";
 
 // সার্ভিস লিস্টের ড্যাটা
 const services = [
+  {
+    href: "/news/headlines",
+    icon: Newspaper,
+    label: "সংবাদ শিরোনাম",
+    details: "দেশের বিভিন্ন সংবাদমাধ্যমের সাম্প্রতিক শিরোনাম এক জায়গায়।",
+  },
   {
     href: "/bangla/calendar",
     icon: Calendar,
@@ -143,6 +150,7 @@ export default function HomePage() {
                 <Link
                   key={index}
                   href={service.href}
+                  prefetch={false}
                   className="relative flex flex-col items-center h-full p-4 text-center transition-all duration-200 group rounded-3xl bg-zinc-400/10 hover:bg-zinc-400/25"
                 >
                   <div className="mb-4 transition-transform duration-200 transform group-hover:scale-110 ">

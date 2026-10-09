@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import {
   createContext,
   useCallback,
@@ -11,7 +12,10 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import LoginModal from "@/components/auth/LoginModal";
+
+const LoginModal = dynamic(() => import("@/components/auth/LoginModal"), {
+  ssr: false,
+});
 
 type LoginModalOptions = {
   reason?: string;
@@ -42,7 +46,9 @@ export function AuthModalProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [reason, setReason] = useState<string | undefined>();
-  const pendingActionRef = useRef<(() => void | Promise<void>) | undefined>(undefined);
+  const pendingActionRef = useRef<(() => void | Promise<void>) | undefined>(
+    undefined,
+  );
 
   const openLoginModal = useCallback((options?: LoginModalOptions) => {
     pendingActionRef.current = options?.onSuccess;
@@ -77,11 +83,7 @@ export function AuthModalProvider({ children }: { children: ReactNode }) {
       authReason?: string,
     ) => {
       if (isLoggedIn) return true;
-
-      openLoginModal({
-        reason: authReason,
-        onSuccess: onAuthenticated,
-      });
+      openLoginModal({ reason: authReason, onSuccess: onAuthenticated });
       return false;
     },
     [isLoggedIn, openLoginModal],
@@ -94,7 +96,6 @@ export function AuthModalProvider({ children }: { children: ReactNode }) {
     if (params.get("login") !== "required") return;
 
     const returnTo = getSafeReturnTo(params.get("returnTo"));
-
     openLoginModal({
       reason: "এই পেজটি দেখতে লগইন করতে হবে।",
       onSuccess: returnTo ? () => router.push(returnTo) : undefined,
@@ -120,12 +121,14 @@ export function AuthModalProvider({ children }: { children: ReactNode }) {
       }}
     >
       {children}
-      <LoginModal
-        open={isLoginModalOpen}
-        reason={reason}
-        onClose={closeLoginModal}
-        onLoginSuccess={completeLogin}
-      />
+      {isLoginModalOpen ? (
+        <LoginModal
+          open={isLoginModalOpen}
+          reason={reason}
+          onClose={closeLoginModal}
+          onLoginSuccess={completeLogin}
+        />
+      ) : null}
     </AuthModalContext.Provider>
   );
 }

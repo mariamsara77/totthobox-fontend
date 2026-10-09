@@ -20,9 +20,16 @@ export async function GET(request: Request) {
     }
 
     const response = await fetch(target);
-    
+
     if (!response.ok) {
       throw new Error('Failed to fetch image');
+    }
+
+    const contentLength = Number(response.headers.get('content-length') || 0);
+    const MAX_DOWNLOAD_BYTES = 15 * 1024 * 1024;
+
+    if (contentLength > MAX_DOWNLOAD_BYTES) {
+      return new NextResponse('Image is too large to download', { status: 413 });
     }
 
     const contentType = response.headers.get('Content-Type') || '';

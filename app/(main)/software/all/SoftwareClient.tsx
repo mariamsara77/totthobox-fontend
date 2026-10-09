@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import useSWRInfinite from "swr/infinite";
 import { Puzzle, Search, X, ArrowRight, ChevronDown } from "lucide-react";
+import InfiniteScrollTrigger from "@/components/InfiniteScrollTrigger";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
@@ -31,11 +33,12 @@ type App = {
 
 type Props = {
   platform?: string;
+  initialData?: any;
 };
 
 function AppSkeleton() {
   return (
-    <div className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 animate-pulse">
+    <div className="rounded-2xl bg-zinc-400/10 p-4 animate-pulse">
       <div className="flex items-start gap-4">
         <div className="w-16 h-16 rounded-xl bg-zinc-400/10 shrink-0" />
 
@@ -63,7 +66,26 @@ function cleanDescription(description?: string) {
     .trim();
 }
 
-export default function SoftwareClient({ platform = "" }: Props) {
+const platformGuidance: Record<string, [string, string]> = {
+  Windows: [
+    "Windows সফটওয়্যার বাছাই করার সময় Windows-এর কোন সংস্করণ সমর্থিত, 32-bit বা 64-bit প্রয়োজন কি না এবং ইনস্টলেশনের জন্য পর্যাপ্ত স্টোরেজ আছে কি না—এসব তথ্য আগে যাচাই করা ভালো। একই সফটওয়্যারের ভিন্ন সংস্করণে সিস্টেম রিকোয়ারমেন্টও আলাদা হতে পারে।",
+    "ইনস্টল করার আগে সফটওয়্যারটির প্রকাশক, লাইসেন্স এবং অফিসিয়াল ওয়েবসাইট যাচাই করুন। বিশেষ করে installer বা setup file কোথা থেকে সংগ্রহ করা হচ্ছে তা নিশ্চিত করা গুরুত্বপূর্ণ।",
+  ],
+  Android: [
+    "Android অ্যাপ বাছাইয়ের ক্ষেত্রে Android-এর প্রয়োজনীয় version, ডিভাইসের storage এবং অ্যাপটি কী ধরনের permission চায় তা দেখা গুরুত্বপূর্ণ। একই নামের অননুমোদিত বা পরিবর্তিত APK-এর বদলে প্রকাশকের নির্ভরযোগ্য উৎস ব্যবহার করা উচিত।",
+    "অ্যাপ ইনস্টল করার আগে developer বা publisher-এর পরিচয়, প্রকাশিত সংস্করণ এবং অফিসিয়াল distribution source মিলিয়ে নিন। প্রয়োজনের বাইরে permission চাইলে সেটিও বিবেচনা করা উচিত।",
+  ],
+  Mac: [
+    "Mac সফটওয়্যার ব্যবহারের আগে আপনার macOS version এবং Mac-এর Apple silicon বা Intel processor-এর সঙ্গে সফটওয়্যারটির সামঞ্জস্য যাচাই করা ভালো। কিছু অ্যাপ নির্দিষ্ট macOS সংস্করণ বা architecture-এর ওপর নির্ভর করতে পারে।",
+    "সফটওয়্যার সংগ্রহের সময় প্রকাশকের অফিসিয়াল উৎস, লাইসেন্স এবং installation package-এর ধরন যাচাই করুন। macOS-এর security settings প্রয়োজন হলে পরিবর্তনের আগে সফটওয়্যারটির উৎস নিশ্চিত করা উচিত।",
+  ],
+  Fonts: [
+    "Font ব্যবহারের ক্ষেত্রে শুধু নাম বা দেখতে কেমন তা নয়, font format, ভাষা বা Unicode support এবং কোন কাজে ব্যবহার করা যাবে—এসব বিষয় গুরুত্বপূর্ণ। বিশেষ করে বাংলা লেখার জন্য প্রয়োজনীয় glyph ও Unicode support আগে যাচাই করা ভালো।",
+    "কোনো font ডাউনলোড বা ওয়েবসাইটে ব্যবহার করার আগে তার licence দেখে নিন। ব্যক্তিগত, বাণিজ্যিক, embedding বা redistribution-এর অনুমতি সব font-এর ক্ষেত্রে এক নয়।",
+  ],
+};
+
+export default function SoftwareClient({ platform = "", initialData }: Props) {
   const router = useRouter();
 
   const [search, setSearch] = useState("");
@@ -102,6 +124,7 @@ export default function SoftwareClient({ platform = "" }: Props) {
     getKey,
     fetcher,
     {
+      fallbackData: [initialData],
       revalidateFirstPage: false,
       revalidateOnFocus: false,
       keepPreviousData: true,
@@ -122,6 +145,10 @@ export default function SoftwareClient({ platform = "" }: Props) {
       setSize(1);
     }
   }, [debouncedSearch, platform, setSize]);
+
+  const loadMore = useCallback(() => {
+    void setSize((current) => current + 1);
+  }, [setSize]);
 
   const resetFilters = () => {
     setSearch("");
@@ -220,7 +247,7 @@ export default function SoftwareClient({ platform = "" }: Props) {
 
       {/* Error */}
       {error && (
-        <div className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-5 text-center">
+        <div className="rounded-2xl bg-zinc-400/10 p-4 text-center">
           <p className="text-sm">সফটওয়্যার তথ্য লোড করা সম্ভব হয়নি।</p>
 
           <button
@@ -245,7 +272,7 @@ export default function SoftwareClient({ platform = "" }: Props) {
               <AppSkeleton />
             </>
           ) : apps.length === 0 ? (
-            <div className="text-center py-16">
+            <div className="text-center py-16 rounded-2xl bg-zinc-400/5">
               <p className="text-lg">কোনো সফটওয়্যার বা অ্যাপ পাওয়া যায়নি</p>
 
               <p className="text-sm opacity-60 mt-1">
@@ -260,17 +287,19 @@ export default function SoftwareClient({ platform = "" }: Props) {
                 <Link
                   key={app.id}
                   href={`/software/${app.slug}`}
-                  className="block rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4"
+                  className="block rounded-2xl bg-zinc-400/10 p-4 transition hover:bg-zinc-400/20"
                 >
                   <article>
                     <div className="flex items-start gap-4">
                       <div className="shrink-0">
                         {app.icon_url ? (
-                          <img
+                          <Image
                             src={app.icon_url}
                             alt={`${app.name} icon`}
-                            loading="lazy"
+                            width={64}
+                            height={64}
                             className="w-16 h-16 rounded-xl object-cover border border-zinc-400/25"
+                            sizes="64px"
                           />
                         ) : (
                           <div className="w-16 h-16 rounded-xl bg-zinc-400/10 flex items-center justify-center">
@@ -281,10 +310,10 @@ export default function SoftwareClient({ platform = "" }: Props) {
 
                       <div className="flex-1 min-w-0 space-y-1.5">
                         <div className="flex flex-wrap items-center gap-2">
-                          <h2 className="text-lg line-clamp-1">{app.name}</h2>
+                          <h2 className="text-base font-semibold line-clamp-1">{app.name}</h2>
 
                           {app.platform && (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs border border-zinc-400/30 opacity-70">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs bg-zinc-400/15 opacity-70">
                               {app.platform}
                             </span>
                           )}
@@ -318,19 +347,12 @@ export default function SoftwareClient({ platform = "" }: Props) {
         </section>
       )}
 
-      {/* Load More */}
-      {!error && hasMore && !isLoading && (
-        <div className="flex justify-center py-6">
-          <button
-            type="button"
-            onClick={() => setSize(size + 1)}
-            disabled={isValidating}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-zinc-400/10 text-sm hover:bg-zinc-400/25 disabled:opacity-50"
-          >
-            {isValidating ? "লোড হচ্ছে..." : "আরও সফটওয়্যার দেখুন"}
-          </button>
-        </div>
-      )}
+<InfiniteScrollTrigger
+        hasMore={hasMore && !error && !isLoading}
+        isLoading={isValidating}
+        onLoadMore={loadMore}
+        label="আরও সফটওয়্যার লোড হচ্ছে..."
+      />
 
       {/* Informational SEO Content */}
       <section className="space-y-4 pt-8 border-t border-zinc-400/25">
@@ -365,6 +387,10 @@ export default function SoftwareClient({ platform = "" }: Props) {
                 বিস্তারিত পেজে যেখানে প্রযোজ্য সেখানে অফিসিয়াল সোর্সের তথ্য
                 দেওয়া থাকবে।
               </p>
+
+              {platformGuidance[platform]?.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
             </>
           ) : (
             <>

@@ -129,6 +129,9 @@
 .goog-te-banner-frame,
 .goog-te-balloon-frame,
 #goog-gt-tt,
+#gtx-trans,
+.goog-te-menu-frame,
+iframe.goog-te-banner-frame,
 .skiptranslate,
 .goog-te-gadget-icon {
   display: none !important;
@@ -160,4 +163,32 @@ body {
 
 .pwa-screen-height {
   height: 100dvh;
+}
+/* Google Translate UI — keep the translator functional without allowing its injected UI to move the document. */
+.VIpgJd-ZVi9od-aZ2wEe-wOHMyf {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+  pointer-events: none !important;
+  z-index: -1 !important;
+}
+
+/* =========================================
+   Native Select Dark Mode
+   ========================================= */
+select,
+select option {
+  color-scheme: light;
+}
+
+.dark select,
+.dark select option {
+  color-scheme: dark;
+  background-color: var(--color-zinc-900);
+  color: var(--color-zinc-50);
 }

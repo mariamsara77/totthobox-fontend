@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import useSWR from "swr";
 import { Map, Search, X, ArrowRight, Loader2 } from "lucide-react";
@@ -31,7 +32,7 @@ type Creator = {
   last_active_at?: string;
 };
 
-export default function IntroductionClient() {
+export default function IntroductionClient({ initialData }: { initialData: any }) {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [showCreators, setShowCreators] = useState(false);
@@ -60,7 +61,7 @@ export default function IntroductionClient() {
   const { data, error, isLoading } = useSWR(
     `${API_BASE}/api/intro-bd?search=${encodeURIComponent(debouncedSearch)}`,
     fetcher,
-    { revalidateOnFocus: false },
+    { fallbackData: initialData, revalidateOnFocus: false },
   );
 
   const { data: creatorsData, isLoading: creatorsLoading } = useSWR(
@@ -133,11 +134,7 @@ export default function IntroductionClient() {
                     <div className="flex items-start gap-3 p-2 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/25 border border-zinc-400/25 transition">
                       <div className="relative">
                         {c.avatar_url ? (
-                          <img
-                            src={c.avatar_url}
-                            alt={c.name}
-                            className="w-12 h-12 rounded-xl object-cover"
-                          />
+                          <Image src={c.avatar_url} alt={c.name} width={48} height={48} sizes="48px" className="w-12 h-12 rounded-xl object-cover" />
                         ) : (
                           <div className="w-12 h-12 rounded-xl bg-zinc-400/15 flex items-center justify-center text-sm font-medium">
                             {c.name?.charAt(0)}
@@ -256,12 +253,7 @@ export default function IntroductionClient() {
                   <div className="flex gap-4 items-start">
                     <div className="shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-zinc-400/15">
                       {item.image_url ? (
-                        <img
-                          src={item.image_url}
-                          alt={item.title}
-                          className="w-full h-full object-cover"
-                          loading="lazy"
-                        />
+                        <Image src={item.image_url} alt={item.title} width={64} height={64} sizes="64px" className="w-full h-full object-cover" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center opacity-40">
                           <Map className="w-7 h-7" />
