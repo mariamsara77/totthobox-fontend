@@ -1,12 +1,20 @@
 import { Metadata } from "next";
 import ContactClient from "./ContactClient";
 
+type ContactCategory = {
+  id: number;
+  name: string;
+  slug: string;
+  icon?: string;
+  description?: string;
+};
+
 type Props = {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ search?: string }>;
 };
 
-async function getCategory(slug: string) {
+async function getCategory(slug: string): Promise<ContactCategory | null> {
   const configuredBase =
     process.env.NEXT_PUBLIC_API_BASE_URL ||
     process.env.NEXT_PUBLIC_API_URL ||
@@ -29,7 +37,32 @@ async function getCategory(slug: string) {
     if (!res.ok) return null;
     const json: unknown = await res.json();
     if (!json || typeof json !== "object" || !("data" in json)) return null;
-    return json.data;
+
+    const data = json.data;
+    if (!data || typeof data !== "object") return null;
+
+    const record = data as Record<string, unknown>;
+    const id = typeof record.id === "number" ? record.id : Number(record.id);
+    if (
+      !Number.isSafeInteger(id) ||
+      id <= 0 ||
+      typeof record.name !== "string" ||
+      !record.name.trim() ||
+      typeof record.slug !== "string" ||
+      !record.slug.trim()
+    ) {
+      return null;
+    }
+
+    return {
+      id,
+      name: record.name.trim(),
+      slug: record.slug.trim(),
+      ...(typeof record.icon === "string" ? { icon: record.icon } : {}),
+      ...(typeof record.description === "string"
+        ? { description: record.description }
+        : {}),
+    };
   } catch {
     return null;
   }
