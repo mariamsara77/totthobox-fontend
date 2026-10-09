@@ -7,14 +7,32 @@ type Props = {
 };
 
 async function getCategory(slug: string) {
-  const base =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
-  const res = await fetch(`${base}/api/contacts/categories/${slug}`, {
-    next: { revalidate: 3600 },
-  });
-  if (!res.ok) return null;
-  const json = await res.json();
-  return json.data;
+  const configuredBase =
+    process.env.NEXT_PUBLIC_API_BASE_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    "https://admin.totthobox.com";
+  let base =
+    configuredBase.startsWith("https://") || configuredBase.startsWith("http://")
+      ? configuredBase
+      : "https://admin.totthobox.com";
+  while (base.endsWith("/")) base = base.slice(0, -1);
+  if (base.toLowerCase().endsWith("/api")) base = base.slice(0, -4);
+
+  try {
+    const res = await fetch(
+      `${base}/api/contacts/categories/${encodeURIComponent(slug)}`,
+      {
+        next: { revalidate: 300, tags: [`contact-category:${slug}`] },
+        signal: AbortSignal.timeout(1500),
+      },
+    );
+    if (!res.ok) return null;
+    const json: unknown = await res.json();
+    if (!json || typeof json !== "object" || !("data" in json)) return null;
+    return json.data;
+  } catch {
+    return null;
+  }
 }
 
 export async function generateMetadata({
