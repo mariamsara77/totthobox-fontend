@@ -66,7 +66,7 @@ function buildUrl(path: string, params: Record<string, string | number | undefin
 export async function getNewsSources(): Promise<NewsSourceResponse> {
   try {
     const response = await fetch(API_BASE + "/api/news/sources", {
-      next: { revalidate: 300, tags: ["news-sources"] },
+      next: { revalidate: 60, tags: ["news-sources"] },
     });
 
     if (!response.ok) return { bn: [], en: [] };
