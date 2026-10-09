@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { convertPdfToDocx } from "./pdfToDocx";
 import { createStoredZip } from "@/lib/createStoredZip";
 import {
@@ -58,6 +58,13 @@ export default function AdvancedDocumentConverter() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Revoke previous generated file URLs when a result is replaced or this tool unmounts.
+  useEffect(() => {
+    return () => {
+      if (resultUrl) URL.revokeObjectURL(resultUrl);
+    };
+  }, [resultUrl]);
+
   const formatBytes = (b: number) => {
     if (b < 1024) return `${b} B`;
     if (b < 1048576) return `${(b / 1024).toFixed(1)} KB`;
@@ -81,6 +88,9 @@ export default function AdvancedDocumentConverter() {
 
   const removeFile = (id: string) => {
     setFiles((prev) => prev.filter((f) => f.id !== id));
+    setResultUrl(null);
+    setHtmlPreview(null);
+    setError(null);
   };
 
   const clearAll = () => {
@@ -197,21 +207,59 @@ export default function AdvancedDocumentConverter() {
 
   const imagesToPDF = async () => {
     const { PDFDocument } = await import("pdf-lib");
-    const imgs = files.filter(
-      (f) => f.type.startsWith("image/") || /\.(png|jpe?g|webp)$/i.test(f.name),
-    );
-    if (imgs.length === 0) throw new Error("অন্তত একটি ইমেজ লাগবে");
+    const supportedImage = (file: FileItem) =>
+      /\.(png|jpe?g|webp)$/i.test(file.name) ||
+      ["image/png", "image/jpeg", "image/webp"].includes(file.file.type);
+    const imgs = files.filter(supportedImage);
+    if (imgs.length === 0) {
+      throw new Error("PNG, JPG, JPEG বা WebP ইমেজ যোগ করুন।");
+    }
+
+    if (imgs.length !== files.length) {
+      throw new Error("শুধু PNG, JPG, JPEG ও WebP ইমেজ PDF-এ যোগ করা যাবে।");
+    }
 
     const pdf = await PDFDocument.create();
     for (let i = 0; i < imgs.length; i++) {
       setProgress(Math.round(((i + 1) / imgs.length) * 90));
-      const bytes = await imgs[i].file.arrayBuffer();
+      const file = imgs[i].file;
+      const lowerName = file.name.toLowerCase();
       let image;
-      if (imgs[i].name.toLowerCase().endsWith(".png")) {
-        image = await pdf.embedPng(bytes);
+
+      if (/\.png$/i.test(lowerName) || file.type === "image/png") {
+        image = await pdf.embedPng(await file.arrayBuffer());
+      } else if (/\.jpe?g$/i.test(lowerName) || file.type === "image/jpeg") {
+        image = await pdf.embedJpg(await file.arrayBuffer());
       } else {
-        image = await pdf.embedJpg(bytes);
+        // pdf-lib cannot embed WebP directly, so decode and convert it locally.
+        const bitmap = await createImageBitmap(file);
+        const resize = Math.min(1, 2400 / Math.max(bitmap.width, bitmap.height));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.round(bitmap.width * resize));
+        canvas.height = Math.max(1, Math.round(bitmap.height * resize));
+        const context = canvas.getContext("2d");
+
+        try {
+          if (!context) throw new Error("ইমেজ প্রসেস করার সুবিধা পাওয়া যায়নি।");
+          context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+          const converted = await new Promise<Blob>((resolve, reject) => {
+            canvas.toBlob(
+              (result) => {
+                if (result) resolve(result);
+                else reject(new Error("WebP ইমেজ PDF-এ রূপান্তর করা যায়নি।"));
+              },
+              "image/jpeg",
+              0.9,
+            );
+          });
+          image = await pdf.embedJpg(await converted.arrayBuffer());
+        } finally {
+          bitmap.close();
+          canvas.width = 0;
+          canvas.height = 0;
+        }
       }
+
       const page = pdf.addPage([image.width, image.height]);
       page.drawImage(image, {
         x: 0,
@@ -220,6 +268,7 @@ export default function AdvancedDocumentConverter() {
         height: image.height,
       });
     }
+
     const pdfBytes = await pdf.save();
     return new Blob([pdfBytes.buffer as ArrayBuffer], {
       type: "application/pdf",
