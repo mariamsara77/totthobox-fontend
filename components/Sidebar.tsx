@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import useSWR from "swr";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import BrandIcon from "@/components/BrandIcon";
@@ -241,6 +242,21 @@ export default function Sidebar() {
     .replace(/\/+$/, "")
     .replace(/\/api$/i, "");
 
+  const { data: cachedNewsSources } = useSWR(
+    pathname.startsWith("/news") ? `${API_URL}/api/news/sources` : null,
+    async (url: string) => {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`News sources request failed: ${response.status}`);
+      return normalizeNewsSources(await response.json());
+    },
+    { dedupingInterval: 60_000, revalidateOnFocus: false, shouldRetryOnError: false },
+  );
+
+  useEffect(() => {
+    if (cachedNewsSources) setNewsSources(cachedNewsSources);
+  }, [cachedNewsSources]);
+
+
   // Mobile scroll lock
   useEffect(() => {
     if (isOpen) document.body.style.overflow = "hidden";
@@ -355,40 +371,7 @@ export default function Sidebar() {
           );
         }
 
-        if (pathname.startsWith("/news")) {
-          let normalized: ReturnType<typeof normalizeNewsSources> = null;
 
-          try {
-            const response = await fetch(API_URL + "/api/sidebar/news-sources", {
-              signal: controller.signal,
-            });
-            if (response.ok) {
-              normalized = normalizeNewsSources(await response.json());
-            }
-          } catch {
-            if (controller.signal.aborted) return;
-          }
-
-          // The main news page uses this public endpoint too. Fall back to it if
-          // the dedicated sidebar endpoint is missing or returns an invalid payload.
-          if (!normalized || (!normalized.bn.length && !normalized.en.length)) {
-            try {
-              const fallbackResponse = await fetch(API_URL + "/api/news/sources", {
-                signal: controller.signal,
-              });
-              if (fallbackResponse.ok) {
-                const fallback = normalizeNewsSources(await fallbackResponse.json());
-                if (fallback && (fallback.bn.length || fallback.en.length)) {
-                  normalized = fallback;
-                }
-              }
-            } catch (error) {
-              if (controller.signal.aborted) return;
-            }
-          }
-
-          if (normalized) setNewsSources(normalized);
-        }
       } catch (error: any) {
         if (error.name !== "AbortError") {
           console.error("Sidebar fetch error:", error);
