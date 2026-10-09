@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import BrandIcon from "@/components/BrandIcon";
 import SearchTrigger from "@/components/search/SearchTrigger";
+import { normalizeContactCategories, type ContactSidebarCategory } from "@/lib/contact-categories";
 
 // React Icons
 import {
@@ -142,7 +143,11 @@ function SidebarItem({
 }
 
 // ====================== MAIN COMPONENT ======================
-export default function Sidebar() {
+export default function Sidebar({
+  initialContactCategories = [],
+}: {
+  initialContactCategories?: ContactSidebarCategory[];
+}) {
   const { openSettingsModal } = useSettingsModal();
   const pathname = usePathname();
   const { isOpen, setIsOpen, isCollapsed, toggleCollapsed } = useSidebar();
@@ -159,7 +164,7 @@ export default function Sidebar() {
     en: NewsSourceItem[];
   }>({ bn: [], en: [] });
   const [buysellCategories, setBuysellCategories] = useState<any[]>([]);
-  const [contactCategories, setContactCategories] = useState<any[]>([]);
+  const [contactCategories, setContactCategories] = useState<ContactSidebarCategory[]>(initialContactCategories);
   const [signCategories, setSignCategories] = useState<any[]>([]);
   const [excelChapters, setExcelChapters] = useState<Record<string, any[]>>({});
   const [softwarePlatforms, setSoftwarePlatforms] = useState<string[]>([]);
@@ -204,8 +209,11 @@ export default function Sidebar() {
             signal: controller.signal,
           });
           if (res.ok) {
-            const data = await res.json();
-            setContactCategories(data);
+            const data: unknown = await res.json();
+            const categories = normalizeContactCategories(data);
+            if (categories.length > 0 || contactCategories.length === 0) {
+              setContactCategories(categories);
+            }
           }
         }
 
