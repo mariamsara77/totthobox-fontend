@@ -40,10 +40,9 @@ interface ToolbarProps {
   onScan?: () => void;
 }
 
-export function Toolbar({ onNewFile }: ToolbarProps) {
+export function Toolbar({ onNewFile, onScan }: ToolbarProps) {
   const {
     pdfDoc,
-    numPages,
     tool,
     setTool,
     scale,
@@ -123,7 +122,11 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
         throw new Error("এই PDF-এ নির্বাচনযোগ্য লেখা পাওয়া যায়নি। স্ক্যান করা PDF থেকে Word করতে OCR প্রয়োজন।");
       }
 
-      const html = `<!doctype html><html lang="bn"><head><meta charset="utf-8"><title>${file.name}</title><style>body{font-family:Arial,sans-serif;font-size:12pt;line-height:1.6}section{margin:0 0 24px}h2{font-size:10pt;color:#666}</style></head><body>${sections.join("")}</body></html>`;
+      const safeFileTitle = file.name
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+      const html = `<!doctype html><html lang="bn"><head><meta charset="utf-8"><title>${safeFileTitle}</title><style>body{font-family:Arial,sans-serif;font-size:12pt;line-height:1.6}section{margin:0 0 24px}h2{font-size:10pt;color:#666}</style></head><body>${sections.join("")}</body></html>`;
       const blob = new Blob(["\uFEFF", html], {
         type: "application/msword;charset=utf-8",
       });
