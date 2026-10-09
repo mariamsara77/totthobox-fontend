@@ -6,6 +6,7 @@ import NewsThumbnail from "@/components/news/NewsThumbnail";
 
 type Props = {
   items: NewsItem[];
+  error?: boolean;
   meta: {
     current_page: number;
     last_page: number;
@@ -219,6 +220,7 @@ function NewsCard({ item }: { item: NewsItem }) {
 
 export default function NewsHub({
   items,
+  error = false,
   meta,
   sources,
   selectedSource,
@@ -264,7 +266,21 @@ export default function NewsHub({
         </div>
       </div>
 
-      {items.length ? (
+      {error ? (
+        <div role="alert" className="rounded-2xl bg-zinc-400/10 px-6 py-12 text-center">
+          <Newspaper className="mx-auto size-8 opacity-35" aria-hidden="true" />
+          <h2 className="mt-4 text-base font-semibold">সংবাদ লোড করা যায়নি</h2>
+          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+            সংবাদ API-তে সংযোগ পাওয়া যায়নি। একটু পরে আবার চেষ্টা করুন।
+          </p>
+          <a
+            href={basePath}
+            className="mt-4 inline-flex items-center justify-center rounded-xl bg-zinc-400/20 px-4 py-2.5 text-sm font-medium transition hover:bg-zinc-400/30"
+          >
+            আবার চেষ্টা করুন
+          </a>
+        </div>
+      ) : items.length ? (
         <div className="space-y-4">
           {items.map((item) => (
             <NewsCard key={item.id} item={item} />
