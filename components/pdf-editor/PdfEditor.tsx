@@ -1,11 +1,13 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, type ChangeEvent } from "react";
 import { usePdfEditorStore } from "./store";
 import { Toolbar } from "./Toolbar";
 import { Sidebar } from "./Sidebar";
 import { PageCanvas } from "./PageCanvas";
 import { Upload, Loader2 } from "lucide-react";
+
+const MAX_PDF_SIZE_BYTES = 50 * 1024 * 1024;
 
 export default function PdfEditor() {
   const {
@@ -19,84 +21,139 @@ export default function PdfEditor() {
     setNumPages,
     setLoading,
     setError,
-    reset,
   } = usePdfEditorStore();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const loadPdf = async (selectedFile: File) => {
+    const looksLikePdf =
+      selectedFile.type === "application/pdf" ||
+      /\.pdf$/i.test(selectedFile.name);
+
+    if (!looksLikePdf) {
+      setError("অনুগ্রহ করে একটি PDF ফাইল নির্বাচন করুন।");
+      return;
+    }
+
+    if (selectedFile.size === 0) {
+      setError("ফাইলটি খালি। অন্য একটি PDF নির্বাচন করুন।");
+      return;
+    }
+
+    if (selectedFile.size > MAX_PDF_SIZE_BYTES) {
+      setError("ফাইলটি ৫০ MB-এর বেশি। ছোট PDF নির্বাচন করুন।");
+      return;
+    }
+
     try {
       setLoading(true);
       setError(null);
-      setFile(selectedFile);
 
       const pdfjs = await import("pdfjs-dist");
       pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
       const buffer = await selectedFile.arrayBuffer();
-      const doc = await pdfjs.getDocument({ data: buffer }).promise;
+      const loadedDocument = await pdfjs.getDocument({ data: buffer }).promise;
+      const previousDocument = usePdfEditorStore.getState().pdfDoc;
 
-      setPdfDoc(doc);
-      setNumPages(doc.numPages);
-    } catch (err) {
-      console.error(err);
-      setError("PDF লোড করতে সমস্যা হয়েছে");
+      // Commit the new file only after PDF.js has successfully parsed it.
+      setFile(selectedFile);
+      setPdfDoc(loadedDocument);
+      setNumPages(loadedDocument.numPages);
+
+      if (previousDocument && previousDocument !== loadedDocument) {
+        void Promise.resolve(previousDocument.destroy?.()).catch(() => undefined);
+      }
+    } catch (loadError: unknown) {
+      console.error("PDF load failed", loadError);
+      const message =
+        loadError instanceof Error && /password/i.test(loadError.message)
+          ? "পাসওয়ার্ড-সুরক্ষিত PDF এখন খোলা যাচ্ছে না।"
+          : "PDF ফাইলটি পড়া যায়নি। ফাইলটি ঠিক আছে কি না যাচাই করে আবার চেষ্টা করুন।";
+      setError(message);
     } finally {
       setLoading(false);
     }
   };
 
-  if (!file) {
-    return (
-      <div className="flex min-h-[75vh] flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-400/25 bg-zinc-400/10 p-6 text-center sm:p-12">
-        <Upload className="size-12 text-zinc-400 mb-5" />
-        <h1 className="mb-2 text-lg font-semibold tracking-tight sm:text-xl">
-          পিডিএফ সম্পাদক
-        </h1>
-        <p className="mb-8 max-w-md text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-          লেখা, হাইলাইট, আঁকা, স্বাক্ষর, ঘোরানো ও ডাউনলোড করুন
-        </p>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="application/pdf"
-          className="hidden"
-          onChange={(e) => e.target.files?.[0] && loadPdf(e.target.files[0])}
-        />
-        <button
-          onClick={() => fileInputRef.current?.click()}
-          className="rounded-xl bg-emerald-600 px-6 py-2.5 text-sm font-medium text-zinc-100 transition-colors hover:bg-emerald-500"
-        >
-          PDF আপলোড করুন
-        </button>
-      </div>
-    );
-  }
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.currentTarget.files?.[0];
+    // Clearing permits selecting the same file again after a failed load.
+    event.currentTarget.value = "";
+    if (selectedFile) void loadPdf(selectedFile);
+  };
 
   return (
-    <div className="flex h-[calc(100vh-80px)] flex-col overflow-hidden rounded-2xl border border-zinc-400/25 bg-zinc-900">
-      <Toolbar />
+    <>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".pdf,application/pdf"
+        className="hidden"
+        onChange={handleFileChange}
+        aria-label="PDF ফাইল নির্বাচন করুন"
+      />
 
-      <div className="flex flex-1 overflow-hidden">
-        <Sidebar />
-
-        <div className="flex flex-1 items-start justify-center overflow-auto bg-zinc-800/80 p-4">
+      {!file ? (
+        <div className="flex min-h-[75vh] flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-400/25 bg-zinc-400/10 p-6 text-center sm:p-12">
           {isLoading ? (
-            <div className="flex items-center gap-4 text-zinc-400 mt-20">
-              <Loader2 className="size-6 animate-spin" />
-              লোড হচ্ছে...
-            </div>
+            <Loader2 className="mb-5 size-12 animate-spin text-zinc-400" aria-hidden="true" />
           ) : (
-            <PageCanvas pageNumber={currentPage} />
+            <Upload className="mb-5 size-12 text-zinc-400" aria-hidden="true" />
           )}
+          <h1 className="mb-2 text-lg font-semibold tracking-tight sm:text-xl">
+            PDF এডিটর
+          </h1>
+          <p className="mb-8 max-w-md text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+            PDF-এ লেখা যোগ করুন, হাইলাইট করুন, আঁকুন, স্বাক্ষর দিন, পৃষ্ঠা ঘোরান এবং সম্পাদিত ফাইল ডাউনলোড করুন। ফাইল আপনার ব্রাউজারেই প্রসেস হয়।
+          </p>
+          <button
+            type="button"
+            disabled={isLoading}
+            onClick={() => fileInputRef.current?.click()}
+            className="rounded-xl bg-emerald-600 px-6 py-2.5 text-sm font-medium text-zinc-100 transition-colors hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isLoading ? "লোড হচ্ছে..." : "PDF আপলোড করুন"}
+          </button>
+          {error && (
+            <p role="alert" className="mt-4 max-w-md text-sm text-rose-600 dark:text-rose-400">
+              {error}
+            </p>
+          )}
+          <p className="mt-4 text-xs text-zinc-500">
+            সর্বোচ্চ ফাইল সাইজ ৫০ MB
+          </p>
         </div>
-      </div>
+      ) : (
+        <div className="flex h-[calc(100dvh-80px)] min-h-[440px] flex-col overflow-hidden rounded-2xl border border-zinc-400/25 bg-zinc-900">
+          <Toolbar onNewFile={() => fileInputRef.current?.click()} />
 
-      {error && (
-        <div className="bg-rose-500/15 px-4 py-2 text-sm text-rose-600 dark:text-rose-400">
-          {error}
+          <div className="flex min-h-0 flex-1 overflow-hidden">
+            <Sidebar />
+
+            <div className="flex min-w-0 flex-1 items-start justify-center overflow-auto bg-zinc-800/80 p-4">
+              {isLoading ? (
+                <div className="mt-20 flex items-center gap-4 text-zinc-400" role="status">
+                  <Loader2 className="size-6 animate-spin" aria-hidden="true" />
+                  নতুন PDF লোড হচ্ছে...
+                </div>
+              ) : (
+                <PageCanvas pageNumber={currentPage} />
+              )}
+            </div>
+          </div>
+
+          {error && (
+            <div role="alert" className="bg-rose-500/15 px-4 py-2 text-sm text-rose-600 dark:text-rose-400">
+              {error}
+            </div>
+          )}
+
+          <p className="border-t border-zinc-400/15 px-3 py-1.5 text-center text-[11px] text-zinc-400">
+            {numPages.toLocaleString("bn-BD")} পৃষ্ঠা · ফাইল আপনার ডিভাইসেই থাকে
+          </p>
         </div>
       )}
-    </div>
+    </>
   );
 }
