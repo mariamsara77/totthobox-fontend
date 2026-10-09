@@ -36,6 +36,7 @@ export type NewsMeta = {
 export type NewsResponse = {
   data: NewsItem[];
   meta: NewsMeta;
+  error?: boolean;
 };
 
 export type NewsSourceResponse = {
@@ -91,6 +92,7 @@ export async function getNews(params: {
 }): Promise<NewsResponse> {
   const empty: NewsResponse = {
     data: [],
+    error: true,
     meta: {
       current_page: 1,
       last_page: 1,
@@ -123,6 +125,7 @@ export async function getNews(params: {
     const json = await response.json();
     return {
       data: Array.isArray(json?.data) ? json.data : [],
+      error: false,
       meta: {
         current_page: Number(json?.meta?.current_page || 1),
         last_page: Number(json?.meta?.last_page || 1),
