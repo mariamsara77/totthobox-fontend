@@ -1,45 +1,49 @@
 // lib/api.ts
-const BASE_URL = (
-  process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com"
-).replace(/\/$/, "");
+const configuredBase =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+const BASE_URL = (/^https?:\\/\\//i.test(configuredBase)
+  ? configuredBase
+  : "https://admin.totthobox.com").replace(/\\/+$/, "");
 
 interface FetcherOptions extends RequestInit {
   revalidate?: number | false;
+  tags?: string[];
 }
 
 export async function fetcher<T>(
   endpoint: string,
   options: FetcherOptions = {}
 ): Promise<T> {
-  const { revalidate, headers, ...rest } = options;
+  const { revalidate = 3600, tags, headers, cache, ...rest } = options;
   const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  const nextOptions = cache === "no-store"
+    ? undefined
+    : { revalidate, ...(tags?.length ? { tags } : {}) };
 
-  const res = await fetch(`${BASE_URL}${cleanEndpoint}`, {
+  const response = await fetch(`${BASE_URL}${cleanEndpoint}`, {
     ...rest,
+    ...(cache ? { cache } : {}),
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json",
+      ...(rest.body ? { "Content-Type": "application/json" } : {}),
       ...headers,
     },
-    // Next.js ক্যাশিং: API ডাউন থাকলেও সার্ভার ক্যাশ থেকে ডেটা রেন্ডার করবে
-    next: {
-      revalidate: revalidate ?? 3600, // ডিফল্ট ১ ঘণ্টা ক্যাশ থাকবে
-    },
+    ...(nextOptions ? { next: nextOptions } : {}),
   });
 
-  if (!res.ok) {
-    throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-  }
+  if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  const contentType = response.headers.get("content-type") || "";
+  if (!contentType.includes("application/json")) throw new Error("API response is not valid JSON.");
 
-  const contentType = res.headers.get("content-type");
-  if (!contentType || !contentType.includes("application/json")) {
-    throw new Error("API থেকে সঠিক JSON পাওয়া যায়নি (সম্ভবত সার্ভার এরর)");
+  const json: unknown = await response.json();
+  if (!json || typeof json !== "object") return json as T;
+  const payload = json as Record<string, unknown>;
+  if ("success" in payload) {
+    if (payload.success !== true) {
+      throw new Error(typeof payload.message === "string" ? payload.message : "API request failed.");
+    }
+    if ("data" in payload) return payload.data as T;
   }
-
-  const json = await res.json();
-  if (!json.success) {
-    throw new Error(json.message || "API অনুরোধ ব্যর্থ হয়েছে");
-  }
-
-  return json.data;
+  // Laravel may return { success, data }, { data, meta }, or a direct payload.
+  return json as T;
 }
