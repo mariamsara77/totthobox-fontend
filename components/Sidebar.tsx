@@ -74,6 +74,61 @@ type NewsSourceItem = {
 };
 
 
+type NewsSourcePayloadItem = {
+  source_key?: unknown;
+  key?: unknown;
+  slug?: unknown;
+  source_name?: unknown;
+  name?: unknown;
+  language?: unknown;
+  total?: unknown;
+};
+
+function normalizeNewsSources(value: unknown): {
+  bn: NewsSourceItem[];
+  en: NewsSourceItem[];
+} | null {
+  if (!value || typeof value !== "object") return null;
+
+  const payload = value as { bn?: unknown; en?: unknown };
+  if (!Array.isArray(payload.bn) || !Array.isArray(payload.en)) return null;
+
+  const normalize = (items: unknown[]): NewsSourceItem[] =>
+    items.flatMap((item) => {
+      if (!item || typeof item !== "object") return [];
+
+      const source = item as NewsSourcePayloadItem;
+      const sourceKey =
+        typeof source.source_key === "string" ? source.source_key : source.key;
+      const slug = source.slug;
+      const sourceName =
+        typeof source.source_name === "string" ? source.source_name : source.name;
+
+      if (
+        typeof sourceKey !== "string" ||
+        typeof slug !== "string" ||
+        typeof sourceName !== "string" ||
+        !sourceKey.trim() ||
+        !slug.trim() ||
+        !sourceName.trim()
+      ) {
+        return [];
+      }
+
+      const total = Number(source.total);
+      return [{
+        source_key: sourceKey,
+        slug,
+        source_name: sourceName,
+        language: source.language === "en" ? "en" : "bn",
+        total: Number.isFinite(total) && total >= 0 ? total : 0,
+      }];
+    });
+
+  return { bn: normalize(payload.bn), en: normalize(payload.en) };
+}
+
+
 type SidebarItemProps = {
   href?: string;
   onClick?: () => void;
@@ -204,8 +259,8 @@ export default function Sidebar() {
             signal: controller.signal,
           });
           if (res.ok) {
-            const data = await res.json();
-            setContactCategories(data);
+            const data: unknown = await res.json();
+            if (Array.isArray(data)) setContactCategories(data);
           }
         }
 
@@ -214,8 +269,8 @@ export default function Sidebar() {
             signal: controller.signal,
           });
           if (res.ok) {
-            const data = await res.json();
-            setSignCategories(data);
+            const data: unknown = await res.json();
+            if (Array.isArray(data)) setSignCategories(data);
           }
         }
 
@@ -224,32 +279,102 @@ export default function Sidebar() {
             signal: controller.signal,
           });
           if (res.ok) {
-            const data = await res.json();
-            setExcelChapters(data);
+            const data: unknown = await res.json();
+            if (data && typeof data === "object" && !Array.isArray(data)) {
+              setExcelChapters(
+                Object.fromEntries(
+                  Object.entries(data as Record<string, unknown>).map(([chapter, lessons]) => [
+                    chapter,
+                    Array.isArray(lessons) ? lessons : [],
+                  ]),
+                ),
+              );
+            }
           }
         }
 
         if (pathname.startsWith("/software")) {
-          const res = await fetch(API_URL + "/api/sidebar/software-platforms", {
-            signal: controller.signal,
-          });
-          if (res.ok) {
-            const data = await res.json();
-            setSoftwarePlatforms(Array.isArray(data) ? data : []);
+          let platforms: string[] = [];
+
+          try {
+            const response = await fetch(API_URL + "/api/sidebar/software-platforms", {
+              signal: controller.signal,
+            });
+            if (response.ok) {
+              const data: unknown = await response.json();
+              if (Array.isArray(data)) {
+                platforms = data.filter(
+                  (item): item is string => typeof item === "string" && item.trim().length > 0,
+                );
+              }
+            }
+          } catch (error) {
+            if (controller.signal.aborted) return;
           }
+
+          // Reuse the existing public apps API as a fallback, without adding a
+          // request when the dedicated endpoint works.
+          if (!platforms.length) {
+            try {
+              const fallbackResponse = await fetch(API_URL + "/api/apps?per_page=50", {
+                signal: controller.signal,
+              });
+              if (fallbackResponse.ok) {
+                const payload = await fallbackResponse.json();
+                const rows: unknown[] = Array.isArray(payload?.data) ? payload.data : [];
+                platforms = rows.flatMap((row) => {
+                  if (!row || typeof row !== "object") return [];
+                  const platform = (row as { platform?: unknown }).platform;
+                  return typeof platform === "string" && platform.trim()
+                    ? [platform.trim()]
+                    : [];
+                });
+              }
+            } catch (error) {
+              if (controller.signal.aborted) return;
+            }
+          }
+
+          setSoftwarePlatforms(
+            Array.from(new Set(platforms.map((platform) => platform.trim()).filter(Boolean))).sort(
+              (a, b) => a.localeCompare(b),
+            ),
+          );
         }
 
         if (pathname.startsWith("/news")) {
-          const res = await fetch(API_URL + "/api/sidebar/news-sources", {
-            signal: controller.signal,
-          });
-          if (res.ok) {
-            const data = await res.json();
-            setNewsSources({
-              bn: Array.isArray(data?.bn) ? data.bn : [],
-              en: Array.isArray(data?.en) ? data.en : [],
+          let normalized: ReturnType<typeof normalizeNewsSources> = null;
+
+          try {
+            const response = await fetch(API_URL + "/api/sidebar/news-sources", {
+              signal: controller.signal,
             });
+            if (response.ok) {
+              normalized = normalizeNewsSources(await response.json());
+            }
+          } catch (error) {
+            if (controller.signal.aborted) return;
           }
+
+          // The main news page uses this public endpoint too. Fall back to it if
+          // the dedicated sidebar endpoint is missing or returns an invalid payload.
+          if (!normalized || (!normalized.bn.length && !normalized.en.length)) {
+            try {
+              const fallbackResponse = await fetch(API_URL + "/api/news/sources", {
+                signal: controller.signal,
+              });
+              if (fallbackResponse.ok) {
+                const fallback = normalizeNewsSources(await fallbackResponse.json());
+                if (fallback && (fallback.bn.length || fallback.en.length)) {
+                  normalized = fallback;
+                }
+              }
+            } catch (error) {
+              if (controller.signal.aborted) return;
+            }
+          }
+
+          if (normalized) setNewsSources(normalized);
         }
       } catch (error: any) {
         if (error.name !== "AbortError") {
