@@ -71,10 +71,10 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
       a.href = url;
       a.download = `edited_${file.name}`;
       a.click();
-      URL.revokeObjectURL(url);
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
     } catch (err) {
       console.error(err);
-      alert("Export failed");
+      alert("PDF এক্সপোর্ট করা যায়নি। ফাইলটি পাসওয়ার্ড-সুরক্ষিত বা ক্ষতিগ্রস্ত কি না যাচাই করে আবার চেষ্টা করুন।");
     }
   };
 
@@ -86,7 +86,9 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
           <button
             key={t.id}
             onClick={() => setTool(t.id)}
+            type="button"
             title={t.label}
+            aria-label={t.label}
             className={clsx(
               "p-2 rounded-lg transition",
               tool === t.id
