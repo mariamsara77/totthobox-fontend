@@ -118,21 +118,23 @@ export async function getNews(params: {
   });
 
   try {
-    let response: Response;
+    let response: Response | null = null;
 
     try {
       response = await fetch(url, {
         next: { revalidate: 60, tags: ["news-feed"] },
       });
     } catch {
-      // Retry network failures once without Next's data cache.
-      response = await fetch(url, { cache: "no-store" });
+      // Recover from transient network failures with one uncached request.
     }
 
-    if (!response.ok) {
-      // A temporary upstream/edge failure should not leave the page stuck on
-      // a cached error state. Retry only on failure to avoid extra normal traffic.
-      response = await fetch(url, { cache: "no-store" });
+    if (!response || !response.ok) {
+      try {
+        // Retry only when the normal request fails; healthy traffic stays cached.
+        response = await fetch(url, { cache: "no-store" });
+      } catch {
+        return empty;
+      }
     }
 
     if (!response.ok) return empty;
