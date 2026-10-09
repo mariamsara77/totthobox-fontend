@@ -1,5 +1,6 @@
 export type NewsSource = {
   key: string;
+  slug: string;
   name: string;
   language: "bn" | "en";
   home_url: string;
@@ -13,6 +14,7 @@ export type NewsItem = {
   source_url: string;
   source_name: string;
   source_key: string;
+  source_slug?: string | null;
   category?: string | null;
   language: "bn" | "en";
   published_at?: string | null;
@@ -44,27 +46,10 @@ export type NewsSourceResponse = {
 const API_BASE =
   (process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com").replace(/\/$/, "");
 
-const SOURCE_SLUGS: Record<string, string> = {
-  prothom_alo: "prothom-alo",
-  kalerkantho: "kaler-kantho",
-  samakal: "samakal",
-  jugantor: "jugantor",
-  ittefaq: "daily-ittefaq",
-  manabzamin: "manabzamin",
-  somoy_news: "somoy-news",
-  daily_star: "the-daily-star",
-  bdnews24: "bdnews24",
-  financial_express: "the-financial-express",
-  new_age: "new-age",
-};
-
+// Source URL slugs are maintained in the backend news_sources database table.
+// This helper is only for old, unknown URLs where no catalogue record exists.
 export function sourceSlug(sourceKey: string): string {
-  return SOURCE_SLUGS[sourceKey] || sourceKey.replace(/_/g, "-");
-}
-
-export function sourceKeyFromSlug(slug: string): string | null {
-  const entry = Object.entries(SOURCE_SLUGS).find(([, value]) => value === slug);
-  return entry?.[0] ?? null;
+  return sourceKey.replace(/_/g, "-");
 }
 
 function buildUrl(path: string, params: Record<string, string | number | undefined>) {
