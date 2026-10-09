@@ -105,11 +105,11 @@ function FilterBar({ filters, basePath, sources }: Pick<Props, "filters" | "base
         />
       </label>
 
-      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+      <div className="flex flex-wrap gap-2">
         <select
           name="category"
           defaultValue={filters.category || ""}
-          className="min-w-[130px] rounded-xl bg-zinc-400/10 px-3 py-2.5 text-sm outline-none"
+          className="min-w-[140px] flex-1 basis-[calc(50%-0.25rem)] rounded-xl bg-zinc-400/10 px-3 py-2.5 text-sm outline-none sm:flex-none sm:basis-auto"
           aria-label="সংবাদ বিভাগ"
         >
           {NEWS_CATEGORIES.map((category) => (
@@ -136,7 +136,7 @@ function FilterBar({ filters, basePath, sources }: Pick<Props, "filters" | "base
           <select
             name="source"
             defaultValue={filters.source || ""}
-            className="min-w-[150px] rounded-xl bg-zinc-400/10 px-3 py-2.5 text-sm outline-none"
+            className="min-w-[160px] flex-1 basis-[calc(50%-0.25rem)] rounded-xl bg-zinc-400/10 px-3 py-2.5 text-sm outline-none sm:flex-none sm:basis-auto"
             aria-label="সংবাদমাধ্যম"
           >
             <option value="">সব সংবাদমাধ্যম</option>
@@ -249,7 +249,7 @@ export default function NewsHub({
       <FilterBar filters={filters} basePath={basePath} sources={sources} />
 
       <div className="flex items-center justify-between gap-3 text-sm text-zinc-500 dark:text-zinc-400">
-        <span>{meta.total.toLocaleString("bn-BD")}টি সংবাদ</span>
+        <span>{error ? "সংবাদ সাময়িকভাবে অনুপলব্ধ" : `${meta.total.toLocaleString("bn-BD")}টি সংবাদ`}</span>
         <div className="flex items-center gap-1">
           <Link
             href="/news/headlines?language=bn"
