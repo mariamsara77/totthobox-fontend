@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Newspaper } from "lucide-react";
 
 type Props = {
@@ -10,6 +10,11 @@ type Props = {
 
 export default function NewsThumbnail({ src, alt }: Props) {
   const [hasError, setHasError] = useState(false);
+
+  // A recycled card must retry when pagination/filtering supplies a new image.
+  useEffect(() => {
+    setHasError(false);
+  }, [src]);
 
   return (
     <div className="size-20 shrink-0 overflow-hidden rounded-xl bg-zinc-400/15 sm:size-24">
