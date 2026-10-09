@@ -69,6 +69,7 @@ export default async function NewsSourcePage({ params, searchParams }: Props) {
     language: first(query.language),
     category: first(query.category),
     hours: first(query.hours),
+    page: first(query.page),
   };
 
   const news = await getNews(filters);
