@@ -28,9 +28,11 @@ function toParagraphs(items: PositionedText[]): string[] {
 
   for (const item of ordered) {
     const tolerance = Math.max(2, Math.min(8, (item.height || 10) * 0.45));
-    const line = lines.find((candidate) => Math.abs(candidate.y - item.y) <= tolerance);
+    // Items are sorted by descending baseline, so a matching text line can only
+    // be the most recently opened line. This avoids quadratic scans on long PDFs.
+    const line = lines[lines.length - 1];
 
-    if (line) {
+    if (line && Math.abs(line.y - item.y) <= tolerance) {
       line.items.push(item);
       line.y = (line.y * (line.items.length - 1) + item.y) / line.items.length;
       line.height = Math.max(line.height, item.height);
