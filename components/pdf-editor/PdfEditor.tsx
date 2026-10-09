@@ -1,11 +1,14 @@
 "use client";
 
-import { useRef, type ChangeEvent } from "react";
+import { useRef, useState, type ChangeEvent } from "react";
+import dynamic from "next/dynamic";
 import { usePdfEditorStore } from "./store";
 import { Toolbar } from "./Toolbar";
 import { Sidebar } from "./Sidebar";
 import { PageCanvas } from "./PageCanvas";
-import { Upload, Loader2 } from "lucide-react";
+import { Upload, Loader2, ScanLine } from "lucide-react";
+
+const DocumentScanner = dynamic(() => import("./DocumentScanner"), { ssr: false });
 
 const MAX_PDF_SIZE_BYTES = 50 * 1024 * 1024;
 
@@ -24,6 +27,7 @@ export default function PdfEditor() {
   } = usePdfEditorStore();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [scannerOpen, setScannerOpen] = useState(false);
 
   const loadPdf = async (selectedFile: File) => {
     const looksLikePdf =
@@ -32,17 +36,17 @@ export default function PdfEditor() {
 
     if (!looksLikePdf) {
       setError("অনুগ্রহ করে একটি PDF ফাইল নির্বাচন করুন।");
-      return;
+      return false;
     }
 
     if (selectedFile.size === 0) {
       setError("ফাইলটি খালি। অন্য একটি PDF নির্বাচন করুন।");
-      return;
+      return false;
     }
 
     if (selectedFile.size > MAX_PDF_SIZE_BYTES) {
       setError("ফাইলটি ৫০ MB-এর বেশি। ছোট PDF নির্বাচন করুন।");
-      return;
+      return false;
     }
 
     try {
@@ -64,6 +68,7 @@ export default function PdfEditor() {
       if (previousDocument && previousDocument !== loadedDocument) {
         void Promise.resolve(previousDocument.destroy?.()).catch(() => undefined);
       }
+      return true;
     } catch (loadError: unknown) {
       console.error("PDF load failed", loadError);
       const message =
@@ -71,6 +76,7 @@ export default function PdfEditor() {
           ? "পাসওয়ার্ড-সুরক্ষিত PDF এখন খোলা যাচ্ছে না।"
           : "PDF ফাইলটি পড়া যায়নি। ফাইলটি ঠিক আছে কি না যাচাই করে আবার চেষ্টা করুন।";
       setError(message);
+      return false;
     } finally {
       setLoading(false);
     }
@@ -107,14 +113,25 @@ export default function PdfEditor() {
           <p className="mb-8 max-w-md text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
             PDF-এ লেখা যোগ করুন, হাইলাইট করুন, আঁকুন, স্বাক্ষর দিন, পৃষ্ঠা ঘোরান এবং সম্পাদিত ফাইল ডাউনলোড করুন। ফাইল আপনার ব্রাউজারেই প্রসেস হয়।
           </p>
-          <button
-            type="button"
-            disabled={isLoading}
-            onClick={() => fileInputRef.current?.click()}
-            className="rounded-xl bg-emerald-600 px-6 py-2.5 text-sm font-medium text-zinc-100 transition-colors hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {isLoading ? "লোড হচ্ছে..." : "PDF আপলোড করুন"}
-          </button>
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <button
+              type="button"
+              disabled={isLoading}
+              onClick={() => fileInputRef.current?.click()}
+              className="rounded-xl bg-emerald-600 px-6 py-2.5 text-sm font-medium text-zinc-100 transition-colors hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isLoading ? "লোড হচ্ছে..." : "PDF আপলোড করুন"}
+            </button>
+            <button
+              type="button"
+              disabled={isLoading}
+              onClick={() => setScannerOpen(true)}
+              className="inline-flex items-center gap-2 rounded-xl border border-zinc-400/30 px-5 py-2.5 text-sm font-medium text-zinc-800 transition-colors hover:bg-zinc-400/10 dark:text-zinc-100"
+            >
+              <ScanLine className="size-4" aria-hidden="true" />
+              ক্যামেরায় স্ক্যান করুন
+            </button>
+          </div>
           {error && (
             <p role="alert" className="mt-4 max-w-md text-sm text-rose-600 dark:text-rose-400">
               {error}
@@ -126,7 +143,7 @@ export default function PdfEditor() {
         </div>
       ) : (
         <div className="flex h-[calc(100dvh-80px)] min-h-[440px] flex-col overflow-hidden rounded-2xl border border-zinc-400/25 bg-zinc-900">
-          <Toolbar onNewFile={() => fileInputRef.current?.click()} />
+          <Toolbar onNewFile={() => fileInputRef.current?.click()} onScanDocuments={() => setScannerOpen(true)} />
 
           <div className="flex min-h-0 flex-1 overflow-hidden">
             <Sidebar />
@@ -153,6 +170,13 @@ export default function PdfEditor() {
             {numPages.toLocaleString("bn-BD")} পৃষ্ঠা · ফাইল আপনার ডিভাইসেই থাকে
           </p>
         </div>
+      )}
+
+      {scannerOpen && (
+        <DocumentScanner
+          onClose={() => setScannerOpen(false)}
+          onCreatePDF={loadPdf}
+        />
       )}
     </>
   );
