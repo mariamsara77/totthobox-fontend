@@ -375,6 +375,16 @@ export default function Sidebar() {
               showLabel={true}
             />
 
+            <SidebarItem
+              href="/pdf-editor"
+              icon={MdEditDocument}
+              label="PDF Editor"
+              isActive={pathname === "/pdf-editor"}
+              collapsed={collapsed}
+              onHover={handleMouseEnter}
+              onLeave={handleMouseLeave}
+            />
+
             {/* ===================== NEWS ===================== */}
             {pathname.startsWith("/news") && (
               <div className="space-y-1">
@@ -769,7 +779,7 @@ export default function Sidebar() {
               </div>
             )}
             {/* ===================== TOOLS ===================== */}
-            {pathname.startsWith("/tools") && (
+            {(pathname.startsWith("/tools") || pathname === "/pdf-editor") && (
               <div className="space-y-1">
                 {!collapsed && (
                   <h3 className="mb-2 px-3 text-xs  uppercase tracking-wider text-zinc-400">

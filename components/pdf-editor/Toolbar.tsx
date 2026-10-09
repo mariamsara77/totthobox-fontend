@@ -15,12 +15,15 @@ import {
   Undo2,
   Redo2,
   Upload,
+  Camera,
+  FileText,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
 import { usePdfEditorStore } from "./store";
 import { exportEditedPdf } from "./exportPdf";
 import { Tool } from "./types";
+import { useState } from "react";
 import clsx from "clsx";
 
 const tools: { id: Tool; icon: any; label: string }[] = [
@@ -34,10 +37,13 @@ const tools: { id: Tool; icon: any; label: string }[] = [
 
 interface ToolbarProps {
   onNewFile?: () => void;
+  onScan?: () => void;
 }
 
 export function Toolbar({ onNewFile }: ToolbarProps) {
   const {
+    pdfDoc,
+    numPages,
     tool,
     setTool,
     scale,
@@ -58,6 +64,8 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
     updateAnnotation,
   } = usePdfEditorStore();
 
+  const [isConvertingWord, setIsConvertingWord] = useState(false);
+
   const selectedAnn = selectedId
     ? pages[currentPage - 1]?.annotations.find((a) => a.id === selectedId)
     : null;
@@ -70,11 +78,69 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
       const a = document.createElement("a");
       a.href = url;
       a.download = `edited_${file.name}`;
+      document.body.appendChild(a);
       a.click();
-      URL.revokeObjectURL(url);
+      a.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
     } catch (err) {
       console.error(err);
       alert("Export failed");
+    }
+  };
+
+  const handleExportWord = async () => {
+    if (!pdfDoc || !numPages || !file) return;
+
+    setIsConvertingWord(true);
+    try {
+      const sections: string[] = [];
+      let extractedCharacters = 0;
+
+      for (let pageNumber = 1; pageNumber <= numPages; pageNumber++) {
+        const page = await pdfDoc.getPage(pageNumber);
+        const content = await page.getTextContent();
+        const text = content.items
+          .map((item) => {
+            if (!("str" in item)) return "";
+            return item.str + ("hasEOL" in item && item.hasEOL ? "\\n" : " ");
+          })
+          .join("")
+          .trim();
+
+        extractedCharacters += text.length;
+        const escaped = text
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+
+        sections.push(
+          `<section style="page-break-after:always"><h2>পৃষ্ঠা ${pageNumber}</h2><p style="white-space:pre-wrap;line-height:1.65">${escaped.replace(/\\n/g, "<br />")}</p></section>`,
+        );
+      }
+
+      if (extractedCharacters === 0) {
+        throw new Error("এই PDF-এ নির্বাচনযোগ্য লেখা পাওয়া যায়নি। স্ক্যান করা PDF থেকে Word করতে OCR প্রয়োজন।");
+      }
+
+      const html = `<!doctype html><html lang="bn"><head><meta charset="utf-8"><title>${file.name}</title><style>body{font-family:Arial,sans-serif;font-size:12pt;line-height:1.6}section{margin:0 0 24px}h2{font-size:10pt;color:#666}</style></head><body>${sections.join("")}</body></html>`;
+      const blob = new Blob(["\\uFEFF", html], {
+        type: "application/msword;charset=utf-8",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${file.name.replace(/\\.pdf$/i, "") || "document"}.doc`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Word ফাইলে রূপান্তর করা যায়নি।";
+      alert(message);
+    } finally {
+      setIsConvertingWord(false);
     }
   };
 
@@ -257,15 +323,37 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
           <Trash2 className="size-5 text-zinc-400" />
         </button>
 
+        {onScan && (
+          <button
+            onClick={onScan}
+            title="ক্যামেরা দিয়ে স্ক্যান"
+            aria-label="ক্যামেরা দিয়ে স্ক্যান"
+            className="p-2 rounded-lg hover:bg-zinc-800"
+          >
+            <Camera className="size-5" />
+          </button>
+        )}
+
         {onNewFile && (
           <button
             onClick={onNewFile}
-            title="Open another PDF"
-            className="p-2 rounded-lg hover:bg-zinc-900 hover:bg-zinc-800"
+            title="অন্য PDF বা ছবি খুলুন"
+            aria-label="অন্য PDF বা ছবি খুলুন"
+            className="p-2 rounded-lg hover:bg-zinc-800"
           >
             <Upload className="size-5" />
           </button>
         )}
+
+        <button
+          onClick={handleExportWord}
+          disabled={isConvertingWord || !pdfDoc}
+          title="Word-compatible editable text (.doc) হিসেবে রপ্তানি করুন"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-zinc-700 px-3 py-2 text-sm text-white transition hover:bg-zinc-600 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <FileText className="size-4" />
+          {isConvertingWord ? "রূপান্তর…" : "Word"}
+        </button>
 
         <button
           onClick={handleDownload}

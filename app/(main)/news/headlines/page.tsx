@@ -43,6 +43,7 @@ export default async function NewsHeadlinesPage({
     language: first(params.language),
     category: first(params.category),
     hours: first(params.hours),
+    page: first(params.page),
   };
 
   const [news, sources] = await Promise.all([

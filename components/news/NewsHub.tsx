@@ -167,7 +167,7 @@ function NewsCard({ item }: { item: NewsItem }) {
   return (
     <article className="rounded-2xl bg-zinc-400/10 p-4 transition hover:bg-zinc-400/20 sm:p-5">
       <div className="flex items-start gap-4">
-        <NewsThumbnail src={item.image_url} alt={item.title} />
+        <NewsThumbnail src={item.image_url} fallbackSrc={item.image_fallback_url} alt={item.title} />
 
         <div className="min-w-0 flex-1 space-y-2">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-zinc-500 dark:text-zinc-400">
@@ -186,7 +186,14 @@ function NewsCard({ item }: { item: NewsItem }) {
           </div>
 
           <h2 className="text-base font-semibold leading-6 tracking-tight sm:text-lg">
-            {item.title}
+            <a
+              href={item.source_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-sm outline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-500"
+            >
+              {item.title}
+            </a>
           </h2>
 
           {item.coverage_count > 1 ? (
