@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { createDocxFromPdfPages } from "@/lib/pdfDocx";
 import {
   Upload,
   FileText,
@@ -23,6 +24,7 @@ type Tool =
   | "pdf-merge"
   | "pdf-split"
   | "pdf-to-images"
+  | "pdf-to-word"
   | "images-to-pdf"
   | "pdf-rotate"
   | "docx-to-html"
@@ -54,6 +56,7 @@ export default function AdvancedDocumentConverter() {
   );
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const captureInputRef = useRef<HTMLInputElement>(null);
 
   const formatBytes = (b: number) => {
     if (b < 1024) return `${b} B`;
@@ -142,60 +145,157 @@ export default function AdvancedDocumentConverter() {
   };
 
   const pdfToImages = async () => {
-    if (files.length !== 1) throw new Error("একটি PDF সিলেক্ট করুন");
+    if (files.length !== 1 || !/\.pdf$/i.test(files[0].name)) {
+      throw new Error("একটি PDF সিলেক্ট করুন");
+    }
 
     const pdfjs = await import("pdfjs-dist");
+    const { createZipBlob } = await import("@/lib/zip");
     pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
-    const bytes = await files[0].file.arrayBuffer();
+    const bytes = new Uint8Array(await files[0].file.arrayBuffer());
     const pdf = await pdfjs.getDocument({ data: bytes }).promise;
-    const images: Blob[] = [];
+    const images: { name: string; data: Uint8Array }[] = [];
 
     for (let i = 1; i <= pdf.numPages; i++) {
       setProgress(Math.round((i / pdf.numPages) * 90));
       const page = await pdf.getPage(i);
-      const viewport = page.getViewport({ scale: 2 });
+      const viewport = page.getViewport({ scale: 1.8 });
       const canvas = document.createElement("canvas");
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-      const ctx = canvas.getContext("2d")!;
+      canvas.width = Math.ceil(viewport.width);
+      canvas.height = Math.ceil(viewport.height);
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw new Error("ছবি তৈরির জন্য canvas প্রস্তুত করা যায়নি");
 
       await page.render({ canvasContext: ctx, viewport } as any).promise;
 
-      const blob = await new Promise<Blob>((res) =>
-        canvas.toBlob((b) => res(b!), "image/png"),
-      );
-      images.push(blob);
+      const blob = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob(
+          (result) => result ? resolve(result) : reject(new Error("পৃষ্ঠা ছবি তৈরি করা যায়নি")),
+          "image/png",
+        );
+      });
+      images.push({
+        name: "page-" + String(i).padStart(3, "0") + ".png",
+        data: new Uint8Array(await blob.arrayBuffer()),
+      });
     }
 
-    return images[0];
+    return createZipBlob(images);
+  };
+
+  const pdfToWord = async () => {
+    if (files.length !== 1 || !/\.pdf$/i.test(files[0].name)) {
+      throw new Error("একটি PDF ফাইল সিলেক্ট করুন");
+    }
+
+    const pdfjs = await import("pdfjs-dist");
+    pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+    const bytes = new Uint8Array(await files[0].file.arrayBuffer());
+    const pdf = await pdfjs.getDocument({ data: bytes }).promise;
+    const pages: string[][] = [];
+
+    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+      setProgress(Math.round((pageNumber / pdf.numPages) * 85));
+      const page = await pdf.getPage(pageNumber);
+      const textContent = await page.getTextContent();
+      const textItems = textContent.items as Array<{ str?: string; transform?: number[] }>;
+      const lines = new Map<number, { x: number; text: string }[]>();
+
+      textItems.forEach((item, index) => {
+        const text = item.str?.replace(/\s+/g, " ").trim();
+        if (!text) return;
+
+        const x = Number(item.transform?.[4] ?? 0);
+        const y = Number(item.transform?.[5] ?? -index);
+        const lineKey = Math.round(y);
+        const line = lines.get(lineKey) ?? [];
+        line.push({ x, text });
+        lines.set(lineKey, line);
+      });
+
+      const pageLines = [...lines.entries()]
+        .sort(([a], [b]) => b - a)
+        .map(([, chunks]) =>
+          chunks
+            .sort((a, b) => a.x - b.x)
+            .reduce((result, chunk) => {
+              if (!result) return chunk.text;
+              return /^[,.;:!?%)\]}।]/.test(chunk.text)
+                ? result + chunk.text
+                : result + " " + chunk.text;
+            }, "")
+            .replace(/\s+/g, " ")
+            .trim(),
+        )
+        .filter(Boolean);
+
+      if (pageLines.length) pages.push(pageLines);
+    }
+
+    if (pages.length === 0) {
+      throw new Error("এই PDF-এ নির্বাচনযোগ্য লেখা পাওয়া যায়নি। স্ক্যান করা PDF-এর জন্য OCR প্রয়োজন।");
+    }
+
+    return createDocxFromPdfPages(pages);
   };
 
   const imagesToPDF = async () => {
     const { PDFDocument } = await import("pdf-lib");
     const imgs = files.filter(
-      (f) => f.type.startsWith("image/") || /\.(png|jpe?g|webp)$/i.test(f.name),
+      (f) => f.type.startsWith("image/") || /\.(png|jpe?g|webp|heic|heif)$/i.test(f.name),
     );
-    if (imgs.length === 0) throw new Error("অন্তত একটি ইমেজ লাগবে");
+    if (imgs.length === 0) throw new Error("অন্তত একটি ছবি যোগ করুন");
 
     const pdf = await PDFDocument.create();
+    const pageWidth = 595.28;
+    const pageHeight = 841.89;
+    const margin = 20;
+
     for (let i = 0; i < imgs.length; i++) {
       setProgress(Math.round(((i + 1) / imgs.length) * 90));
-      const bytes = await imgs[i].file.arrayBuffer();
-      let image;
-      if (imgs[i].name.toLowerCase().endsWith(".png")) {
-        image = await pdf.embedPng(bytes);
-      } else {
-        image = await pdf.embedJpg(bytes);
+      const bitmap = await createImageBitmap(imgs[i].file);
+      const reduction = Math.min(1, 2400 / Math.max(bitmap.width, bitmap.height));
+      const width = Math.max(1, Math.round(bitmap.width * reduction));
+      const height = Math.max(1, Math.round(bitmap.height * reduction));
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const context = canvas.getContext("2d");
+      if (!context) {
+        bitmap.close();
+        throw new Error("ছবির ক্যানভাস তৈরি করা যায়নি");
       }
-      const page = pdf.addPage([image.width, image.height]);
+
+      context.fillStyle = "#ffffff";
+      context.fillRect(0, 0, width, height);
+      context.drawImage(bitmap, 0, 0, width, height);
+      bitmap.close();
+
+      const jpegBlob = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob(
+          (result) => result ? resolve(result) : reject(new Error("ছবি প্রস্তুত করা যায়নি")),
+          "image/jpeg",
+          0.9,
+        );
+      });
+      const imageBytes = new Uint8Array(await jpegBlob.arrayBuffer());
+      const image = await pdf.embedJpg(imageBytes);
+      const page = pdf.addPage([pageWidth, pageHeight]);
+      const fit = Math.min(
+        (pageWidth - margin * 2) / image.width,
+        (pageHeight - margin * 2) / image.height,
+      );
+      const drawWidth = image.width * fit;
+      const drawHeight = image.height * fit;
       page.drawImage(image, {
-        x: 0,
-        y: 0,
-        width: image.width,
-        height: image.height,
+        x: (pageWidth - drawWidth) / 2,
+        y: (pageHeight - drawHeight) / 2,
+        width: drawWidth,
+        height: drawHeight,
       });
     }
+
     const pdfBytes = await pdf.save();
     return new Blob([pdfBytes.buffer as ArrayBuffer], {
       type: "application/pdf",
@@ -284,7 +384,11 @@ export default function AdvancedDocumentConverter() {
           break;
         case "pdf-to-images":
           blob = await pdfToImages();
-          name = "page-1.png";
+          name = "page-images.zip";
+          break;
+        case "pdf-to-word":
+          blob = await pdfToWord();
+          name = "converted.docx";
           break;
         case "images-to-pdf":
           blob = await imagesToPDF();
@@ -351,8 +455,14 @@ export default function AdvancedDocumentConverter() {
     },
     {
       id: "pdf-to-images" as const,
-      label: "PDF → Images",
+      label: "PDF → All Page Images",
       icon: ImageIcon,
+      accept: ".pdf",
+    },
+    {
+      id: "pdf-to-word" as const,
+      label: "PDF → Word (.docx)",
+      icon: FileType,
       accept: ".pdf",
     },
     {
@@ -441,14 +551,38 @@ export default function AdvancedDocumentConverter() {
           multiple
           accept={tools.find((t) => t.id === activeTool)?.accept}
           className="hidden"
-          onChange={(e) => addFiles(e.target.files)}
+          onChange={(e) => {
+            addFiles(e.target.files);
+            e.currentTarget.value = "";
+          }}
         />
-        <button
-          onClick={() => fileInputRef.current?.click()}
-          className="mt-6 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/25 px-4 py-2"
-        >
-          ফাইল বেছে নাও
-        </button>
+        <input
+          ref={captureInputRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          className="hidden"
+          onChange={(e) => {
+            addFiles(e.target.files);
+            e.currentTarget.value = "";
+          }}
+        />
+        <div className="mt-6 flex flex-wrap justify-center gap-2">
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="rounded-xl bg-zinc-400/10 hover:bg-zinc-400/25 px-4 py-2"
+          >
+            ফাইল বেছে নাও
+          </button>
+          {activeTool === "images-to-pdf" && (
+            <button
+              onClick={() => captureInputRef.current?.click()}
+              className="rounded-xl bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-500"
+            >
+              ক্যামেরায় ডকুমেন্ট স্ক্যান
+            </button>
+          )}
+        </div>
       </div>
 
       {/* File List */}
@@ -481,6 +615,18 @@ export default function AdvancedDocumentConverter() {
             সব মুছে ফেলুন
           </button>
         </div>
+      )}
+
+      {activeTool === "pdf-to-word" && (
+        <p className="rounded-xl bg-zinc-400/10 p-3 text-sm leading-6 text-zinc-600 dark:text-zinc-300">
+          PDF-এর নির্বাচনযোগ্য লেখা সম্পাদনাযোগ্য Word (.docx) ফাইলে যাবে। মূল পৃষ্ঠার হুবহু নকশা, ছবি ও জটিল টেবিল নাও থাকতে পারে; স্ক্যান করা PDF-এর জন্য OCR প্রয়োজন।
+        </p>
+      )}
+
+      {activeTool === "images-to-pdf" && (
+        <p className="rounded-xl bg-zinc-400/10 p-3 text-sm leading-6 text-zinc-600 dark:text-zinc-300">
+          একাধিক ছবি যোগ করুন বা মোবাইল ক্যামেরা দিয়ে পৃষ্ঠা তুলুন। ছবিগুলো A4 PDF পৃষ্ঠায় সাজিয়ে ডাউনলোড করা হবে।
+        </p>
       )}
 
       {/* Tool specific options */}
@@ -598,7 +744,7 @@ export default function AdvancedDocumentConverter() {
         <div className="leading-relaxed">
           <p>
             <strong>
-              PDF Merge, Split, Rotate, Images ↔ PDF, DOCX → HTML, Excel →
+              PDF Merge, Split, Rotate, PDF → Word, Images ↔ PDF, DOCX → HTML, Excel →
               CSV/JSON
             </strong>{" "}
             সহ সব টুল এক জায়গায়। সম্পূর্ণ ব্রাউজারে কাজ করে — কোনো ফাইল সার্ভারে
