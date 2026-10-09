@@ -16,6 +16,7 @@ export type NewsItem = {
   category?: string | null;
   language: "bn" | "en";
   published_at?: string | null;
+  image_url?: string | null;
   story_group?: string | null;
   coverage_count: number;
 };
