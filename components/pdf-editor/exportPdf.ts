@@ -45,15 +45,21 @@ export async function exportEditedPdf(
         });
       }
 
-      if (ann.type === "draw" && ann.path && ann.path.length > 1) {
+      if (
+        (ann.type === "draw" || ann.type === "signature") &&
+        ann.path &&
+        ann.path.length > 1
+      ) {
+        const defaultColor = ann.type === "signature" ? "#1e40af" : "#e11d48";
+
         for (let j = 1; j < ann.path.length; j++) {
           const p1 = ann.path[j - 1];
           const p2 = ann.path[j];
           page.drawLine({
             start: { x: p1.x, y: height - p1.y },
             end: { x: p2.x, y: height - p2.y },
-            thickness: 2,
-            color: hexToRgb(ann.color || "#ff0000"),
+            thickness: ann.strokeWidth || (ann.type === "signature" ? 3 : 2.5),
+            color: hexToRgb(ann.color || defaultColor),
           });
         }
       }
