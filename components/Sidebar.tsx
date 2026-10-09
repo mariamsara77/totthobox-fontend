@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import useSWR from "swr";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import BrandIcon from "@/components/BrandIcon";
 import SearchTrigger from "@/components/search/SearchTrigger";
+import { normalizeContactCategories, type ContactSidebarCategory } from "@/lib/contact-categories";
 
 // React Icons
 import {
@@ -74,6 +76,61 @@ type NewsSourceItem = {
 };
 
 
+type NewsSourcePayloadItem = {
+  source_key?: unknown;
+  key?: unknown;
+  slug?: unknown;
+  source_name?: unknown;
+  name?: unknown;
+  language?: unknown;
+  total?: unknown;
+};
+
+function normalizeNewsSources(value: unknown): {
+  bn: NewsSourceItem[];
+  en: NewsSourceItem[];
+} | null {
+  if (!value || typeof value !== "object") return null;
+
+  const payload = value as { bn?: unknown; en?: unknown };
+  if (!Array.isArray(payload.bn) || !Array.isArray(payload.en)) return null;
+
+  const normalize = (items: unknown[]): NewsSourceItem[] =>
+    items.flatMap((item) => {
+      if (!item || typeof item !== "object") return [];
+
+      const source = item as NewsSourcePayloadItem;
+      const sourceKey =
+        typeof source.source_key === "string" ? source.source_key : source.key;
+      const slug = source.slug;
+      const sourceName =
+        typeof source.source_name === "string" ? source.source_name : source.name;
+
+      if (
+        typeof sourceKey !== "string" ||
+        typeof slug !== "string" ||
+        typeof sourceName !== "string" ||
+        !sourceKey.trim() ||
+        !slug.trim() ||
+        !sourceName.trim()
+      ) {
+        return [];
+      }
+
+      const total = Number(source.total);
+      return [{
+        source_key: sourceKey,
+        slug,
+        source_name: sourceName,
+        language: source.language === "en" ? "en" : "bn",
+        total: Number.isFinite(total) && total >= 0 ? total : 0,
+      }];
+    });
+
+  return { bn: normalize(payload.bn), en: normalize(payload.en) };
+}
+
+
 type SidebarItemProps = {
   href?: string;
   onClick?: () => void;
@@ -97,6 +154,7 @@ function SidebarItem({
   onLeave,
   badge,
 }: SidebarItemProps) {
+  const { setIsOpen } = useSidebar();
   const content = (
     <>
       <Icon className={cn("h-5 w-5 shrink-0", isActive ? "" : "")} />
@@ -119,6 +177,12 @@ function SidebarItem({
     return (
       <Link
         href={href}
+        onClick={() => {
+          onClick?.();
+          if (window.matchMedia("(max-width: 767px)").matches) {
+            setIsOpen(false);
+          }
+        }}
         onMouseEnter={(e) => onHover?.(e, label)}
         onMouseLeave={onLeave}
         className={className}
@@ -142,7 +206,11 @@ function SidebarItem({
 }
 
 // ====================== MAIN COMPONENT ======================
-export default function Sidebar() {
+export default function Sidebar({
+  initialContactCategories = [],
+}: {
+  initialContactCategories?: ContactSidebarCategory[];
+}) {
   const { openSettingsModal } = useSettingsModal();
   const pathname = usePathname();
   const { isOpen, setIsOpen, isCollapsed, toggleCollapsed } = useSidebar();
@@ -159,7 +227,7 @@ export default function Sidebar() {
     en: NewsSourceItem[];
   }>({ bn: [], en: [] });
   const [buysellCategories, setBuysellCategories] = useState<any[]>([]);
-  const [contactCategories, setContactCategories] = useState<any[]>([]);
+  const [contactCategories, setContactCategories] = useState<ContactSidebarCategory[]>(initialContactCategories);
   const [signCategories, setSignCategories] = useState<any[]>([]);
   const [excelChapters, setExcelChapters] = useState<Record<string, any[]>>({});
   const [softwarePlatforms, setSoftwarePlatforms] = useState<string[]>([]);
@@ -167,11 +235,58 @@ export default function Sidebar() {
   // API Base URL
   // Accept either the backend origin or an origin ending in /api.
   // Sidebar API paths below already include /api, so avoid accidentally requesting /api/api/...
+  const configuredApiBase =
+    process.env.NEXT_PUBLIC_API_BASE_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    "https://admin.totthobox.com";
   const API_URL = (
-    process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com"
+    /^https?:\/\//i.test(configuredApiBase)
+      ? configuredApiBase
+      : "https://admin.totthobox.com"
   )
     .replace(/\/+$/, "")
     .replace(/\/api$/i, "");
+
+  const { data: cachedNewsSources } = useSWR(
+    pathname.startsWith("/news") ? `${API_URL}/api/news/sources` : null,
+    async (url: string) => {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`News sources request failed: ${response.status}`);
+      return normalizeNewsSources(await response.json());
+    },
+    { dedupingInterval: 60_000, revalidateOnFocus: false, shouldRetryOnError: false },
+  );
+
+  useEffect(() => {
+    if (cachedNewsSources) setNewsSources(cachedNewsSources);
+  }, [cachedNewsSources]);
+
+  const { data: cachedContactCategories } = useSWR(
+    pathname.startsWith("/contact") ? `${API_URL}/api/sidebar/contact-categories` : null,
+    async (url: string) => {
+      const response = await fetch(url, { headers: { Accept: "application/json" } });
+      if (!response.ok) {
+        throw new Error(`Contact categories request failed: ${response.status}`);
+      }
+      return normalizeContactCategories(await response.json());
+    },
+    {
+      dedupingInterval: 60_000,
+      revalidateOnFocus: false,
+      shouldRetryOnError: true,
+      errorRetryCount: 2,
+    },
+  );
+
+  useEffect(() => {
+    if (
+      cachedContactCategories &&
+      (cachedContactCategories.length > 0 || contactCategories.length === 0)
+    ) {
+      setContactCategories(cachedContactCategories);
+    }
+  }, [cachedContactCategories, contactCategories.length]);
+
 
   // Mobile scroll lock
   useEffect(() => {
@@ -199,23 +314,13 @@ export default function Sidebar() {
 
     const fetchData = async () => {
       try {
-        if (pathname.startsWith("/contact")) {
-          const res = await fetch(`${API_URL}/api/sidebar/contact-categories`, {
-            signal: controller.signal,
-          });
-          if (res.ok) {
-            const data = await res.json();
-            setContactCategories(data);
-          }
-        }
-
         if (pathname.startsWith("/signs")) {
           const res = await fetch(`${API_URL}/api/sidebar/sign-categories`, {
             signal: controller.signal,
           });
           if (res.ok) {
-            const data = await res.json();
-            setSignCategories(data);
+            const data: unknown = await res.json();
+            if (Array.isArray(data)) setSignCategories(data);
           }
         }
 
@@ -224,33 +329,70 @@ export default function Sidebar() {
             signal: controller.signal,
           });
           if (res.ok) {
-            const data = await res.json();
-            setExcelChapters(data);
+            const data: unknown = await res.json();
+            if (data && typeof data === "object" && !Array.isArray(data)) {
+              setExcelChapters(
+                Object.fromEntries(
+                  Object.entries(data as Record<string, unknown>).map(([chapter, lessons]) => [
+                    chapter,
+                    Array.isArray(lessons) ? lessons : [],
+                  ]),
+                ),
+              );
+            }
           }
         }
 
         if (pathname.startsWith("/software")) {
-          const res = await fetch(API_URL + "/api/sidebar/software-platforms", {
-            signal: controller.signal,
-          });
-          if (res.ok) {
-            const data = await res.json();
-            setSoftwarePlatforms(Array.isArray(data) ? data : []);
+          let platforms: string[] = [];
+
+          try {
+            const response = await fetch(API_URL + "/api/sidebar/software-platforms", {
+              signal: controller.signal,
+            });
+            if (response.ok) {
+              const data: unknown = await response.json();
+              if (Array.isArray(data)) {
+                platforms = data.filter(
+                  (item): item is string => typeof item === "string" && item.trim().length > 0,
+                );
+              }
+            }
+          } catch {
+            if (controller.signal.aborted) return;
           }
+
+          // Reuse the existing public apps API as a fallback, without adding a
+          // request when the dedicated endpoint works.
+          if (!platforms.length) {
+            try {
+              const fallbackResponse = await fetch(API_URL + "/api/apps?per_page=50", {
+                signal: controller.signal,
+              });
+              if (fallbackResponse.ok) {
+                const payload = await fallbackResponse.json();
+                const rows: unknown[] = Array.isArray(payload?.data) ? payload.data : [];
+                platforms = rows.flatMap((row) => {
+                  if (!row || typeof row !== "object") return [];
+                  const platform = (row as { platform?: unknown }).platform;
+                  return typeof platform === "string" && platform.trim()
+                    ? [platform.trim()]
+                    : [];
+                });
+              }
+            } catch (error) {
+              if (controller.signal.aborted) return;
+            }
+          }
+
+          setSoftwarePlatforms(
+            Array.from(new Set(platforms.map((platform) => platform.trim()).filter(Boolean))).sort(
+              (a, b) => a.localeCompare(b),
+            ),
+          );
         }
 
-        if (pathname.startsWith("/news")) {
-          const res = await fetch(API_URL + "/api/sidebar/news-sources", {
-            signal: controller.signal,
-          });
-          if (res.ok) {
-            const data = await res.json();
-            setNewsSources({
-              bn: Array.isArray(data?.bn) ? data.bn : [],
-              en: Array.isArray(data?.en) ? data.en : [],
-            });
-          }
-        }
+
       } catch (error: any) {
         if (error.name !== "AbortError") {
           console.error("Sidebar fetch error:", error);
