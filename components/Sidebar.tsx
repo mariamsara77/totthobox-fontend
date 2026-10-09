@@ -85,6 +85,55 @@ type NewsSourcePayloadItem = {
   total?: unknown;
 };
 
+type ContactCategoryItem = {
+  id?: string | number;
+  slug: string;
+  name: string;
+};
+
+function normalizeContactCategories(value: unknown): ContactCategoryItem[] {
+  let rows: unknown = value;
+
+  // Support the direct Laravel array response and common API envelopes.
+  if (rows && typeof rows === "object" && !Array.isArray(rows)) {
+    const payload = rows as { data?: unknown; categories?: unknown };
+    rows = Array.isArray(payload.data) ? payload.data : payload.categories;
+  }
+  if (!Array.isArray(rows)) return [];
+
+  return rows.flatMap((item) => {
+    if (!item || typeof item !== "object") return [];
+    const category = item as {
+      id?: unknown;
+      slug?: unknown;
+      name?: unknown;
+      title?: unknown;
+      is_active?: unknown;
+      status?: unknown;
+    };
+    const slug = typeof category.slug === "string" ? category.slug.trim() : "";
+    const name =
+      typeof category.name === "string"
+        ? category.name.trim()
+        : typeof category.title === "string"
+          ? category.title.trim()
+          : "";
+
+    if (!slug || !name || category.is_active === false || category.status === "inactive") {
+      return [];
+    }
+
+    return [{
+      id:
+        typeof category.id === "string" || typeof category.id === "number"
+          ? category.id
+          : undefined,
+      slug,
+      name,
+    }];
+  });
+}
+
 function normalizeNewsSources(value: unknown): {
   bn: NewsSourceItem[];
   en: NewsSourceItem[];
@@ -256,6 +305,27 @@ export default function Sidebar() {
     if (cachedNewsSources) setNewsSources(cachedNewsSources);
   }, [cachedNewsSources]);
 
+  const { data: cachedContactCategories } = useSWR(
+    pathname.startsWith("/contact") ? `${API_URL}/api/sidebar/contact-categories` : null,
+    async (url: string) => {
+      const response = await fetch(url, { headers: { Accept: "application/json" } });
+      if (!response.ok) {
+        throw new Error(`Contact categories request failed: ${response.status}`);
+      }
+      return normalizeContactCategories(await response.json());
+    },
+    {
+      dedupingInterval: 60_000,
+      revalidateOnFocus: false,
+      shouldRetryOnError: true,
+      errorRetryCount: 2,
+    },
+  );
+
+  useEffect(() => {
+    if (cachedContactCategories) setContactCategories(cachedContactCategories);
+  }, [cachedContactCategories]);
+
 
   // Mobile scroll lock
   useEffect(() => {
@@ -283,16 +353,6 @@ export default function Sidebar() {
 
     const fetchData = async () => {
       try {
-        if (pathname.startsWith("/contact")) {
-          const res = await fetch(`${API_URL}/api/sidebar/contact-categories`, {
-            signal: controller.signal,
-          });
-          if (res.ok) {
-            const data: unknown = await res.json();
-            if (Array.isArray(data)) setContactCategories(data);
-          }
-        }
-
         if (pathname.startsWith("/signs")) {
           const res = await fetch(`${API_URL}/api/sidebar/sign-categories`, {
             signal: controller.signal,
