@@ -279,8 +279,13 @@ export default function Sidebar({
   );
 
   useEffect(() => {
-    if (cachedContactCategories) setContactCategories(cachedContactCategories);
-  }, [cachedContactCategories]);
+    if (
+      cachedContactCategories &&
+      (cachedContactCategories.length > 0 || contactCategories.length === 0)
+    ) {
+      setContactCategories(cachedContactCategories);
+    }
+  }, [cachedContactCategories, contactCategories.length]);
 
 
   // Mobile scroll lock
