@@ -142,6 +142,7 @@ type SidebarItemProps = {
 };
 
 function SidebarItem({
+  const { setIsOpen } = useSidebar();
   href,
   onClick,
   icon: Icon,
@@ -174,6 +175,12 @@ function SidebarItem({
     return (
       <Link
         href={href}
+        onClick={() => {
+          onClick?.();
+          if (window.matchMedia("(max-width: 767px)").matches) {
+            setIsOpen(false);
+          }
+        }}
         onMouseEnter={(e) => onHover?.(e, label)}
         onMouseLeave={onLeave}
         className={className}
