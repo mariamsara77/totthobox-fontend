@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Newspaper, ExternalLink, Clock3, Layers3, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import type { NewsItem, NewsSource, NewsSourceResponse } from "@/lib/news";
-import { NEWS_CATEGORIES, sourceSlug } from "@/lib/news";
+import { NEWS_CATEGORIES } from "@/lib/news";
 import NewsThumbnail from "@/components/news/NewsThumbnail";
 
 type Props = {
@@ -38,6 +38,7 @@ function formatTime(value?: string | null, language: "bn" | "en" = "bn") {
 
 function buildPageUrl(basePath: string, filters: Props["filters"], page: number) {
   const params = new URLSearchParams();
+  if (filters.source) params.set("source", filters.source);
   if (filters.search) params.set("search", filters.search);
   if (filters.language) params.set("language", filters.language);
   if (filters.category) params.set("category", filters.category);
@@ -74,7 +75,7 @@ function SourceLinks({
       {all.map((source) => (
         <Link
           key={source.key}
-          href={"/news/" + sourceSlug(source.key)}
+          href={"/news/" + source.slug}
           className={
             "shrink-0 rounded-xl px-3.5 py-2 text-sm transition " +
             (selectedSource?.key === source.key
@@ -119,10 +120,11 @@ function FilterBar({ filters, basePath, sources }: Pick<Props, "filters" | "base
 
         <select
           name="hours"
-          defaultValue={filters.hours || "48"}
+          defaultValue={filters.hours || ""}
           className="min-w-[130px] rounded-xl bg-zinc-400/10 px-3 py-2.5 text-sm outline-none"
           aria-label="সময়সীমা"
         >
+          <option value="">যেকোনো সময়</option>
           <option value="6">শেষ ৬ ঘণ্টা</option>
           <option value="24">শেষ ২৪ ঘণ্টা</option>
           <option value="48">শেষ ৪৮ ঘণ্টা</option>
@@ -169,7 +171,7 @@ function NewsCard({ item }: { item: NewsItem }) {
         <div className="min-w-0 flex-1 space-y-2">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-zinc-500 dark:text-zinc-400">
             <Link
-              href={"/news/" + sourceSlug(item.source_key)}
+              href={item.source_slug ? "/news/" + item.source_slug : "/news/headlines?source=" + encodeURIComponent(item.source_key)}
               className="font-semibold hover:underline"
             >
               {item.source_name}
