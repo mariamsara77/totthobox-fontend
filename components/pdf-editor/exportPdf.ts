@@ -1,6 +1,83 @@
 import { PDFDocument, rgb, StandardFonts, degrees } from "pdf-lib";
 import { Annotation, PageState } from "./types";
 
+async function drawTextAsPng(
+  pdfDoc: PDFDocument,
+  page: ReturnType<PDFDocument["getPages"]>[number],
+  ann: Annotation,
+  pageHeight: number,
+): Promise<void> {
+  if (!ann.text) return;
+
+  const pixelRatio = 3;
+  const boxWidth = Math.max(24, ann.width || 200);
+  const boxHeight = Math.max(20, ann.height || 40);
+  const fontSize = Math.max(6, ann.fontSize || 18);
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.ceil(boxWidth * pixelRatio));
+  canvas.height = Math.max(1, Math.ceil(boxHeight * pixelRatio));
+  const context = canvas.getContext("2d");
+
+  if (!context) throw new Error("বাংলা লেখা PDF-এ যোগ করার জন্য Canvas চালু করা যায়নি।");
+
+  const pageFont = getComputedStyle(document.body).fontFamily || "sans-serif";
+  context.scale(pixelRatio, pixelRatio);
+  context.font = `${fontSize}px ${pageFont}`;
+  context.fillStyle = ann.color || "#000000";
+  context.textBaseline = "top";
+
+  const padding = 2;
+  const maxWidth = Math.max(1, boxWidth - padding * 2);
+  const lineHeight = fontSize * 1.3;
+  const lines: string[] = [];
+
+  for (const paragraph of ann.text.split(/\r?\n/)) {
+    if (!paragraph) {
+      lines.push("");
+      continue;
+    }
+
+    let line = "";
+    for (const word of paragraph.split(/\s+/)) {
+      const candidate = line ? `${line} ${word}` : word;
+      if (line && context.measureText(candidate).width > maxWidth) {
+        lines.push(line);
+        line = word;
+      } else {
+        line = candidate;
+      }
+    }
+    if (line) lines.push(line);
+  }
+
+  lines.forEach((line, index) => {
+    const y = padding + index * lineHeight;
+    if (y + lineHeight <= boxHeight) {
+      context.fillText(line, padding, y, maxWidth);
+    }
+  });
+
+  try {
+    const pngBlob = await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob(
+        (blob) => blob ? resolve(blob) : reject(new Error("বাংলা লেখা রেন্ডার করা যায়নি।")),
+        "image/png",
+      );
+    });
+    const image = await pdfDoc.embedPng(await pngBlob.arrayBuffer());
+    page.drawImage(image, {
+      x: ann.x,
+      y: pageHeight - ann.y - boxHeight,
+      width: boxWidth,
+      height: boxHeight,
+      rotate: degrees(ann.rotation || 0),
+    });
+  } finally {
+    canvas.width = 0;
+    canvas.height = 0;
+  }
+}
+
 export async function exportEditedPdf(
   originalFile: File,
   pages: Record<number, PageState>
@@ -8,6 +85,15 @@ export async function exportEditedPdf(
   const existingPdfBytes = await originalFile.arrayBuffer();
   const pdfDoc = await PDFDocument.load(existingPdfBytes);
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const needsRasterText = Object.values(pages).some((state) =>
+    state.annotations.some((annotation) =>
+      annotation.type === "text" &&
+      Boolean(annotation.text) &&
+      /[^\u0000-\u00ff]/.test(annotation.text || ""),
+    ),
+  );
+
+  if (needsRasterText) await document.fonts.ready;
 
   const pdfPages = pdfDoc.getPages();
 
@@ -25,13 +111,20 @@ export async function exportEditedPdf(
 
     for (const ann of pageState.annotations) {
       if (ann.type === "text" && ann.text) {
-        page.drawText(ann.text, {
-          x: ann.x,
-          y: height - ann.y - (ann.fontSize || 14),
-          size: ann.fontSize || 14,
-          font,
-          color: hexToRgb(ann.color || "#000000"),
-        });
+        if (/[^\u0000-\u00ff]/.test(ann.text)) {
+          // Standard PDF fonts cannot encode Bengali or many Unicode scripts.
+          // A high-resolution font-rendered image preserves visible glyphs without
+          // adding a heavy fontkit package to the main editor bundle.
+          await drawTextAsPng(pdfDoc, page, ann, height);
+        } else {
+          page.drawText(ann.text, {
+            x: ann.x,
+            y: height - ann.y - (ann.fontSize || 14),
+            size: ann.fontSize || 14,
+            font,
+            color: hexToRgb(ann.color || "#000000"),
+          });
+        }
       }
 
       if (ann.type === "highlight") {
