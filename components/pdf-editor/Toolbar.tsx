@@ -92,10 +92,10 @@ export function Toolbar({ onNewFile, onScan }: ToolbarProps) {
 
     setIsConvertingWord(true);
     try {
-      const sections: string[] = [];
+      const pageParagraphs: string[] = [];
       let extractedCharacters = 0;
 
-      for (let pageNumber = 1; pageNumber <= numPages; pageNumber++) {
+      for (let pageNumber = 1; pageNumber <= numPages; pageNumber += 1) {
         const page = await pdfDoc.getPage(pageNumber);
         const content = await page.getTextContent();
         const text = content.items
@@ -107,36 +107,66 @@ export function Toolbar({ onNewFile, onScan }: ToolbarProps) {
           .trim();
 
         extractedCharacters += text.length;
-        const escaped = text
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;");
 
-        sections.push(
-          `<section style="page-break-after:always"><h2>পৃষ্ঠা ${pageNumber}</h2><p style="white-space:pre-wrap;line-height:1.65">${escaped.replace(/\n/g, "<br />")}</p></section>`,
-        );
+        if (pageNumber > 1) {
+          pageParagraphs.push('<w:p><w:r><w:br w:type="page"/></w:r></w:p>');
+        }
+
+        if (text) {
+          for (const line of text.split(/\r?\n/)) {
+            pageParagraphs.push(
+              '<w:p><w:r><w:t xml:space="preserve">' +
+                escapeXml(line) +
+                "</w:t></w:r></w:p>",
+            );
+          }
+        } else {
+          pageParagraphs.push("<w:p/>");
+        }
       }
 
       if (extractedCharacters === 0) {
         throw new Error("এই PDF-এ নির্বাচনযোগ্য লেখা পাওয়া যায়নি। স্ক্যান করা PDF থেকে Word করতে OCR প্রয়োজন।");
       }
 
-      const safeFileTitle = file.name
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
-      const html = `<!doctype html><html lang="bn"><head><meta charset="utf-8"><title>${safeFileTitle}</title><style>body{font-family:Arial,sans-serif;font-size:12pt;line-height:1.6}section{margin:0 0 24px}h2{font-size:10pt;color:#666}</style></head><body>${sections.join("")}</body></html>`;
-      const blob = new Blob(["\uFEFF", html], {
-        type: "application/msword;charset=utf-8",
+      const documentXml =
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">' +
+        "<w:body>" +
+        pageParagraphs.join("") +
+        '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/>' +
+        '<w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440" w:header="720" w:footer="720" w:gutter="0"/>' +
+        "</w:sectPr></w:body></w:document>";
+
+      const contentTypes =
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+        '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+        '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+        '<Default Extension="xml" ContentType="application/xml"/>' +
+        '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>' +
+        "</Types>";
+
+      const packageRelationships =
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+        '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>' +
+        "</Relationships>";
+
+      const archive = createStoredZip([
+        { name: "[Content_Types].xml", content: contentTypes },
+        { name: "_rels/.rels", content: packageRelationships },
+        { name: "word/document.xml", content: documentXml },
+      ]);
+      const blob = new Blob([archive as unknown as BlobPart], {
+        type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${file.name.replace(/\.pdf$/i, "") || "document"}.doc`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = (file.name.replace(/\.pdf$/i, "") || "document") + ".docx";
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
       window.setTimeout(() => URL.revokeObjectURL(url), 1000);
     } catch (err) {
       const message =
@@ -146,7 +176,6 @@ export function Toolbar({ onNewFile, onScan }: ToolbarProps) {
       setIsConvertingWord(false);
     }
   };
-
   return (
     <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2.5 border-b border-zinc-400/25 bg-zinc-950 dark:bg-zinc-950">
       {/* Left: Tools */}
@@ -351,11 +380,11 @@ export function Toolbar({ onNewFile, onScan }: ToolbarProps) {
         <button
           onClick={handleExportWord}
           disabled={isConvertingWord || !pdfDoc}
-          title="Word-compatible editable text (.doc) হিসেবে রপ্তানি করুন"
+          title="সম্পাদনাযোগ্য Word (.docx) হিসেবে লেখা রপ্তানি করুন"
           className="inline-flex items-center gap-1.5 rounded-lg bg-zinc-700 px-3 py-2 text-sm text-white transition hover:bg-zinc-600 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <FileText className="size-4" />
-          {isConvertingWord ? "রূপান্তর…" : "Word"}
+          {isConvertingWord ? "রূপান্তর…" : "Word (.docx)"}
         </button>
 
         <button
@@ -368,4 +397,106 @@ export function Toolbar({ onNewFile, onScan }: ToolbarProps) {
       </div>
     </div>
   );
+}
+
+
+function escapeXml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
+function crc32(bytes: Uint8Array): number {
+  let crc = 0xffffffff;
+
+  for (const byte of bytes) {
+    crc ^= byte;
+    for (let bit = 0; bit < 8; bit += 1) {
+      crc = (crc >>> 1) ^ (0xedb88320 & -(crc & 1));
+    }
+  }
+
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
+function concatenateBytes(parts: Uint8Array[]): Uint8Array {
+  const result = new Uint8Array(parts.reduce((size, part) => size + part.length, 0));
+  let offset = 0;
+
+  for (const part of parts) {
+    result.set(part, offset);
+    offset += part.length;
+  }
+
+  return result;
+}
+
+/** Create an uncompressed ZIP, sufficient for the small Open XML document parts. */
+function createStoredZip(files: Array<{ name: string; content: string }>): Uint8Array {
+  const encoder = new TextEncoder();
+  const localParts: Uint8Array[] = [];
+  const centralParts: Uint8Array[] = [];
+  let localOffset = 0;
+
+  for (const file of files) {
+    const name = encoder.encode(file.name);
+    const data = encoder.encode(file.content);
+    const checksum = crc32(data);
+
+    const localHeader = new Uint8Array(30);
+    const localView = new DataView(localHeader.buffer);
+    localView.setUint32(0, 0x04034b50, true);
+    localView.setUint16(4, 20, true);
+    localView.setUint16(6, 0, true);
+    localView.setUint16(8, 0, true);
+    localView.setUint16(10, 0, true);
+    localView.setUint16(12, 0x21, true);
+    localView.setUint32(14, checksum, true);
+    localView.setUint32(18, data.length, true);
+    localView.setUint32(22, data.length, true);
+    localView.setUint16(26, name.length, true);
+    localView.setUint16(28, 0, true);
+
+    localParts.push(localHeader, name, data);
+
+    const centralHeader = new Uint8Array(46);
+    const centralView = new DataView(centralHeader.buffer);
+    centralView.setUint32(0, 0x02014b50, true);
+    centralView.setUint16(4, 20, true);
+    centralView.setUint16(6, 20, true);
+    centralView.setUint16(8, 0, true);
+    centralView.setUint16(10, 0, true);
+    centralView.setUint16(12, 0, true);
+    centralView.setUint16(14, 0x21, true);
+    centralView.setUint32(16, checksum, true);
+    centralView.setUint32(20, data.length, true);
+    centralView.setUint32(24, data.length, true);
+    centralView.setUint16(28, name.length, true);
+    centralView.setUint16(30, 0, true);
+    centralView.setUint16(32, 0, true);
+    centralView.setUint16(34, 0, true);
+    centralView.setUint16(36, 0, true);
+    centralView.setUint32(38, 0, true);
+    centralView.setUint32(42, localOffset, true);
+
+    centralParts.push(centralHeader, name);
+    localOffset += localHeader.length + name.length + data.length;
+  }
+
+  const centralDirectory = concatenateBytes(centralParts);
+  const endRecord = new Uint8Array(22);
+  const endView = new DataView(endRecord.buffer);
+  endView.setUint32(0, 0x06054b50, true);
+  endView.setUint16(4, 0, true);
+  endView.setUint16(6, 0, true);
+  endView.setUint16(8, files.length, true);
+  endView.setUint16(10, files.length, true);
+  endView.setUint32(12, centralDirectory.length, true);
+  endView.setUint32(16, localOffset, true);
+  endView.setUint16(20, 0, true);
+
+  return concatenateBytes([...localParts, centralDirectory, endRecord]);
 }
