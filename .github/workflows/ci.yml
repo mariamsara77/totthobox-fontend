@@ -8,6 +8,7 @@ on:
       - main
       - adsense-seo-hardening
       - audit-hardening-2026
+      - fix/sidebar-seo-mainline-2026
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
