@@ -122,7 +122,7 @@ export async function getNews(params: {
 
     try {
       response = await fetch(url, {
-        next: { revalidate: 60, tags: ["news-feed"] },
+        next: { revalidate: 180, tags: ["news-feed"] },
       });
     } catch {
       // Recover from transient network failures with one uncached request.
