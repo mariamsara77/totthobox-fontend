@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+const BACKEND_URL = (
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com"
+)
+  .replace(/\\/+$/, "")
+  .replace(/\\/api$/i, "");
 
 export async function GET() {
   try {

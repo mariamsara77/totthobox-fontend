@@ -1,7 +1,9 @@
 // lib/api.ts
 const BASE_URL = (
   process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com"
-).replace(/\/$/, "");
+)
+  .replace(/\\/+$/, "")
+  .replace(/\\/api$/i, "");
 
 interface FetcherOptions extends RequestInit {
   revalidate?: number | false;
@@ -9,7 +11,7 @@ interface FetcherOptions extends RequestInit {
 
 export async function fetcher<T>(
   endpoint: string,
-  options: FetcherOptions = {}
+  options: FetcherOptions = {},
 ): Promise<T> {
   const { revalidate, headers, ...rest } = options;
   const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
@@ -21,9 +23,9 @@ export async function fetcher<T>(
       "Content-Type": "application/json",
       ...headers,
     },
-    // Next.js ক্যাশিং: API ডাউন থাকলেও সার্ভার ক্যাশ থেকে ডেটা রেন্ডার করবে
+    // Next.js response caching keeps compatible reads reusable between requests.
     next: {
-      revalidate: revalidate ?? 3600, // ডিফল্ট ১ ঘণ্টা ক্যাশ থাকবে
+      revalidate: revalidate ?? 3600,
     },
   });
 
