@@ -102,7 +102,7 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
         const text = content.items
           .map((item) => {
             if (!("str" in item)) return "";
-            return item.str + ("hasEOL" in item && item.hasEOL ? "\\n" : " ");
+            return item.str + ("hasEOL" in item && item.hasEOL ? "\n" : " ");
           })
           .join("")
           .trim();
@@ -115,7 +115,7 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
           .replace(/"/g, "&quot;");
 
         sections.push(
-          `<section style="page-break-after:always"><h2>পৃষ্ঠা ${pageNumber}</h2><p style="white-space:pre-wrap;line-height:1.65">${escaped.replace(/\\n/g, "<br />")}</p></section>`,
+          `<section style="page-break-after:always"><h2>পৃষ্ঠা ${pageNumber}</h2><p style="white-space:pre-wrap;line-height:1.65">${escaped.replace(/\n/g, "<br />")}</p></section>`,
         );
       }
 
@@ -124,13 +124,13 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
       }
 
       const html = `<!doctype html><html lang="bn"><head><meta charset="utf-8"><title>${file.name}</title><style>body{font-family:Arial,sans-serif;font-size:12pt;line-height:1.6}section{margin:0 0 24px}h2{font-size:10pt;color:#666}</style></head><body>${sections.join("")}</body></html>`;
-      const blob = new Blob(["\\uFEFF", html], {
+      const blob = new Blob(["\uFEFF", html], {
         type: "application/msword;charset=utf-8",
       });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${file.name.replace(/\\.pdf$/i, "") || "document"}.doc`;
+      a.download = `${file.name.replace(/\.pdf$/i, "") || "document"}.doc`;
       document.body.appendChild(a);
       a.click();
       a.remove();
