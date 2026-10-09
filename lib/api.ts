@@ -1,9 +1,14 @@
 // lib/api.ts
 const configuredBase =
   process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
-const BASE_URL = (/^https?:\\/\\//i.test(configuredBase)
-  ? configuredBase
-  : "https://admin.totthobox.com").replace(/\\/+$/, "");
+const candidateBase =
+  configuredBase.startsWith("https://") || configuredBase.startsWith("http://")
+    ? configuredBase
+    : "https://admin.totthobox.com";
+let BASE_URL = candidateBase;
+while (BASE_URL.endsWith("/")) {
+  BASE_URL = BASE_URL.slice(0, -1);
+}
 
 interface FetcherOptions extends RequestInit {
   revalidate?: number | false;
