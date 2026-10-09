@@ -44,8 +44,11 @@ export type NewsSourceResponse = {
   en: NewsSource[];
 };
 
-const API_BASE =
-  (process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com").replace(/\/$/, "");
+const API_BASE = (
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com"
+)
+  .replace(/\/+$/, "")
+  .replace(/\/api$/i, "");
 
 // Source URL slugs are maintained in the backend news_sources database table.
 // This helper is only for old, unknown URLs where no catalogue record exists.
