@@ -146,7 +146,7 @@ export default function SearchModal({ onClose }: SearchModalProps) {
       <div
         ref={modalRef}
         onClick={(e) => e.stopPropagation()}
-        className={`relative w-full max-w-2xl overflow-hidden rounded-2xl border border-zinc-400/25 shadow-2xl backdrop-blur-xl transition-all duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`tb-surface relative w-full max-w-2xl overflow-hidden rounded-2xl backdrop-blur-xl transition-all duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           entered
             ? "translate-y-0 scale-100 opacity-100"
             : "translate-y-4 scale-[0.97] opacity-0"
