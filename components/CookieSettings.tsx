@@ -65,10 +65,10 @@ export default function CookieSettings() {
 
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
+      if (event.shiftKey && (document.activeElement === first || document.activeElement === dialogRef.current)) {
         event.preventDefault();
         last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
+      } else if (!event.shiftKey && (document.activeElement === last || document.activeElement === dialogRef.current)) {
         event.preventDefault();
         first.focus();
       }
@@ -116,6 +116,7 @@ export default function CookieSettings() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="cookie-title"
+            aria-describedby="cookie-description"
             className="w-[min(calc(100vw-2rem),24rem)] max-h-[85dvh] overflow-y-auto rounded-2xl border border-zinc-200 bg-white text-zinc-900 shadow-2xl backdrop-blur-xl dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
           >
             {/* Header */}
@@ -147,7 +148,7 @@ export default function CookieSettings() {
                 </svg>
               </button>
             </div>
-            <p className="px-5 pb-2 text-xs leading-5 text-zinc-600 dark:text-zinc-300">
+            <p id="cookie-description" className="px-5 pb-2 text-xs leading-5 text-zinc-600 dark:text-zinc-300">
               অ্যানালিটিক্স ও বিজ্ঞাপন কুকিজ ঐচ্ছিক। আপনার পছন্দ সংরক্ষণ না করা পর্যন্ত এগুলো চালু হবে না।
             </p>
 
