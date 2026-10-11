@@ -176,7 +176,7 @@ export default function MediaConverter() {
       const { fetchFile } = await import("@ffmpeg/util");
       await ffmpeg.writeFile(inputName, await fetchFile(file));
 
-      let command: string[] = ["-i", inputName];
+      const command: string[] = ["-i", inputName];
 
       if (AUDIO_FORMATS.includes(targetFormat)) {
         command.push("-vn");
