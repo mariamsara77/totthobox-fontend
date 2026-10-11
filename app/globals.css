@@ -3,8 +3,8 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
-  --font-sans: var(--font-noto-bengali), var(--font-geist-sans), sans-serif;
-  --font-mono: var(--font-geist-mono);
+  --font-sans: "Noto Sans Bengali", "Nirmala UI", "Vrinda", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --color-zinc-50: #fafafa;
   --color-zinc-100: #f5f5f5;
   --color-zinc-200: #e5e5e5;
@@ -249,7 +249,7 @@ body {
   min-height: 100dvh;
   background-color: var(--tb-page);
   color: var(--tb-text);
-  font-family: var(--font-noto-bengali), var(--font-geist-sans), sans-serif;
+  font-family: "Noto Sans Bengali", "Nirmala UI", "Vrinda", ui-sans-serif, system-ui, sans-serif;
   line-height: 1.6;
   text-rendering: optimizeLegibility;
 }
