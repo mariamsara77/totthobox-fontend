@@ -34,7 +34,7 @@ export const metadata: Metadata = {
 
 export default function QRGeneratorPage() {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
+    <div className="tb-page-container tb-section mx-auto max-w-4xl">
       <QRGenerator />
     </div>
   );
