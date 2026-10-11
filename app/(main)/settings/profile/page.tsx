@@ -219,7 +219,7 @@ export default function ProfileSettingsPage() {
 
   if (loading) {
     return (
-      <section className="max-w-2xl mx-auto p-4 space-y-8 animate-pulse">
+      <section className="tb-page-container tb-section mx-auto max-w-2xl space-y-8 animate-pulse">
         {/* Title */}
         <div className="h-8 w-48 bg-zinc-400/25 rounded-lg mb-6" />
 
