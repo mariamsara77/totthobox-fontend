@@ -23,7 +23,7 @@ function hasAnalyticsConsent(): boolean {
 }
 
 function setAnalyticsDisabled(disabled: boolean) {
-  const gaWindow = window as Window & { [key: string]: unknown };
+  const gaWindow = window as unknown as Record<string, unknown>;
   gaWindow[`ga-disable-${ANALYTICS_ID}`] = disabled;
 }
 
