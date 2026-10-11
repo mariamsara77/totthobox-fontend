@@ -241,7 +241,7 @@ export default function LoginContent() {
           <button
             type="submit"
             disabled={fallbackLoading}
-            className="w-full rounded-full bg-zinc-400/25 px-4 py-2.5 font-semibold text-zinc-950 hover:bg-zinc-400/50 dark:text-white disabled:opacity-60 transition"
+            className="tb-button tb-button-primary w-full rounded-full font-semibold disabled:opacity-60 transition"
           >
             {fallbackLoading ? "অপেক্ষা করুন…" : "লগইন করুন"}
           </button>
@@ -412,7 +412,7 @@ export default function LoginContent() {
             <button
               type="submit"
               disabled={formLoading}
-              className="w-full rounded-full bg-zinc-400/25 px-4 py-2.5 font-semibold text-zinc-950 hover:bg-zinc-400/50 dark:text-white disabled:opacity-60 transition"
+              className="tb-button tb-button-primary w-full rounded-full font-semibold disabled:opacity-60 transition"
             >
               {formLoading ? "অপেক্ষা করুন…" : "লগ ইন করুন"}
             </button>
