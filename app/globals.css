@@ -299,3 +299,31 @@ body {
 .dark .dark\:hover\:bg-zinc-800:hover, .dark .dark\:hover\:bg-zinc-700:hover { background-color: var(--tb-surface-hover) !important; }
 
 .dark .tb-button-primary { color: #0b1220; }
+
+
+/* Shared component finishing rules: consistent radii, form controls, and headings. */
+.rounded-lg { border-radius: var(--tb-radius-md) !important; }
+.rounded-xl { border-radius: var(--tb-radius-lg) !important; }
+.rounded-2xl { border-radius: var(--tb-radius-xl) !important; }
+:where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]), textarea, select) {
+  max-width: 100%;
+  border-color: var(--tb-border);
+  border-radius: var(--tb-radius-md);
+  background-color: var(--tb-surface);
+  color: var(--tb-text);
+}
+:where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]), textarea, select)::placeholder {
+  color: var(--tb-text-subtle);
+  opacity: 1;
+}
+:where(button, [role="button"], input[type="button"], input[type="submit"], input[type="reset"]) {
+  -webkit-tap-highlight-color: transparent;
+}
+:where(h1, h2, h3) {
+  color: var(--tb-text);
+  text-wrap: balance;
+}
+:where(h1) { line-height: 1.2; letter-spacing: -0.025em; }
+:where(h2) { line-height: 1.3; letter-spacing: -0.015em; }
+:where(p) { text-wrap: pretty; }
+img, video, canvas, svg { max-width: 100%; }
