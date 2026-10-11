@@ -330,14 +330,14 @@ img, video, canvas, svg { max-width: 100%; }
 
 
 /* Shared surfaces for legacy neutral utilities and app-like workspaces. */
-.bg-zinc-400\\/10, .bg-zinc-400\\/15, .bg-zinc-400\\/20 {
+.bg-zinc-400\/10, .bg-zinc-400\/15, .bg-zinc-400\/20 {
   background-color: var(--tb-surface-muted) !important;
 }
-.bg-zinc-400\\/25, .hover\\:bg-zinc-400\\/15:hover, .hover\\:bg-zinc-400\\/20:hover,
-.hover\\:bg-zinc-400\\/25:hover, .hover\\:bg-zinc-400\\/25\\/50:hover {
+.bg-zinc-400\/25, .hover\:bg-zinc-400\/15:hover, .hover\:bg-zinc-400\/20:hover,
+.hover\:bg-zinc-400\/25:hover, .hover\:bg-zinc-400\/25\/50:hover {
   background-color: var(--tb-surface-hover) !important;
 }
-.dark .dark\\:bg-zinc-950\\/5, .dark .dark\\:bg-zinc-900\\/5 {
+.dark .dark\:bg-zinc-950\/5, .dark .dark\:bg-zinc-900\/5 {
   background-color: var(--tb-surface-muted) !important;
 }
 .tb-app-shell {
