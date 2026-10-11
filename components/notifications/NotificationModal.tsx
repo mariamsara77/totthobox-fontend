@@ -381,7 +381,7 @@ export function NotificationModal({ open, onClose, onCountChange }: Props) {
         role="dialog"
         aria-modal="true"
         aria-label="নোটিফিকেশন"
-        className={`relative flex h-full w-full max-w-100 flex-col overflow-hidden rounded-2xl border border-zinc-400/25 shadow-2xl backdrop-blur-xl transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`tb-surface relative flex h-full w-full max-w-100 flex-col overflow-hidden backdrop-blur-xl transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           entered
             ? "translate-x-0 scale-100 opacity-100"
             : "translate-x-8 scale-[0.97] opacity-0"
