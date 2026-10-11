@@ -13,7 +13,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   lighthouse:
@@ -181,3 +181,100 @@ jobs:
             route-seo-audit.json
           if-no-files-found: warn
           retention-days: 14
+
+      - name: Publish measured audit results
+        if: always()
+        shell: bash
+        env:
+          REPORT_PATH: docs/PRODUCTION_AUDIT_RESULTS_2026-10-11.md
+        run: |
+          mkdir -p docs
+          node <<'NODE'
+          const fs = require("node:fs");
+          const path = process.env.REPORT_PATH;
+          const lines = [
+            "# Automated Production Audit Results",
+            "",
+            `- Generated: ${new Date().toISOString()}`,
+            "- Branch: `fix/sidebar-seo-mainline-2026`",
+            "- Target: branch Vercel preview; preview responses are expected to carry noindex headers.",
+            "",
+            "## Full sitemap route crawl",
+          ];
+          if (fs.existsSync("route-seo-audit.json")) {
+            const r = JSON.parse(fs.readFileSync("route-seo-audit.json", "utf8"));
+            lines.push(
+              `- Sitemap URLs: ${r.sitemapCount}`,
+              `- Unique URLs: ${r.uniqueCount}`,
+              `- Structural findings: ${r.structural?.length ?? "n/a"}`,
+              `- Route findings: ${r.issues?.length ?? "n/a"}`,
+              "",
+              "### Finding counts",
+              "",
+              "```json",
+              JSON.stringify(r.issueCounts || {}, null, 2),
+              "```",
+              "",
+              "### Structural findings",
+              "",
+              "```json",
+              JSON.stringify((r.structural || []).slice(0, 100), null, 2),
+              "```",
+              "",
+              "### First 100 route findings",
+              "",
+              "```json",
+              JSON.stringify((r.issues || []).slice(0, 100), null, 2),
+              "```",
+            );
+          } else {
+            lines.push("- **NOT RUN:** route crawl did not produce a result file.", "");
+          }
+          lines.push("", "## Lighthouse — real Chrome runs", "");
+          const reports = [
+            ["Homepage / mobile", "lh-home-mobile.json"],
+            ["Homepage / desktop", "lh-home-desktop.json"],
+            ["Document converter / mobile", "lh-converter-mobile.json"],
+            ["Document converter / desktop", "lh-converter-desktop.json"],
+          ];
+          for (const [label, file] of reports) {
+            if (!fs.existsSync(file)) {
+              lines.push(`- **${label}: NOT RUN / report missing**`);
+              continue;
+            }
+            const r = JSON.parse(fs.readFileSync(file, "utf8"));
+            const score = (key) => {
+              const n = r.categories?.[key]?.score;
+              return Number.isFinite(n) ? Math.round(n * 100) : "n/a";
+            };
+            const metric = (key) => r.audits?.[key]?.displayValue ?? "n/a";
+            lines.push(
+              `- **${label}:** Performance ${score("performance")}, Accessibility ${score("accessibility")}, Best Practices ${score("best-practices")}, SEO ${score("seo")}; LCP ${metric("largest-contentful-paint")}; CLS ${metric("cumulative-layout-shift")}; TBT ${metric("total-blocking-time")}`
+            );
+            const bad = Object.entries(r.audits || {})
+              .filter(([, a]) => a.score !== null && a.score < 0.9 && a.details?.type === "opportunity")
+              .sort((a, b) => a[1].score - b[1].score)
+              .slice(0, 8);
+            for (const [id, a] of bad) lines.push(`  - ${id}: ${a.title} — ${a.displayValue || "no display value"}`);
+          }
+          lines.push(
+            "",
+            "## Interpretation",
+            "",
+            "- These scores are measured for the preview URLs and this exact workflow run only; they are not production field data.",
+            "- A route crawl finding count of zero does not prove that every possible dynamic slug exists; it only covers the URLs currently published in the sitemap.",
+            "- Do not mark WCAG 2.2 AA, offline/install/update lifecycle, GA4 DebugView, or AdSense account/CMP readiness complete from this file alone.",
+            ""
+          );
+          fs.writeFileSync(path, lines.join("\n"));
+          NODE
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$REPORT_PATH"
+          if git diff --cached --quiet; then
+            echo "Audit results unchanged; no commit needed."
+          else
+            git commit -m "audit: publish automated route and Lighthouse results"
+            git push origin "HEAD:$GITHUB_REF_NAME"
+          fi
