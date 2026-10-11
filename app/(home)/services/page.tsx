@@ -111,10 +111,10 @@ const services = [
 
 export default function ServicesPage() {
   return (
-    <div className="max-w-7xl mx-auto p-4 lg:px-8 space-y-8 py-8">
+    <div className="tb-page-container tb-section space-y-8">
       {/* Header */}
       <header className="text-center space-y-4">
-        <h1 className="text-3xl   font-bold text-zinc-900 dark:text-white tracking-tight">
+        <h1 className="text-3xl   font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">
           মূল সেবা
         </h1>
         <p className="text-base sm:text-lg  max-w-2xl mx-auto">
@@ -145,7 +145,7 @@ export default function ServicesPage() {
               <Link
                 key={index}
                 href={service.href}
-                className="relative flex flex-col items-center h-full p-4 text-center transition-all duration-200 border border-transparent group rounded-3xl bg-zinc-900 dark:bg-zinc-950/5 border-zinc-400/25 border-zinc-400/25"
+                className="tb-muted-surface relative flex flex-col items-center h-full p-4 text-center transition-all duration-200 group"
               >
                 <div className="mb-4 transition-transform duration-200 transform group-hover:scale-110 text-zinc-900 dark:text-white">
                   <Icon className="w-12 h-12 stroke-[1.5]" />
