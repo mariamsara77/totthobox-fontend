@@ -330,7 +330,7 @@ export default function RegisterContent() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-full bg-zinc-400/25 px-4 py-2.5 font-semibold text-zinc-950 transition hover:bg-zinc-400/50 disabled:opacity-60 dark:text-white"
+            className="tb-button tb-button-primary w-full rounded-full font-semibold transition disabled:opacity-60"
           >
             {loading ? "পাঠানো হচ্ছে..." : "ভেরিফিকেশন কোড পাঠান"}
           </button>
@@ -377,7 +377,7 @@ export default function RegisterContent() {
           <button
             type="submit"
             disabled={loading || otp.length !== 4}
-            className="w-full rounded-full bg-zinc-400/25 px-4 py-2.5 font-semibold text-zinc-950 transition hover:bg-zinc-400/50 disabled:opacity-60 dark:text-white"
+            className="tb-button tb-button-primary w-full rounded-full font-semibold transition disabled:opacity-60"
           >
             {loading ? "যাচাই করা হচ্ছে..." : "যাচাই ও অ্যাকাউন্ট তৈরি"}
           </button>
