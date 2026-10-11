@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 
 export default function WritingPracticePage() {
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8">
+    <div className="tb-page-container tb-section mx-auto">
       <PracticeClient />
     </div>
   );
