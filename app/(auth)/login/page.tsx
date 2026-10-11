@@ -15,6 +15,13 @@ export const metadata: Metadata = {
     title: "লগইন | আপনার অ্যাকাউন্টে প্রবেশ করুন",
     description: "আপনার অ্যাকাউন্টে প্রবেশ করতে ইউজারনেম/ইমেইল এবং পাসওয়ার্ড দিয়ে লগইন করুন।",
     type: "website",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Totthobox" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "লগইন | আপনার অ্যাকাউন্টে প্রবেশ করুন",
+    description: "আপনার অ্যাকাউন্টে প্রবেশ করতে ইউজারনেম/ইমেইল এবং পাসওয়ার্ড দিয়ে লগইন করুন।",
+    images: ["/opengraph-image"],
   },
 };
 
