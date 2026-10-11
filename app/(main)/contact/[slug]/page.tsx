@@ -134,7 +134,7 @@ export default async function ContactPage({ params }: Props) {
 
   if (!category) {
     return (
-      <div className="max-w-2xl mx-auto p-4 text-center py-20">
+      <div className="tb-page-container tb-section mx-auto max-w-2xl text-center py-20">
         <p className="text-base font-medium">ক্যাটাগরি পাওয়া যায়নি</p>
         <p className="text-sm text-zinc-500 mt-1">অন্য ক্যাটাগরি চেষ্টা করুন</p>
       </div>
