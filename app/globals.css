@@ -295,5 +295,5 @@ body {
 .dark .dark\:text-zinc-100, .dark .dark\:text-zinc-200 { color: var(--tb-text) !important; }
 .dark .dark\:text-zinc-300, .dark .dark\:text-zinc-400 { color: var(--tb-text-muted) !important; }
 /* Normalize the most common neutral button and interactive hover surfaces. */
-.hover\:bg-zinc-50:hover, .hover\:bg-zinc-100:hover, .hover\:bg-zinc-400\\/25:hover { background-color: var(--tb-surface-hover) !important; }
+.hover\:bg-zinc-50:hover, .hover\:bg-zinc-100:hover, .hover\:bg-zinc-400\/25:hover { background-color: var(--tb-surface-hover) !important; }
 .dark .dark\:hover\:bg-zinc-800:hover, .dark .dark\:hover\:bg-zinc-700:hover { background-color: var(--tb-surface-hover) !important; }
