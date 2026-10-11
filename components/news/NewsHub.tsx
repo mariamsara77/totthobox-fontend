@@ -94,14 +94,14 @@ function SourceLinks({
 function FilterBar({ filters, basePath, sources }: Pick<Props, "filters" | "basePath" | "sources">) {
   return (
     <form action={basePath} method="get" className="space-y-3">
-      <label className="tb-muted-surface flex h-11 items-center gap-2 px-3 focus-within:bg-zinc-400/15">
+      <label className="tb-muted-surface flex h-11 items-center gap-2 px-3 transition-colors focus-within:border-zinc-400/50 focus-within:bg-zinc-100 dark:focus-within:bg-zinc-800">
         <Search className="size-4 shrink-0 opacity-50" aria-hidden="true" />
         <span className="sr-only">সংবাদ খুঁজুন</span>
         <input
           name="search"
           defaultValue={filters.search || ""}
           placeholder="সংবাদের শিরোনাম খুঁজুন..."
-          className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:opacity-50"
+          className="min-w-0 flex-1 appearance-none border-0 bg-transparent p-0 text-sm shadow-none outline-none ring-0 placeholder:text-zinc-500 focus:ring-0 dark:placeholder:text-zinc-400"
         />
       </label>
 
