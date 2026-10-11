@@ -210,7 +210,7 @@ export default async function InternationalAllCountryPage({
   }
 
   return (
-    <section className="mx-auto max-w-2xl space-y-8 px-4 py-8 sm:px-6">
+    <section className="tb-page-container tb-section mx-auto max-w-2xl space-y-8">
       <header className="text-center">
         <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
           {title}
