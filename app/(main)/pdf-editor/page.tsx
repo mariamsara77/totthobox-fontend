@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function PdfEditorPage() {
   return (
-    <main className="container mx-auto px-4 py-6">
+    <main className="tb-page-container tb-section mx-auto">
       <PdfEditor />
     </main>
   );
