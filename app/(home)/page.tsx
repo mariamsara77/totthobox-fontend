@@ -11,11 +11,13 @@ export const metadata: Metadata = {
     siteName: "Totthobox",
     type: "website",
     locale: "bn_BD",
+    images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox — information, tools and digital services" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "তথ্যবক্স — প্রয়োজনীয় সব তথ্য ও ডিজিটাল সেবা এক জায়গায়",
     description: "বাংলা ক্যালেন্ডার, বাংলাদেশ ও আন্তর্জাতিক তথ্য, ইসলামিক জ্ঞান, সফটওয়্যার, কনভার্টার ও দৈনন্দিন ইউটিলিটি টুলস এক জায়গায়।",
+    images: ["/og-image.png"],
   },
 };
 
