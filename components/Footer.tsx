@@ -6,7 +6,7 @@ import { SiGmail } from "react-icons/si";
 
 export default function Footer() {
   return (
-    <footer className="pwa-safe-bottom mt-12 border-t border-zinc-400/25 py-8">
+    <footer className="tb-footer pwa-safe-bottom mt-12 border-t py-8">
       <div className="mx-auto flex max-w-2xl flex-col items-center gap-4 px-3 sm:px-4">
         <nav
           className="flex flex-wrap justify-center items-center gap-4 md:gap-6"
