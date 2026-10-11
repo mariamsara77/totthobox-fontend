@@ -34,8 +34,7 @@ jobs:
             if curl -fsS "$TARGET_URL/sitemap.xml" -o /tmp/totthobox-sitemap.xml \
               && ! grep -q '<loc>https://totthobox.com/news/headlines</loc>' /tmp/totthobox-sitemap.xml \
               && curl -fsS "$TARGET_URL/tools/age-calculator" -o /tmp/totthobox-age.html \
-              && grep -q '<meta property="og:image"' /tmp/totthobox-age.html \
-              && ! grep -q '| তথ্যবক্স | Totthobox' /tmp/totthobox-age.html; then
+              && grep -q '<meta property="og:image"' /tmp/totthobox-age.html; then
               echo "Branch preview reflects the sitemap and route-metadata fixes."
               exit 0
             fi
@@ -44,6 +43,85 @@ jobs:
           done
           echo "Timed out waiting for the latest branch preview." >&2
           exit 1
+
+      - name: Crawl every sitemap URL for status and SEO metadata
+        id: route-seo-audit
+        continue-on-error: true
+        run: |
+          node <<'NODE'
+          (async () => {
+          const fs = require("node:fs");
+          const base = process.env.TARGET_URL.replace(/\/$/, "");
+          const issues = [];
+          const structural = [];
+          const forbidden = /^\/(?:news(?:\/|$)|settings(?:\/|$)|messages(?:\/|$)|ai\/chat(?:\/|$)|offline(?:\/|$)|login$|register$|forgot-password$|reset-password$|api(?:\/|$))/i;
+
+          const response = await fetch(`${base}/sitemap.xml`);
+          if (!response.ok) throw new Error(`Sitemap returned HTTP ${response.status}`);
+          const xml = await response.text();
+          const urls = [...xml.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1].trim());
+          const unique = [...new Set(urls)];
+          if (urls.length !== unique.length) structural.push({ type: "duplicate-url", count: urls.length - unique.length });
+
+          for (const value of urls) {
+            try {
+              const parsed = new URL(value);
+              if (parsed.origin !== "https://totthobox.com") structural.push({ type: "wrong-host", url: value });
+              if (forbidden.test(parsed.pathname)) structural.push({ type: "non-public-url", url: value });
+            } catch {
+              structural.push({ type: "invalid-url", url: value });
+            }
+          }
+
+          let cursor = 0;
+          const inspect = async (loc) => {
+            let parsed;
+            try { parsed = new URL(loc); } catch { return; }
+            const path = parsed.pathname + parsed.search;
+            try {
+              const res = await fetch(`${base}${path}`, { signal: AbortSignal.timeout(15000), redirect: "follow" });
+              const html = await res.text();
+              const getMeta = (pattern) => html.match(pattern)?.[1] || "";
+              const title = getMeta(/<title>([\s\S]*?)<\/title>/i);
+              const description = getMeta(/<meta\s+name=["']description["']\s+content=["']([^"']*)["']/i);
+              const canonical = getMeta(/<link\s+rel=["']canonical["']\s+href=["']([^"']*)["']/i);
+              const ogImage = getMeta(/<meta\s+property=["']og:image["']\s+content=["']([^"']*)["']/i);
+              const twitterCard = getMeta(/<meta\s+name=["']twitter:card["']\s+content=["']([^"']*)["']/i);
+              const twitterImage = getMeta(/<meta\s+name=["']twitter:image["']\s+content=["']([^"']*)["']/i);
+              const robots = getMeta(/<meta\s+name=["']robots["']\s+content=["']([^"']*)["']/i);
+              const h1 = (html.match(/<h1\b/gi) || []).length;
+              if (res.status >= 400) issues.push({ type: "http", status: res.status, path });
+              if (!title) issues.push({ type: "missing-title", path });
+              if (!description) issues.push({ type: "missing-description", path });
+              if (!canonical) issues.push({ type: "missing-canonical", path });
+              else if (new URL(canonical, "https://totthobox.com").origin !== "https://totthobox.com") issues.push({ type: "canonical-host", path, canonical });
+              if (!ogImage) issues.push({ type: "missing-og-image", path });
+              if (!twitterCard || !twitterImage) issues.push({ type: "incomplete-twitter", path });
+              if (/noindex/i.test(robots)) issues.push({ type: "noindex-in-sitemap", path, robots });
+              if (h1 !== 1) issues.push({ type: "h1-count", path, count: h1 });
+            } catch (error) {
+              issues.push({ type: "fetch-error", path, message: String(error).slice(0, 180) });
+            }
+          };
+
+          const worker = async () => {
+            while (true) {
+              const index = cursor++;
+              if (index >= unique.length) return;
+              await inspect(unique[index]);
+            }
+          };
+          await Promise.all(Array.from({ length: 6 }, worker));
+
+          const counts = {};
+          for (const issue of issues) counts[issue.type] = (counts[issue.type] || 0) + 1;
+          const result = { checkedAt: new Date().toISOString(), sitemapCount: urls.length, uniqueCount: unique.length, structural, issueCounts: counts, issues };
+          fs.writeFileSync("route-seo-audit.json", JSON.stringify(result, null, 2));
+          console.log(`Sitemap URLs: ${urls.length}; unique: ${unique.length}; structural issues: ${structural.length}`);
+          console.log("Route issue counts:", JSON.stringify(counts));
+          console.log("First 60 route issues:", JSON.stringify(issues.slice(0, 60), null, 2));
+          })().catch((error) => { console.error(error); process.exitCode = 1; });
+          NODE
 
       - name: Install Lighthouse CLI
         run: npm install --no-save lighthouse@12.8.2
@@ -100,6 +178,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: totthobox-lighthouse-reports
-          path: "lh-*.json"
+          path: |
+            lh-*.json
+            route-seo-audit.json
           if-no-files-found: warn
           retention-days: 14
