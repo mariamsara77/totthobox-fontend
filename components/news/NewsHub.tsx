@@ -233,7 +233,7 @@ export default function NewsHub({
     : "বিভিন্ন সংবাদমাধ্যমের সাম্প্রতিক সংবাদ শিরোনাম এক জায়গায় দেখুন এবং মূল সংবাদমাধ্যমে সম্পূর্ণ প্রতিবেদন পড়ুন।";
 
   return (
-    <div className="mx-auto max-w-2xl space-y-8 px-4 py-6 sm:py-8">
+    <div className="tb-page-container tb-section mx-auto max-w-2xl space-y-8">
       <header className="space-y-2">
         <h1 className="flex items-center gap-2.5 text-2xl font-bold tracking-tight sm:text-3xl">
           <Newspaper className="size-7" aria-hidden="true" />
