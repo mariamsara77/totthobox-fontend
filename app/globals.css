@@ -360,10 +360,10 @@ img, video, canvas, svg { max-width: 100%; }
   background-color: var(--tb-page);
   color: var(--tb-text);
 }
-.hover\\:bg-zinc-700\\/25:hover {
+.hover\:bg-zinc-700\/25:hover {
   background-color: var(--tb-surface-hover) !important;
 }
-.border-zinc-700\\/50 {
+.border-zinc-700\/50 {
   border-color: var(--tb-border) !important;
 }
 .rounded-md { border-radius: var(--tb-radius-sm) !important; }
