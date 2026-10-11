@@ -372,7 +372,7 @@ export function CountryGrid({
           countries.map((country) => (
             <article
               key={country.cca3 || country.code || country.slug}
-              className="group overflow-hidden rounded-2xl border border-zinc-200/70 bg-white/70 shadow-sm transition hover:border-zinc-300 hover:shadow-md dark:border-zinc-700/60 dark:bg-zinc-900/50 dark:hover:border-zinc-600"
+              className="tb-surface group overflow-hidden shadow-sm transition hover:shadow-md"
             >
               <div className="flex items-center gap-4 border-b border-zinc-100 p-4 dark:border-zinc-800">
                 <img
