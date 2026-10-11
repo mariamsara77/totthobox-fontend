@@ -195,3 +195,85 @@ select option {
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* =========================================
+   Totthobox Design System — shared foundations
+   Keep brand surfaces neutral; reserve accent color for actions and focus.
+   ========================================= */
+:root {
+  color-scheme: light;
+  --tb-page: #f8fafc;
+  --tb-surface: #ffffff;
+  --tb-surface-muted: #f1f5f9;
+  --tb-surface-hover: #e2e8f0;
+  --tb-text: #18181b;
+  --tb-text-muted: #52525b;
+  --tb-text-subtle: #71717a;
+  --tb-border: #e4e4e7;
+  --tb-accent: #2563eb;
+  --tb-accent-hover: #1d4ed8;
+  --tb-accent-soft: #eff6ff;
+  --tb-focus: #2563eb;
+  --tb-radius-sm: 0.5rem;
+  --tb-radius-md: 0.75rem;
+  --tb-radius-lg: 1rem;
+  --tb-radius-xl: 1.25rem;
+  --tb-shadow-card: 0 1px 3px rgb(24 24 27 / 0.06), 0 1px 2px rgb(24 24 27 / 0.04);
+  --tb-shadow-popover: 0 12px 32px rgb(24 24 27 / 0.12);
+  --tb-space-section: clamp(1.25rem, 3vw, 2rem);
+  --tb-content-width: 80rem;
+}
+.dark {
+  color-scheme: dark;
+  --tb-page: #09090b;
+  --tb-surface: #18181b;
+  --tb-surface-muted: #27272a;
+  --tb-surface-hover: #3f3f46;
+  --tb-text: #fafafa;
+  --tb-text-muted: #d4d4d8;
+  --tb-text-subtle: #a1a1aa;
+  --tb-border: #3f3f46;
+  --tb-accent: #60a5fa;
+  --tb-accent-hover: #93c5fd;
+  --tb-accent-soft: #172554;
+  --tb-focus: #93c5fd;
+  --tb-shadow-card: 0 1px 3px rgb(0 0 0 / 0.22), 0 1px 2px rgb(0 0 0 / 0.18);
+  --tb-shadow-popover: 0 12px 32px rgb(0 0 0 / 0.35);
+}
+html {
+  background: var(--tb-page);
+  scroll-padding-top: 5rem;
+}
+body {
+  min-height: 100dvh;
+  background-color: var(--tb-page);
+  color: var(--tb-text);
+  font-family: var(--font-noto-bengali), var(--font-geist-sans), sans-serif;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+}
+::selection {
+  background: var(--tb-accent-soft);
+  color: var(--tb-text);
+}
+/* Shared opt-in primitives for pages/components being standardized incrementally. */
+.tb-page-container { width: min(100% - 2rem, var(--tb-content-width)); margin-inline: auto; }
+.tb-section { padding-block: var(--tb-space-section); }
+.tb-surface { background: var(--tb-surface); border: 1px solid var(--tb-border); border-radius: var(--tb-radius-lg); box-shadow: var(--tb-shadow-card); }
+.tb-muted-surface { background: var(--tb-surface-muted); border: 1px solid var(--tb-border); border-radius: var(--tb-radius-lg); }
+.tb-button { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 2.5rem; padding: .625rem 1rem; border-radius: var(--tb-radius-md); font-weight: 600; transition: background-color .16s ease, border-color .16s ease, color .16s ease; }
+.tb-button-primary { background: var(--tb-accent); color: #fff; }
+.tb-button-primary:hover { background: var(--tb-accent-hover); }
+.tb-button-secondary { background: var(--tb-surface); color: var(--tb-text); border: 1px solid var(--tb-border); }
+.tb-button-secondary:hover { background: var(--tb-surface-muted); }
+.tb-navbar { background: color-mix(in srgb, var(--tb-surface) 88%, transparent); border-color: var(--tb-border); }
+.tb-footer { border-color: var(--tb-border); }
+:where(input, textarea, select) { accent-color: var(--tb-accent); }
+:where(a, button, input, select, textarea, summary, [role="button"], [tabindex]:not([tabindex="-1"])):focus-visible { outline-color: var(--tb-focus); }
+@media (max-width: 640px) {
+  .tb-page-container { width: min(100% - 1.25rem, var(--tb-content-width)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tb-button { transition: none; }
+}
