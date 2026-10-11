@@ -146,7 +146,7 @@ export default function InstallPWA() {
     <button
       type="button"
       onClick={handleInstallClick}
-      className="pwa-fixed-bottom fixed right-4 z-50 flex items-center gap-2 rounded-full bg-black px-4 py-2.5 text-sm font-medium text-white shadow-lg transition hover:scale-105 dark:bg-white dark:text-black"
+      className="tb-button tb-button-primary pwa-fixed-bottom fixed right-4 z-50 rounded-full shadow-lg transition hover:scale-105"
       aria-label="Totthobox অ্যাপ ইনস্টল করুন"
     >
       <Smartphone size={16} strokeWidth={2.2} />
