@@ -75,7 +75,7 @@ export default function IntroductionClient({ initialData }: { initialData: any }
   const hasSearch = !!debouncedSearch;
 
   return (
-    <div className="max-w-2xl mx-auto space-y-8 px-4 py-6 sm:py-8">
+    <div className="tb-page-container tb-section mx-auto max-w-2xl space-y-8">
       {/* Header */}
       <header className="flex items-start justify-between gap-4">
         <div className="space-y-1.5">
@@ -99,7 +99,7 @@ export default function IntroductionClient({ initialData }: { initialData: any }
           </button>
 
           {showCreators && (
-            <div className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-y-auto rounded-2xl border border-zinc-400/25 backdrop-blur-xl p-4 z-50 space-y-3 shadow-xl">
+            <div className="tb-surface absolute right-0 top-full mt-2 w-80 max-h-96 overflow-y-auto p-4 z-50 space-y-3 shadow-xl">
               <div>
                 <h3 className="font-medium">
                   তথ্য প্রদানকারীগণ ({creators.length})
