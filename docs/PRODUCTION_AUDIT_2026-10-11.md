@@ -21,6 +21,7 @@ The sitemap structure and a representative public-route sample were verified dir
 
 - The preview sitemap returned HTTP 200 and contained **532 URLs, 532 unique URLs, and zero duplicate entries**.
 - Every sitemap URL used the `https://totthobox.com/` origin. No sitemap entry matched the excluded private/non-indexable path checks, and no `/news` URLs were present.
+- The **production** sitemap also returned HTTP 200 and contained 518 unique URLs, all on the canonical host, with no duplicate URLs or `/news` entries. Production and branch-preview counts differ because their dynamic API data/builds are not identical.
 - The sampled public routes below returned HTTP 200 and had a title, meta description, canonical URL, Open Graph title/image, Twitter card/image, and exactly one H1:
   - `/`, `/about-us`, `/contact-us`, `/services`, `/privacy-policy`, `/terms-of-service`
   - `/converter/document`, `/converter/file-data`, `/tools/age-calculator`
@@ -106,9 +107,10 @@ The sitemap structure and a representative public-route sample were verified dir
 
 ## Build and CI status
 
-- Latest Vercel preview deployment for commit `87144ac7948af5861427189b0786d4f1e8989c91` reached **READY**. Vercel logs show successful compilation and TypeScript.
-- The GitHub CI run was still installing dependencies at the time of this report. An earlier attempt failed during `npm ci` with an `EINTEGRITY` error caused by a corrupted `find-up` / `escape-string-regexp` tarball response; the retry was interrupted by a newer branch push. The current CI run must finish green before treating CI as passed.
-- Preview responses have Vercel preview noindex headers, which is expected and should not be copied to production configuration.
+- Latest application-source preview deployment for commit `b1e13bb2e95ae5dd8a44113474798dbc2fec2c57` reached **READY**. Vercel logs show successful compilation, TypeScript, and static page generation. Subsequent commits changed audit documentation/workflow only.
+- GitHub CI has **no green result yet**. One `npm ci` attempt failed with `EINTEGRITY` for corrupted `find-up` / `escape-string-regexp` tarball responses; later CI attempts were cancelled during dependency installation when newer branch pushes superseded them. The branch must receive a green CI run before CI can be marked complete.
+- Vercel preview deployments are protected by SSO, so the Lighthouse workflow is configured to measure the publicly accessible production domain rather than bypass preview protection. Any resulting Lighthouse scores will therefore describe the current production build, not the unmerged branch preview. The automated result file was not available at this update.
+- Preview responses carry Vercel preview noindex headers, which is expected and should not be copied to production configuration.
 - No production deployment was initiated.
 
 ## Acceptance checklist
