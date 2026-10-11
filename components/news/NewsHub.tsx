@@ -101,7 +101,7 @@ function FilterBar({ filters, basePath, sources }: Pick<Props, "filters" | "base
           name="search"
           defaultValue={filters.search || ""}
           placeholder="সংবাদের শিরোনাম খুঁজুন..."
-          className="min-w-0 flex-1 appearance-none border-0 bg-transparent p-0 text-sm shadow-none outline-none ring-0 placeholder:text-zinc-500 focus:ring-0 dark:placeholder:text-zinc-400"
+          className="!m-0 !h-9 !min-w-0 !flex-1 !rounded-none !border-0 !bg-transparent !p-0 text-base leading-normal !shadow-none !outline-none !ring-0 placeholder:text-zinc-500 focus:!ring-0 dark:placeholder:text-zinc-400"
         />
       </label>
 
