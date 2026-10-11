@@ -94,7 +94,7 @@ function SourceLinks({
 function FilterBar({ filters, basePath, sources }: Pick<Props, "filters" | "basePath" | "sources">) {
   return (
     <form action={basePath} method="get" className="space-y-3">
-      <label className="flex h-11 items-center gap-2 rounded-xl bg-zinc-400/10 px-3 focus-within:bg-zinc-400/15">
+      <label className="tb-muted-surface flex h-11 items-center gap-2 px-3 focus-within:bg-zinc-400/15">
         <Search className="size-4 shrink-0 opacity-50" aria-hidden="true" />
         <span className="sr-only">সংবাদ খুঁজুন</span>
         <input
@@ -109,7 +109,7 @@ function FilterBar({ filters, basePath, sources }: Pick<Props, "filters" | "base
         <select
           name="category"
           defaultValue={filters.category || ""}
-          className="min-w-[140px] flex-1 basis-[calc(50%-0.25rem)] rounded-xl bg-zinc-400/10 px-3 py-2.5 text-sm outline-none sm:flex-none sm:basis-auto"
+          className="tb-muted-surface min-w-[140px] flex-1 basis-[calc(50%-0.25rem)] px-3 py-2.5 text-sm outline-none sm:flex-none sm:basis-auto"
           aria-label="সংবাদ বিভাগ"
         >
           {NEWS_CATEGORIES.map((category) => (
@@ -122,7 +122,7 @@ function FilterBar({ filters, basePath, sources }: Pick<Props, "filters" | "base
         <select
           name="hours"
           defaultValue={filters.hours || ""}
-          className="min-w-[130px] rounded-xl bg-zinc-400/10 px-3 py-2.5 text-sm outline-none"
+          className="tb-muted-surface min-w-[130px] px-3 py-2.5 text-sm outline-none"
           aria-label="সময়সীমা"
         >
           <option value="">যেকোনো সময়</option>
@@ -136,7 +136,7 @@ function FilterBar({ filters, basePath, sources }: Pick<Props, "filters" | "base
           <select
             name="source"
             defaultValue={filters.source || ""}
-            className="min-w-[160px] flex-1 basis-[calc(50%-0.25rem)] rounded-xl bg-zinc-400/10 px-3 py-2.5 text-sm outline-none sm:flex-none sm:basis-auto"
+            className="tb-muted-surface min-w-[160px] flex-1 basis-[calc(50%-0.25rem)] px-3 py-2.5 text-sm outline-none sm:flex-none sm:basis-auto"
             aria-label="সংবাদমাধ্যম"
           >
             <option value="">সব সংবাদমাধ্যম</option>
@@ -154,7 +154,7 @@ function FilterBar({ filters, basePath, sources }: Pick<Props, "filters" | "base
 
         <button
           type="submit"
-          className="shrink-0 rounded-xl bg-zinc-400/25 px-4 py-2.5 text-sm font-semibold transition hover:bg-zinc-400/40"
+          className="tb-button tb-button-secondary shrink-0 px-4 py-2.5 text-sm font-semibold transition"
         >
           খুঁজুন
         </button>
@@ -165,7 +165,7 @@ function FilterBar({ filters, basePath, sources }: Pick<Props, "filters" | "base
 
 function NewsCard({ item }: { item: NewsItem }) {
   return (
-    <article className="rounded-2xl bg-zinc-400/10 p-4 transition hover:bg-zinc-400/20 sm:p-5">
+    <article className="tb-muted-surface p-4 transition hover:bg-zinc-400/20 sm:p-5">
       <div className="flex items-start gap-4">
         <NewsThumbnail src={item.image_url} alt={item.title} />
 
