@@ -1,116 +1,134 @@
-# Totthobox Production Readiness Audit — Updated
+# Totthobox Production Readiness Audit
 
 - Audit date: 2026-10-11
-- Target branch: `fix/sidebar-seo-mainline-2026`
+- Branch: `fix/sidebar-seo-mainline-2026`
 - Repository: https://github.com/mariamsara77/totthobox-fontend
 - Production domain: https://totthobox.com
-- Status: **source-level remediation in progress; not certified production-ready**
-- No Lighthouse scores or WCAG conformance claims are made. The latest source changes require a fresh preview build and post-build verification.
+- Latest source/build commit checked: `87144ac7948af5861427189b0786d4f1e8989c91`
+- Latest Vercel preview checked: https://totthobox-fontend-pszsow8o9-totthobox.vercel.app/
+- Status: **improved and preview-buildable; not certified 100% production-ready**
+- Production has not been promoted by this audit.
 
-## Route inventory and method
+## Executive summary
 
-The App Router tree was enumerated across `(home)`, `(main)`, `(ai)`, `(auth)`, `(chat)`, `api`, `auth`, and `share`, including static pages, dynamic detail pages, account/settings surfaces, and redirects. Rendered HTML was inspected for a representative route sample; this was not an HTTP crawl of every sitemap URL or every dynamic slug.
+SEO metadata, canonical host configuration, service-worker cache safety, consent gating, reduced-motion/focus styles, and the cookie-preferences dialog have received source-level fixes. The latest Vercel preview build reached READY; Vercel logs report successful compilation and TypeScript, followed by static page generation. The branch preview is not the production deployment.
 
-Representative rendered routes checked before the latest uncommitted source bundle:
-- `/`, `/about-us`, `/contact-us`, `/privacy-policy`, `/terms-of-service`, `/services`
-- `/converter/file-data`, `/converter/document`, `/tools/age-calculator`
-- `/bangladesh/history`, `/islam/basic`, `/international/all-country`, `/software/all`, `/contact/fire-service`
-- `/news/headlines`, `/ai/chat`, `/robots.txt`, `/sitemap.xml`
+The sitemap structure and a representative public-route sample were verified directly. A full URL-by-URL route crawl and four real Lighthouse runs are configured in `.github/workflows/lighthouse-audit.yml`; the generated result file was not yet available when this report was updated. Do not infer Lighthouse scores from a successful Next.js build.
 
-These sampled routes returned HTTP 200; sampled public content routes generally rendered one H1. The noindex AI chat UI rendered no H1, which is not an indexable landing page. Several page-level Open Graph/Twitter image omissions and repeated brand suffixes were found in the sample and addressed in source.
+## 1. SEO, metadata, canonical host, and sitemap
 
-## Step 1 — SEO, canonical host, sitemap
+### Verified
 
-### Implemented in source
-- Added or completed page-level Open Graph/Twitter image metadata across the principal static and dynamic content routes, including converters, tools, Bangladesh content, country pages, Islam content, software, signs, and contact categories.
-- Removed redundant brand suffixes from title strings where the route title template appends `| Totthobox`; completed route-specific Open Graph/Twitter metadata on the privacy policy, terms, and services pages.
-- Added dynamic profile metadata (title, description, canonical, Open Graph and Twitter image), memoizing profile data per render to avoid a second duplicate fetch.
-- Applied `noindex` metadata to the auth layout and offline page; existing AI/chat, messages, and settings areas already use noindex policies.
-- Removed `/news` and `/news/headlines` from the sitemap because `/news` redirects and the headlines route is `noindex`.
-- Bounded each sitemap API source to at most 20 pages of 50 entries per endpoint to limit worst-case API work.
-- Corrected stale shortcuts in `public/manifest.json`; `/share` has a POST handler and redirects safely to the home page.
+- The preview sitemap returned HTTP 200 and contained **532 URLs, 532 unique URLs, and zero duplicate entries**.
+- Every sitemap URL used the `https://totthobox.com/` origin. No sitemap entry matched the excluded private/non-indexable path checks, and no `/news` URLs were present.
+- The sampled public routes below returned HTTP 200 and had a title, meta description, canonical URL, Open Graph title/image, Twitter card/image, and exactly one H1:
+  - `/`, `/about-us`, `/contact-us`, `/services`, `/privacy-policy`, `/terms-of-service`
+  - `/converter/document`, `/converter/file-data`, `/tools/age-calculator`
+  - `/bangladesh/history`, `/islam/basic`, `/international/all-country`
+  - `/software/all`, `/signs/all`, `/contact/police`, `/bangla/calendar`
+- `/offline` and `/ai/chat` are intentionally excluded from the sitemap and carry noindex behavior. They are not indexable content landing pages; the AI chat route has no H1 by design.
+- Vercel domain configuration lists `www.totthobox.com` redirecting to `totthobox.com` with status 308. Direct checks showed HTTPS www redirects to the bare HTTPS host and HTTP apex redirects to HTTPS. HTTP www can require two redirects (HTTP-to-HTTPS, then www-to-apex), but resolves to the intended canonical host.
+- The preview `robots.txt` returned HTTP 200 and references `https://totthobox.com/sitemap.xml`.
+- The duplicate brand-suffix issue in titles was fixed in source.
+- The current route-audit workflow crawls each published sitemap URL for HTTP status, title, description, canonical host, OG/Twitter image metadata, robots noindex, and H1 count. Its generated results file is expected at `docs/PRODUCTION_AUDIT_RESULTS_2026-10-11.md` after the workflow completes.
 
-### Host and sitemap evidence
-- Vercel project configuration lists `www.totthobox.com` redirecting to `totthobox.com` with status 308. A live fetch of the www host returned a 308 permanent redirect to the bare domain. Canonical URLs and sitemap entries use `https://totthobox.com`.
-- The sitemap observed before removing the two non-indexable news URLs contained 534 unique URLs, all on `https://totthobox.com`, with no duplicate URLs. The updated source should contain 532 entries if API data is unchanged; this count must be rechecked on the new preview.
-- `robots.txt` and `sitemap.xml` both returned HTTP 200 in the previous preview.
+### Still not proven
 
-### Still unverified
-- A complete status crawl of every sitemap URL and all dynamic slugs has not been performed.
-- Sitemap API calls still fail soft and can return partial results if the admin API is unavailable. The 20-page cap means a source with more than 1,000 entries would need sitemap sharding or a dedicated public index endpoint.
-- User profile routes have metadata but are not in the sitemap because no verified public profile-list API was found in this repository. Decide whether these profiles should be indexed and provide a safe public listing source before claiming sitemap completeness.
-- HTTPS redirect behavior was not independently checked for every HTTP/HTTPS host combination; HSTS is configured.
+- A successful sitemap response and a structural check do **not** prove that every listed URL returns 2xx or that every possible public route is listed. The full crawl result has not been read yet.
+- The sitemap gathers dynamic slugs from the admin API and fails soft when an endpoint is unavailable. Each endpoint is capped at 20 pages of 50 items. If an endpoint exceeds 1,000 entries, sitemap sharding or a dedicated public index endpoint will be required.
+- No verified public profile-list source was found, so user profiles are not currently included in the sitemap. Decide whether these should be indexable and provide a safe public list before claiming complete profile coverage.
+- HTTP www currently takes a two-hop path; final canonicalization is correct, but a single-hop redirect would be preferable if it can be configured without disrupting Vercel's automatic HTTPS behavior.
 
-## Step 2 — Performance and third-party scripts
+## 2. Performance and third-party scripts
 
-### Implemented in source
-- GA4 now disables automatic page views and emits a page-view event after the analytics loader becomes ready and when the App Router pathname changes, avoiding the common missing-SPA-page-view issue and reducing duplicate initial events.
-- Visitor PWA-status sync no longer performs three forced startup POSTs; route sync handles initial state, unchanged visibility syncs are skipped, and bfcache restoration is handled separately.
-- PWA caching was changed to replace generic Workbox defaults with explicit static-asset caches, a short-lived public-news API cache, and NetworkOnly for API GET requests. Generic HTML/RSC page caches and generic API caches are not configured in the new source.
-- Legacy cache cleanup removes the old `pages`, `pages-rsc`, `pages-rsc-prefetch`, `apis`, `cross-origin`, `start-url`, `next-data`, and `static-data-assets` caches when the app next runs.
-- GA4 and the visitor tracker now wait for explicit analytics consent; AdSense waits for explicit marketing consent. The consent UI defaults both optional categories off, opens on first visit, and dispatches preference changes to the loaders.
-- Google Translate now loads only after a visitor explicitly chooses a non-Bengali language; the automatic geo-translation fetch and auto-selection path were removed.
+### Implemented / inspected
 
-### Still unverified
-- Lighthouse has **not** been run for mobile or desktop. No Performance score is claimed, and the requested 95+ target is not verified.
-- LCP, CLS, INP, long tasks, transfer sizes, image payloads, and third-party script costs still require a real browser/Lighthouse trace.
-- The latest service-worker build must be inspected to ensure it no longer registers generic page/RSC/API caches.
+- A real Lighthouse workflow is configured for **mobile and desktop** on the homepage and document converter. It also performs a sitemap URL crawl and stores JSON artifacts.
+- GA4 disables automatic page views and emits pathname page views for App Router navigation after analytics consent. This is designed to avoid the common initial-page-view duplication/missing-SPA-page-view problem.
+- AdSense and the visitor tracker are gated on explicit marketing/analytics consent. Google Translate is only loaded when a visitor has an explicit non-Bengali translation preference.
+- Bengali font loading uses `display: swap`; Geist font preloads are disabled. Package import optimization and inline CSS are configured in Next.js.
 
-## Step 3 — Accessibility
+### Not yet measured
+
+- **No numeric Lighthouse Performance score is claimed.** The latest Lighthouse result file was not available when this report was updated. The requested mobile and desktop Performance target of 95+ remains unverified.
+- LCP, CLS, INP/interaction responsiveness, FCP, TBT, long tasks, transfer sizes, image payloads, and third-party script cost still need the actual Lighthouse report and browser trace.
+- Lighthouse on two representative routes is not proof that every route scores 95+; scores vary by route, device, network, and run.
+
+## 3. Accessibility
 
 ### Implemented in source
-- Removed broad mobile text-selection disabling and mobile scrollbar hiding.
-- Added visible keyboard focus indicators for light and dark themes.
+
+- Added visible `:focus-visible` outlines for light and dark themes.
 - Added a `prefers-reduced-motion: reduce` rule.
-- The root loading fallback was added in the prior pass and includes a status announcement and reduced-motion support.
+- Removed broad mobile text-selection disabling and mobile scrollbar hiding.
+- Improved the cookie settings dialog with an accessible dialog label/description, initial focus, keyboard Tab trapping, Escape close, focus return to its trigger, and a larger touch target for the trigger and footer actions.
 
-### Still unverified
-- WCAG 2.2 AA is **not certified**. No complete axe/Lighthouse accessibility run, keyboard-only walkthrough, screen-reader test, contrast sampling, zoom/reflow test, dialog focus-return test, or real-device touch-target audit has been performed.
-- Component-specific focus traps, labels, errors, and contrast may still need route-level fixes.
+### Not yet verified
 
-## Step 4 — PWA, caching, and Vercel Free Tier
+- **WCAG 2.2 AA is not certified.** A Lighthouse accessibility score is only an automated subset, not a full WCAG conformance assessment.
+- Full keyboard-only and screen-reader walkthroughs, focus-return testing across all dialogs, color contrast sampling in light/dark themes, 200–400% zoom/reflow, and real-device touch-target checks remain pending.
+- The cookie dialog changes have passed a Vercel production build, but their behavior has not been exercised in an interactive browser session in this audit.
 
-### Implemented in source
-- Disabled default Workbox runtime caching that included generic `pages`, `pages-rsc`, and API response caches.
-- Explicitly cache only same-origin Next static assets and public static files; keep general API GET requests NetworkOnly and public news API cache entries short-lived.
-- Added best-effort cleanup for legacy runtime caches.
-- Corrected stale public manifest shortcuts and retained the offline fallback route.
+## 4. PWA, caching, and Vercel usage safety
 
-### Still unverified
-- Install, offline navigation, cache expiry, update activation, and recovery from an old service worker have not been tested in a real browser/device.
-- The current preview must be checked after build for generated service-worker cache names and offline fallback behavior.
-- Vercel usage/quotas were not available in this audit, so free-tier capacity cannot be guaranteed. The bounded sitemap loop and reduced tracker calls lower avoidable work but are not a usage measurement.
+### Verified / inspected
 
-## Step 5 — Analytics and AdSense
+- The generated preview `sw.js` returned HTTP 200. Its runtime cache names were:
+  - `start-url`
+  - `public-news-api-v1`
+  - `api-network-only`
+  - `totthobox-next-static-v1`
+  - `totthobox-public-assets-v1`
+- No generic `pages`, `pages-rsc`, `pages-rsc-prefetch`, `apis`, or `cross-origin` runtime cache names were found in the generated worker. General API GET requests use NetworkOnly; public news responses use a short-lived cache; Next static assets and public assets have bounded caches.
+- A special `start-url` cache remains for the public root route; it is not a generic private-page cache.
+- Manifest, offline route, app icons, and listed screenshots returned HTTP 200 in the preview.
+- Legacy generic cache cleanup is implemented in the client PWA component.
 
-### Implemented in source
-- GA4 SPA pathname page-view handling was added.
-- The privacy policy has route-specific social metadata and now explains that optional analytics/marketing scripts remain off until the visitor saves a choice.
-- A custom cookie preference panel opens on first visit; analytics and marketing default to off. GA4 sends pathname page views only after analytics opt-in; AdSense loads only after marketing opt-in. Revoking analytics disables GA collection, and revoking marketing reloads the document to stop future AdSense execution.
+### Not yet verified
 
-### Still unverified
-- GA4 events must be checked in GA4 DebugView/realtime on client-side navigation; source code alone does not prove event delivery or deduplication.
-- Production `/ads.txt` returned HTTP 200 and advertises the same publisher ID as the site metadata. AdSense account status, actual ad rendering, and consent requirements for applicable audiences have not been verified against the live account or legal requirements.
-- The custom preference UI is not proof of a Google-certified CMP where one is required. No analytics account access or production privacy/consent configuration was inspected.
+- Offline navigation, install prompt behavior, update activation, cache expiry, old-service-worker recovery, and authenticated/private response behavior still require a real browser/device lifecycle test.
+- Vercel usage/quota metrics were not available. No claim is made that usage is guaranteed to remain within a Free Tier allowance; current code reduces avoidable work but usage must be monitored.
 
-## Verification matrix
+## 5. Analytics, AdSense, and privacy
 
-| Area | Latest evidence | Status |
-|---|---|---|
-| Route-group inventory | App Router tree enumerated; representative routes sampled | Partial |
-| Canonical www host | Vercel 308 configuration and live www response | Verified |
-| Route metadata | Source fixes across principal static/dynamic routes; rendered sample checked before latest bundle | Code changes made; fresh preview check pending |
-| Sitemap/robots | Previous preview returned 200; non-indexable news entries removed in source | Fresh preview check and full URL crawl pending |
-| Production build/lint | Earlier Vercel preview build passed before the latest source bundle | Latest build pending |
-| Lighthouse mobile/desktop | A branch-triggered Lighthouse workflow has been added for mobile/desktop home and converter runs | Run pending |
-| WCAG 2.2 AA | Source-level CSS improvements only | Manual/automated testing pending |
-| PWA privacy/offline/install/update | Cache policy changed in source; no device run | Generated SW and browser tests pending |
-| GA4 SPA events | Event code changed | DebugView validation pending |
-| AdSense/privacy | Policy page exists; account/consent not verified | Pending |
-| Vercel Free Tier usage | No usage/quota metrics inspected | Pending |
+### Verified / inspected
 
-## Final acceptance status
+- GA4 page-view code uses `send_page_view: false` and a pathname effect for SPA navigation.
+- GA4 and visitor tracking are consent-gated; AdSense loads only after marketing consent; translation loads only after explicit preference.
+- The privacy policy route returned HTTP 200 and includes cookie/analytics/AdSense-related disclosure text.
+- `/ads.txt` returned HTTP 200 and lists `google.com, pub-9522604367420521, DIRECT, f08c47fec0942fa0`, matching the publisher ID in site metadata.
 
-**Not yet 100% production-ready.** The source-level changes above are intended to close several identified issues, but the latest commit must build successfully and the deployed preview must be retested. The explicit outstanding blockers are real Lighthouse mobile/desktop measurements, full route/sitemap validation, WCAG 2.2 AA testing, PWA lifecycle tests, GA4 DebugView validation, and live AdSense/privacy-account checks.
+### Not yet verified
 
-Do not deploy to production or advertise a 95+ Lighthouse score / WCAG 2.2 AA compliance based only on this source audit.
+- GA4 DebugView/realtime has not been checked, so actual event delivery, deduplication, and consent-revocation behavior are not proven.
+- AdSense account approval, ad rendering, account policy status, and any applicable Google-certified CMP/EEA/UK/Swiss consent requirements were not verified. A custom preference panel alone is not proof that a certified CMP is present where required.
+- Privacy/legal compliance depends on the site's actual audience, data flows, and account configuration; this audit is not legal advice.
+
+## Build and CI status
+
+- Latest Vercel preview deployment for commit `87144ac7948af5861427189b0786d4f1e8989c91` reached **READY**. Vercel logs show successful compilation and TypeScript.
+- The GitHub CI run was still installing dependencies at the time of this report. An earlier attempt failed during `npm ci` with an `EINTEGRITY` error caused by a corrupted `find-up` / `escape-string-regexp` tarball response; the retry was interrupted by a newer branch push. The current CI run must finish green before treating CI as passed.
+- Preview responses have Vercel preview noindex headers, which is expected and should not be copied to production configuration.
+- No production deployment was initiated.
+
+## Acceptance checklist
+
+- [x] Canonical `www` → apex redirect configured and redirect behavior checked.
+- [x] Sitemap structure checked: 532 unique URLs, canonical origin only, no obvious private/news entries.
+- [x] Representative public-route metadata and H1 checks passed.
+- [x] Latest Vercel preview build reached READY with successful compile and TypeScript.
+- [x] Generated service worker inspected for generic private HTML/RSC/API cache rules.
+- [x] Manifest, icons, screenshots, `robots.txt`, `ads.txt`, and privacy-policy route checked.
+- [x] Source-level consent gating, reduced-motion/focus styles, and cookie-dialog keyboard behavior improvements added.
+- [ ] Full HTTP/metadata/H1 crawl of every sitemap URL reviewed and all findings fixed.
+- [ ] Lighthouse Mobile + Desktop results obtained and performance opportunities remediated; Performance ≥95 demonstrated.
+- [ ] Full WCAG 2.2 AA manual/automated testing completed.
+- [ ] PWA offline/install/update/cache-expiry lifecycle tested in a real browser/device.
+- [ ] GA4 DebugView/realtime events and consent revocation verified.
+- [ ] AdSense account/CMP requirements verified for applicable audiences.
+- [ ] GitHub CI finishes green.
+- [ ] Vercel usage checked against actual plan limits.
+
+## Final status
+
+**Not 100% production-ready yet.** The source fixes and structural checks materially improve readiness, but the full sitemap crawl, measured Lighthouse results, WCAG 2.2 AA testing, PWA lifecycle tests, GA4 DebugView, AdSense/CMP account checks, CI green status, and actual Vercel usage remain outstanding. Do not mark those items complete without the corresponding evidence, and do not promote this branch to production solely on the basis of a successful preview build.
