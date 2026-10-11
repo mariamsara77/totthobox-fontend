@@ -276,5 +276,8 @@ jobs:
             echo "Audit results unchanged; no commit needed."
           else
             git commit -m "audit: publish automated route and Lighthouse results"
+            # Rebase generated results onto any report/docs commit pushed while this run was auditing.
+            git fetch origin "$GITHUB_REF_NAME"
+            git rebase "origin/$GITHUB_REF_NAME"
             git push origin "HEAD:$GITHUB_REF_NAME"
           fi
