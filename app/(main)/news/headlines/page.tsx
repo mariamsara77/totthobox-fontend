@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     url: "https://totthobox.com/news/headlines",
     siteName: "Totthobox",
     locale: "bn_BD",
-    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Totthobox" }],
+
   },
   twitter: {
     card: "summary_large_image",
