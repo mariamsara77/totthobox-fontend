@@ -136,7 +136,7 @@ export default function LoginContent() {
   // the current password or Google OAuth.
   if (view.mode === "switching") {
     return (
-      <div className="max-w-md mx-auto flex flex-col items-center gap-6 py-12">
+      <div className="tb-page-container mx-auto max-w-md flex flex-col items-center gap-6 py-8">
         <div className="relative">
           {view.profile.avatar_url ? (
             <img
@@ -164,7 +164,7 @@ export default function LoginContent() {
   // ── Password fallback ─────────────────────────────────────────────────
   if (view.mode === "password") {
     return (
-      <div className="mx-auto w-full max-w-md space-y-6">
+      <div className="tb-page-container mx-auto max-w-md space-y-6">
         <div className="flex items-center gap-3 p-4 rounded-xl bg-zinc-400/10 border border-zinc-400/25">
           {view.profile.avatar_url ? (
             <img
