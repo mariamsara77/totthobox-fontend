@@ -19,6 +19,7 @@ const eslintConfig = defineConfig([
   {
     rules: {
       "no-console": ["warn", { allow: ["warn", "error"] }],
+      "no-var": "warn",
       "@typescript-eslint/no-unused-vars": "warn",
       // Keep the legacy codebase's existing lint debt visible without blocking
       // delivery; these rules currently flag established patterns across many
