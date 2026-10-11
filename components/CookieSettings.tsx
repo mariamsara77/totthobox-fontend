@@ -1,11 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { RxSwitch } from "react-icons/rx";
 
 export default function CookieSettings() {
   const [isOpen, setIsOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const wasOpenRef = useRef(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [settings, setSettings] = useState({
     analytics: false,
@@ -31,10 +34,48 @@ export default function CookieSettings() {
   }, []);
 
   useEffect(() => {
-    if (!isOpen) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setIsOpen(false);
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    if (!isOpen) {
+      if (wasOpenRef.current) {
+        wasOpenRef.current = false;
+        triggerRef.current?.focus();
+      }
+      return;
+    }
+
+    wasOpenRef.current = true;
+    dialogRef.current?.focus();
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setIsOpen(false);
+        return;
+      }
+
+      if (event.key !== "Tab" || !dialogRef.current) return;
+
+      const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      );
+      if (focusable.length === 0) {
+        event.preventDefault();
+        dialogRef.current.focus();
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
   }, [isOpen]);
 
   const save = (all = false, necessaryOnly = false) => {
@@ -54,9 +95,11 @@ export default function CookieSettings() {
     <>
       {/* Trigger */}
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setIsOpen(true)}
-        className="flex min-h-6 items-center gap-1.5 rounded-full border border-zinc-700/50 bg-zinc-900/90 px-3 py-2 text-[11px] font-medium text-zinc-300 backdrop-blur transition hover:border-zinc-600 hover:text-zinc-100"
+        aria-haspopup="dialog"
+        className="flex min-h-11 items-center gap-1.5 rounded-full border border-zinc-700/50 bg-zinc-900/90 px-3 py-2 text-[11px] font-medium text-zinc-300 backdrop-blur transition hover:border-zinc-600 hover:text-zinc-100"
       >
         <RxSwitch className="h-3.5 w-3.5 opacity-70" />
         কুকি
@@ -65,12 +108,11 @@ export default function CookieSettings() {
       {/* Bottom-right panel */}
       {isOpen && (
         <div className="fixed bottom-8 right-5 z-50">
-          <div
-            className="fixed inset-0 -z-10"
-            onClick={() => setIsOpen(false)}
-          />
+          <div className="fixed inset-0 -z-10 bg-black/20" aria-hidden="true" />
 
           <div
+            ref={dialogRef}
+            tabIndex={-1}
             role="dialog"
             aria-modal="true"
             aria-labelledby="cookie-title"
@@ -87,7 +129,7 @@ export default function CookieSettings() {
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="rounded-full p-1.5 text-zinc-500 transition hover:bg-zinc-800 hover:text-zinc-200"
+                className="flex min-h-11 min-w-11 items-center justify-center rounded-full p-1.5 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
                 aria-label="বন্ধ করুন"
               >
                 <svg
@@ -212,21 +254,21 @@ export default function CookieSettings() {
                 <button
                   type="button"
                   onClick={() => save(false, true)}
-                  className="flex-1 rounded-full py-2 text-[11px] font-medium text-zinc-400 transition hover:bg-zinc-800 hover:text-zinc-200"
+                  className="min-h-11 flex-1 rounded-full px-2 py-2 text-[11px] font-medium text-zinc-700 transition hover:bg-zinc-100 hover:text-zinc-950 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
                 >
                   শুধু প্রয়োজনীয়
                 </button>
                 <button
                   type="button"
                   onClick={() => save()}
-                  className="flex-1 rounded-full bg-zinc-800 py-2 text-[11px] font-medium text-zinc-100 transition hover:bg-zinc-700"
+                  className="min-h-11 flex-1 rounded-full bg-zinc-800 px-2 py-2 text-[11px] font-medium text-zinc-100 transition hover:bg-zinc-700"
                 >
                   সংরক্ষণ
                 </button>
                 <button
                   type="button"
                   onClick={() => save(true)}
-                  className="rounded-full bg-zinc-100 px-4 py-2 text-[11px] font-medium text-zinc-900 transition hover:bg-white"
+                  className="min-h-11 rounded-full bg-zinc-100 px-4 py-2 text-[11px] font-medium text-zinc-900 transition hover:bg-white"
                 >
                   সব
                 </button>
