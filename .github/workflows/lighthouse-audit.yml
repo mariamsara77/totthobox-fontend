@@ -32,8 +32,11 @@ jobs:
         run: |
           for attempt in $(seq 1 36); do
             if curl -fsS "$TARGET_URL/sitemap.xml" -o /tmp/totthobox-sitemap.xml \
-              && ! grep -q '<loc>https://totthobox.com/news/headlines</loc>' /tmp/totthobox-sitemap.xml; then
-              echo "Branch preview sitemap reflects the audit changes."
+              && ! grep -q '<loc>https://totthobox.com/news/headlines</loc>' /tmp/totthobox-sitemap.xml \
+              && curl -fsS "$TARGET_URL/tools/age-calculator" -o /tmp/totthobox-age.html \
+              && grep -q '<meta property="og:image"' /tmp/totthobox-age.html \
+              && ! grep -q '| তথ্যবক্স | Totthobox' /tmp/totthobox-age.html; then
+              echo "Branch preview reflects the sitemap and route-metadata fixes."
               exit 0
             fi
             echo "Waiting for the Vercel branch preview ($attempt/36)..."
@@ -82,6 +85,13 @@ jobs:
             console.log(
               `${label}: Performance ${score("performance")}, Accessibility ${score("accessibility")}, Best Practices ${score("best-practices")}, SEO ${score("seo")}; LCP ${metric("largest-contentful-paint")}; CLS ${metric("cumulative-layout-shift")}; TBT ${metric("total-blocking-time")}`
             );
+            const opportunities = Object.entries(r.audits || {})
+              .filter(([, audit]) => audit.score !== null && audit.score < 0.9 && audit.details?.type === "opportunity")
+              .sort((a, b) => a[1].score - b[1].score)
+              .slice(0, 8);
+            for (const [id, audit] of opportunities) {
+              console.log(`  Opportunity ${id}: ${audit.title}; ${audit.displayValue || "no display value"}`);
+            }
           }
           NODE
 
