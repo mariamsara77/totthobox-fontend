@@ -65,15 +65,15 @@
   ],
   "shortcuts": [
     {
-      "name": "MCQ Practice",
-      "short_name": "MCQ",
-      "url": "/mcq",
+      "name": "Bangla Calendar",
+      "short_name": "Calendar",
+      "url": "/bangla/calendar",
       "icons": [{ "src": "/web-app-manifest-192x192.png", "sizes": "192x192" }]
     },
     {
       "name": "Islamic Basics",
       "short_name": "Islamic Basics",
-      "url": "/islam/basicislam",
+      "url": "/islam/basic",
       "icons": [{ "src": "/web-app-manifest-192x192.png", "sizes": "192x192" }]
     }
   ],

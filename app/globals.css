@@ -45,14 +45,8 @@
 @media (pointer: coarse) {
   html, body {
     touch-action: manipulation; /* ৩০২০ms ডাবল-ট্যাপ জুম ডিলে বন্ধ করবে */
-    -webkit-tap-highlight-color: transparent; /* ক্লিকের সময় কালচে ব্লু হাইলাইট বন্ধ */
   }
 
-  /* শুধু UI কন্ট্রোলে সিলেকশন বন্ধ, মূল টেক্সট/আর্টিকেল সিলেক্টেবল থাকবে */
-  button, a, nav, input, select, [role="button"] {
-    -webkit-user-select: none;
-    user-select: none;
-  }
 }
 
 /* ২. শুধু ইনস্টল করা PWA Standalone App-এর জন্য */
@@ -105,19 +99,6 @@
   }
 }
 
-/* স্মল স্ক্রিনের জন্য স্ক্রলবার হাইড */
-@media screen and (max-width: 768px) {
-  *, html, body {
-    scrollbar-width: none !important;
-    -ms-overflow-style: none !important;
-  }
-
-  ::-webkit-scrollbar {
-    display: none !important;
-    width: 0 !important;
-    height: 0 !important;
-  }
-}
 
 .adorsholipi-exp {
   font-family: 'Adorsholipi Exp', serif;
@@ -191,4 +172,26 @@ select option {
   color-scheme: dark;
   background-color: var(--color-zinc-900);
   color: var(--color-zinc-50);
+}
+
+
+/* Visible keyboard focus: preserve a clear indicator in both themes. */
+:where(a, button, input, select, textarea, summary, [role="button"], [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.dark :where(a, button, input, select, textarea, summary, [role="button"], [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline-color: #93c5fd;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

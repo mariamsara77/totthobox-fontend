@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 
 declare global {
   interface Window {
@@ -12,9 +13,6 @@ declare global {
 const ANALYTICS_ID = "G-HGE2T2J8ZT";
 
 function loadAnalytics() {
-  if (document.querySelector('script[data-totthobox-analytics="1"]')) return;
-  if (document.querySelector('script[src*="googletagmanager.com/gtag/js"]')) return;
-
   window.dataLayer = window.dataLayer || [];
   window.gtag =
     window.gtag ||
@@ -22,19 +20,26 @@ function loadAnalytics() {
       window.dataLayer?.push(args);
     };
 
-  window.gtag("js", new Date());
-  window.gtag("config", ANALYTICS_ID);
+  if (!document.querySelector('script[src*="googletagmanager.com/gtag/js"]')) {
+    const script = document.createElement("script");
+    script.async = true;
+    script.src =
+      "https://www.googletagmanager.com/gtag/js?id=" + ANALYTICS_ID;
+    script.dataset.totthoboxAnalytics = "1";
+    script.crossOrigin = "anonymous";
+    document.head.appendChild(script);
+  }
 
-  const script = document.createElement("script");
-  script.async = true;
-  script.src =
-    "https://www.googletagmanager.com/gtag/js?id=" + ANALYTICS_ID;
-  script.dataset.totthoboxAnalytics = "1";
-  script.crossOrigin = "anonymous";
-  document.head.appendChild(script);
+  window.gtag("js", new Date());
+  // Disable automatic page_view so SPA navigation can send exactly one event.
+  window.gtag("config", ANALYTICS_ID, { send_page_view: false });
 }
 
 export default function TagManager() {
+  const pathname = usePathname();
+  const [analyticsReady, setAnalyticsReady] = useState(false);
+  const lastPagePath = useRef<string | null>(null);
+
   useEffect(() => {
     let started = false;
     let fallbackTimer = 0;
@@ -46,6 +51,7 @@ export default function TagManager() {
       events.forEach((event) => window.removeEventListener(event, start, true));
       window.clearTimeout(fallbackTimer);
       loadAnalytics();
+      setAnalyticsReady(true);
     };
 
     events.forEach((event) =>
@@ -71,6 +77,18 @@ export default function TagManager() {
       window.clearTimeout(fallbackTimer);
     };
   }, []);
+
+  useEffect(() => {
+    if (!analyticsReady || !pathname || !window.gtag) return;
+    if (lastPagePath.current === pathname) return;
+
+    window.gtag("event", "page_view", {
+      page_path: pathname,
+      page_location: window.location.href,
+      page_title: document.title,
+    });
+    lastPagePath.current = pathname;
+  }, [analyticsReady, pathname]);
 
   return null;
 }

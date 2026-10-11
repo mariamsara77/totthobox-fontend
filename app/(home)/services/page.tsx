@@ -17,7 +17,7 @@ import {
 
 // SEO Metadata
 export const metadata: Metadata = {
-  title: "মূল সেবা | Totthobox",
+  title: "মূল সেবা",
   description:
     "Totthobox-এ পাবেন বাংলাদেশ জেলা তথ্য, ইসলামিক শিক্ষা, স্বাস্থ্য জ্ঞান, জরুরী নম্বর, ছুটির তালিকা, কনভার্টার এবং প্রয়োজনীয় ডিজিটাল সেবা।",
   keywords:
@@ -30,6 +30,13 @@ export const metadata: Metadata = {
     siteName: "Totthobox",
     type: "website",
     locale: "bn_BD",
+    images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "মূল সেবা | Totthobox",
+    description: "Totthobox-এর তথ্যভিত্তিক সেবা, ক্যালেন্ডার, কনভার্টার, ডিজিটাল টুলস, বাংলাদেশ ও আন্তর্জাতিক তথ্য এক জায়গায়।",
+    images: ["https://totthobox.com/og-image.png"],
   },
 };
 // Public service directory

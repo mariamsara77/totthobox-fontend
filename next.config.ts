@@ -84,8 +84,10 @@ const apiNetworkOnlyCaching: RuntimeCaching = {
 const withPWA = withPWAInit({
   dest: "public",
   disable: isDev,
-  cacheOnFrontEndNav: true,
-  aggressiveFrontEndNavCaching: true,
+  // Do not cache HTML/RSC navigation responses: pages include account, message,
+  // and settings surfaces that must never be replayed from a shared SW cache.
+  cacheOnFrontEndNav: false,
+  aggressiveFrontEndNavCaching: false,
   reloadOnOnline: true,
   extendDefaultRuntimeCaching: true,
   fallbacks: {

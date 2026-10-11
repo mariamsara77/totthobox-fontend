@@ -20,6 +20,8 @@ const publicRoutes = [
   "/about-us",
   "/contact-us",
   "/services",
+  "/news",
+  "/news/headlines",
   "/privacy-policy",
   "/terms-of-service",
   "/bangla/calendar",
