@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 
 export default function DocumentConverterPage() {
   return (
-    <main className="mx-auto max-w-2xl p-4">
+    <main className="tb-page-container tb-section mx-auto max-w-2xl">
       <AdvancedDocumentConverter />
     </main>
   );
