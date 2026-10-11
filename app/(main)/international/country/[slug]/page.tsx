@@ -478,7 +478,7 @@ export default async function CountryPage({ params }: Props) {
               {translations.map(([label, name]) => (
                 <div
                   key={label}
-                  className="bg-zinc-400/10/50 rounded-lg px-3 py-2.5 hover:bg-zinc-700/25 "
+                  className="tb-muted-surface px-3 py-2.5 hover:bg-zinc-700/25 "
                 >
                   <p className="text-xs  mb-1">{label}</p>
                   <strong className="text-sm  truncate">{name}</strong>
