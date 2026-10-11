@@ -90,7 +90,7 @@ export default function ChatSidebar({ currentUuid, onNavigate }: Props) {
   // Auth এখনো লোড হচ্ছে
   if (authLoading) {
     return (
-      <nav className="flex flex-col h-full p-2 gap-2 overflow-hidden">
+      <nav className="tb-app-sidebar flex flex-col h-full p-2 gap-2 overflow-hidden">
         <div className="p-4">
           <div className="animate-pulse rounded"></div>
         </div>
@@ -102,7 +102,7 @@ export default function ChatSidebar({ currentUuid, onNavigate }: Props) {
   }
 
   return (
-    <nav className="flex flex-col h-full p-2 gap-1 overflow-hidden ">
+    <nav className="tb-app-sidebar flex flex-col h-full p-2 gap-1 overflow-hidden ">
       {/* New Chat Button */}
       <Link
         href="/ai/chat"
