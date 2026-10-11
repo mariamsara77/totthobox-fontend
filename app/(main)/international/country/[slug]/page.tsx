@@ -175,7 +175,7 @@ export default async function CountryPage({ params }: Props) {
         />
       )}
 
-      <section className="max-w-2xl mx-auto space-y-8 p-4">
+      <section className="tb-page-container tb-section mx-auto max-w-2xl space-y-8">
         {/* Breadcrumb */}
         <nav
           aria-label="Breadcrumb"
@@ -193,7 +193,7 @@ export default async function CountryPage({ params }: Props) {
         </nav>
 
         {/* HERO */}
-        <div className="rounded-2xl overflow-hidden border border-zinc-400/25  hover: transition-shadow">
+        <div className="tb-surface overflow-hidden transition-shadow">
           <div className="relative aspect-video w-full overflow-hidden bg-zinc-400/10">
             <FlagImage
               src={country.flag_svg || country.flag}
