@@ -121,7 +121,7 @@ export default async function UserProfilePage({
     const { profile, contents } = data;
 
     return (
-        <main className="max-w-2xl mx-auto p-4 space-y-6">
+        <main className="tb-page-container tb-section mx-auto max-w-2xl space-y-6">
             {/* Profile Header */}
             <header className="overflow-hidden">
                 <div className="flex flex-col md:flex-row gap-8 items-start">
