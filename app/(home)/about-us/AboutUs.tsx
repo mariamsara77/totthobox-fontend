@@ -336,7 +336,7 @@ export default function AboutUsClient() {
         </div>
         <Link
           href="/contact-us"
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 hover:opacity-90 transition"
+          className="tb-button tb-button-primary px-6 py-3 font-medium hover:opacity-90 transition"
         >
           যোগাযোগ করুন
           <FaArrowRight className="text-sm" />
