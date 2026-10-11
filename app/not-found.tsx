@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import ErrorPage from "@/components/ErrorPage";
 
 export const metadata: Metadata = {
-  title: "পৃষ্ঠা পাওয়া যায়নি | Totthobox",
+  title: "পৃষ্ঠা পাওয়া যায়নি",
   robots: { index: false, follow: false },
 };
 
