@@ -331,7 +331,7 @@ export default function AdvancedBanglaCalendar() {
       </section>
 
       {/* --- Calendar Controls (Dropdowns + Nav) --- */}
-      <section className="flex items-center justify-between rounded-2xl bg-zinc-400/10/50 px-3 py-2 ">
+      <section className="tb-muted-surface flex items-center justify-between px-3 py-2 ">
         <button
           onClick={() => navigateMonth(-1)}
           className="p-2 hover:bg-zinc-800 hover:bg-zinc-700 rounded-full "
