@@ -105,7 +105,7 @@ export default function RootLayout({
       </head>
       <body
         suppressHydrationWarning
-        className="antialiased bg-white dark:bg-zinc-800"
+        className="antialiased"
       >
         <DeferredAdSense />
 
