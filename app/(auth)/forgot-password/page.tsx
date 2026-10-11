@@ -151,7 +151,7 @@ export default function ForgotPasswordPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-xl bg-emerald-600 py-3.5 font-semibold text-zinc-100 transition-colors hover:bg-emerald-500 disabled:opacity-60"
+          className="tb-button tb-button-primary w-full rounded-xl font-semibold transition-colors disabled:opacity-60"
         >
           {loading ? "পাঠানো হচ্ছে..." : "রিসেট লিংক পাঠান"}
         </button>
