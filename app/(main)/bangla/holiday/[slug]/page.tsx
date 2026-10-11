@@ -57,6 +57,10 @@ export async function generateMetadata({
       title: seo.title || holiday.title,
       description: seo.description,
       images: holiday.image_url ? [{ url: holiday.image_url }] : [],
+    
+      siteName: "Totthobox",
+      type: "website",
+      locale: "bn_BD",
     },
   };
 }

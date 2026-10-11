@@ -10,6 +10,17 @@ export const metadata: Metadata = {
     title: "Free Online Media Converter",
     description: "Convert video & audio files instantly. MP4, MP3, MKV, WAV and more.",
     images: ["https://cdn-icons-png.flaticon.com/512/10268/10268964.png"],
+  
+    url: "https://totthobox.com/converter/media",
+    siteName: "Totthobox",
+    type: "website",
+    locale: "bn_BD",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Free Online Media Converter | MP4, MP3, WAV, MKV, AAC & More",
+    description: "Convert video and audio files online fast, free and securely. Support for MP4, MKV, AVI, MOV, WEBM, MP3, WAV, AAC, FLAC, OGG and more.",
+    images: ["https://totthobox.com/og-image.png"],
   },
 };
 

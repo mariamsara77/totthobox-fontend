@@ -44,14 +44,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!intro) {
     return {
-      title: "তথ্য পাওয়া যায়নি | তথ্যবক্স",
+      title: "তথ্য পাওয়া যায়নি",
       robots: { index: false, follow: false },
     };
   }
 
   const cleanDescription = getPlainText(intro.description);
   const isThinContent = cleanDescription.length < 120;
-  const title = `${intro.title} | বাংলাদেশের পরিচিতি | তথ্যবক্স`;
+  const title = `${intro.title} | বাংলাদেশের পরিচিতি`;
   const description = cleanDescription
     ? cleanDescription.length > 160
       ? `${cleanDescription.slice(0, 157).trimEnd()}...`
@@ -79,6 +79,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: "summary_large_image",
       title,
       description,
+    
+      images: ["https://totthobox.com/og-image.png"],
     },
     alternates: {
       canonical,

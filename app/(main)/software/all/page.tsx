@@ -12,26 +12,30 @@ async function getInitialData() {
 }
 
 export const metadata: Metadata = {
-  title: "Software & Apps Directory | তথ্যবক্স",
+  title: "Software & Apps Directory",
   description:
     "Windows, Android এবং Mac প্ল্যাটফর্মের সফটওয়্যার ও অ্যাপের তথ্য, ফিচার, সিস্টেম রিকোয়ারমেন্ট এবং অফিসিয়াল সোর্স।",
   alternates: {
     canonical: "https://totthobox.com/software/all",
   },
   openGraph: {
-    title: "Software & Apps Directory | তথ্যবক্স",
+    title: "Software & Apps Directory",
     description:
       "Windows, Android এবং Mac প্ল্যাটফর্মের সফটওয়্যার ও অ্যাপের তথ্য, ফিচার, সিস্টেম রিকোয়ারমেন্ট এবং অফিসিয়াল সোর্স।",
     type: "website",
     locale: "bn_BD",
     siteName: "তথ্যবক্স",
     url: "https://totthobox.com/software/all",
+  
+    images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Software & Apps Directory | তথ্যবক্স",
+    title: "Software & Apps Directory",
     description:
       "Windows, Android এবং Mac প্ল্যাটফর্মের সফটওয়্যার ও অ্যাপের তথ্য, ফিচার, সিস্টেম রিকোয়ারমেন্ট এবং অফিসিয়াল সোর্স।",
+  
+    images: ["https://totthobox.com/og-image.png"],
   },
   robots: {
     index: true,

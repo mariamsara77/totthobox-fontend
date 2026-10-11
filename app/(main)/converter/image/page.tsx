@@ -18,11 +18,16 @@ export const metadata: Metadata = {
         alt: "Image Converter Tool",
       },
     ],
+  
+    siteName: "Totthobox",
+    locale: "bn_BD",
   },
   twitter: {
     card: "summary_large_image",
     title: "Free Online Image Converter",
     description: "Convert JPG, PNG, WebP, AVIF, SVG & more instantly in your browser. Private & free.",
+  
+    images: ["https://totthobox.com/og-image.png"],
   },
   alternates: {
     canonical: "https://totthobox.com/image-converter", // ← change to your real domain

@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!country) {
     return {
-      title: "দেশ পাওয়া যায়নি | বিশ্বকোষ - সকল দেশের তথ্য | Totthobox",
+      title: "দেশ পাওয়া যায়নি | বিশ্বকোষ - সকল দেশের তথ্য",
       description:
         "অনুরোধকৃত দেশটির তথ্য আমাদের ডেটাবেসে পাওয়া যায়নি। বিশ্বের সকল দেশের সম্পূর্ণ তালিকা, জনসংখ্যা, রাজধানী ও মানচিত্র দেখতে ভিজিট করুন।",
       robots: { index: false, follow: true },
@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const languages = country.languages.slice(0, 3).join(", ");
   const currency = country.currencies[0]?.name || "";
 
-  const title = `${bnName} (${country.name}) - রাজধানী, জনসংখ্যা, আয়তন, মানচিত্র ও বিস্তারিত তথ্য | Totthobox`;
+  const title = `${bnName} (${country.name}) - রাজধানী, জনসংখ্যা, আয়তন, মানচিত্র ও বিস্তারিত তথ্য`;
   const description = `${bnName} (${country.name}) এর রাজধানী ${country.capital}, জনসংখ্যা ${population}, আয়তন ${area}। ${
     country.continent ? `${country.continent} মহাদেশের ` : ""
   }${country.region ? `${country.region} অঞ্চলের ` : ""}এই দেশের ভাষা${
@@ -60,6 +60,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           alt: `${country.name} flag`,
         },
       ],
+    
+      siteName: "Totthobox",
     },
     twitter: {
       card: "summary_large_image",

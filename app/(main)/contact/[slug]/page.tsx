@@ -78,7 +78,7 @@ export async function generateMetadata({
 
   if (!category) {
     return {
-      title: "ক্যাটাগরি পাওয়া যায়নি | তথ্যবক্স",
+      title: "ক্যাটাগরি পাওয়া যায়নি",
       robots: { index: false, follow: false },
     };
   }
@@ -91,11 +91,11 @@ export async function generateMetadata({
   let keywords: string;
 
   if (searchTerm) {
-    title = `"${searchTerm}" — ${catName} নম্বর | তথ্যবক্স`;
+    title = `"${searchTerm}" — ${catName} নম্বর`;
     description = `"${searchTerm}" সম্পর্কিত ${catName} যোগাযোগ নম্বর ও ঠিকানা।`;
     keywords = `${searchTerm}, ${catName}, জরুরী নম্বর, হেল্পলাইন, তথ্যবক্স`;
   } else {
-    title = `জরুরী ${catName} ফোন নম্বর সারা বাংলাদেশ | তথ্যবক্স`;
+    title = `জরুরী ${catName} ফোন নম্বর সারা বাংলাদেশ`;
     description = `সারাদেশের গুরুত্বপূর্ণ ${catName} যোগাযোগ নম্বর ও ঠিকানা। বিভাগ, জেলা, থানা দিয়ে খুঁজুন।`;
     keywords = `${catName}, ${catName} নম্বর, জরুরী সেবা, হেল্পলাইন, বাংলাদেশ, তথ্যবক্স`;
   }
@@ -111,11 +111,15 @@ export async function generateMetadata({
       locale: "bn_BD",
       siteName: "Totthobox",
       url: `https://totthobox.com/contact/${slug}`,
+    
+      images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
+    
+      images: ["https://totthobox.com/og-image.png"],
     },
     alternates: {
       canonical: `https://totthobox.com/contact/${slug}`,

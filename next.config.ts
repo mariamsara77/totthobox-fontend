@@ -72,6 +72,30 @@ const publicNewsApiCaching: RuntimeCaching = {
   },
 };
 
+const safeNextStaticCaching: RuntimeCaching = {
+  urlPattern: ({ sameOrigin, url }) =>
+    sameOrigin && url.pathname.startsWith("/_next/static/"),
+  handler: "CacheFirst",
+  method: "GET",
+  options: {
+    cacheName: "totthobox-next-static-v1",
+    cacheableResponse: { statuses: [0, 200] },
+    expiration: { maxEntries: 250, maxAgeSeconds: 31536000 },
+  },
+};
+
+const safePublicAssetCaching: RuntimeCaching = {
+  urlPattern: ({ sameOrigin, url }) =>
+    sameOrigin && /\.(?:avif|gif|ico|jpe?g|png|svg|webp|woff2?)$/i.test(url.pathname),
+  handler: "StaleWhileRevalidate",
+  method: "GET",
+  options: {
+    cacheName: "totthobox-public-assets-v1",
+    cacheableResponse: { statuses: [0, 200] },
+    expiration: { maxEntries: 100, maxAgeSeconds: 604800 },
+  },
+};
+
 const apiNetworkOnlyCaching: RuntimeCaching = {
   handler: "NetworkOnly",
   method: "GET",
@@ -89,12 +113,13 @@ const withPWA = withPWAInit({
   cacheOnFrontEndNav: false,
   aggressiveFrontEndNavCaching: false,
   reloadOnOnline: true,
-  extendDefaultRuntimeCaching: true,
+  // Replace Workbox defaults: generic pages/pages-rsc/API rules can cache private data.
+  extendDefaultRuntimeCaching: false,
   fallbacks: {
     document: "/offline",
   },
   workboxOptions: {
-    runtimeCaching: [publicNewsApiCaching, apiNetworkOnlyCaching],
+    runtimeCaching: [publicNewsApiCaching, apiNetworkOnlyCaching, safeNextStaticCaching, safePublicAssetCaching],
   },
 });
 

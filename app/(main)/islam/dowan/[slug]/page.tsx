@@ -34,7 +34,7 @@ export async function generateMetadata({
 
   if (!data) {
     return {
-      title: "পৃষ্ঠা পাওয়া যায়নি | তথ্যবক্স",
+      title: "পৃষ্ঠা পাওয়া যায়নি",
       robots: { index: false, follow: false },
     };
   }
@@ -59,7 +59,7 @@ export async function generateMetadata({
   const contentLength = cleanArabic.length + cleanText.length + cleanMeaning.length + cleanFojilot.length;
   const hasUsefulContent =
     contentLength >= 120;
-  const title = `${item.bangla_name} - আরবি, উচ্চারণ, অর্থ ও আমল | দোয়া সংগ্রহ | তথ্যবক্স`;
+  const title = `${item.bangla_name} - আরবি, উচ্চারণ, অর্থ ও আমল | দোয়া সংগ্রহ`;
   const sourceDescription = cleanMeaning || cleanText || cleanFojilot;
   const description = sourceDescription
     ? sourceDescription.length > 160
@@ -88,6 +88,8 @@ export async function generateMetadata({
       card: "summary_large_image",
       title,
       description,
+    
+      images: ["https://totthobox.com/og-image.png"],
     },
     alternates: {
       canonical,

@@ -20,8 +20,6 @@ const publicRoutes = [
   "/about-us",
   "/contact-us",
   "/services",
-  "/news",
-  "/news/headlines",
   "/privacy-policy",
   "/terms-of-service",
   "/bangla/calendar",
@@ -181,10 +179,12 @@ async function fetchSlugs(
   const slugs: string[] = [];
   const seen = new Set<string>();
   const perPage = 50;
+  // Bound worst-case admin API work; the current published sitemap is well below this cap.
+  const MAX_SITEMAP_PAGES = 20;
 
   let previousPageSignature = "";
 
-  for (let page = 1; page <= 1000; page += 1) {
+  for (let page = 1; page <= MAX_SITEMAP_PAGES; page += 1) {
     try {
       const separator = endpoint.includes("?") ? "&" : "?";
       const response = await fetch(

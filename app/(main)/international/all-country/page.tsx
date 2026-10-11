@@ -95,7 +95,7 @@ export async function generateMetadata({
 
   if (search) {
     return {
-      title: `"${search.slice(0, 40)}" — দেশের তথ্য | ${SITE_NAME}`,
+      title: `"${search.slice(0, 40)}" — দেশের তথ্য`,
 
       description: `"${search}" সম্পর্কিত দেশের রাজধানী, জনসংখ্যা, আয়তন ও আন্তর্জাতিক তথ্য — ${SITE_NAME}।`,
 
@@ -112,7 +112,7 @@ export async function generateMetadata({
 
   if (region) {
     return {
-      title: `${region} অঞ্চলের দেশসমূহ — রাজধানী ও তথ্য | ${SITE_NAME}`,
+      title: `${region} অঞ্চলের দেশসমূহ — রাজধানী ও তথ্য`,
 
       description: `${region} অঞ্চলের দেশের রাজধানী, জনসংখ্যা, আয়তন ও আন্তর্জাতিক তথ্য — ${SITE_NAME}।`,
 
@@ -129,8 +129,8 @@ export async function generateMetadata({
 
   const title =
     page > 1
-      ? `বিশ্বের সব দেশের তালিকা — পৃষ্ঠা ${page} | ${SITE_NAME}`
-      : `বিশ্বের সব দেশের তালিকা, রাজধানী ও সাধারণ জ্ঞান | ${SITE_NAME}`;
+      ? `বিশ্বের সব দেশের তালিকা — পৃষ্ঠা ${page}`
+      : `বিশ্বের সব দেশের তালিকা, রাজধানী ও সাধারণ জ্ঞান`;
 
   return {
     title,
@@ -156,6 +156,10 @@ export async function generateMetadata({
       url: canonical,
 
       type: "website",
+    
+      siteName: "Totthobox",
+      locale: "bn_BD",
+      images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
     },
   };
 }

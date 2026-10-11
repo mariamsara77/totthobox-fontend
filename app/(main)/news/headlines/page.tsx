@@ -3,7 +3,7 @@ import NewsHub from "@/components/news/NewsHub";
 import { getNews, getNewsSources } from "@/lib/news";
 
 export const metadata: Metadata = {
-  title: "সংবাদ শিরোনাম | তথ্যবক্স",
+  title: "সংবাদ শিরোনাম",
   description:
     "বিভিন্ন সংবাদমাধ্যমের সাম্প্রতিক সংবাদ শিরোনাম এক জায়গায় দেখুন এবং মূল সংবাদমাধ্যমে সম্পূর্ণ প্রতিবেদন পড়ুন।",
   robots: {

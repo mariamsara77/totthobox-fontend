@@ -56,6 +56,35 @@ export default function InstallPWA() {
   const [installed, setInstalled] = useState(false);
 
   useEffect(() => {
+    // Remove legacy Workbox caches created by older builds that cached HTML,
+    // RSC payloads, and generic API responses (which could contain user data).
+    const clearLegacyPrivateCaches = async () => {
+      if (!("serviceWorker" in navigator) || !("caches" in window)) return;
+      try {
+        await navigator.serviceWorker.ready;
+        const legacyCacheNames = new Set([
+          "pages",
+          "pages-rsc",
+          "pages-rsc-prefetch",
+          "apis",
+          "cross-origin",
+          "start-url",
+          "next-data",
+          "static-data-assets",
+        ]);
+        const cacheNames = await caches.keys();
+        await Promise.all(
+          cacheNames
+            .filter((name) => legacyCacheNames.has(name))
+            .map((name) => caches.delete(name)),
+        );
+      } catch {
+        // Cache cleanup is best-effort and must never block the app UI.
+      }
+    };
+
+    void clearLegacyPrivateCaches();
+
     const syncState = () => {
       const isTouchDevice =
         "ontouchstart" in window || navigator.maxTouchPoints > 0;

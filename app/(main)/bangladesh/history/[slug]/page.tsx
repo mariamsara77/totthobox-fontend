@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!item) {
     return {
-      title: "স্থান পাওয়া যায়নি | তথ্যবক্স",
+      title: "স্থান পাওয়া যায়নি",
       robots: { index: false, follow: false },
     };
   }
@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // Keep genuinely thin records out of search until their existing source content is enriched.
   const isThinContent = cleanDescription.length < 180;
 
-  const title = `${item.title} | বাংলাদেশের ঐতিহাসিক স্থান | তথ্যবক্স`;
+  const title = `${item.title} | বাংলাদেশের ঐতিহাসিক স্থান`;
   const description = cleanDescription
     ? cleanDescription.length > 160
       ? `${cleanDescription.slice(0, 157).trimEnd()}...`
@@ -59,6 +59,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: "summary_large_image",
       title,
       description,
+    
+      images: ["https://totthobox.com/og-image.png"],
     },
     alternates: {
       canonical: `https://totthobox.com/bangladesh/history/${encodeURIComponent(item.slug)}`,
