@@ -20,26 +20,26 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
-      TARGET_URL: https://totthobox-fontend-git-fix-sidebar-seo-mainline-2026-totthobox.vercel.app
+      TARGET_URL: https://totthobox.com
     steps:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      - name: Wait for the latest branch preview
+      - name: Wait for the production sitemap
         shell: bash
         run: |
           for attempt in $(seq 1 36); do
             if curl -fsS "$TARGET_URL/sitemap.xml" -o /tmp/totthobox-sitemap.xml \
               && ! grep -q '<loc>https://totthobox.com/news/headlines</loc>' /tmp/totthobox-sitemap.xml; then
-              echo "Branch preview reflects the sitemap and route-metadata fixes."
+              echo "Production sitemap is reachable and excludes the non-indexable news route."
               exit 0
             fi
             echo "Waiting for the Vercel branch preview ($attempt/36)..."
             sleep 10
           done
-          echo "Timed out waiting for the latest branch preview." >&2
+          echo "Timed out waiting for the production sitemap." >&2
           exit 1
 
       - name: Crawl every sitemap URL for status and SEO metadata
@@ -197,7 +197,7 @@ jobs:
             "",
             `- Generated: ${new Date().toISOString()}`,
             "- Branch: `fix/sidebar-seo-mainline-2026`",
-            "- Target: branch Vercel preview; preview responses are expected to carry noindex headers.",
+            "- Target: live production domain https://totthobox.com. These are lab measurements for the current production build, not the unmerged branch preview.",
             "",
             "## Full sitemap route crawl",
           ];
@@ -261,7 +261,7 @@ jobs:
             "",
             "## Interpretation",
             "",
-            "- These scores are measured for the preview URLs and this exact workflow run only; they are not production field data.",
+            "- These are real Lighthouse lab scores for the live production URLs and this exact workflow run; they are not production field data and do not measure the unmerged branch preview.",
             "- A route crawl finding count of zero does not prove that every possible dynamic slug exists; it only covers the URLs currently published in the sitemap.",
             "- Do not mark WCAG 2.2 AA, offline/install/update lifecycle, GA4 DebugView, or AdSense account/CMP readiness complete from this file alone.",
             ""
