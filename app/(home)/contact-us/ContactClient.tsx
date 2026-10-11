@@ -125,7 +125,7 @@ export default function ContactClient() {
 
       {/* Quick Contact */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="p-5 rounded-2xl bg-zinc-400/10 border border-zinc-400/25 transition-all hover:shadow-md">
+        <div className="tb-surface p-5 transition-shadow hover:shadow-md">
           <div className="flex items-start gap-4">
             <div className="p-3.5 rounded-2xl bg-blue-100 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400">
               <Phone className="w-6 h-6" />
@@ -471,7 +471,7 @@ export default function ContactClient() {
             href="https://maps.google.com/?q=মিরপুর+ডিওএইচএস+এভিনিউ-৩+ঢাকা"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm font-medium py-2.5 px-4 rounded-xl bg-zinc-200/50 dark:bg-zinc-800 hover:bg-zinc-300/50 dark:hover:bg-zinc-700 transition flex items-center justify-center gap-2 shrink-0"
+            className="tb-button tb-button-secondary text-sm py-2.5 px-4 transition flex items-center justify-center gap-2 shrink-0"
           >
             ম্যাপে দেখুন ↗
           </a>

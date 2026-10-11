@@ -305,7 +305,7 @@ export default function AdvancedBanglaCalendar() {
 
   return (
     <div>
-      <div className="max-w-lg mx-auto px-3 sm:px-4 py-4 sm:py-6 space-y-4">
+      <div className="tb-page-container tb-section mx-auto w-full max-w-lg px-3 sm:px-4 space-y-4">
         {/* ========== HEADER ========== */}
         <header className="space-y-1">
           <h1 className="text-lg sm:text-xl font-semibold tracking-tight">
@@ -338,7 +338,7 @@ export default function AdvancedBanglaCalendar() {
           }}
           role="button"
           tabIndex={0}
-          className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 sm:p-5 shadow-sm active:scale-[0.98] transition-transform cursor-pointer"
+          className="tb-muted-surface p-4 sm:p-5 shadow-sm active:scale-[0.98] transition-transform cursor-pointer"
         >
           <div className="flex items-center justify-between gap-4">
             <div>
@@ -380,7 +380,7 @@ export default function AdvancedBanglaCalendar() {
         </section>
 
         {/* ========== MONTH / YEAR CONTROLS ========== */}
-        <section className="flex items-center justify-between gap-2 rounded-2xl bg-zinc-400/10 border border-zinc-400/25 p-2 shadow-sm">
+        <section className="tb-muted-surface flex items-center justify-between gap-2 p-2 shadow-sm">
           <button
             type="button"
             onClick={() => navigateMonth(-1)}
@@ -463,7 +463,7 @@ export default function AdvancedBanglaCalendar() {
 
         {/* ========== CALENDAR GRID ========== */}
         <section
-          className="rounded-2xl bg-zinc-400/10 border border-zinc-400/25 p-3 sm:p-4 shadow-sm overflow-hidden"
+          className="tb-muted-surface p-3 sm:p-4 shadow-sm overflow-hidden"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
@@ -566,7 +566,7 @@ export default function AdvancedBanglaCalendar() {
               এই মাসের সরকারি ছুটি
             </h2>
 
-            <div className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 overflow-hidden shadow-sm">
+            <div className="tb-muted-surface overflow-hidden shadow-sm">
               <div className="grid grid-cols-2 bg-zinc-50 dark:bg-zinc-800/60 py-2.5 px-4 text-xs font-semibold text-zinc-500 dark:text-zinc-400">
                 <div>ছুটির নাম</div>
                 <div className="text-right">তারিখ</div>
@@ -593,7 +593,7 @@ export default function AdvancedBanglaCalendar() {
             <Info className="w-4.5 h-4.5 text-emerald-600" />
             বাংলা ক্যালেন্ডার সম্পর্কে
           </h2>
-          <div className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-4 sm:p-5 shadow-sm space-y-3 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
+          <div className="tb-muted-surface p-4 sm:p-5 shadow-sm space-y-3 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
             <p>
               বাংলা ক্যালেন্ডার বা বঙ্গাব্দ বাংলাদেশ ও পশ্চিমবঙ্গে ব্যবহৃত একটি
               সৌর বর্ষপঞ্জি। বাংলা সনের নতুন বছর শুরু হয় সাধারণত ১৪ এপ্রিল
@@ -653,7 +653,7 @@ export default function AdvancedBanglaCalendar() {
             ].map((item, idx) => (
               <div
                 key={idx}
-                className="rounded-xl border border-zinc-400/25 bg-zinc-400/10 overflow-hidden"
+                className="tb-muted-surface overflow-hidden"
               >
                 <button
                   onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
@@ -718,7 +718,7 @@ export default function AdvancedBanglaCalendar() {
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               className="fixed inset-x-0 bottom-0 z-50 sm:inset-0 sm:flex sm:items-center sm:justify-center sm:p-4"
             >
-              <div className="bg-zinc-400/10 rounded-t-3xl sm:rounded-3xl w-full max-w-sm mx-auto p-5 sm:p-6 shadow-2xl relative max-h-[85vh] overflow-y-auto">
+              <div className="tb-surface rounded-t-3xl sm:rounded-3xl w-full max-w-sm mx-auto p-5 sm:p-6 shadow-2xl relative max-h-[85vh] overflow-y-auto">
                 <button
                   onClick={() => setShowModal(false)}
                   className="absolute top-4 right-4 p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 transition-colors"

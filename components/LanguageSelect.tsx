@@ -78,9 +78,9 @@ export default function LanguageSelect() {
     languages.find((language) => language.code === currentLang) ?? languages[0];
 
   return (
-    <section className="rounded-2xl border border-zinc-200/80 bg-zinc-400/5 p-4 dark:border-zinc-700/80 dark:bg-zinc-400/5">
+    <section className="tb-muted-surface p-4">
       <div className="flex items-start gap-3">
-        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-zinc-400/10 text-zinc-700 dark:text-zinc-200">
+        <div className="tb-muted-surface flex size-10 shrink-0 items-center justify-center text-zinc-700 dark:text-zinc-200">
           <Languages className="size-5" aria-hidden="true" />
         </div>
 

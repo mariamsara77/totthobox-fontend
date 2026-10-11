@@ -38,7 +38,7 @@ export default function PasswordSettingsPage() {
   };
 
   return (
-    <section className="max-w-2xl mx-auto p-4">
+    <section className="tb-page-container tb-section mx-auto max-w-2xl">
       <h1 className="text-2xl font-bold mb-2">পাসওয়ার্ড আপডেট</h1>
       <p className="text-sm text-zinc-500 mb-6">
         নিরাপত্তার জন্য একটি লম্বা ও র‍্যান্ডম পাসওয়ার্ড ব্যবহার করুন।

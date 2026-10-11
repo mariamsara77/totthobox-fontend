@@ -3,7 +3,7 @@ import EnergyConverter from "@/components/converter/EnergyConverter";
 
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/converter/energy" },
-  title: "অনলাইন এনার্জি রূপান্তরকারী - Joule, Calorie, kWh | Totthobox",
+  title: "অনলাইন এনার্জি রূপান্তরকারী - Joule, Calorie, kWh",
   description:
     "সহজেই Joule, Calorie, Kilocalorie এবং kWh কনভার্ট করুন। Totthobox-এর নিখুঁত Energy Converter।",
   openGraph: {
@@ -13,12 +13,21 @@ export const metadata: Metadata = {
     type: "website",
     locale: "bn_BD",
     siteName: "Totthobox",
+  
+    url: "https://totthobox.com/converter/energy",
+    images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "অনলাইন এনার্জি রূপান্তরকারী - Joule, Calorie, kWh",
+    description: "সহজেই Joule, Calorie, Kilocalorie এবং kWh কনভার্ট করুন। Totthobox-এর নিখুঁত Energy Converter।",
+    images: ["https://totthobox.com/og-image.png"],
   },
 };
 
 export default function EnergyConverterPage() {
   return (
-    <div className="mx-auto max-w-2xl p-4">
+    <div className="tb-page-container tb-section mx-auto max-w-2xl">
       <EnergyConverter />
     </div>
   );

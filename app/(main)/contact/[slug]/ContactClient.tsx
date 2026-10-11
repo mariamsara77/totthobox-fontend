@@ -228,7 +228,7 @@ export default function ContactClient({ category }: Props) {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-8 px-4 py-6 sm:py-8 pb-20">
+    <div className="tb-page-container tb-section mx-auto max-w-2xl space-y-8 pb-20">
       {/* Header */}
       <header className="space-y-2 text-center">
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{h1}</h1>

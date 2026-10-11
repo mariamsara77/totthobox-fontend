@@ -1824,7 +1824,7 @@ export default function AdorshoLipiConverter() {
   };
 
   return (
-    <main className="max-w-2xl mx-auto p-4 space-y-4">
+    <main className="tb-page-container tb-section mx-auto max-w-2xl space-y-4">
       <header className="text-center space-y-2">
         <h1 className="text-2xl tracking-tight">
           আদর্শলিপি ⇄ ইউনিকোড কনভার্টার

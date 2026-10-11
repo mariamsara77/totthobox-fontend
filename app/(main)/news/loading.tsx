@@ -3,7 +3,7 @@ import { Newspaper } from "lucide-react";
 export default function Loading() {
   return (
     <div
-      className="mx-auto max-w-2xl space-y-8 px-4 py-6 sm:py-8"
+      className="tb-page-container tb-section mx-auto max-w-2xl space-y-8"
       aria-busy="true"
       aria-label="সংবাদ লোড হচ্ছে"
     >

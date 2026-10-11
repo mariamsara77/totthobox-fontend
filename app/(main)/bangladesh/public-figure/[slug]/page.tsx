@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!person) {
     return {
-      title: "প্রোফাইল পাওয়া যায়নি | তথ্যবক্স",
+      title: "প্রোফাইল পাওয়া যায়নি",
       robots: { index: false, follow: false },
     };
   }
@@ -56,7 +56,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const historyCount = person.histories?.length ?? 0;
   const hasUsefulContent = cleanBio.length >= 120 || historyCount > 0;
 
-  const title = `${person.name} | প্রোফাইল আর্কাইভ | তথ্যবক্স`;
+  const title = `${person.name} | প্রোফাইল আর্কাইভ`;
   const fallbackDescription = role
     ? `${person.name}-এর ${role} ও কর্মজীবনের তথ্য।`
     : `${person.name}-এর প্রোফাইল ও কর্মজীবনের তথ্য।`;
@@ -87,6 +87,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: "summary_large_image",
       title,
       description,
+    
+      images: ["https://totthobox.com/og-image.png"],
     },
     alternates: {
       canonical,

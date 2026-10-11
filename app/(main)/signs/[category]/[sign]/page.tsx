@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!data) {
     return {
-      title: "পৃষ্ঠা পাওয়া যায়নি | তথ্যবক্স",
+      title: "পৃষ্ঠা পাওয়া যায়নি",
       robots: { index: false, follow: false },
     };
   }
@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .replace(/<[^>]+>/g, " ")
     .replace(/\s+/g, " ")
     .trim();
-  const title = `${item.name} | ${cat.name} | ট্রাফিক সাইন | তথ্যবক্স`;
+  const title = `${item.name} | ${cat.name} | ট্রাফিক সাইন`;
   const description = cleanDescription
     ? cleanDescription.length > 160
       ? `${cleanDescription.slice(0, 157).trimEnd()}...`
@@ -69,6 +69,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: "summary_large_image",
       title,
       description,
+    
+      images: ["https://totthobox.com/og-image.png"],
     },
     alternates: {
       canonical,

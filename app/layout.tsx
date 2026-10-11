@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Noto_Sans_Bengali } from "next/font/google";
 import "./globals.css";
 import { AppProviders } from "./providers";
 import TagManager from "@/components/partials/TagManager";
@@ -9,27 +8,6 @@ import DeferredVisitorTracker from "@/components/DeferredVisitorTracker";
 import InstallPWA from "@/components/InstallPWA";
 import NetworkStatus from "@/components/NetworkStatus";
 import SiteStructuredData from "@/components/seo/SiteStructuredData";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-  display: "swap",
-  preload: false,
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: "swap",
-  preload: false,
-});
-
-const notoBengali = Noto_Sans_Bengali({
-  variable: "--font-noto-bengali",
-  subsets: ["bengali"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://totthobox.com"),
@@ -44,12 +22,12 @@ export const metadata: Metadata = {
     siteName: "Totthobox",
     locale: "bn_BD",
     images: [
-      { url: "/og-image.png", width: 1200, height: 630, alt: "Totthobox" },
+      { url: "/opengraph-image", width: 1200, height: 630, alt: "Totthobox — information, tools and digital services" },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    images: ["/og-image.png"],
+    images: ["/opengraph-image"],
   },
   appleWebApp: {
     capable: true,
@@ -81,17 +59,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="bn"
-      suppressHydrationWarning
-      className={
-        geistSans.variable +
-        " " +
-        geistMono.variable +
-        " " +
-        notoBengali.variable
-      }
-    >
+    <html lang="bn" suppressHydrationWarning>
       <head>
         <meta name="author" content="Totthobox Team" />
         <meta property="fb:app_id" content="1108131871544005" />
@@ -105,7 +73,7 @@ export default function RootLayout({
       </head>
       <body
         suppressHydrationWarning
-        className="antialiased bg-white dark:bg-zinc-800"
+        className="antialiased"
       >
         <DeferredAdSense />
 

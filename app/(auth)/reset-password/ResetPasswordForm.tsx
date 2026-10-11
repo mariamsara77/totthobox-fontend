@@ -206,7 +206,7 @@ function ResetPasswordForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-full transition disabled:opacity-60"
+          className="tb-button tb-button-primary w-full rounded-full font-bold transition disabled:opacity-60"
         >
           {loading ? "পরিবর্তন করা হচ্ছে..." : "পাসওয়ার্ড রিসেট করুন"}
         </button>

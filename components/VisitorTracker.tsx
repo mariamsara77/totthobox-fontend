@@ -134,7 +134,8 @@ export default function VisitorTracker() {
     );
 
     // 4. pageshow (hard refresh + bfcache দুটোই কভার করে)
-    const handlePageShow = () => {
+    const handlePageShow = (event: PageTransitionEvent) => {
+      if (!event.persisted) return;
       lastSynced.current = { isPwa: null, hasInstalled: null };
       syncPwaStatus(true);
     };
@@ -143,23 +144,15 @@ export default function VisitorTracker() {
     // 5. visibilitychange (tab আবার visible হলে)
     const handleVisibility = () => {
       if (document.visibilityState === "visible") {
-        lastSynced.current = { isPwa: null, hasInstalled: null };
-        syncPwaStatus(true);
+        // syncPwaStatus skips unchanged state, avoiding a POST on every tab focus.
+        void syncPwaStatus();
       }
     };
     document.addEventListener("visibilitychange", handleVisibility);
 
-    // 6. Immediate + Delayed sync (সবচেয়ে গুরুত্বপূর্ণ)
-    // সরাসরি একবার
-    syncPwaStatus(true);
-
-    // আরেকবার একটু পরে (কিছু ব্রাউজারে display-mode একটু দেরিতে ready হয়)
-    const timer1 = setTimeout(() => syncPwaStatus(true), 300);
-    const timer2 = setTimeout(() => syncPwaStatus(true), 1000);
+    // Initial sync is handled by the pathname effect below; avoid three startup POSTs.
 
     return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
       window.removeEventListener("appinstalled", handleAppInstalled);
       window.removeEventListener("pageshow", handlePageShow);
       document.removeEventListener("visibilitychange", handleVisibility);

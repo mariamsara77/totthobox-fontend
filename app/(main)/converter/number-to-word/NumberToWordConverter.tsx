@@ -1561,7 +1561,7 @@ export default function NumberToWordConverter() {
   }, [bnUnicode, currencyBn]);
 
   return (
-    <main className="max-w-2xl mx-auto space-y-4 p-4">
+    <main className="tb-page-container tb-section mx-auto max-w-2xl space-y-4">
       {/* Header */}
       <header className="text-center space-y-1">
         <h1 className="text-2xl  tracking-tight ">

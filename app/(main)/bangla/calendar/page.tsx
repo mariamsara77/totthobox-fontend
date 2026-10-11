@@ -3,7 +3,7 @@ import AdvancedBanglaCalendar from "./AdvancedBanglaCalendar";
 
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/bangla/calendar" },
-  twitter: { card: "summary_large_image", title: "উন্নত বাংলা ক্যালেন্ডার | Totthobox", description: "আজকের বাংলা তারিখ, বঙ্গাব্দ, ঋতু, হিজরি ও ইংরেজি তারিখের তথ্য এবং রূপান্তর টুল।" },
+  twitter: { card: "summary_large_image", title: "উন্নত বাংলা ক্যালেন্ডার | Totthobox", description: "আজকের বাংলা তারিখ, বঙ্গাব্দ, ঋতু, হিজরি ও ইংরেজি তারিখের তথ্য এবং রূপান্তর টুল।", images: ["/og-image.png"] },
   title: "উন্নত বাংলা ক্যালেণ্ডার ও তারিখ রূপান্তরকারী | Bangla Calendar Today",
   description:
     "আজকের সঠিক বাংলা তারিখ, বঙ্গাব্দ সাল, ঋতু, হিজরী তারিখ ও ইংরেজি তারিখের হিসাব দেখুন। সহজে ইংরেজি তারিখ থেকে বাংলা তারিখে রূপান্তরের অনলাইন টুল।",
@@ -22,6 +22,10 @@ export const metadata: Metadata = {
     title: "উন্নত বাংলা ক্যালেণ্ডার ও তারিখ রূপান্তরকারী | Bangla Calendar Today",
     description: "আজকের বাংলা তারিখ, বঙ্গাব্দ, ঋতু এবং ইংরেজি থেকে বাংলা তারিখ রূপান্তরের ফ্রি টুল।",
     type: "website",
+    url: "https://totthobox.com/bangla/calendar",
+    siteName: "Totthobox",
+    locale: "bn_BD",
+    images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox — information, tools and digital services" }],
   },
 };
 

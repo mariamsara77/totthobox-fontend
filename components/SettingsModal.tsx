@@ -45,7 +45,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       <div
         ref={modalRef}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md transform rounded-2xl border border-zinc-200/80 bg-white/95 p-4 shadow-2xl backdrop-blur-xl transition-transform dark:border-zinc-700/80 dark:bg-zinc-900/95"
+        className="tb-surface w-full max-w-md transform p-4 shadow-2xl backdrop-blur-xl transition-transform"
       >
         <div className="flex items-center justify-between border-b border-zinc-200 pb-4 dark:border-zinc-700">
           <div className="flex items-center gap-2 text-lg font-medium">

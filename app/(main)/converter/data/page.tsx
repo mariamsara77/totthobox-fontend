@@ -3,7 +3,7 @@ import DataStorageConverter from "@/components/converter/DataStorageConverter";
 
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/converter/data" },
-  title: "অনলাইন ডাটা স্টোরেজ রূপান্তরকারী - MB, GB, TB, PB | Totthobox",
+  title: "অনলাইন ডাটা স্টোরেজ রূপান্তরকারী - MB, GB, TB, PB",
   description:
     "সহজেই MB, GB, TB, PB কনভার্ট করুন। Totthobox-এর নিখুঁত Data Storage Converter।",
   openGraph: {
@@ -13,12 +13,21 @@ export const metadata: Metadata = {
     type: "website",
     locale: "bn_BD",
     siteName: "Totthobox",
+  
+    url: "https://totthobox.com/converter/data",
+    images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "অনলাইন ডাটা স্টোরেজ রূপান্তরকারী - MB, GB, TB, PB",
+    description: "সহজেই MB, GB, TB, PB কনভার্ট করুন। Totthobox-এর নিখুঁত Data Storage Converter।",
+    images: ["https://totthobox.com/og-image.png"],
   },
 };
 
 export default function DataStorageConverterPage() {
   return (
-    <div className="mx-auto max-w-2xl p-4">
+    <div className="tb-page-container tb-section mx-auto max-w-2xl">
       <DataStorageConverter />
     </div>
   );

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import DowaClient from "./dowaClient";
 
 export const metadata: Metadata = {
-  title: "দোয়া সংগ্রহ | দৈনন্দিন জীবনের প্রয়োজনীয় দোয়া ও আমল | তথ্যবক্স",
+  title: "দোয়া সংগ্রহ | দৈনন্দিন জীবনের প্রয়োজনীয় দোয়া ও আমল",
   description:
     "দৈনন্দিন জীবনের প্রয়োজনীয় ও নিত্যদিনের গুরুত্বপূর্ণ দোয়া, জিকির ও আমলসমূহের সম্পূর্ণ বাংলা তালিকা। ঘুমানো, খাওয়া, সফরসহ বিভিন্ন পরিস্থিতির দোয়া।",
   alternates: {
@@ -16,11 +16,15 @@ export const metadata: Metadata = {
     siteName: "Totthobox",
     type: "website",
     locale: "bn_BD",
+  
+    images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "দোয়া সংগ্রহ | তথ্যবক্স",
+    title: "দোয়া সংগ্রহ",
     description: "দৈনন্দিন জীবনের প্রয়োজনীয় দোয়া ও আমল",
+  
+    images: ["https://totthobox.com/og-image.png"],
   },
 };
 

@@ -144,7 +144,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!item) {
     return {
-      title: "স্থাপনা পাওয়া যায়নি | Totthobox",
+      title: "স্থাপনা পাওয়া যায়নি",
 
       description: "অনুরোধ করা স্থাপনা বা প্রতিষ্ঠানটির তথ্য পাওয়া যায়নি।",
 
@@ -162,7 +162,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   |--------------------------------------------------------------------------
   */
 
-  const title = `${item.title} | বাংলাদেশের স্থাপনা ও প্রতিষ্ঠান | Totthobox`;
+  const title = `${item.title} | বাংলাদেশের স্থাপনা ও প্রতিষ্ঠান`;
 
   const description = createDescription(item.description, item.title);
 

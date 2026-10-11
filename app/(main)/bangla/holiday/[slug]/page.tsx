@@ -57,6 +57,10 @@ export async function generateMetadata({
       title: seo.title || holiday.title,
       description: seo.description,
       images: holiday.image_url ? [{ url: holiday.image_url }] : [],
+    
+      siteName: "Totthobox",
+      type: "website",
+      locale: "bn_BD",
     },
   };
 }
@@ -76,7 +80,7 @@ export default async function HolidayShowPage({
   const { holiday, creators } = data;
 
   return (
-    <div className="max-w-2xl mx-auto space-y-4 p-4 sm:p-6">
+    <div className="tb-page-container tb-section mx-auto max-w-2xl space-y-4">
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm">
         <Link href="/" className="hover:underline">

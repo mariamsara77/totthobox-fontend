@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!country) {
     return {
-      title: "দেশ পাওয়া যায়নি | বিশ্বকোষ - সকল দেশের তথ্য | Totthobox",
+      title: "দেশ পাওয়া যায়নি | বিশ্বকোষ - সকল দেশের তথ্য",
       description:
         "অনুরোধকৃত দেশটির তথ্য আমাদের ডেটাবেসে পাওয়া যায়নি। বিশ্বের সকল দেশের সম্পূর্ণ তালিকা, জনসংখ্যা, রাজধানী ও মানচিত্র দেখতে ভিজিট করুন।",
       robots: { index: false, follow: true },
@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const languages = country.languages.slice(0, 3).join(", ");
   const currency = country.currencies[0]?.name || "";
 
-  const title = `${bnName} (${country.name}) - রাজধানী, জনসংখ্যা, আয়তন, মানচিত্র ও বিস্তারিত তথ্য | Totthobox`;
+  const title = `${bnName} (${country.name}) - রাজধানী, জনসংখ্যা, আয়তন, মানচিত্র ও বিস্তারিত তথ্য`;
   const description = `${bnName} (${country.name}) এর রাজধানী ${country.capital}, জনসংখ্যা ${population}, আয়তন ${area}। ${
     country.continent ? `${country.continent} মহাদেশের ` : ""
   }${country.region ? `${country.region} অঞ্চলের ` : ""}এই দেশের ভাষা${
@@ -60,6 +60,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           alt: `${country.name} flag`,
         },
       ],
+    
+      siteName: "Totthobox",
     },
     twitter: {
       card: "summary_large_image",
@@ -173,7 +175,7 @@ export default async function CountryPage({ params }: Props) {
         />
       )}
 
-      <section className="max-w-2xl mx-auto space-y-8 p-4">
+      <section className="tb-page-container tb-section mx-auto max-w-2xl space-y-8">
         {/* Breadcrumb */}
         <nav
           aria-label="Breadcrumb"
@@ -191,7 +193,7 @@ export default async function CountryPage({ params }: Props) {
         </nav>
 
         {/* HERO */}
-        <div className="rounded-2xl overflow-hidden border border-zinc-400/25  hover: transition-shadow">
+        <div className="tb-surface overflow-hidden transition-shadow">
           <div className="relative aspect-video w-full overflow-hidden bg-zinc-400/10">
             <FlagImage
               src={country.flag_svg || country.flag}
@@ -476,7 +478,7 @@ export default async function CountryPage({ params }: Props) {
               {translations.map(([label, name]) => (
                 <div
                   key={label}
-                  className="bg-zinc-400/10/50 rounded-lg px-3 py-2.5 hover:bg-zinc-700/25 "
+                  className="tb-muted-surface px-3 py-2.5 hover:bg-zinc-700/25 "
                 >
                   <p className="text-xs  mb-1">{label}</p>
                   <strong className="text-sm  truncate">{name}</strong>

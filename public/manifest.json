@@ -65,16 +65,16 @@
   ],
   "shortcuts": [
     {
-      "name": "MCQ Practice",
-      "short_name": "MCQ",
-      "url": "/mcq",
-      "icons": [{ "src": "/web-app-manifest-192x192.png", "sizes": "192x192" }]
+      "name": "Bangla Calendar",
+      "short_name": "Calendar",
+      "url": "/bangla/holiday",
+      "icons": [{ "src": "/web-app-manifest-192x192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
       "name": "Islamic Basics",
       "short_name": "Islamic Basics",
-      "url": "/islam/basicislam",
-      "icons": [{ "src": "/web-app-manifest-192x192.png", "sizes": "192x192" }]
+      "url": "/islam/basic",
+      "icons": [{ "src": "/web-app-manifest-192x192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ],
   "share_target": {

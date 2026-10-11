@@ -31,7 +31,7 @@ export default function DeleteAccountPage() {
   };
 
   return (
-    <section className="max-w-2xl mx-auto p-4">
+    <section className="tb-page-container tb-section mx-auto max-w-2xl">
       <div className="mb-8 border-b border-zinc-400/10 pb-4">
         <h1 className="text-2xl font-bold text-red-600">
           অ্যাকাউন্ট মুছে ফেলুন

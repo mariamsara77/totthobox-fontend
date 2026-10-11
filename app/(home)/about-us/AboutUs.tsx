@@ -141,7 +141,7 @@ export default function AboutUsClient() {
   }, []);
 
   return (
-    <div className="max-w-3xl mx-auto space-y-14 px-4 py-8">
+    <div className="tb-page-container mx-auto max-w-3xl space-y-12 py-6">
       {/* Hero */}
       <header className="text-center space-y-5">
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
@@ -165,7 +165,7 @@ export default function AboutUsClient() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-          <div className="text-center p-5 rounded-2xl bg-zinc-400/10 hover:bg-zinc-400/15 transition">
+          <div className="tb-muted-surface text-center p-5 transition">
             <div className="mx-auto mb-3 text-2xl flex justify-center opacity-80">
               <FaUsers />
             </div>
@@ -175,7 +175,7 @@ export default function AboutUsClient() {
             </p>
           </div>
 
-          <div className="text-center p-5 rounded-2xl bg-zinc-400/10 hover:bg-zinc-400/15 transition">
+          <div className="text-center tb-muted-surface p-5 transition">
             <div className="mx-auto mb-3 text-2xl flex justify-center opacity-80">
               <FaCalendarDay />
             </div>
@@ -215,7 +215,7 @@ export default function AboutUsClient() {
 
       {/* Mission & Vision */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="p-6 rounded-2xl bg-zinc-400/10 space-y-4">
+        <div className="tb-muted-surface p-6 space-y-4">
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-xl bg-zinc-400/15 text-lg">
               <AiOutlineAim />
@@ -308,7 +308,7 @@ export default function AboutUsClient() {
               <Link
                 key={service.href}
                 href={service.href}
-                className="flex flex-col items-center text-center p-4 rounded-2xl bg-zinc-400/10 hover:bg-zinc-400/20 transition group"
+                className="tb-muted-surface flex flex-col items-center text-center p-4 transition group"
               >
                 <div className="mb-3 transition-transform duration-200 group-hover:scale-110">
                   <Icon className="w-8 h-8 stroke-[1.5]" />
@@ -326,7 +326,7 @@ export default function AboutUsClient() {
       </section>
 
       {/* Bottom CTA */}
-      <div className="p-8 sm:p-10 text-center space-y-5 rounded-2xl bg-zinc-400/10">
+      <div className="tb-muted-surface p-8 sm:p-10 text-center space-y-5">
         <div className="space-y-2">
           <h3 className="text-xl font-semibold">আমাদের সাথে যুক্ত হোন</h3>
           <p className="text-sm text-zinc-600 dark:text-zinc-400 max-w-md mx-auto leading-relaxed">
@@ -336,7 +336,7 @@ export default function AboutUsClient() {
         </div>
         <Link
           href="/contact-us"
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 hover:opacity-90 transition"
+          className="tb-button tb-button-primary px-6 py-3 font-medium hover:opacity-90 transition"
         >
           যোগাযোগ করুন
           <FaArrowRight className="text-sm" />

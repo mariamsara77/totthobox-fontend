@@ -29,7 +29,7 @@ export default function AiChatShell({
   }, []);
 
   return (
-    <div className="flex h-dvh w-full overflow-hidden relative">
+    <div className="tb-app-shell flex h-dvh w-full overflow-hidden relative">
       {/* Sidebar Area */}
       <aside
         className={`

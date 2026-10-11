@@ -3,9 +3,24 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/privacy-policy" },
-  title: "গোপনীয়তা নীতি (Privacy Policy) | Totthobox",
+  title: "গোপনীয়তা নীতি (Privacy Policy)",
   description:
     "Totthobox-এর সম্পূর্ণ গোপনীয়তা নীতি। আমরা কীভাবে আপনার ব্যক্তিগত তথ্য, কুকিজ এবং Google AdSense-এর মাধ্যমে তথ্য সংগ্রহ, ব্যবহার ও সুরক্ষা করি তা বিস্তারিত জানুন।",
+  openGraph: {
+    title: "গোপনীয়তা নীতি (Privacy Policy)",
+    description: "Totthobox-এর গোপনীয়তা নীতি, কুকিজ, অ্যানালিটিক্স ও বিজ্ঞাপন-সম্পর্কিত তথ্য জানুন।",
+    url: "https://totthobox.com/privacy-policy",
+    siteName: "Totthobox",
+    type: "website",
+    locale: "bn_BD",
+    images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "গোপনীয়তা নীতি (Privacy Policy)",
+    description: "Totthobox-এর গোপনীয়তা নীতি, কুকিজ, অ্যানালিটিক্স ও বিজ্ঞাপন-সম্পর্কিত তথ্য জানুন।",
+    images: ["https://totthobox.com/og-image.png"],
+  },
   keywords: [
     "গোপনীয়তা নীতি",
     "privacy policy",
@@ -26,7 +41,7 @@ export default function PrivacyPolicyPage() {
 
   return (
     <section>
-      <div className=" max-w-2xl mx-auto space-y-4 py-6">
+      <div className=" tb-page-container mx-auto max-w-2xl space-y-6 py-6">
         {/* Header */}
         <div className="text-center mb-16">
           <h1 className="text-3xl font-bold mb-4">
@@ -66,7 +81,7 @@ export default function PrivacyPolicyPage() {
         </section>
 
         {/* Services Overview */}
-        <div className="p-6 rounded-xl bg-zinc-400/10/50">
+        <div className="tb-muted-surface p-6">
           <h3 className="mb-4 text-indigo-600 ">আমাদের মূল সেবাসমূহ</h3>
           <p className="mb-5">
             Totthobox আপনার দৈনন্দিন প্রয়োজনীয় তথ্য, টুলস ও ডিজিটাল সেবা এক
@@ -249,6 +264,9 @@ export default function PrivacyPolicyPage() {
             </li>
           </ul>
           <p className="mt-3">
+            অ্যানালিটিক্স ও বিজ্ঞাপন কুকিজ ঐচ্ছিক। আপনার পছন্দ সংরক্ষণ না করা পর্যন্ত Google Analytics, ভিজিটর অ্যানালিটিক্স এবং Google AdSense স্ক্রিপ্ট চালু হয় না। ফুটারের “কুকি” সেটিংস থেকে যেকোনো সময় আপনার পছন্দ পরিবর্তন করতে পারবেন।
+          </p>
+          <p>
             আপনি আপনার ব্রাউজার সেটিংস থেকে কুকিজ নিয়ন্ত্রণ বা মুছে ফেলতে পারেন।
             তবে কিছু কুকিজ বন্ধ করলে সাইটের কিছু ফিচার সঠিকভাবে কাজ নাও করতে
             পারে।

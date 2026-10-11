@@ -1,39 +1,81 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { RxSwitch } from "react-icons/rx";
 
 export default function CookieSettings() {
   const [isOpen, setIsOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const wasOpenRef = useRef(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [settings, setSettings] = useState({
-    analytics: true,
-    marketing: true,
+    analytics: false,
+    marketing: false,
   });
 
   useEffect(() => {
     const saved = localStorage.getItem("cookie_consent");
-    if (!saved) return;
+    if (!saved) {
+      setIsOpen(true);
+      return;
+    }
 
     try {
       const data = JSON.parse(saved);
       setSettings({
-        analytics: data.analytics ?? true,
-        marketing: data.marketing ?? true,
+        analytics: data.analytics === true,
+        marketing: data.marketing === true,
       });
     } catch {
-      if (saved === "necessary") {
-        setSettings({ analytics: false, marketing: false });
-      }
+      setSettings({ analytics: false, marketing: false });
     }
   }, []);
 
   useEffect(() => {
-    if (!isOpen) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setIsOpen(false);
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    if (!isOpen) {
+      if (wasOpenRef.current) {
+        wasOpenRef.current = false;
+        triggerRef.current?.focus();
+      }
+      return;
+    }
+
+    wasOpenRef.current = true;
+    dialogRef.current?.focus();
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setIsOpen(false);
+        return;
+      }
+
+      if (event.key !== "Tab" || !dialogRef.current) return;
+
+      const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      );
+      if (focusable.length === 0) {
+        event.preventDefault();
+        dialogRef.current.focus();
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && (document.activeElement === first || document.activeElement === dialogRef.current)) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (document.activeElement === last || document.activeElement === dialogRef.current)) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
   }, [isOpen]);
 
   const save = (all = false, necessaryOnly = false) => {
@@ -45,6 +87,7 @@ export default function CookieSettings() {
     };
     localStorage.setItem("cookie_consent", JSON.stringify(prefs));
     setSettings({ analytics: prefs.analytics, marketing: prefs.marketing });
+    window.dispatchEvent(new CustomEvent("cookie-consent-updated", { detail: prefs }));
     setIsOpen(false);
   };
 
@@ -52,9 +95,11 @@ export default function CookieSettings() {
     <>
       {/* Trigger */}
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-1.5 rounded-full border border-zinc-700/50 bg-zinc-900/90 px-3 py-1.5 text-[11px] font-medium text-zinc-300 backdrop-blur transition hover:border-zinc-600 hover:text-zinc-100"
+        aria-haspopup="dialog"
+        className="flex min-h-11 items-center gap-1.5 rounded-full border border-zinc-700/50 bg-zinc-900/90 px-3 py-2 text-[11px] font-medium text-zinc-300 backdrop-blur transition hover:border-zinc-600 hover:text-zinc-100"
       >
         <RxSwitch className="h-3.5 w-3.5 opacity-70" />
         কুকি
@@ -63,29 +108,29 @@ export default function CookieSettings() {
       {/* Bottom-right panel */}
       {isOpen && (
         <div className="fixed bottom-8 right-5 z-50">
-          <div
-            className="fixed inset-0 -z-10"
-            onClick={() => setIsOpen(false)}
-          />
+          <div className="fixed inset-0 -z-10 bg-black/20" aria-hidden="true" />
 
           <div
+            ref={dialogRef}
+            tabIndex={-1}
             role="dialog"
             aria-modal="true"
             aria-labelledby="cookie-title"
-            className="w-100 overflow-hidden rounded-[50px] border border-zinc-700/40 backdrop-blur-xl"
+            aria-describedby="cookie-description"
+            className="w-[min(calc(100vw-2rem),24rem)] max-h-[85dvh] overflow-y-auto rounded-2xl border border-zinc-200 bg-white text-zinc-900 shadow-2xl backdrop-blur-xl dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-8 py-2">
               <h3
                 id="cookie-title"
-                className="text-[14px] font-medium tracking-tight text-zinc-100"
+                className="text-[14px] font-medium tracking-tight text-zinc-900 dark:text-zinc-100"
               >
                 কুকি সেটিংস
               </h3>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="rounded-full p-1.5 text-zinc-500 transition hover:bg-zinc-800 hover:text-zinc-200"
+                className="flex min-h-11 min-w-11 items-center justify-center rounded-full p-1.5 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
                 aria-label="বন্ধ করুন"
               >
                 <svg
@@ -103,6 +148,9 @@ export default function CookieSettings() {
                 </svg>
               </button>
             </div>
+            <p id="cookie-description" className="px-5 pb-2 text-xs leading-5 text-zinc-600 dark:text-zinc-300">
+              অ্যানালিটিক্স ও বিজ্ঞাপন কুকিজ ঐচ্ছিক। আপনার পছন্দ সংরক্ষণ না করা পর্যন্ত এগুলো চালু হবে না।
+            </p>
 
             {/* Collapse toggle */}
             <button
@@ -132,7 +180,7 @@ export default function CookieSettings() {
                 {/* Necessary */}
                 <div className="flex items-center justify-between py-3">
                   <div>
-                    <p className="text-[13px] font-medium text-zinc-200">
+                    <p className="text-[13px] font-medium text-zinc-900 dark:text-zinc-200">
                       প্রয়োজনীয়
                     </p>
                     <p className="text-[10px] text-zinc-500">সর্বদা চালু</p>
@@ -144,7 +192,7 @@ export default function CookieSettings() {
 
                 {/* Analytics */}
                 <div className="flex items-center justify-between py-3">
-                  <p className="text-[13px] font-medium text-zinc-200">
+                  <p className="text-[13px] font-medium text-zinc-900 dark:text-zinc-200">
                     অ্যানালিটিক্স
                   </p>
                   <button
@@ -154,13 +202,13 @@ export default function CookieSettings() {
                     onClick={() =>
                       setSettings((s) => ({ ...s, analytics: !s.analytics }))
                     }
-                    className={`relative h-5 w-9 shrink-0 rounded-full transition-colors duration-200 ${
+                    className={`relative h-6 w-11 shrink-0 rounded-full transition-colors duration-200 ${
                       settings.analytics ? "bg-zinc-500" : "bg-zinc-800"
                     }`}
                   >
                     <span
-                      className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-200 ${
-                        settings.analytics ? "translate-x-4" : "translate-x-0"
+                      className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform duration-200 ${
+                        settings.analytics ? "translate-x-5" : "translate-x-0"
                       }`}
                     />
                   </button>
@@ -168,7 +216,7 @@ export default function CookieSettings() {
 
                 {/* Marketing */}
                 <div className="flex items-center justify-between py-3">
-                  <p className="text-[13px] font-medium text-zinc-200">
+                  <p className="text-[13px] font-medium text-zinc-900 dark:text-zinc-200">
                     মার্কেটিং
                   </p>
                   <button
@@ -178,13 +226,13 @@ export default function CookieSettings() {
                     onClick={() =>
                       setSettings((s) => ({ ...s, marketing: !s.marketing }))
                     }
-                    className={`relative h-5 w-9 shrink-0 rounded-full transition-colors duration-200 ${
+                    className={`relative h-6 w-11 shrink-0 rounded-full transition-colors duration-200 ${
                       settings.marketing ? "bg-zinc-500" : "bg-zinc-800"
                     }`}
                   >
                     <span
-                      className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-200 ${
-                        settings.marketing ? "translate-x-4" : "translate-x-0"
+                      className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform duration-200 ${
+                        settings.marketing ? "translate-x-5" : "translate-x-0"
                       }`}
                     />
                   </button>
@@ -194,7 +242,7 @@ export default function CookieSettings() {
 
             {/* Footer */}
             <div className="px-5 pb-4 pt-1">
-              <p className="mb-3 text-[10px] text-zinc-500">
+              <p className="mb-3 text-[10px] text-zinc-600 dark:text-zinc-400">
                 <Link
                   href="/privacy-policy"
                   className="underline underline-offset-2 transition hover:text-zinc-300"
@@ -207,21 +255,21 @@ export default function CookieSettings() {
                 <button
                   type="button"
                   onClick={() => save(false, true)}
-                  className="flex-1 rounded-full py-2 text-[11px] font-medium text-zinc-400 transition hover:bg-zinc-800 hover:text-zinc-200"
+                  className="min-h-11 flex-1 rounded-full px-2 py-2 text-[11px] font-medium text-zinc-700 transition hover:bg-zinc-100 hover:text-zinc-950 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
                 >
                   শুধু প্রয়োজনীয়
                 </button>
                 <button
                   type="button"
                   onClick={() => save()}
-                  className="flex-1 rounded-full bg-zinc-800 py-2 text-[11px] font-medium text-zinc-100 transition hover:bg-zinc-700"
+                  className="min-h-11 flex-1 rounded-full bg-zinc-800 px-2 py-2 text-[11px] font-medium text-zinc-100 transition hover:bg-zinc-700"
                 >
                   সংরক্ষণ
                 </button>
                 <button
                   type="button"
                   onClick={() => save(true)}
-                  className="rounded-full bg-zinc-100 px-4 py-2 text-[11px] font-medium text-zinc-900 transition hover:bg-white"
+                  className="min-h-11 rounded-full bg-zinc-100 px-4 py-2 text-[11px] font-medium text-zinc-900 transition hover:bg-white"
                 >
                   সব
                 </button>

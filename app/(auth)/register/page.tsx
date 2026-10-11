@@ -15,6 +15,13 @@ export const metadata: Metadata = {
     title: "রেজিস্ট্রেশন | অ্যাকাউন্ট তৈরি করুন",
     description: "নতুন অ্যাকাউন্ট তৈরি করতে আপনার তথ্য দিয়ে রেজিস্ট্রেশন সম্পন্ন করুন।",
     type: "website",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Totthobox" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "রেজিস্ট্রেশন | অ্যাকাউন্ট তৈরি করুন",
+    description: "নতুন অ্যাকাউন্ট তৈরি করতে আপনার তথ্য দিয়ে রেজিস্ট্রেশন সম্পন্ন করুন।",
+    images: ["/opengraph-image"],
   },
 };
 

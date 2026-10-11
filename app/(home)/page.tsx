@@ -11,11 +11,13 @@ export const metadata: Metadata = {
     siteName: "Totthobox",
     type: "website",
     locale: "bn_BD",
+    images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox — information, tools and digital services" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "তথ্যবক্স — প্রয়োজনীয় সব তথ্য ও ডিজিটাল সেবা এক জায়গায়",
     description: "বাংলা ক্যালেন্ডার, বাংলাদেশ ও আন্তর্জাতিক তথ্য, ইসলামিক জ্ঞান, সফটওয়্যার, কনভার্টার ও দৈনন্দিন ইউটিলিটি টুলস এক জায়গায়।",
+    images: ["/og-image.png"],
   },
 };
 
@@ -108,7 +110,7 @@ const services = [
 
 export default function HomePage() {
   return (
-    <div className="max-w-7xl mx-auto space-y-4 p-4 min-h-screen">
+    <div className="tb-page-container tb-section space-y-6">
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="max-w-4xl mx-auto text-center space-y-2 relative z-10">
@@ -151,7 +153,7 @@ export default function HomePage() {
                   key={index}
                   href={service.href}
                   prefetch={false}
-                  className="relative flex flex-col items-center h-full p-4 text-center transition-all duration-200 group rounded-3xl bg-zinc-400/10 hover:bg-zinc-400/25"
+                  className="tb-muted-surface relative flex flex-col items-center h-full p-4 text-center transition-all duration-200 group hover:bg-zinc-400/25"
                 >
                   <div className="mb-4 transition-transform duration-200 transform group-hover:scale-110 ">
                     <Icon className="w-12 h-12 stroke-[1.5]" />

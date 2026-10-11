@@ -53,7 +53,7 @@ export default function MessageBubble({
     >
       {!isUser && (
         <div className="flex items-start pt-3 pr-2 shrink-0">
-          <div className="p-1.5 rounded-lg bg-zinc-9000/10">
+          <div className="p-1.5 rounded-lg bg-zinc-400/10">
             <Sparkles className="w-3.5 h-3.5 text-zinc-300" />
           </div>
         </div>
@@ -136,10 +136,10 @@ export default function MessageBubble({
                     <button
                       type="button"
                       onClick={copy}
-                      className="flex items-center gap-2 px-2 py-1 text-xs  hover:bg-zinc-400/25/50 rounded-lg "
+                      className="flex items-center gap-2 px-2 py-1 text-xs  hover:bg-zinc-400/25 rounded-lg "
                     >
                       {copied ? (
-                        <Check className="wx-4 py-2" />
+                        <Check className="w-4 h-4" />
                       ) : (
                         <Clipboard className="wx-4 py-2" />
                       )}

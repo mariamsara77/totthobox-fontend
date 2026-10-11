@@ -94,22 +94,22 @@ function SourceLinks({
 function FilterBar({ filters, basePath, sources }: Pick<Props, "filters" | "basePath" | "sources">) {
   return (
     <form action={basePath} method="get" className="space-y-3">
-      <label className="flex h-11 items-center gap-2 rounded-xl bg-zinc-400/10 px-3 focus-within:bg-zinc-400/15">
+      <label className="tb-muted-surface flex h-11 items-center gap-2 px-3 transition-colors focus-within:border-zinc-400/50 focus-within:bg-zinc-100 dark:focus-within:bg-zinc-800">
         <Search className="size-4 shrink-0 opacity-50" aria-hidden="true" />
         <span className="sr-only">সংবাদ খুঁজুন</span>
         <input
           name="search"
           defaultValue={filters.search || ""}
           placeholder="সংবাদের শিরোনাম খুঁজুন..."
-          className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:opacity-50"
+          className="!m-0 !h-9 !min-w-0 !flex-1 !rounded-none !border-0 !bg-transparent !p-0 text-base leading-normal !shadow-none !outline-none !ring-0 placeholder:text-zinc-500 focus:!ring-0 dark:placeholder:text-zinc-400"
         />
       </label>
 
-      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+      <div className="flex flex-wrap gap-2">
         <select
           name="category"
           defaultValue={filters.category || ""}
-          className="min-w-[130px] rounded-xl bg-zinc-400/10 px-3 py-2.5 text-sm outline-none"
+          className="tb-muted-surface min-w-[140px] flex-1 basis-[calc(50%-0.25rem)] px-3 py-2.5 text-sm outline-none sm:flex-none sm:basis-auto"
           aria-label="সংবাদ বিভাগ"
         >
           {NEWS_CATEGORIES.map((category) => (
@@ -122,7 +122,7 @@ function FilterBar({ filters, basePath, sources }: Pick<Props, "filters" | "base
         <select
           name="hours"
           defaultValue={filters.hours || ""}
-          className="min-w-[130px] rounded-xl bg-zinc-400/10 px-3 py-2.5 text-sm outline-none"
+          className="tb-muted-surface min-w-[130px] px-3 py-2.5 text-sm outline-none"
           aria-label="সময়সীমা"
         >
           <option value="">যেকোনো সময়</option>
@@ -136,7 +136,7 @@ function FilterBar({ filters, basePath, sources }: Pick<Props, "filters" | "base
           <select
             name="source"
             defaultValue={filters.source || ""}
-            className="min-w-[150px] rounded-xl bg-zinc-400/10 px-3 py-2.5 text-sm outline-none"
+            className="tb-muted-surface min-w-[160px] flex-1 basis-[calc(50%-0.25rem)] px-3 py-2.5 text-sm outline-none sm:flex-none sm:basis-auto"
             aria-label="সংবাদমাধ্যম"
           >
             <option value="">সব সংবাদমাধ্যম</option>
@@ -154,7 +154,7 @@ function FilterBar({ filters, basePath, sources }: Pick<Props, "filters" | "base
 
         <button
           type="submit"
-          className="shrink-0 rounded-xl bg-zinc-400/25 px-4 py-2.5 text-sm font-semibold transition hover:bg-zinc-400/40"
+          className="tb-button tb-button-secondary shrink-0 px-4 py-2.5 text-sm font-semibold transition"
         >
           খুঁজুন
         </button>
@@ -165,7 +165,7 @@ function FilterBar({ filters, basePath, sources }: Pick<Props, "filters" | "base
 
 function NewsCard({ item }: { item: NewsItem }) {
   return (
-    <article className="rounded-2xl bg-zinc-400/10 p-4 transition hover:bg-zinc-400/20 sm:p-5">
+    <article className="tb-muted-surface p-4 transition hover:bg-zinc-400/20 sm:p-5">
       <div className="flex items-start gap-4">
         <NewsThumbnail src={item.image_url} alt={item.title} />
 
@@ -233,7 +233,7 @@ export default function NewsHub({
     : "বিভিন্ন সংবাদমাধ্যমের সাম্প্রতিক সংবাদ শিরোনাম এক জায়গায় দেখুন এবং মূল সংবাদমাধ্যমে সম্পূর্ণ প্রতিবেদন পড়ুন।";
 
   return (
-    <div className="mx-auto max-w-2xl space-y-8 px-4 py-6 sm:py-8">
+    <div className="tb-page-container tb-section mx-auto max-w-2xl space-y-8">
       <header className="space-y-2">
         <h1 className="flex items-center gap-2.5 text-2xl font-bold tracking-tight sm:text-3xl">
           <Newspaper className="size-7" aria-hidden="true" />
@@ -249,7 +249,7 @@ export default function NewsHub({
       <FilterBar filters={filters} basePath={basePath} sources={sources} />
 
       <div className="flex items-center justify-between gap-3 text-sm text-zinc-500 dark:text-zinc-400">
-        <span>{meta.total.toLocaleString("bn-BD")}টি সংবাদ</span>
+        <span>{error ? "সংবাদ সাময়িকভাবে অনুপলব্ধ" : `${meta.total.toLocaleString("bn-BD")}টি সংবাদ`}</span>
         <div className="flex items-center gap-1">
           <Link
             href="/news/headlines?language=bn"

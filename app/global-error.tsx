@@ -9,7 +9,7 @@ export default function GlobalError({
 }) {
   return (
     <html lang="bn">
-      <body className="bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
+      <body className="antialiased">
         <div className="flex min-h-screen flex-col items-center justify-center px-4 text-center">
           <div className="text-7xl font-bold tracking-tighter text-zinc-200 dark:text-zinc-800">
             Error
@@ -31,7 +31,7 @@ export default function GlobalError({
 
           <button
             onClick={() => reset()}
-            className="mt-8 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-emerald-500"
+            className="tb-button tb-button-primary mt-8"
           >
             আবার চেষ্টা করুন
           </button>

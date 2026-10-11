@@ -169,7 +169,7 @@ export default function PersonShowClient({ person }: Props) {
         : [];
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6 p-4 sm:p-6">
+    <div className="tb-page-container tb-section mx-auto max-w-2xl space-y-6">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm">
         <Link href="/" className="hover:underline">
@@ -236,7 +236,7 @@ export default function PersonShowClient({ person }: Props) {
           </button>
 
           {showCreators && (
-            <div className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-y-auto rounded-2xl border border-zinc-400/25 backdrop-blur-xl p-4 z-50 space-y-3 shadow-xl">
+            <div className="tb-surface absolute right-0 top-full mt-2 w-80 max-h-96 overflow-y-auto p-4 z-50 space-y-3 shadow-xl">
               <div>
                 <h3 className="font-medium">
                   তথ্য প্রদানকারীগণ ({creators.length})

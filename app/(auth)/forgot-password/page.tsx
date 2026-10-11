@@ -139,7 +139,7 @@ export default function ForgotPasswordPage() {
             }}
             placeholder="ইমেইল অ্যাড্রেস"
             autoComplete="email"
-            className={`w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-3.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30 ${
+            className={`w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30 ${
               errors.email ? "border-rose-500" : "border-transparent"
             }`}
           />
@@ -151,7 +151,7 @@ export default function ForgotPasswordPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-xl bg-emerald-600 py-3.5 font-semibold text-zinc-100 transition-colors hover:bg-emerald-500 disabled:opacity-60"
+          className="tb-button tb-button-primary w-full rounded-xl font-semibold transition-colors disabled:opacity-60"
         >
           {loading ? "পাঠানো হচ্ছে..." : "রিসেট লিংক পাঠান"}
         </button>

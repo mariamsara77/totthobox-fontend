@@ -115,7 +115,7 @@ export default function ChatInput({
       )}
 
       {/* ইনপুট বক্স */}
-      <div className="flex items-end gap-2 rounded-2xl bg-zinc-400/10 p-2">
+      <div className="tb-muted-surface flex items-end gap-2 p-2">
         <input
           type="file"
           ref={fileInputRef}
@@ -140,7 +140,7 @@ export default function ChatInput({
           placeholder="কিছু লিখুন..."
           disabled={disabled}
           rows={1}
-          className="flex-1 text-sm focus:outline-none resize-none max-h-32 min-h-20 py-2"
+          className="flex-1 text-sm focus:outline-none resize-none max-h-32 min-h-20 py-2 bg-transparent border-0"
         />
 
         <button

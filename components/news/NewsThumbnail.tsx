@@ -12,7 +12,7 @@ export default function NewsThumbnail({ src, alt }: Props) {
   const [hasError, setHasError] = useState(false);
 
   return (
-    <div className="size-20 shrink-0 overflow-hidden rounded-xl bg-zinc-400/15 sm:size-24">
+    <div className="tb-muted-surface size-20 shrink-0 overflow-hidden sm:size-24">
       {src && !hasError ? (
         // Publisher-hosted thumbnails are intentionally rendered directly; each publisher can use its own image CDN.
         // eslint-disable-next-line @next/next/no-img-element

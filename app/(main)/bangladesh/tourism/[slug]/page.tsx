@@ -58,14 +58,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!item) {
     return {
-      title: "স্থান পাওয়া যায়নি | তথ্যবক্স",
+      title: "স্থান পাওয়া যায়নি",
       robots: { index: false, follow: false },
     };
   }
 
   const cleanDescription = getPlainText(item.description);
   const isThinContent = cleanDescription.length < 180;
-  const title = `${item.title} | বাংলাদেশের পর্যটন কেন্দ্র | তথ্যবক্স`;
+  const title = `${item.title} | বাংলাদেশের পর্যটন কেন্দ্র`;
   const description = cleanDescription
     ? getMetaDescription(item.title, item.description)
     : undefined;
@@ -91,6 +91,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: "summary_large_image",
       title,
       description,
+    
+      images: ["https://totthobox.com/og-image.png"],
     },
     alternates: {
       canonical,

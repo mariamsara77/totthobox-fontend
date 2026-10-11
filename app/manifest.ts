@@ -72,7 +72,7 @@ export default function manifest(): MetadataRoute.Manifest {
       {
         name: "Bangla Calendar",
         short_name: "Bangla Calendar",
-        url: "/bangla/calendar",
+        url: "/bangla/holiday",
         icons: [{ src: "/web-app-manifest-192x192.png", sizes: "192x192", type: "image/png" }]
       },
       {

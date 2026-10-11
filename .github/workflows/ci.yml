@@ -8,6 +8,7 @@ on:
       - main
       - adsense-seo-hardening
       - audit-hardening-2026
+      - fix/sidebar-seo-mainline-2026
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -16,7 +17,7 @@ concurrency:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,7 +29,26 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci --fetch-retries=5 --fetch-retry-mintimeout=2000 --fetch-retry-maxtimeout=30000
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Use the canonical public registry and retry the complete install with
+          # a clean npm cache if a registry/CDN response fails its lockfile hash.
+          npm config set registry https://registry.npmjs.org/
+          for attempt in 1 2 3; do
+            echo "npm ci attempt ${attempt}/3"
+            if npm ci --prefer-online --fetch-retries=3 --fetch-retry-mintimeout=2000 --fetch-retry-maxtimeout=30000; then
+              exit 0
+            fi
+            if [ "$attempt" -lt 3 ]; then
+              echo "Install failed; clearing npm cache before retry"
+              npm cache clean --force
+              rm -rf node_modules
+              sleep "$((attempt * 5))"
+            fi
+          done
+          echo "npm ci failed after three clean-cache attempts" >&2
+          exit 1
 
       - name: Lint
         run: npm run lint

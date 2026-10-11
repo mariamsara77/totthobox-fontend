@@ -3,7 +3,7 @@ import NewsHub from "@/components/news/NewsHub";
 import { getNews, getNewsSources } from "@/lib/news";
 
 export const metadata: Metadata = {
-  title: "সংবাদ শিরোনাম | তথ্যবক্স",
+  title: "সংবাদ শিরোনাম",
   description:
     "বিভিন্ন সংবাদমাধ্যমের সাম্প্রতিক সংবাদ শিরোনাম এক জায়গায় দেখুন এবং মূল সংবাদমাধ্যমে সম্পূর্ণ প্রতিবেদন পড়ুন।",
   robots: {
@@ -18,9 +18,17 @@ export const metadata: Metadata = {
     description:
       "বিভিন্ন সংবাদমাধ্যমের সাম্প্রতিক সংবাদ শিরোনাম এক জায়গায় দেখুন এবং মূল সংবাদমাধ্যমে সম্পূর্ণ প্রতিবেদন পড়ুন।",
     type: "website",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Totthobox" }],
     url: "https://totthobox.com/news/headlines",
     siteName: "Totthobox",
     locale: "bn_BD",
+
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "সংবাদ শিরোনাম | তথ্যবক্স",
+    description: "বিভিন্ন সংবাদমাধ্যমের সাম্প্রতিক সংবাদ শিরোনাম এক জায়গায় দেখুন এবং মূল সংবাদমাধ্যমে সম্পূর্ণ প্রতিবেদন পড়ুন।",
+    images: ["/opengraph-image"],
   },
 };
 

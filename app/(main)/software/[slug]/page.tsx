@@ -93,7 +93,7 @@ export async function generateMetadata({
 
   if (!data) {
     return {
-      title: "সফটওয়্যার পাওয়া যায়নি | তথ্যবক্স",
+      title: "সফটওয়্যার পাওয়া যায়নি",
       description: "অনুরোধ করা সফটওয়্যার বা অ্যাপের তথ্য পাওয়া যায়নি।",
       robots: {
         index: false,
@@ -106,7 +106,7 @@ export async function generateMetadata({
 
   const title =
     seo.title ||
-    `${app.name}${app.version ? ` v${app.version}` : ""} | তথ্যবক্স`;
+    `${app.name}${app.version ? ` v${app.version}` : ""}`;
 
   const appDescription = stripHtml(app.description);
   const isThinContent = appDescription.length < 120;
@@ -144,6 +144,8 @@ export async function generateMetadata({
       card: "summary_large_image",
       title,
       description,
+    
+      images: ["https://totthobox.com/og-image.png"],
     },
     robots: {
       index: !isThinContent,
@@ -194,7 +196,7 @@ export default async function AppShowPage({
   };
 
   return (
-    <main className="max-w-2xl mx-auto space-y-5 p-4 sm:p-6">
+    <main className="tb-page-container tb-section mx-auto max-w-2xl space-y-5">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

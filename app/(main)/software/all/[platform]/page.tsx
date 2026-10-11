@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (platformTotal === 0) {
     return {
-      title: "সফটওয়্যার প্ল্যাটফর্ম পাওয়া যায়নি | তথ্যবক্স",
+      title: "সফটওয়্যার প্ল্যাটফর্ম পাওয়া যায়নি",
       description: "অনুরোধ করা সফটওয়্যার প্ল্যাটফর্মের তথ্য পাওয়া যায়নি।",
       robots: {
         index: false,
@@ -60,7 +60,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  const title = `${platformName} Software & Apps | তথ্যবক্স`;
+  const title = `${platformName} Software & Apps`;
 
   const description = `${platformName} প্ল্যাটফর্মের সফটওয়্যার ও অ্যাপ সম্পর্কে তথ্য, ফিচার, সিস্টেম রিকোয়ারমেন্ট এবং অফিসিয়াল সোর্স দেখুন।`;
 
@@ -81,11 +81,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       locale: "bn_BD",
       siteName: "তথ্যবক্স",
       url: canonical,
+    
+      images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
+    
+      images: ["https://totthobox.com/og-image.png"],
     },
     robots: {
       index: true,

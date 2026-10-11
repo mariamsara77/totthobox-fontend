@@ -12,7 +12,7 @@ async function getInitialData() {
 }
 
 export const metadata: Metadata = {
-  title: "বাংলাদেশের পরিচিতি | বিভাগ, জেলা ও সাধারণ তথ্য | তথ্যবক্স",
+  title: "বাংলাদেশের পরিচিতি | বিভাগ, জেলা ও সাধারণ তথ্য",
   description:
     "বাংলাদেশের সকল বিভাগ, জেলা, ভৌগোলিক অবস্থান, ইতিহাস, সংস্কৃতি ও গুরুত্বপূর্ণ তথ্যসহ সম্পূর্ণ পরিচিতি। সহজে সার্চ ও ক্যাটাগরি অনুসারে খুঁজুন।",
   keywords: [
@@ -28,19 +28,23 @@ export const metadata: Metadata = {
     canonical: "https://totthobox.com/bangladesh/introduction",
   },
   openGraph: {
-    title: "বাংলাদেশের পরিচিতি | বিভাগ, জেলা ও সাধারণ তথ্য | তথ্যবক্স",
+    title: "বাংলাদেশের পরিচিতি | বিভাগ, জেলা ও সাধারণ তথ্য",
     description:
       "বাংলাদেশের সকল বিভাগ, জেলা ও সাধারণ তথ্যসহ সম্পূর্ণ পরিচিতি পড়ুন।",
     url: "https://totthobox.com/bangladesh/introduction",
     siteName: "Totthobox",
     type: "website",
     locale: "bn_BD",
+  
+    images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "বাংলাদেশের পরিচিতি | বিভাগ, জেলা ও সাধারণ তথ্য | তথ্যবক্স",
+    title: "বাংলাদেশের পরিচিতি | বিভাগ, জেলা ও সাধারণ তথ্য",
     description:
       "বাংলাদেশের সকল বিভাগ, জেলা ও সাধারণ তথ্যসহ সম্পূর্ণ পরিচিতি পড়ুন।",
+  
+    images: ["https://totthobox.com/og-image.png"],
   },
 };
 

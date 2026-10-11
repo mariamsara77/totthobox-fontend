@@ -14,7 +14,7 @@ async function getInitialData() {
 }
 
 export const metadata: Metadata = {
-  title: "প্রোফাইল আর্কাইভ: বিশিষ্ট ব্যক্তিবর্গের জীবনী ও কর্মজীবন | তথ্যবক্স",
+  title: "প্রোফাইল আর্কাইভ: বিশিষ্ট ব্যক্তিবর্গের জীবনী ও কর্মজীবন",
   description:
     "বাংলাদেশের গুরুত্বপূর্ণ ব্যক্তিবর্গ, রাজনীতিবিদ, পেশাজীবী ও বিখ্যাত ব্যক্তিদের জীবনবৃত্তান্ত, বর্তমান পদবী এবং কর্মজীবনের বিস্তারিত ইতিহাস।",
   alternates: {
@@ -22,20 +22,24 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title:
-      "প্রোফাইল আর্কাইভ: বিশিষ্ট ব্যক্তিবর্গের জীবনী ও কর্মজীবন | তথ্যবক্স",
+      "প্রোফাইল আর্কাইভ: বিশিষ্ট ব্যক্তিবর্গের জীবনী ও কর্মজীবন",
     description:
       "বাংলাদেশের গুরুত্বপূর্ণ ব্যক্তিবর্গ, রাজনীতিবিদ এবং পেশাজীবীদের জীবনবৃত্তান্ত ও কর্মজীবনের বিস্তারিত ইতিহাস।",
     url: "https://totthobox.com/bangladesh/public-figure",
     siteName: "Totthobox",
     type: "website",
     locale: "bn_BD",
+  
+    images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
   },
   twitter: {
     card: "summary_large_image",
     title:
-      "প্রোফাইল আর্কাইভ: বিশিষ্ট ব্যক্তিবর্গের জীবনী ও কর্মজীবন | তথ্যবক্স",
+      "প্রোফাইল আর্কাইভ: বিশিষ্ট ব্যক্তিবর্গের জীবনী ও কর্মজীবন",
     description:
       "বাংলাদেশের গুরুত্বপূর্ণ ব্যক্তিবর্গ, রাজনীতিবিদ এবং পেশাজীবীদের জীবনবৃত্তান্ত ও কর্মজীবনের বিস্তারিত ইতিহাস।",
+  
+    images: ["https://totthobox.com/og-image.png"],
   },
 };
 

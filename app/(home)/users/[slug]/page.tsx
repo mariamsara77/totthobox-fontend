@@ -1,4 +1,6 @@
 import Image from 'next/image';
+import { cache } from 'react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
@@ -35,7 +37,7 @@ interface UserProfileData {
     };
 }
 
-async function getProfileData(slug: string): Promise<UserProfileData | null> {
+const getProfileData = cache(async function getProfileData(slug: string): Promise<UserProfileData | null> {
     try {
         const url = `${process.env.NEXT_PUBLIC_API_BASE_URL || 'https://admin.totthobox.com'}/api/users/${slug}/profile`;
 
@@ -55,6 +57,53 @@ async function getProfileData(slug: string): Promise<UserProfileData | null> {
         console.error('Fetch error:', error);
         return null;
     }
+});
+
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+    const { slug } = await params;
+    const data = await getProfileData(slug);
+
+    if (!data) {
+        return {
+            title: "প্রোফাইল পাওয়া যায়নি",
+            robots: { index: false, follow: false },
+        };
+    }
+
+    const name = data.profile.name?.trim() || "ব্যবহারকারী";
+    const description = (
+        data.profile.bio?.trim() ||
+        `${name}-এর Totthobox প্রোফাইল ও প্রকাশিত কনটেন্ট দেখুন।`
+    ).replace(/\s+/g, " ").slice(0, 160);
+    const canonical = `https://totthobox.com/users/${encodeURIComponent(data.profile.slug || slug)}`;
+    const image = data.profile.avatar?.startsWith("https://")
+        ? data.profile.avatar
+        : "https://totthobox.com/og-image.png";
+
+    return {
+        title: name,
+        description,
+        alternates: { canonical },
+        openGraph: {
+            title: name,
+            description,
+            url: canonical,
+            siteName: "Totthobox",
+            type: "profile",
+            locale: "bn_BD",
+            images: [{ url: image, alt: name }],
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: name,
+            description,
+            images: [image],
+        },
+    };
 }
 
 export default async function UserProfilePage({ 
@@ -72,7 +121,7 @@ export default async function UserProfilePage({
     const { profile, contents } = data;
 
     return (
-        <main className="max-w-2xl mx-auto p-4 space-y-6">
+        <main className="tb-page-container tb-section mx-auto max-w-2xl space-y-6">
             {/* Profile Header */}
             <header className="overflow-hidden">
                 <div className="flex flex-col md:flex-row gap-8 items-start">

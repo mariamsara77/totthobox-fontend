@@ -93,7 +93,7 @@ export default function MessageList({
           <div className="flex justify-start py-2 ps-2">
             <div className="flex items-center gap-4 p-4 rounded-2xl ">
               <div className="relative">
-                <div className="absolute inset-0 rounded-full bg-zinc-9000/20 animate-ping" />
+                <div className="absolute inset-0 rounded-full bg-zinc-400/15 animate-ping" />
                 <div className="relative bg-zinc-9000/10 p-2 rounded-lg animate-bounce">
                   <Sparkles className="w-5 h-5 " />
                 </div>

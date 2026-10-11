@@ -280,7 +280,7 @@ export function CountryGrid({
         {statsItems.map((item) => (
           <div
             key={item.label}
-            className="rounded-2xl border border-zinc-200/70 bg-white/60 p-4 shadow-sm dark:border-zinc-700/60 dark:bg-zinc-900/50"
+            className="tb-surface p-4 shadow-sm"
           >
             <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
               {item.label}
@@ -291,7 +291,7 @@ export function CountryGrid({
       </div>
 
       {/* Filters */}
-      <div className="rounded-2xl border border-zinc-200/70 bg-white/60 p-4 shadow-sm dark:border-zinc-700/60 dark:bg-zinc-900/50 sm:p-5">
+      <div className="tb-surface p-4 shadow-sm sm:p-5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <div className="flex-1">
             <label htmlFor="country-search" className="sr-only">
@@ -372,7 +372,7 @@ export function CountryGrid({
           countries.map((country) => (
             <article
               key={country.cca3 || country.code || country.slug}
-              className="group overflow-hidden rounded-2xl border border-zinc-200/70 bg-white/70 shadow-sm transition hover:border-zinc-300 hover:shadow-md dark:border-zinc-700/60 dark:bg-zinc-900/50 dark:hover:border-zinc-600"
+              className="tb-surface group overflow-hidden shadow-sm transition hover:shadow-md"
             >
               <div className="flex items-center gap-4 border-b border-zinc-100 p-4 dark:border-zinc-800">
                 <img

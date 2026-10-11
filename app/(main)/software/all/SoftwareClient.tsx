@@ -166,7 +166,7 @@ export default function SoftwareClient({ platform = "", initialData }: Props) {
   const hasActiveFilters = Boolean(search || platform);
 
   return (
-    <main className="max-w-2xl mx-auto space-y-4 p-4 sm:p-6">
+    <main className="tb-page-container tb-section mx-auto max-w-2xl space-y-4">
       {/* Header */}
       <header className="border-b border-zinc-400/25 pb-4">
         <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
