@@ -67,8 +67,8 @@
     {
       "name": "Bangla Calendar",
       "short_name": "Calendar",
-      "url": "/bangla/calendar",
-      "icons": [{ "src": "/web-app-manifest-192x192.png", "sizes": "192x192" }]
+      "url": "/bangla/holiday",
+      "icons": [{ "src": "/web-app-manifest-192x192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
       "name": "Islamic Basics",
