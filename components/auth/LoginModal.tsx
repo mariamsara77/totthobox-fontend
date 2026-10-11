@@ -168,7 +168,7 @@ export default function LoginModal({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.98 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="my-auto w-full max-w-md overflow-hidden rounded-2xl border border-zinc-400/25 shadow-2xl backdrop-blur-xl "
+            className="tb-surface my-auto w-full max-w-md overflow-hidden backdrop-blur-xl "
           >
             <div className="relative border-b border-zinc-400/25 px-4 pb-4 pt-5 sm:px-5">
               <div className="absolute inset-x-0 top-0 h-px bg-zinc-400/25" />
