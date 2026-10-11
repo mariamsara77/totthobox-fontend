@@ -471,7 +471,7 @@ export default function ContactClient() {
             href="https://maps.google.com/?q=মিরপুর+ডিওএইচএস+এভিনিউ-৩+ঢাকা"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm font-medium py-2.5 px-4 rounded-xl bg-zinc-200/50 dark:bg-zinc-800 hover:bg-zinc-300/50 dark:hover:bg-zinc-700 transition flex items-center justify-center gap-2 shrink-0"
+            className="tb-button tb-button-secondary text-sm py-2.5 px-4 transition flex items-center justify-center gap-2 shrink-0"
           >
             ম্যাপে দেখুন ↗
           </a>
