@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 
 export default function DataConverterPage() {
   return (
-      <div className="mx-auto max-w-2xl p-4">
+      <div className="tb-page-container tb-section mx-auto max-w-2xl">
         <DataConverter />
       </div>
   );
