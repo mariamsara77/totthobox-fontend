@@ -48,7 +48,8 @@ These sampled routes returned HTTP 200; sampled public content routes generally 
 - Visitor PWA-status sync no longer performs three forced startup POSTs; route sync handles initial state, unchanged visibility syncs are skipped, and bfcache restoration is handled separately.
 - PWA caching was changed to replace generic Workbox defaults with explicit static-asset caches, a short-lived public-news API cache, and NetworkOnly for API GET requests. Generic HTML/RSC page caches and generic API caches are not configured in the new source.
 - Legacy cache cleanup removes the old `pages`, `pages-rsc`, `pages-rsc-prefetch`, `apis`, `cross-origin`, `start-url`, `next-data`, and `static-data-assets` caches when the app next runs.
-- Existing AdSense, Google Translate, and visitor-tracker loaders are deferred; their total runtime impact has not been measured.
+- GA4 and the visitor tracker now wait for explicit analytics consent; AdSense waits for explicit marketing consent. The consent UI defaults both optional categories off, opens on first visit, and dispatches preference changes to the loaders.
+- Google Translate now loads only after a visitor explicitly chooses a non-Bengali language; the automatic geo-translation fetch and auto-selection path were removed.
 
 ### Still unverified
 - Lighthouse has **not** been run for mobile or desktop. No Performance score is claimed, and the requested 95+ target is not verified.
@@ -84,13 +85,13 @@ These sampled routes returned HTTP 200; sampled public content routes generally 
 
 ### Implemented in source
 - GA4 SPA pathname page-view handling was added.
-- The privacy policy has route-specific social metadata and already describes cookies, analytics, and Google AdSense.
-- AdSense remains deferred until interaction or a delayed fallback.
+- The privacy policy has route-specific social metadata and now explains that optional analytics/marketing scripts remain off until the visitor saves a choice.
+- A custom cookie preference panel opens on first visit; analytics and marketing default to off. GA4 sends pathname page views only after analytics opt-in; AdSense loads only after marketing opt-in. Revoking analytics disables GA collection, and revoking marketing reloads the document to stop future AdSense execution.
 
 ### Still unverified
 - GA4 events must be checked in GA4 DebugView/realtime on client-side navigation; source code alone does not prove event delivery or deduplication.
-- AdSense publisher/account status, ads.txt readiness, actual ad rendering, consent requirements for applicable audiences, and privacy-disclosure sufficiency have not been verified against the live account or legal requirements.
-- No analytics account access or production privacy/consent configuration was inspected.
+- Production `/ads.txt` returned HTTP 200 and advertises the same publisher ID as the site metadata. AdSense account status, actual ad rendering, and consent requirements for applicable audiences have not been verified against the live account or legal requirements.
+- The custom preference UI is not proof of a Google-certified CMP where one is required. No analytics account access or production privacy/consent configuration was inspected.
 
 ## Verification matrix
 
@@ -101,7 +102,7 @@ These sampled routes returned HTTP 200; sampled public content routes generally 
 | Route metadata | Source fixes across principal static/dynamic routes; rendered sample checked before latest bundle | Code changes made; fresh preview check pending |
 | Sitemap/robots | Previous preview returned 200; non-indexable news entries removed in source | Fresh preview check and full URL crawl pending |
 | Production build/lint | Earlier Vercel preview build passed before the latest source bundle | Latest build pending |
-| Lighthouse mobile/desktop | Not run | Pending |
+| Lighthouse mobile/desktop | A branch-triggered Lighthouse workflow has been added for mobile/desktop home and converter runs | Run pending |
 | WCAG 2.2 AA | Source-level CSS improvements only | Manual/automated testing pending |
 | PWA privacy/offline/install/update | Cache policy changed in source; no device run | Generated SW and browser tests pending |
 | GA4 SPA events | Event code changed | DebugView validation pending |

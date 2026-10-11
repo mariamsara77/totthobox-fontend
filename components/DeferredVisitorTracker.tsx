@@ -7,6 +7,16 @@ const VisitorTracker = dynamic(() => import("@/components/VisitorTracker"), {
   ssr: false,
 });
 
+function hasAnalyticsConsent(): boolean {
+  try {
+    const saved = window.localStorage.getItem("cookie_consent");
+    if (!saved) return false;
+    return JSON.parse(saved)?.analytics === true;
+  } catch {
+    return false;
+  }
+}
+
 function scheduleIdle(callback: () => void) {
   const requestIdle = (
     window as Window & {
@@ -37,18 +47,39 @@ export default function DeferredVisitorTracker() {
 
   useEffect(() => {
     let idleHandle = 0;
+    let loadListenerAttached = false;
 
     const handleLoad = () => {
-      idleHandle = scheduleIdle(() => setReady(true));
+      loadListenerAttached = false;
+      if (!hasAnalyticsConsent()) return;
+      if (idleHandle) cancelIdle(idleHandle);
+      idleHandle = scheduleIdle(() => {
+        idleHandle = 0;
+        setReady(hasAnalyticsConsent());
+      });
     };
 
-    if (document.readyState === "complete") {
-      handleLoad();
-    } else {
-      window.addEventListener("load", handleLoad, { once: true });
-    }
+    const syncConsent = () => {
+      if (!hasAnalyticsConsent()) {
+        if (idleHandle) cancelIdle(idleHandle);
+        idleHandle = 0;
+        setReady(false);
+        return;
+      }
+
+      if (document.readyState === "complete") {
+        handleLoad();
+      } else if (!loadListenerAttached) {
+        loadListenerAttached = true;
+        window.addEventListener("load", handleLoad, { once: true });
+      }
+    };
+
+    window.addEventListener("cookie-consent-updated", syncConsent);
+    syncConsent();
 
     return () => {
+      window.removeEventListener("cookie-consent-updated", syncConsent);
       window.removeEventListener("load", handleLoad);
       if (idleHandle) cancelIdle(idleHandle);
     };

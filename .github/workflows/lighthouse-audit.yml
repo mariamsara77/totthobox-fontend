@@ -1,0 +1,95 @@
+name: Lighthouse audit
+
+on:
+  push:
+    branches:
+      - fix/sidebar-seo-mainline-2026
+    paths:
+      - ".github/workflows/lighthouse-audit.yml"
+      - "app/**"
+      - "components/**"
+      - "next.config.ts"
+      - "public/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TARGET_URL: https://totthobox-fontend-git-fix-sidebar-seo-mainline-2026-totthobox.vercel.app
+    steps:
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Wait for the latest branch preview
+        shell: bash
+        run: |
+          for attempt in $(seq 1 36); do
+            if curl -fsS "$TARGET_URL/sitemap.xml" -o /tmp/totthobox-sitemap.xml \
+              && ! grep -q '<loc>https://totthobox.com/news/headlines</loc>' /tmp/totthobox-sitemap.xml; then
+              echo "Branch preview sitemap reflects the audit changes."
+              exit 0
+            fi
+            echo "Waiting for the Vercel branch preview ($attempt/36)..."
+            sleep 10
+          done
+          echo "Timed out waiting for the latest branch preview." >&2
+          exit 1
+
+      - name: Install Lighthouse CLI
+        run: npm install --no-save lighthouse@12.8.2
+
+      - name: Lighthouse — homepage, mobile
+        run: npx lighthouse "$TARGET_URL/" --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --only-categories=performance,accessibility,best-practices,seo --output=json --output-path=lh-home-mobile.json --quiet
+
+      - name: Lighthouse — homepage, desktop
+        run: npx lighthouse "$TARGET_URL/" --preset=desktop --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --only-categories=performance,accessibility,best-practices,seo --output=json --output-path=lh-home-desktop.json --quiet
+
+      - name: Lighthouse — document converter, mobile
+        run: npx lighthouse "$TARGET_URL/converter/document" --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --only-categories=performance,accessibility,best-practices,seo --output=json --output-path=lh-converter-mobile.json --quiet
+
+      - name: Lighthouse — document converter, desktop
+        run: npx lighthouse "$TARGET_URL/converter/document" --preset=desktop --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --only-categories=performance,accessibility,best-practices,seo --output=json --output-path=lh-converter-desktop.json --quiet
+
+      - name: Print score and Core Web Vitals summary
+        if: always()
+        run: |
+          node <<'NODE'
+          const fs = require("node:fs");
+          const reports = [
+            ["Homepage / mobile", "lh-home-mobile.json"],
+            ["Homepage / desktop", "lh-home-desktop.json"],
+            ["Converter / mobile", "lh-converter-mobile.json"],
+            ["Converter / desktop", "lh-converter-desktop.json"],
+          ];
+          for (const [label, file] of reports) {
+            if (!fs.existsSync(file)) {
+              console.log(`${label}: report missing`);
+              continue;
+            }
+            const r = JSON.parse(fs.readFileSync(file, "utf8"));
+            const score = (key) => {
+              const value = r.categories?.[key]?.score;
+              return Number.isFinite(value) ? Math.round(value * 100) : "n/a";
+            };
+            const metric = (key) => r.audits?.[key]?.displayValue ?? "n/a";
+            console.log(
+              `${label}: Performance ${score("performance")}, Accessibility ${score("accessibility")}, Best Practices ${score("best-practices")}, SEO ${score("seo")}; LCP ${metric("largest-contentful-paint")}; CLS ${metric("cumulative-layout-shift")}; TBT ${metric("total-blocking-time")}`
+            );
+          }
+          NODE
+
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: totthobox-lighthouse-reports
+          path: "lh-*.json"
+          if-no-files-found: warn
+          retention-days: 14
