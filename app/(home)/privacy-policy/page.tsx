@@ -41,7 +41,7 @@ export default function PrivacyPolicyPage() {
 
   return (
     <section>
-      <div className=" max-w-2xl mx-auto space-y-4 py-6">
+      <div className=" tb-page-container mx-auto max-w-2xl space-y-6 py-6">
         {/* Header */}
         <div className="text-center mb-16">
           <h1 className="text-3xl font-bold mb-4">
@@ -81,7 +81,7 @@ export default function PrivacyPolicyPage() {
         </section>
 
         {/* Services Overview */}
-        <div className="p-6 rounded-xl bg-zinc-400/10/50">
+        <div className="tb-muted-surface p-6">
           <h3 className="mb-4 text-indigo-600 ">আমাদের মূল সেবাসমূহ</h3>
           <p className="mb-5">
             Totthobox আপনার দৈনন্দিন প্রয়োজনীয় তথ্য, টুলস ও ডিজিটাল সেবা এক
