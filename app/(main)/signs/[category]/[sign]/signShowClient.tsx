@@ -72,7 +72,7 @@ export default function SignShowClient({ initialData, categorySlug }: Props) {
         : [];
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6 p-4 sm:p-6">
+    <div className="tb-page-container tb-section mx-auto max-w-2xl space-y-6">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
