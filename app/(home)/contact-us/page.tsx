@@ -16,7 +16,17 @@ export const metadata: Metadata = {
   openGraph: {
     title: "যোগাযোগ করুন | Totthobox",
     description: "Totthobox-এর সাথে যোগাযোগ করুন।",
+    url: "https://totthobox.com/contact-us",
+    siteName: "Totthobox",
     type: "website",
+    locale: "bn_BD",
+    images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox — information, tools and digital services" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "যোগাযোগ করুন | Totthobox",
+    description: "Totthobox-এর সাথে যোগাযোগ করুন।",
+    images: ["/og-image.png"],
   },
 };
 
