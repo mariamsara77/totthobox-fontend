@@ -405,11 +405,11 @@ export default function Sidebar() {
                   {(newsSources.bn ?? []).map((source: any) => (
                     <SidebarItem
                       key={source.key}
-                      href={`/news/headlines?source=${encodeURIComponent(source.key)}`}
+                      href={`/news/headlines/${encodeURIComponent(source.key)}`}
                       icon={Newspaper}
                       label={source.name}
                       badge={Number.isFinite(source.total) ? source.total : undefined}
-                      isActive={false}
+                      isActive={pathname === `/news/headlines/${encodeURIComponent(source.key)}`}
                       collapsed={collapsed}
                       onHover={handleMouseEnter}
                       onLeave={handleMouseLeave}
@@ -421,11 +421,11 @@ export default function Sidebar() {
                   {(newsSources.en ?? []).map((source: any) => (
                     <SidebarItem
                       key={source.key}
-                      href={`/news/headlines?source=${encodeURIComponent(source.key)}`}
+                      href={`/news/headlines/${encodeURIComponent(source.key)}`}
                       icon={Newspaper}
                       label={source.name}
                       badge={typeof source.total === "number" ? source.total : undefined}
-                      isActive={false}
+                      isActive={pathname === `/news/headlines/${encodeURIComponent(source.key)}`}
                       collapsed={collapsed}
                       onHover={handleMouseEnter}
                       onLeave={handleMouseLeave}
@@ -437,11 +437,11 @@ export default function Sidebar() {
                   {(newsSources.other ?? []).map((source: any) => (
                     <SidebarItem
                       key={source.key}
-                      href={`/news/headlines?source=${encodeURIComponent(source.key)}`}
+                      href={`/news/headlines/${encodeURIComponent(source.key)}`}
                       icon={Newspaper}
                       label={source.name}
                       badge={Number.isFinite(source.total) ? source.total : undefined}
-                      isActive={false}
+                      isActive={pathname === `/news/headlines/${encodeURIComponent(source.key)}`}
                       collapsed={collapsed}
                       onHover={handleMouseEnter}
                       onLeave={handleMouseLeave}
