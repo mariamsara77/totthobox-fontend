@@ -143,6 +143,7 @@ export default function NewsHeadlines({ initialSourceKey = "" }: { initialSource
 
   function updateFilters(changes: Record<string, string | null>) {
     const params = new URLSearchParams(searchParams.toString());
+    if ("source" in changes) params.delete("source");
     for (const [key, value] of Object.entries(changes)) {
       if (key === "source") continue;
       if (value) params.set(key, value);
