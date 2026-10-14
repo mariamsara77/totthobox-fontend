@@ -216,8 +216,27 @@ export default function NewsHeadlines() {
       {error && <div role="alert" className="mb-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/30 dark:text-red-300">{error}</div>}
 
       {loading ? (
-        <div className="grid grid-cols-1 gap-3">
-          {Array.from({ length: 6 }).map((_, index) => <div key={index} className="animate-pulse overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800"><div className="h-36 bg-zinc-200 dark:bg-zinc-800" /><div className="space-y-3 p-4"><div className="h-4 w-4/5 rounded bg-zinc-200 dark:bg-zinc-800" /><div className="h-4 w-2/3 rounded bg-zinc-200 dark:bg-zinc-800" /><div className="h-3 w-1/3 rounded bg-zinc-200 dark:bg-zinc-800" /></div></div>)}
+        <div aria-label="সংবাদ শিরোনাম লোড হচ্ছে" aria-busy="true" className="grid grid-cols-1 gap-3">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <article key={index} className="overflow-hidden rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+              <div className="h-36 animate-pulse bg-zinc-100 dark:bg-zinc-800 sm:h-40" />
+              <div className="animate-pulse p-4">
+                <div className="mb-3 flex items-center gap-2">
+                  <div className="h-6 w-24 rounded-full bg-zinc-200 dark:bg-zinc-800" />
+                  <div className="h-3 w-16 rounded-full bg-zinc-100 dark:bg-zinc-800/70" />
+                </div>
+                <div className="space-y-2">
+                  <div className="h-4 w-full rounded-md bg-zinc-200 dark:bg-zinc-800" />
+                  <div className="h-4 w-5/6 rounded-md bg-zinc-200 dark:bg-zinc-800" />
+                  <div className="h-4 w-2/3 rounded-md bg-zinc-100 dark:bg-zinc-800/70" />
+                </div>
+                <div className="mt-5 flex items-center justify-between gap-3">
+                  <div className="h-3 w-32 rounded-full bg-zinc-100 dark:bg-zinc-800/70" />
+                  <div className="h-3 w-16 rounded-full bg-zinc-200 dark:bg-zinc-800" />
+                </div>
+              </div>
+            </article>
+          ))}
         </div>
       ) : (payload.data ?? []).length === 0 ? (
         <div className="rounded-2xl border border-dashed border-zinc-300 px-5 py-14 text-center dark:border-zinc-700">
