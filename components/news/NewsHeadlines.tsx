@@ -152,7 +152,7 @@ export default function NewsHeadlines() {
   const meta = payload.meta;
 
   return (
-    <section className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+    <section className="mx-auto w-full max-w-2xl px-4 py-6 sm:px-6">
       <div className="mb-6 rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-5 sm:p-7">
         <div className="flex items-start gap-3">
           <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-zinc-800 text-white dark:bg-zinc-100 dark:text-zinc-900">
@@ -168,35 +168,35 @@ export default function NewsHeadlines() {
         </div>
       </div>
 
-      <form onSubmit={submitSearch} className="mb-6 grid grid-cols-1 gap-3 rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-3 sm:grid-cols-2 lg:grid-cols-[minmax(220px,1fr)_190px_170px_140px_auto]">
-        <label className="relative block">
+      <form onSubmit={submitSearch} className="mb-6 grid grid-cols-1 gap-3 rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-3 sm:grid-cols-2">
+        <label className="relative block sm:col-span-2">
           <span className="sr-only">সংবাদ খুঁজুন</span>
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
-          <input value={searchInput} onChange={(event) => setSearchInput(event.target.value)} placeholder="শিরোনাম খুঁজুন..." className="w-full rounded-xl border border-zinc-200 bg-transparent py-2.5 pl-9 pr-3 text-sm outline-none focus:border-zinc-500 dark:border-zinc-700" />
+          <input value={searchInput} onChange={(event) => setSearchInput(event.target.value)} placeholder="শিরোনাম খুঁজুন..." className="!m-0 !h-11 !min-w-0 !w-full !rounded-xl !border-0 !bg-transparent !py-0 pl-9 pr-3 text-sm leading-normal !shadow-none !outline-none !ring-0 focus:!ring-0 placeholder:text-zinc-500 dark:placeholder:text-zinc-400" />
         </label>
         <label>
           <span className="sr-only">সংবাদমাধ্যম নির্বাচন</span>
-          <select value={source} onChange={(event) => updateFilters({ source: event.target.value || null })} className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-700 outline-none focus:border-zinc-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200">
+          <select value={source} onChange={(event) => updateFilters({ source: event.target.value || null })} className="tb-muted-surface h-11 w-full min-w-0 px-3 text-sm text-zinc-700 outline-none transition-colors focus:border-zinc-400/50 focus:bg-zinc-100 dark:text-zinc-200 dark:focus:bg-zinc-800">
             <option value="">সব সংবাদমাধ্যম</option>
             {sources.map((item) => <option key={item.key} value={item.key}>{item.name}</option>)}
           </select>
         </label>
         <label>
           <span className="sr-only">বিভাগ নির্বাচন</span>
-          <select value={category} onChange={(event) => updateFilters({ category: event.target.value || null })} className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-700 outline-none focus:border-zinc-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200">
+          <select value={category} onChange={(event) => updateFilters({ category: event.target.value || null })} className="tb-muted-surface h-11 w-full min-w-0 px-3 text-sm text-zinc-700 outline-none transition-colors focus:border-zinc-400/50 focus:bg-zinc-100 dark:text-zinc-200 dark:focus:bg-zinc-800">
             <option value="">সব বিভাগ</option>
             {categories.map((item) => <option key={item} value={item}>{item}</option>)}
           </select>
         </label>
         <label>
           <span className="sr-only">ভাষা নির্বাচন</span>
-          <select value={language} onChange={(event) => updateFilters({ language: event.target.value || null })} className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-700 outline-none focus:border-zinc-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200">
+          <select value={language} onChange={(event) => updateFilters({ language: event.target.value || null })} className="tb-muted-surface h-11 w-full min-w-0 px-3 text-sm text-zinc-700 outline-none transition-colors focus:border-zinc-400/50 focus:bg-zinc-100 dark:text-zinc-200 dark:focus:bg-zinc-800">
             <option value="">সব ভাষা</option>
             <option value="bn">বাংলা</option>
             <option value="en">English</option>
           </select>
         </label>
-        <button type="submit" className="inline-flex items-center justify-center gap-2 rounded-xl bg-zinc-800 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 focus-visible:ring-offset-2 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200">
+        <button type="submit" className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-zinc-800 px-5 text-sm font-semibold text-white transition hover:bg-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 focus-visible:ring-offset-2 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200 sm:col-span-2">
           <Search className="h-4 w-4" /> খুঁজুন
         </button>
       </form>
@@ -209,7 +209,7 @@ export default function NewsHeadlines() {
       {error && <div role="alert" className="mb-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/30 dark:text-red-300">{error}</div>}
 
       {loading ? (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3">
           {Array.from({ length: 6 }).map((_, index) => <div key={index} className="animate-pulse overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800"><div className="h-36 bg-zinc-200 dark:bg-zinc-800" /><div className="space-y-3 p-4"><div className="h-4 w-4/5 rounded bg-zinc-200 dark:bg-zinc-800" /><div className="h-4 w-2/3 rounded bg-zinc-200 dark:bg-zinc-800" /><div className="h-3 w-1/3 rounded bg-zinc-200 dark:bg-zinc-800" /></div></div>)}
         </div>
       ) : (payload.data ?? []).length === 0 ? (
@@ -221,7 +221,7 @@ export default function NewsHeadlines() {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3">
             {(payload.data ?? []).map((item) => (
               <article key={item.id ?? item.slug} className="group flex min-w-0 flex-col overflow-hidden rounded-2xl border border-zinc-400/25 bg-white transition duration-200 hover:-translate-y-0.5 hover:border-zinc-500/50 hover:shadow-md focus-within:ring-2 focus-within:ring-zinc-500/50 dark:bg-zinc-900 dark:hover:border-zinc-600">
                 {item.image_url ? <Link href={`/news/headlines/${encodeURIComponent(item.slug)}`} tabIndex={-1} aria-hidden="true" className="block h-44 overflow-hidden bg-zinc-400/10"><img src={item.image_url} alt="" loading="lazy" className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]" /></Link> : <div className="flex h-24 items-center justify-center bg-zinc-400/10 text-zinc-600 dark:text-zinc-300"><Newspaper className="h-8 w-8 opacity-70" /></div>}
