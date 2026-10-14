@@ -193,7 +193,7 @@ async function fetchNewsSources(): Promise<Array<{ key: string }>> {
           const key: unknown = typeof item.key === "string" ? item.key : item.source_key;
           return typeof key === "string" ? key.trim() : "";
         })
-        .filter((key): key is string => key.length > 0);
+        .filter((key: string) => key.length > 0);
       if (keys.length) return [...new Set<string>(keys)].map((key) => ({ key }));
     } catch {
       // Try the fallback endpoint if the primary source list is unavailable.
