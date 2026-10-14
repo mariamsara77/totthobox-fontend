@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Search, Clock3, ExternalLink, Newspaper, ChevronLeft, ChevronRight } from "lucide-react";
@@ -65,6 +65,11 @@ export default function NewsHeadlines() {
   const [error, setError] = useState("");
 
   const queryString = searchParams.toString();
+
+  const categories = useMemo(
+    () => Array.from(new Set((payload.data ?? []).map((item) => item.category?.trim()).filter((value): value is string => Boolean(value)))).sort(),
+    [payload.data],
+  );
 
   useEffect(() => {
     setSearchInput(searchParams.get("search") ?? "");
@@ -162,7 +167,7 @@ export default function NewsHeadlines() {
         </div>
       </div>
 
-      <form onSubmit={submitSearch} className="mb-5 grid grid-cols-1 gap-3 rounded-2xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900 sm:grid-cols-2 lg:grid-cols-[minmax(220px,1fr)_190px_160px_auto]">
+      <form onSubmit={submitSearch} className="mb-5 grid grid-cols-1 gap-3 rounded-2xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900 sm:grid-cols-2 lg:grid-cols-[minmax(220px,1fr)_190px_170px_140px_auto]">
         <label className="relative block">
           <span className="sr-only">সংবাদ খুঁজুন</span>
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
@@ -173,6 +178,13 @@ export default function NewsHeadlines() {
           <select value={source} onChange={(event) => updateFilters({ source: event.target.value || null })} className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-700 outline-none focus:border-sky-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200">
             <option value="">সব সংবাদমাধ্যম</option>
             {sources.map((item) => <option key={item.key} value={item.key}>{item.name}</option>)}
+          </select>
+        </label>
+        <label>
+          <span className="sr-only">বিভাগ নির্বাচন</span>
+          <select value={category} onChange={(event) => updateFilters({ category: event.target.value || null })} className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-700 outline-none focus:border-sky-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200">
+            <option value="">সব বিভাগ</option>
+            {categories.map((item) => <option key={item} value={item}>{item}</option>)}
           </select>
         </label>
         <label>
