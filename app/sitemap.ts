@@ -52,6 +52,7 @@ const publicRoutes = [
   "/software/all",
   "/signs/all",
   "/contact/police",
+  "/news/headlines",
 ];
 
 function hasSoftwareContent(item: unknown): boolean {
@@ -171,6 +172,37 @@ async function fetchSlugs(
   return slugs;
 }
 
+
+async function fetchNewsSources(): Promise<Array<{ key: string }>> {
+  const endpoints = ["/api/news/sources", "/api/sidebar/news-sources"];
+
+  for (const endpoint of endpoints) {
+    try {
+      const response = await fetch(`${API_BASE}${endpoint}`, { cache: "no-store" });
+      if (!response.ok) continue;
+      const json = await response.json();
+      const data = json?.data ?? json;
+      const list = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.sources)
+          ? data.sources
+          : [...(Array.isArray(data?.bn) ? data.bn : []), ...(Array.isArray(data?.en) ? data.en : []), ...(Array.isArray(data?.other) ? data.other : [])];
+      const keys = list
+        .map((item: unknown) => {
+          if (!isRecord(item)) return "";
+          const key = typeof item.key === "string" ? item.key : typeof item.source_key === "string" ? item.source_key : "";
+          return key.trim();
+        })
+        .filter(Boolean);
+      if (keys.length) return [...new Set(keys)].map((key) => ({ key }));
+    } catch {
+      // Try the fallback endpoint if the primary source list is unavailable.
+    }
+  }
+
+  return [];
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticEntries = publicRoutes.map((path) => ({
     url: `${SITE_URL}${path}`,
@@ -190,6 +222,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     islamDowa,
     people,
     apps,
+    newsSources,
+    newsStories,
   ] = await Promise.all([
     getAllCountries(),
     fetchPlatforms(),
@@ -202,6 +236,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     fetchSlugs("/api/islam/dowa"),
     fetchSlugs("/api/people"),
     fetchSlugs("/api/apps", hasSoftwareContent),
+    fetchNewsSources(),
+    fetchSlugs("/api/news"),
   ]);
 
   const dynamicEntries: MetadataRoute.Sitemap = [
@@ -259,6 +295,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${SITE_URL}/software/${encodeURIComponent(slug)}`,
       changeFrequency: "monthly" as const,
       priority: 0.5,
+    })),
+    ...newsSources.map((source) => ({
+      url: `${SITE_URL}/news/headlines/${encodeURIComponent(source.key)}`,
+      changeFrequency: "hourly" as const,
+      priority: 0.7,
+    })),
+    ...newsStories.map((slug) => ({
+      url: `${SITE_URL}/news/headlines/story/${encodeURIComponent(slug)}`,
+      changeFrequency: "daily" as const,
+      priority: 0.6,
     })),
   ];
 
