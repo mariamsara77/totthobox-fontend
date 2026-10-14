@@ -187,14 +187,14 @@ async function fetchNewsSources(): Promise<Array<{ key: string }>> {
         : Array.isArray(data?.sources)
           ? data.sources
           : [...(Array.isArray(data?.bn) ? data.bn : []), ...(Array.isArray(data?.en) ? data.en : []), ...(Array.isArray(data?.other) ? data.other : [])];
-      const keys = list
-        .map((item: unknown) => {
+      const keys: string[] = list
+        .map((item: unknown): string => {
           if (!isRecord(item)) return "";
-          const key = typeof item.key === "string" ? item.key : typeof item.source_key === "string" ? item.source_key : "";
-          return key.trim();
+          const key: unknown = typeof item.key === "string" ? item.key : item.source_key;
+          return typeof key === "string" ? key.trim() : "";
         })
-        .filter(Boolean);
-      if (keys.length) return [...new Set(keys)].map((key) => ({ key }));
+        .filter((key): key is string => key.length > 0);
+      if (keys.length) return [...new Set<string>(keys)].map((key) => ({ key }));
     } catch {
       // Try the fallback endpoint if the primary source list is unavailable.
     }
