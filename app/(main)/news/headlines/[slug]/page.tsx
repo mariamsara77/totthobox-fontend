@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import NewsHeadlines from "@/components/news/NewsHeadlines";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Clock3, ExternalLink, Newspaper } from "lucide-react";
 
@@ -44,6 +45,36 @@ async function getNews(slug: string): Promise<NewsRecord | null> {
   }
 }
 
+
+type NewsSource = { key: string; name: string; count?: number; total?: number };
+
+async function getNewsSource(sourceKey: string): Promise<NewsSource | null> {
+  const endpoints = [`${API_BASE}/api/news/sources`, `${API_BASE}/api/sidebar/news-sources`];
+
+  for (const endpoint of endpoints) {
+    try {
+      const response = await fetch(endpoint, { next: { revalidate: 300 }, headers: { Accept: "application/json" } });
+      if (!response.ok) continue;
+      const result = await response.json();
+      const data = result?.data ?? result;
+      const list = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.sources)
+          ? data.sources
+          : [...(Array.isArray(data?.bn) ? data.bn : []), ...(Array.isArray(data?.en) ? data.en : []), ...(Array.isArray(data?.other) ? data.other : [])];
+      const source = list.find((item: any) => String(item?.key ?? item?.source_key ?? "") === sourceKey);
+      if (source) {
+        const name = String(source.name ?? source.source_name ?? source.title ?? "").trim();
+        if (name) return { key: sourceKey, name, count: Number(source.count ?? source.total ?? 0) };
+      }
+    } catch {
+      // Try the fallback endpoint if the primary source list is unavailable.
+    }
+  }
+
+  return null;
+}
+
 function formatDate(value?: string | null) {
   if (!value) return "সময় অনুপলব্ধ";
   const date = new Date(value);
@@ -58,17 +89,34 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
+  const source = await getNewsSource(slug);
+  if (source) {
+    const title = `${source.name} — সংবাদ শিরোনাম | Totthobox`;
+    const description = `${source.name} সংবাদমাধ্যমের সর্বশেষ শিরোনাম ও প্রকাশিত খবর এক জায়গায় দেখুন।`;
+    return {
+      title,
+      description,
+      alternates: { canonical: `/news/headlines/${encodeURIComponent(source.key)}` },
+      openGraph: {
+        title,
+        description,
+        url: `https://totthobox.com/news/headlines/${encodeURIComponent(source.key)}`,
+        type: "website",
+      },
+      twitter: { card: "summary", title, description },
+    };
+  }
   const item = await getNews(slug);
-  if (!item) return { title: "সংবাদ পাওয়া যায়নি" };
+  if (!item) return { title: "সংবাদ পাওয়া যায়নি", robots: { index: false, follow: true } };
   const description = `${item.title} — ${item.source_name || "Totthobox সংবাদ শিরোনাম"}`;
   return {
     title: item.title,
     description,
-    alternates: { canonical: `/news/headlines/${encodeURIComponent(item.slug)}` },
+    alternates: { canonical: `/news/headlines/story/${encodeURIComponent(item.slug)}` },
     openGraph: {
       title: item.title,
       description,
-      url: `https://totthobox.com/news/headlines/${encodeURIComponent(item.slug)}`,
+      url: `https://totthobox.com/news/headlines/story/${encodeURIComponent(item.slug)}`,
       type: "article",
       ...(item.image_url ? { images: [item.image_url] } : {}),
     },
@@ -87,6 +135,9 @@ export default async function NewsDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const source = await getNewsSource(slug);
+  if (source) return <NewsHeadlines initialSourceKey={source.key} />;
+
   const item = await getNews(slug);
   if (!item) notFound();
 
