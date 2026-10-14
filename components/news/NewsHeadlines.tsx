@@ -24,8 +24,9 @@ type NewsItem = {
 type NewsSource = {
   key: string;
   name: string;
-  language: string;
+  language?: string;
   total?: number;
+  count?: number;
 };
 
 type NewsPayload = {
@@ -85,7 +86,9 @@ export default function NewsHeadlines() {
       })
       .then((result) => {
         const data = result?.data ?? result;
-        setSources([...(Array.isArray(data?.bn) ? data.bn : []), ...(Array.isArray(data?.en) ? data.en : [])]);
+        const list = Array.isArray(data) ? data : Array.isArray(data?.sources) ? data.sources : [...(Array.isArray(data?.bn) ? data.bn : []), ...(Array.isArray(data?.en) ? data.en : [])];
+        const normalized = list.map((item: any) => ({ key: String(item?.key ?? item?.source_key ?? ""), name: String(item?.name ?? item?.source_name ?? item?.title ?? "").trim(), language: String(item?.language ?? "").toLowerCase(), total: Number(item?.total ?? item?.count ?? 0) })).filter((item: NewsSource) => item.key && item.name);
+        setSources(normalized);
       })
       .catch((reason) => {
         if (reason?.name !== "AbortError") setSources([]);
@@ -107,6 +110,7 @@ export default function NewsHeadlines() {
 
     setLoading(true);
     setError("");
+    const loadingStartedAt = Date.now();
     fetch(`${API_BASE}/api/news?${params.toString()}`, {
       signal: controller.signal,
       cache: "no-store",
@@ -129,7 +133,10 @@ export default function NewsHeadlines() {
         }
       })
       .finally(() => {
-        if (!controller.signal.aborted) setLoading(false);
+        const remainingSkeletonTime = Math.max(0, 350 - (Date.now() - loadingStartedAt));
+        window.setTimeout(() => {
+          if (!controller.signal.aborted) setLoading(false);
+        }, remainingSkeletonTime);
       });
     return () => controller.abort();
   }, [source, language, category, page, searchParams]);
@@ -176,21 +183,21 @@ export default function NewsHeadlines() {
         </label>
         <label>
           <span className="sr-only">সংবাদমাধ্যম নির্বাচন</span>
-          <select value={source} onChange={(event) => updateFilters({ source: event.target.value || null })} className="tb-muted-surface h-11 w-full min-w-0 px-3 text-sm text-zinc-700 outline-none transition-colors focus:border-zinc-400/50 focus:bg-zinc-100 dark:text-zinc-200 dark:focus:bg-zinc-800">
+          <select value={source} onChange={(event) => updateFilters({ source: event.target.value || null })} className="h-11 w-full min-w-0 rounded-xl border border-zinc-400/20 bg-zinc-400/10 px-3 text-sm text-zinc-700 outline-none transition hover:bg-zinc-400/20 focus:border-zinc-500/50 focus:ring-2 focus:ring-zinc-500/20 dark:text-zinc-200">
             <option value="">সব সংবাদমাধ্যম</option>
             {sources.map((item) => <option key={item.key} value={item.key}>{item.name}</option>)}
           </select>
         </label>
         <label>
           <span className="sr-only">বিভাগ নির্বাচন</span>
-          <select value={category} onChange={(event) => updateFilters({ category: event.target.value || null })} className="tb-muted-surface h-11 w-full min-w-0 px-3 text-sm text-zinc-700 outline-none transition-colors focus:border-zinc-400/50 focus:bg-zinc-100 dark:text-zinc-200 dark:focus:bg-zinc-800">
+          <select value={category} onChange={(event) => updateFilters({ category: event.target.value || null })} className="h-11 w-full min-w-0 rounded-xl border border-zinc-400/20 bg-zinc-400/10 px-3 text-sm text-zinc-700 outline-none transition hover:bg-zinc-400/20 focus:border-zinc-500/50 focus:ring-2 focus:ring-zinc-500/20 dark:text-zinc-200">
             <option value="">সব বিভাগ</option>
             {categories.map((item) => <option key={item} value={item}>{item}</option>)}
           </select>
         </label>
         <label>
           <span className="sr-only">ভাষা নির্বাচন</span>
-          <select value={language} onChange={(event) => updateFilters({ language: event.target.value || null })} className="tb-muted-surface h-11 w-full min-w-0 px-3 text-sm text-zinc-700 outline-none transition-colors focus:border-zinc-400/50 focus:bg-zinc-100 dark:text-zinc-200 dark:focus:bg-zinc-800">
+          <select value={language} onChange={(event) => updateFilters({ language: event.target.value || null })} className="h-11 w-full min-w-0 rounded-xl border border-zinc-400/20 bg-zinc-400/10 px-3 text-sm text-zinc-700 outline-none transition hover:bg-zinc-400/20 focus:border-zinc-500/50 focus:ring-2 focus:ring-zinc-500/20 dark:text-zinc-200">
             <option value="">সব ভাষা</option>
             <option value="bn">বাংলা</option>
             <option value="en">English</option>
