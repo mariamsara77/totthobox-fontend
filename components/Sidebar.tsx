@@ -184,6 +184,20 @@ export default function Sidebar() {
 
     const fetchData = async () => {
       try {
+        if (pathname.startsWith("/news")) {
+          const res = await fetch(`${API_URL}/api/sidebar/news-sources`, {
+            signal: controller.signal,
+          });
+          if (res.ok) {
+            const payload = await res.json();
+            const data = payload?.data ?? payload;
+            setNewsSources({
+              bn: Array.isArray(data?.bn) ? data.bn : [],
+              en: Array.isArray(data?.en) ? data.en : [],
+            });
+          }
+        }
+
         if (pathname.startsWith("/contact")) {
           const res = await fetch(`${API_URL}/api/sidebar/contact-categories`, {
             signal: controller.signal,
@@ -346,6 +360,59 @@ export default function Sidebar() {
               onLeave={handleMouseLeave}
               showLabel={true}
             />
+            {/* ===================== NEWS HEADLINES ===================== */}
+            <div className="space-y-1">
+              <SidebarItem
+                href="/news/headlines"
+                icon={Newspaper}
+                label="সংবাদ শিরোনাম"
+                isActive={pathname.startsWith("/news")}
+                collapsed={collapsed}
+                onHover={handleMouseEnter}
+                onLeave={handleMouseLeave}
+              />
+              {pathname.startsWith("/news") && (
+                <>
+                  {!collapsed && (
+                    <h3 className="mb-2 mt-3 px-3 text-xs uppercase tracking-wider text-zinc-400">
+                      সংবাদমাধ্যম
+                    </h3>
+                  )}
+                  {(newsSources.bn ?? []).length > 0 && !collapsed && (
+                    <p className="px-3 pt-1 text-[11px] font-semibold text-zinc-400">বাংলা সংবাদ</p>
+                  )}
+                  {(newsSources.bn ?? []).map((source: any) => (
+                    <SidebarItem
+                      key={source.key}
+                      href={`/news/headlines?source=${encodeURIComponent(source.key)}`}
+                      icon={Newspaper}
+                      label={source.name}
+                      badge={typeof source.total === "number" ? source.total : undefined}
+                      isActive={false}
+                      collapsed={collapsed}
+                      onHover={handleMouseEnter}
+                      onLeave={handleMouseLeave}
+                    />
+                  ))}
+                  {(newsSources.en ?? []).length > 0 && !collapsed && (
+                    <p className="px-3 pt-2 text-[11px] font-semibold text-zinc-400">English news</p>
+                  )}
+                  {(newsSources.en ?? []).map((source: any) => (
+                    <SidebarItem
+                      key={source.key}
+                      href={`/news/headlines?source=${encodeURIComponent(source.key)}`}
+                      icon={Newspaper}
+                      label={source.name}
+                      badge={typeof source.total === "number" ? source.total : undefined}
+                      isActive={false}
+                      collapsed={collapsed}
+                      onHover={handleMouseEnter}
+                      onLeave={handleMouseLeave}
+                    />
+                  ))}
+                </>
+              )}
+            </div>
             {/* ===================== CALENDAR ===================== */}
             {pathname.startsWith("/bangla/") && (
               <div className="space-y-1">
