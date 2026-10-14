@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import NewsHeadlines from "@/components/news/NewsHeadlines";
 
 export const metadata: Metadata = {
@@ -19,5 +20,9 @@ export const metadata: Metadata = {
 };
 
 export default function NewsHeadlinesPage() {
-  return <NewsHeadlines />;
+  return (
+    <Suspense fallback={<div className="mx-auto max-w-7xl animate-pulse px-4 py-10"><div className="mb-6 h-32 rounded-2xl bg-zinc-200 dark:bg-zinc-800" /><div className="h-10 rounded-xl bg-zinc-100 dark:bg-zinc-900" /></div>}>
+      <NewsHeadlines />
+    </Suspense>
+  );
 }
