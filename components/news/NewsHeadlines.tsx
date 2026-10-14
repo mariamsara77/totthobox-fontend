@@ -252,7 +252,7 @@ export default function NewsHeadlines({ initialSourceKey = "" }: { initialSource
           <Newspaper className="mx-auto mb-3 h-9 w-9 text-zinc-400" />
           <h3 className="font-semibold text-zinc-900 dark:text-white">কোনো সংবাদ পাওয়া যায়নি</h3>
           <p className="mt-1 text-sm text-zinc-500">অন্য শব্দ বা সংবাদমাধ্যম দিয়ে আবার খুঁজুন।</p>
-          <button type="button" onClick={() => { setSearchInput(""); router.replace(pathname); }} className="mt-4 rounded-xl bg-zinc-800 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200">সব শিরোনাম দেখুন</button>
+          <button type="button" onClick={() => { setSearchInput(""); router.replace("/news/headlines"); }} className="mt-4 rounded-xl bg-zinc-800 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200">সব শিরোনাম দেখুন</button>
         </div>
       ) : (
         <>
