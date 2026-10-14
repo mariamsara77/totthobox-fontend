@@ -1,6 +1,7 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import type { FormEvent } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Search, Clock3, ExternalLink, Newspaper, ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -126,11 +127,6 @@ export default function NewsHeadlines() {
       });
     return () => controller.abort();
   }, [source, language, category, page, searchParams]);
-
-  const categories = useMemo(
-    () => Array.from(new Set((payload.data ?? []).map((item) => item.category?.trim()).filter((value): value is string => Boolean(value)))).sort(),
-    [payload.data],
-  );
 
   function updateFilters(changes: Record<string, string | null>) {
     const params = new URLSearchParams(searchParams.toString());
