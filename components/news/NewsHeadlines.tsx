@@ -52,11 +52,11 @@ function formatDate(value?: string | null) {
   }).format(date);
 }
 
-export default function NewsHeadlines() {
+export default function NewsHeadlines({ initialSourceKey = "" }: { initialSourceKey?: string }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const source = searchParams.get("source") ?? "";
+  const source = initialSourceKey || searchParams.get("source") || "";
   const language = searchParams.get("language") ?? "";
   const category = searchParams.get("category") ?? "";
   const page = Math.max(1, Number(searchParams.get("page") || 1));
@@ -144,10 +144,19 @@ export default function NewsHeadlines() {
   function updateFilters(changes: Record<string, string | null>) {
     const params = new URLSearchParams(searchParams.toString());
     for (const [key, value] of Object.entries(changes)) {
+      if (key === "source") continue;
       if (value) params.set(key, value);
       else params.delete(key);
     }
     if (!("page" in changes)) params.delete("page");
+
+    if ("source" in changes) {
+      const nextSource = changes.source;
+      const basePath = nextSource ? `/news/headlines/${encodeURIComponent(nextSource)}` : "/news/headlines";
+      router.replace(`${basePath}${params.size ? `?${params.toString()}` : ""}`, { scroll: false });
+      return;
+    }
+
     router.replace(`${pathname}${params.size ? `?${params.toString()}` : ""}`, { scroll: false });
   }
 
@@ -250,13 +259,13 @@ export default function NewsHeadlines() {
           <div className="grid grid-cols-1 gap-3">
             {(payload.data ?? []).map((item) => (
               <article key={item.id ?? item.slug} className="group flex min-w-0 flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white transition duration-200 hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-md hover:shadow-zinc-950/[0.04] focus-within:ring-2 focus-within:ring-zinc-400/40 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700">
-                {item.image_url ? <Link href={`/news/headlines/${encodeURIComponent(item.slug)}`} tabIndex={-1} aria-hidden="true" className="block h-44 overflow-hidden bg-zinc-400/10"><img src={item.image_url} alt="" loading="lazy" className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]" /></Link> : <div className="flex h-24 items-center justify-center bg-zinc-400/10 text-zinc-600 dark:text-zinc-300"><Newspaper className="h-8 w-8 opacity-70" /></div>}
+                {item.image_url ? <Link href={`/news/headlines/story/${encodeURIComponent(item.slug)}`} tabIndex={-1} aria-hidden="true" className="block h-44 overflow-hidden bg-zinc-400/10"><img src={item.image_url} alt="" loading="lazy" className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]" /></Link> : <div className="flex h-24 items-center justify-center bg-zinc-400/10 text-zinc-600 dark:text-zinc-300"><Newspaper className="h-8 w-8 opacity-70" /></div>}
                 <div className="flex flex-1 flex-col p-4">
                   <div className="mb-2 flex flex-wrap items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
                     {item.source_name && <span className="rounded-full bg-zinc-400/10 px-2.5 py-1 font-semibold text-zinc-700 dark:text-zinc-200">{item.source_name}</span>}
                     {item.category && <span>{item.category}</span>}
                   </div>
-                  <h3 className="line-clamp-3 text-base font-semibold leading-7 text-zinc-900 dark:text-zinc-100"><Link href={`/news/headlines/${encodeURIComponent(item.slug)}`} className="hover:text-zinc-600 dark:hover:text-white">{item.title}</Link></h3>
+                  <h3 className="line-clamp-3 text-base font-semibold leading-7 text-zinc-900 dark:text-zinc-100"><Link href={`/news/headlines/story/${encodeURIComponent(item.slug)}`} className="hover:text-zinc-600 dark:hover:text-white">{item.title}</Link></h3>
                   <div className="mt-auto flex items-center justify-between gap-3 pt-4 text-xs text-zinc-500 dark:text-zinc-400">
                     <span className="inline-flex items-center gap-1.5"><Clock3 className="h-3.5 w-3.5" />{formatDate(item.published_at)}</span>
                     {item.source_url && <a href={item.source_url} target="_blank" rel="noopener noreferrer" aria-label="মূল সংবাদ পড়ুন" className="inline-flex shrink-0 items-center gap-1 font-semibold text-zinc-700 hover:underline dark:text-zinc-200">বিস্তারিত <ExternalLink className="h-3.5 w-3.5" /></a>}
