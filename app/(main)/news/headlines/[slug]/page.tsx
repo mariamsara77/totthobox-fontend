@@ -91,7 +91,7 @@ export default async function NewsDetailPage({
   if (!item) notFound();
 
   return (
-    <article className="mx-auto w-full max-w-4xl px-4 py-6 sm:px-6 lg:py-10">
+    <article className="mx-auto w-full max-w-2xl px-4 py-6 sm:px-6 lg:py-10">
       <Link href="/news/headlines" className="mb-6 inline-flex items-center gap-2 rounded-lg px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-400/10 dark:text-zinc-200">
         <ArrowLeft className="h-4 w-4" /> সব সংবাদ শিরোনাম
       </Link>
