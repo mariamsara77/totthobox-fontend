@@ -92,14 +92,14 @@ export default async function NewsDetailPage({
 
   return (
     <article className="mx-auto w-full max-w-4xl px-4 py-6 sm:px-6 lg:py-10">
-      <Link href="/news/headlines" className="mb-6 inline-flex items-center gap-2 rounded-lg px-2 py-2 text-sm font-medium text-sky-700 hover:bg-sky-50 dark:text-sky-300 dark:hover:bg-zinc-900">
+      <Link href="/news/headlines" className="mb-6 inline-flex items-center gap-2 rounded-lg px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-400/10 dark:text-zinc-200">
         <ArrowLeft className="h-4 w-4" /> সব সংবাদ শিরোনাম
       </Link>
-      <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="overflow-hidden rounded-2xl border border-zinc-400/25 bg-white dark:bg-zinc-900">
         {item.image_url && <img src={item.image_url} alt="" className="max-h-[460px] w-full bg-zinc-100 object-cover dark:bg-zinc-800" />}
         <div className="p-5 sm:p-8">
           <div className="mb-4 flex flex-wrap items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
-            <span className="rounded-full bg-sky-50 px-3 py-1 font-semibold text-sky-700 dark:bg-sky-950/60 dark:text-sky-300">{item.source_name || "সংবাদমাধ্যম"}</span>
+            <span className="rounded-full bg-zinc-400/10 px-3 py-1 font-semibold text-zinc-700 dark:text-zinc-200">{item.source_name || "সংবাদমাধ্যম"}</span>
             {item.category && <span>{item.category}</span>}
             <span className="inline-flex items-center gap-1"><Clock3 className="h-4 w-4" />{formatDate(item.published_at)}</span>
           </div>
@@ -107,19 +107,19 @@ export default async function NewsDetailPage({
           <p className="mt-4 text-sm leading-7 text-zinc-600 dark:text-zinc-300">
             এই শিরোনামের সম্পূর্ণ প্রতিবেদন মূল সংবাদমাধ্যমে পড়ুন। Totthobox শিরোনাম ও উৎসের তথ্য এক জায়গায় দেখায়; মূল প্রতিবেদন প্রকাশকের ওয়েবসাইটে থাকে।
           </p>
-          {item.source_url && <a href={item.source_url} target="_blank" rel="noopener noreferrer" className="mt-5 inline-flex items-center gap-2 rounded-xl bg-sky-600 px-4 py-3 text-sm font-semibold text-white hover:bg-sky-700">মূল প্রতিবেদন পড়ুন <ExternalLink className="h-4 w-4" /></a>}
+          {item.source_url && <a href={item.source_url} target="_blank" rel="noopener noreferrer" className="mt-5 inline-flex items-center gap-2 rounded-xl bg-zinc-800 px-4 py-3 text-sm font-semibold text-white transition hover:bg-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 focus-visible:ring-offset-2 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200">মূল প্রতিবেদন পড়ুন <ExternalLink className="h-4 w-4" /></a>}
         </div>
       </div>
 
       {(item.coverage ?? []).length > 0 && (
         <section className="mt-8">
-          <div className="mb-4 flex items-center gap-2"><Newspaper className="h-5 w-5 text-sky-600" /><h2 className="text-xl font-bold text-zinc-900 dark:text-white">একই খবরের অন্যান্য সংবাদমাধ্যম</h2></div>
+          <div className="mb-4 flex items-center gap-2"><Newspaper className="h-5 w-5 text-zinc-600 dark:text-zinc-300" /><h2 className="text-xl font-bold text-zinc-900 dark:text-white">একই খবরের অন্যান্য সংবাদমাধ্যম</h2></div>
           <div className="space-y-3">
             {(item.coverage ?? []).map((story) => (
-              <div key={story.id} className="rounded-xl border border-zinc-200 p-4 dark:border-zinc-800">
-                <p className="mb-1 text-xs font-semibold text-sky-700 dark:text-sky-300">{story.source_name || "সংবাদমাধ্যম"} · {formatDate(story.published_at)}</p>
+              <div key={story.id} className="rounded-xl border border-zinc-400/25 p-4 transition hover:bg-zinc-400/5">
+                <p className="mb-1 text-xs font-semibold text-zinc-600 dark:text-zinc-300">{story.source_name || "সংবাদমাধ্যম"} · {formatDate(story.published_at)}</p>
                 <h3 className="font-semibold leading-6 text-zinc-900 dark:text-zinc-100">{story.title}</h3>
-                {story.source_url && <a href={story.source_url} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-sky-700 hover:underline dark:text-sky-300">প্রতিবেদন পড়ুন <ExternalLink className="h-3.5 w-3.5" /></a>}
+                {story.source_url && <a href={story.source_url} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-zinc-700 hover:underline dark:text-zinc-200">প্রতিবেদন পড়ুন <ExternalLink className="h-3.5 w-3.5" /></a>}
               </div>
             ))}
           </div>
