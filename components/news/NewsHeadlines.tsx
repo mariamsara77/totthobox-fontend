@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { Search, Clock3, ExternalLink, Newspaper, ChevronLeft, ChevronRight } from "lucide-react";
 
 type NewsItem = {
@@ -223,13 +224,13 @@ export default function NewsHeadlines() {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
             {(payload.data ?? []).map((item) => (
               <article key={item.id ?? item.slug} className="group flex min-w-0 flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white transition hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-sky-800">
-                {item.image_url ? <a href={item.source_url || undefined} target="_blank" rel="noopener noreferrer" tabIndex={-1} aria-hidden="true" className="block h-44 overflow-hidden bg-zinc-100 dark:bg-zinc-800"><img src={item.image_url} alt="" loading="lazy" className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]" /></a> : <div className="flex h-24 items-center justify-center bg-zinc-50 text-sky-600 dark:bg-zinc-800/60 dark:text-sky-300"><Newspaper className="h-8 w-8 opacity-70" /></div>}
+                {item.image_url ? <Link href={`/news/headlines/${encodeURIComponent(item.slug)}`} tabIndex={-1} aria-hidden="true" className="block h-44 overflow-hidden bg-zinc-100 dark:bg-zinc-800"><img src={item.image_url} alt="" loading="lazy" className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]" /></Link> : <div className="flex h-24 items-center justify-center bg-zinc-50 text-sky-600 dark:bg-zinc-800/60 dark:text-sky-300"><Newspaper className="h-8 w-8 opacity-70" /></div>}
                 <div className="flex flex-1 flex-col p-4">
                   <div className="mb-2 flex flex-wrap items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
                     {item.source_name && <span className="rounded-full bg-sky-50 px-2.5 py-1 font-semibold text-sky-700 dark:bg-sky-950/60 dark:text-sky-300">{item.source_name}</span>}
                     {item.category && <span>{item.category}</span>}
                   </div>
-                  <h3 className="text-base font-semibold leading-7 text-zinc-900 dark:text-zinc-100">{item.source_url ? <a href={item.source_url} target="_blank" rel="noopener noreferrer" className="hover:text-sky-700 dark:hover:text-sky-300">{item.title}<span className="sr-only"> (নতুন ট্যাবে খুলবে)</span></a> : item.title}</h3>
+                  <h3 className="text-base font-semibold leading-7 text-zinc-900 dark:text-zinc-100"><Link href={`/news/headlines/${encodeURIComponent(item.slug)}`} className="hover:text-sky-700 dark:hover:text-sky-300">{item.title}</Link></h3>
                   <div className="mt-auto flex items-center justify-between gap-3 pt-4 text-xs text-zinc-500 dark:text-zinc-400">
                     <span className="inline-flex items-center gap-1.5"><Clock3 className="h-3.5 w-3.5" />{formatDate(item.published_at)}</span>
                     {item.source_url && <a href={item.source_url} target="_blank" rel="noopener noreferrer" aria-label="মূল সংবাদ পড়ুন" className="inline-flex shrink-0 items-center gap-1 font-semibold text-sky-700 hover:underline dark:text-sky-300">বিস্তারিত <ExternalLink className="h-3.5 w-3.5" /></a>}
