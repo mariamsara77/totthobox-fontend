@@ -153,13 +153,13 @@ export default function NewsHeadlines() {
 
   return (
     <section className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-      <div className="mb-6 rounded-2xl border border-zinc-200 bg-gradient-to-br from-sky-50 via-white to-indigo-50 p-5 dark:border-zinc-800 dark:from-zinc-900 dark:via-zinc-950 dark:to-slate-900 sm:p-8">
+      <div className="mb-6 rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-5 sm:p-7">
         <div className="flex items-start gap-3">
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-sky-600 text-white">
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-zinc-800 text-white dark:bg-zinc-100 dark:text-zinc-900">
             <Newspaper className="h-6 w-6" />
           </span>
           <div>
-            <p className="mb-1 text-sm font-semibold text-sky-700 dark:text-sky-300">Totthobox News</p>
+            <p className="mb-1 text-sm font-semibold text-zinc-600 dark:text-zinc-300">Totthobox News</p>
             <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white sm:text-3xl">সংবাদ শিরোনাম</h1>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-600 dark:text-zinc-300">
               বিভিন্ন সংবাদমাধ্যমের সর্বশেষ শিরোনাম এক জায়গায় দেখুন। বিস্তারিত পড়তে মূল সংবাদমাধ্যমে যান।
@@ -168,35 +168,35 @@ export default function NewsHeadlines() {
         </div>
       </div>
 
-      <form onSubmit={submitSearch} className="mb-5 grid grid-cols-1 gap-3 rounded-2xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900 sm:grid-cols-2 lg:grid-cols-[minmax(220px,1fr)_190px_170px_140px_auto]">
+      <form onSubmit={submitSearch} className="mb-6 grid grid-cols-1 gap-3 rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-3 sm:grid-cols-2 lg:grid-cols-[minmax(220px,1fr)_190px_170px_140px_auto]">
         <label className="relative block">
           <span className="sr-only">সংবাদ খুঁজুন</span>
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
-          <input value={searchInput} onChange={(event) => setSearchInput(event.target.value)} placeholder="শিরোনাম খুঁজুন..." className="w-full rounded-xl border border-zinc-200 bg-transparent py-2.5 pl-9 pr-3 text-sm outline-none focus:border-sky-500 dark:border-zinc-700" />
+          <input value={searchInput} onChange={(event) => setSearchInput(event.target.value)} placeholder="শিরোনাম খুঁজুন..." className="w-full rounded-xl border border-zinc-200 bg-transparent py-2.5 pl-9 pr-3 text-sm outline-none focus:border-zinc-500 dark:border-zinc-700" />
         </label>
         <label>
           <span className="sr-only">সংবাদমাধ্যম নির্বাচন</span>
-          <select value={source} onChange={(event) => updateFilters({ source: event.target.value || null })} className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-700 outline-none focus:border-sky-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200">
+          <select value={source} onChange={(event) => updateFilters({ source: event.target.value || null })} className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-700 outline-none focus:border-zinc-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200">
             <option value="">সব সংবাদমাধ্যম</option>
             {sources.map((item) => <option key={item.key} value={item.key}>{item.name}</option>)}
           </select>
         </label>
         <label>
           <span className="sr-only">বিভাগ নির্বাচন</span>
-          <select value={category} onChange={(event) => updateFilters({ category: event.target.value || null })} className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-700 outline-none focus:border-sky-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200">
+          <select value={category} onChange={(event) => updateFilters({ category: event.target.value || null })} className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-700 outline-none focus:border-zinc-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200">
             <option value="">সব বিভাগ</option>
             {categories.map((item) => <option key={item} value={item}>{item}</option>)}
           </select>
         </label>
         <label>
           <span className="sr-only">ভাষা নির্বাচন</span>
-          <select value={language} onChange={(event) => updateFilters({ language: event.target.value || null })} className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-700 outline-none focus:border-sky-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200">
+          <select value={language} onChange={(event) => updateFilters({ language: event.target.value || null })} className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-700 outline-none focus:border-zinc-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200">
             <option value="">সব ভাষা</option>
             <option value="bn">বাংলা</option>
             <option value="en">English</option>
           </select>
         </label>
-        <button type="submit" className="inline-flex items-center justify-center gap-2 rounded-xl bg-sky-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-700">
+        <button type="submit" className="inline-flex items-center justify-center gap-2 rounded-xl bg-zinc-800 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 focus-visible:ring-offset-2 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200">
           <Search className="h-4 w-4" /> খুঁজুন
         </button>
       </form>
@@ -217,23 +217,23 @@ export default function NewsHeadlines() {
           <Newspaper className="mx-auto mb-3 h-9 w-9 text-zinc-400" />
           <h3 className="font-semibold text-zinc-900 dark:text-white">কোনো সংবাদ পাওয়া যায়নি</h3>
           <p className="mt-1 text-sm text-zinc-500">অন্য শব্দ বা সংবাদমাধ্যম দিয়ে আবার খুঁজুন।</p>
-          <button type="button" onClick={() => { setSearchInput(""); router.replace(pathname); }} className="mt-4 rounded-lg bg-sky-600 px-4 py-2 text-sm font-medium text-white">সব শিরোনাম দেখুন</button>
+          <button type="button" onClick={() => { setSearchInput(""); router.replace(pathname); }} className="mt-4 rounded-xl bg-zinc-800 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200">সব শিরোনাম দেখুন</button>
         </div>
       ) : (
         <>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
             {(payload.data ?? []).map((item) => (
-              <article key={item.id ?? item.slug} className="group flex min-w-0 flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white transition hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-sky-800">
-                {item.image_url ? <Link href={`/news/headlines/${encodeURIComponent(item.slug)}`} tabIndex={-1} aria-hidden="true" className="block h-44 overflow-hidden bg-zinc-100 dark:bg-zinc-800"><img src={item.image_url} alt="" loading="lazy" className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]" /></Link> : <div className="flex h-24 items-center justify-center bg-zinc-50 text-sky-600 dark:bg-zinc-800/60 dark:text-sky-300"><Newspaper className="h-8 w-8 opacity-70" /></div>}
+              <article key={item.id ?? item.slug} className="group flex min-w-0 flex-col overflow-hidden rounded-2xl border border-zinc-400/25 bg-white transition duration-200 hover:-translate-y-0.5 hover:border-zinc-500/50 hover:shadow-md focus-within:ring-2 focus-within:ring-zinc-500/50 dark:bg-zinc-900 dark:hover:border-zinc-600">
+                {item.image_url ? <Link href={`/news/headlines/${encodeURIComponent(item.slug)}`} tabIndex={-1} aria-hidden="true" className="block h-44 overflow-hidden bg-zinc-400/10"><img src={item.image_url} alt="" loading="lazy" className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]" /></Link> : <div className="flex h-24 items-center justify-center bg-zinc-400/10 text-zinc-600 dark:text-zinc-300"><Newspaper className="h-8 w-8 opacity-70" /></div>}
                 <div className="flex flex-1 flex-col p-4">
                   <div className="mb-2 flex flex-wrap items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
-                    {item.source_name && <span className="rounded-full bg-sky-50 px-2.5 py-1 font-semibold text-sky-700 dark:bg-sky-950/60 dark:text-sky-300">{item.source_name}</span>}
+                    {item.source_name && <span className="rounded-full bg-zinc-400/10 px-2.5 py-1 font-semibold text-zinc-700 dark:text-zinc-200">{item.source_name}</span>}
                     {item.category && <span>{item.category}</span>}
                   </div>
-                  <h3 className="text-base font-semibold leading-7 text-zinc-900 dark:text-zinc-100"><Link href={`/news/headlines/${encodeURIComponent(item.slug)}`} className="hover:text-sky-700 dark:hover:text-sky-300">{item.title}</Link></h3>
+                  <h3 className="text-base font-semibold leading-7 text-zinc-900 dark:text-zinc-100"><Link href={`/news/headlines/${encodeURIComponent(item.slug)}`} className="hover:text-zinc-600 dark:hover:text-white">{item.title}</Link></h3>
                   <div className="mt-auto flex items-center justify-between gap-3 pt-4 text-xs text-zinc-500 dark:text-zinc-400">
                     <span className="inline-flex items-center gap-1.5"><Clock3 className="h-3.5 w-3.5" />{formatDate(item.published_at)}</span>
-                    {item.source_url && <a href={item.source_url} target="_blank" rel="noopener noreferrer" aria-label="মূল সংবাদ পড়ুন" className="inline-flex shrink-0 items-center gap-1 font-semibold text-sky-700 hover:underline dark:text-sky-300">বিস্তারিত <ExternalLink className="h-3.5 w-3.5" /></a>}
+                    {item.source_url && <a href={item.source_url} target="_blank" rel="noopener noreferrer" aria-label="মূল সংবাদ পড়ুন" className="inline-flex shrink-0 items-center gap-1 font-semibold text-zinc-700 hover:underline dark:text-zinc-200">বিস্তারিত <ExternalLink className="h-3.5 w-3.5" /></a>}
                   </div>
                 </div>
               </article>
@@ -241,9 +241,9 @@ export default function NewsHeadlines() {
           </div>
           {meta && meta.last_page > 1 && (
             <nav aria-label="সংবাদ পৃষ্ঠা" className="mt-7 flex items-center justify-center gap-3">
-              <button type="button" disabled={page <= 1} onClick={() => updateFilters({ page: String(page - 1) })} className="inline-flex items-center gap-1 rounded-xl border border-zinc-200 px-4 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-40 dark:border-zinc-700"><ChevronLeft className="h-4 w-4" /> আগের</button>
+              <button type="button" disabled={page <= 1} onClick={() => updateFilters({ page: String(page - 1) })} className="inline-flex items-center gap-1 rounded-xl border border-zinc-400/30 px-4 py-2 text-sm transition hover:bg-zinc-400/10 disabled:cursor-not-allowed disabled:opacity-40"><ChevronLeft className="h-4 w-4" /> আগের</button>
               <span className="text-sm text-zinc-600 dark:text-zinc-300">পৃষ্ঠা {page.toLocaleString("bn-BD")} / {meta.last_page.toLocaleString("bn-BD")}</span>
-              <button type="button" disabled={page >= meta.last_page} onClick={() => updateFilters({ page: String(page + 1) })} className="inline-flex items-center gap-1 rounded-xl border border-zinc-200 px-4 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-40 dark:border-zinc-700">পরের <ChevronRight className="h-4 w-4" /></button>
+              <button type="button" disabled={page >= meta.last_page} onClick={() => updateFilters({ page: String(page + 1) })} className="inline-flex items-center gap-1 rounded-xl border border-zinc-400/30 px-4 py-2 text-sm transition hover:bg-zinc-400/10 disabled:cursor-not-allowed disabled:opacity-40">পরের <ChevronRight className="h-4 w-4" /></button>
             </nav>
           )}
         </>
