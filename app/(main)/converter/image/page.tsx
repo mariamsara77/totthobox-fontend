@@ -9,6 +9,7 @@ export const metadata: Metadata = {
     title: "Free Online Image Converter | JPG, PNG, WEBP, SVG, AVIF & More",
     description:
       "Convert images instantly in your browser. No uploads, no limits, completely free and private.",
+    url: "https://totthobox.com/converter/image",
     type: "website",
     images: [
       {
