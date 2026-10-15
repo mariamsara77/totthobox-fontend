@@ -17,6 +17,7 @@ export const metadata: Metadata = {
     locale: "bn_BD",
     siteName: "Totthobox",
     url: "https://totthobox.com/tools/zodiac-calculator",
+    images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
   },
   twitter: {
     card: "summary_large_image",
@@ -24,6 +25,7 @@ export const metadata: Metadata = {
       "স্মার্ট রাশিফল ক্যালকুলেটর - সঠিক রাশি ও রাশির মিল জানুন | তথ্যবক্স",
     description:
       "অনলাইনে জন্মতারিখ দিয়ে আপনার সঠিক রাশি, বৈশিষ্ট্য এবং দুইজনের রাশির মিল নিখুঁতভাবে হিসেব করুন।",
+    images: [{ url: "https://totthobox.com/og-image.png", alt: "Totthobox" }],
   },
 };
 

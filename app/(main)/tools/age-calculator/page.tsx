@@ -17,6 +17,7 @@ export const metadata: Metadata = {
     locale: "bn_BD",
     siteName: "Totthobox",
     url: "https://totthobox.com/tools/age-calculator",
+    images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
   },
   twitter: {
     card: "summary_large_image",
@@ -24,6 +25,7 @@ export const metadata: Metadata = {
       "স্মার্ট এজ ক্যালকুলেটর - সঠিক বয়স ও বয়সের পার্থক্য হিসাব | তথ্যবক্স",
     description:
       "অনলাইনে নিখুঁতভাবে আপনার বয়স, পরবর্তী জন্মদিন, দুইজনের বয়সের পার্থক্য এবং আরও অনেক কিছু হিসাব করুন।",
+    images: [{ url: "https://totthobox.com/og-image.png", alt: "Totthobox" }],
   },
 };
 

@@ -17,7 +17,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "bn_BD",
     siteName: "Totthobox",
-    url: "https://totthobox.com/tools/qr-generator",
+    url: "https://totthobox.com/tools/qrcode-generator",
+    images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
   },
   twitter: {
     card: "summary_large_image",
@@ -25,6 +26,7 @@ export const metadata: Metadata = {
       "QR কোড জেনারেটর — ফ্রি অ্যাডভান্সড অনলাইন QR Code Generator | তথ্যবক্স",
     description:
       "টেক্সট, লিংক, ওয়াইফাই, SMS, ভিকার্ড থেকে তাৎক্ষণিক প্রফেশনাল QR কোড তৈরি করুন।",
+    images: [{ url: "https://totthobox.com/og-image.png", alt: "Totthobox" }],
   },
 };
 

@@ -17,12 +17,14 @@ export const metadata: Metadata = {
     locale: "bn_BD",
     siteName: "Totthobox",
     url: "https://totthobox.com/tools/writing-practice",
+    images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "লেখা প্র্যাকটিস ও ড্রয়িং টুল | তথ্যবক্স",
     description:
       "বাংলা ও ইংরেজি অক্ষর লেখা প্র্যাকটিস করুন। শিশুদের হাতের লেখা উন্নত করতে সেরা টুল।",
+    images: [{ url: "https://totthobox.com/og-image.png", alt: "Totthobox" }],
   },
 };
 

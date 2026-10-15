@@ -17,6 +17,7 @@ export const metadata: Metadata = {
     locale: "bn_BD",
     siteName: "Totthobox",
     url: "https://totthobox.com/tools/image-resizer",
+    images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
   },
   twitter: {
     card: "summary_large_image",
@@ -24,6 +25,7 @@ export const metadata: Metadata = {
       "ছবি রিসাইজ, ক্রপ ও সাইজ কমানোর অনলাইন টুল | Image Resizer | তথ্যবক্স",
     description:
       "যেকোনো ফর্ম, সিভি, ভিসা বা ভার্সিটি অ্যাডমিশনের জন্য ছবির রেজুলেশন (Pixel) ও সাইজ (KB) সহজেই ঠিক করুন।",
+    images: [{ url: "https://totthobox.com/og-image.png", alt: "Totthobox" }],
   },
 };
 
