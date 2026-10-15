@@ -5,7 +5,8 @@ const SITE_URL = "https://totthobox.com";
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
-export const revalidate = 0;
+// Rebuild the sitemap at most hourly instead of querying every dataset on every request.
+export const revalidate = 3600;
 
 const publicRoutes = [
   "/",
@@ -73,7 +74,7 @@ async function fetchPlatforms(): Promise<string[]> {
   try {
     const response = await fetch(
       `${API_BASE}/api/sidebar/software-platforms`,
-      { cache: "no-store" },
+      { next: { revalidate: 3600 } },
     );
 
     if (!response.ok) return [];
@@ -143,7 +144,7 @@ async function fetchSlugs(
       const separator = endpoint.includes("?") ? "&" : "?";
       const response = await fetch(
         `${API_BASE}${endpoint}${separator}per_page=${perPage}&page=${page}`,
-        { cache: "no-store" },
+        { next: { revalidate: 3600 } },
       );
 
       if (!response.ok) break;
@@ -178,7 +179,7 @@ async function fetchNewsSources(): Promise<Array<{ key: string }>> {
 
   for (const endpoint of endpoints) {
     try {
-      const response = await fetch(`${API_BASE}${endpoint}`, { cache: "no-store" });
+      const response = await fetch(`${API_BASE}${endpoint}`, { next: { revalidate: 3600 } });
       if (!response.ok) continue;
       const json = await response.json();
       const data = json?.data ?? json;
