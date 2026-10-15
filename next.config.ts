@@ -60,6 +60,25 @@ const nextConfig: NextConfig = {
   },
 };
 
+// Cache query-free public document navigations locally for 30 minutes.
+// Private/account routes, APIs, and query-string variants are intentionally excluded.
+const publicDocumentCaching: RuntimeCaching = {
+  handler: "CacheFirst",
+  method: "GET",
+  urlPattern: ({ request, url }) =>
+    request.mode === "navigate" &&
+    url.origin === self.location.origin &&
+    url.search === "" &&
+    !/^\/(?:api|auth|dashboard|profile|settings|messages|ai\/chat|offline)(?:\/|$)/i.test(url.pathname),
+  options: {
+    cacheName: "public-document-pages-v1",
+    expiration: {
+      maxEntries: 80,
+      maxAgeSeconds: 30 * 60,
+    },
+  },
+};
+
 const apiNetworkOnlyCaching: RuntimeCaching = {
   handler: "NetworkOnly",
   method: "GET",
@@ -80,7 +99,8 @@ const withPWA = withPWAInit({
     document: "/offline",
   },
   workboxOptions: {
-    runtimeCaching: [apiNetworkOnlyCaching],
+    // Custom routes run before defaults: cache safe public pages, never API responses.
+    runtimeCaching: [publicDocumentCaching, apiNetworkOnlyCaching],
   },
 });
 
