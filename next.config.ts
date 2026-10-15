@@ -74,13 +74,6 @@ const nextConfig: NextConfig = {
         ],
       },
 
-      // Next.js hashed build assets are content-addressed and safe to cache immutably.
-      {
-        source: "/_next/static/:path*",
-        headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
-        ],
-      },
       // Keep long-lived caching limited to stable/versioned public assets.
       {
         source: "/fonts/:path*",
