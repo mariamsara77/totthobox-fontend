@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cache } from "react";
 
 // Public news content can be served from ISR instead of rendering on every visit.
 export const revalidate = 300;
@@ -38,25 +39,24 @@ type NewsRecord = {
 
 const API_BASE = (process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com").replace(/\/$/, "");
 
-async function getNews(slug: string): Promise<NewsRecord | null> {
+const getNews = cache(async (slug: string): Promise<NewsRecord | null> => {
   try {
     const response = await fetch(`${API_BASE}/api/news/${encodeURIComponent(slug)}`, {
       next: { revalidate: 300 },
       headers: { Accept: "application/json" },
     });
-    if (response.status === 404) return null;
-    if (!response.ok) return null;
+    if (response.status === 404 || !response.ok) return null;
     const result = await response.json();
     return result?.data ?? null;
   } catch {
     return null;
   }
-}
+});
 
 
 type NewsSource = { key: string; name: string; count?: number; total?: number };
 
-async function getNewsSource(sourceKey: string): Promise<NewsSource | null> {
+const getNewsSource = cache(async (sourceKey: string): Promise<NewsSource | null> => {
   const endpoints = [`${API_BASE}/api/news/sources`, `${API_BASE}/api/sidebar/news-sources`];
 
   for (const endpoint of endpoints) {
@@ -81,7 +81,7 @@ async function getNewsSource(sourceKey: string): Promise<NewsSource | null> {
   }
 
   return null;
-}
+});
 
 function formatDate(value?: string | null) {
   if (!value) return "সময় অনুপলব্ধ";

@@ -74,7 +74,7 @@ async function fetchPlatforms(): Promise<string[]> {
   try {
     const response = await fetch(
       `${API_BASE}/api/sidebar/software-platforms`,
-      { next: { revalidate: 3600 } },
+      { next: { revalidate: 86400 } },
     );
 
     if (!response.ok) return [];
@@ -133,8 +133,12 @@ function hasMorePages(json: unknown): boolean {
 
 async function fetchSlugs(
   endpoint: string,
-  includeItem?: (item: unknown) => boolean,
+  options: {
+    includeItem?: (item: unknown) => boolean;
+    revalidateSeconds?: number;
+  } = {},
 ): Promise<string[]> {
+  const { includeItem, revalidateSeconds = 86400 } = options;
   const slugs: string[] = [];
   const seen = new Set<string>();
   const perPage = 50;
@@ -144,7 +148,7 @@ async function fetchSlugs(
       const separator = endpoint.includes("?") ? "&" : "?";
       const response = await fetch(
         `${API_BASE}${endpoint}${separator}per_page=${perPage}&page=${page}`,
-        { next: { revalidate: 3600 } },
+        { next: { revalidate: revalidateSeconds } },
       );
 
       if (!response.ok) break;
@@ -236,9 +240,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     fetchSlugs("/api/islam/basic"),
     fetchSlugs("/api/islam/dowa"),
     fetchSlugs("/api/people"),
-    fetchSlugs("/api/apps", hasSoftwareContent),
+    fetchSlugs("/api/apps", { includeItem: hasSoftwareContent }),
     fetchNewsSources(),
-    fetchSlugs("/api/news"),
+    fetchSlugs("/api/news", { revalidateSeconds: 3600 }),
   ]);
 
   const dynamicEntries: MetadataRoute.Sitemap = [
