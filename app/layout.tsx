@@ -51,29 +51,30 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Totthobox - প্রয়োজনীয় সকল তথ্য ও সেবা এক জায়গায়",
-    description:
-      "Totthobox হলো একটি আধুনিক ডিজিটাল ইনফরমেশন ও ইউটিলিটি সার্ভিস প্ল্যাটফর্ম। প্রয়োজনীয় সকল তথ্য ও সেবা সহজে পেতে ভিজিট করুন।",
-    url: "https://totthobox.com/",
+    title: {
+      default: "তথ্যবক্স — Totthobox",
+      template: "%s | Totthobox",
+    },
+    description: "সর্বশেষ খবর ও তথ্যের বিশ্বস্ত ঠিকানা",
+    url: "https://totthobox.com",
     siteName: "Totthobox",
     locale: "bn_BD",
     type: "website",
     images: [
       {
-        url: "https://totthobox.com/og-image.png",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         type: "image/png",
-        alt: "Totthobox",
+        alt: "তথ্যবক্স — Totthobox",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Totthobox - প্রয়োজনীয় সকল তথ্য ও সেবা এক জায়গায়",
-    description:
-      "Totthobox হলো একটি আধুনিক ডিজিটাল ইনফরমেশন ও ইউটিলিটি সার্ভিস প্ল্যাটফর্ম। প্রয়োজনীয় সকল তথ্য ও সেবা সহজে পেতে ভিজিট করুন।",
-    images: [{ url: "https://totthobox.com/og-image.png", alt: "Totthobox" }],
+    title: "তথ্যবক্স — Totthobox",
+    description: "সর্বশেষ খবর ও তথ্যের বিশ্বস্ত ঠিকানা",
+    images: ["/og-image.png"],
   },
   appleWebApp: {
     capable: true,
