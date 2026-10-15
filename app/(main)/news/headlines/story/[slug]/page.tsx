@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+
+// Public news content can be served from ISR instead of rendering on every visit.
+export const revalidate = 300;
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Clock3, ExternalLink, Newspaper } from "lucide-react";
