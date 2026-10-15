@@ -31,6 +31,7 @@ import {
   BookOpen,
   GraduationCap,
   ShieldAlert,
+  Newspaper,
   Sparkles,
 } from "lucide-react";
 import UserAnalytics from "@/components/UserAnalytics";
@@ -90,6 +91,12 @@ const services = [
     icon: ShieldAlert,
     label: "সংকেত",
     details: "স্বাস্থ্য ও ট্রাফিক সংকেত।",
+  },
+  {
+    href: "/news/headlines",
+    icon: Newspaper,
+    label: "সংবাদ শিরোনাম",
+    details: "বাংলা ও ইংরেজি সংবাদমাধ্যমের সর্বশেষ শিরোনাম।",
   },
   {
     href: "/ai/chat",

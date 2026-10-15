@@ -145,7 +145,7 @@ export default function Sidebar() {
   const [isExtraConvertersOpen, setIsExtraConvertersOpen] = useState(false);
 
   // ========== Dynamic Data States ==========
-  const [newsSources, setNewsSources] = useState<{ bn?: any[]; en?: any[] }>(
+  const [newsSources, setNewsSources] = useState<{ bn?: any[]; en?: any[]; other?: any[] }>(
     {},
   );
   const [buysellCategories, setBuysellCategories] = useState<any[]>([]);
@@ -184,6 +184,41 @@ export default function Sidebar() {
 
     const fetchData = async () => {
       try {
+        if (pathname.startsWith("/news")) {
+          const res = await fetch(`${API_URL}/api/sidebar/news-sources`, {
+            signal: controller.signal,
+          });
+          if (res.ok) {
+            const payload = await res.json();
+            const data = payload?.data ?? payload;
+            const sourceList = Array.isArray(data)
+              ? data
+              : Array.isArray(data?.sources)
+                ? data.sources
+                : [];
+            const normalizeSource = (source: any) => ({
+              ...source,
+              key: String(source?.key ?? source?.source_key ?? ""),
+              name: String(source?.name ?? source?.source_name ?? source?.title ?? "").trim(),
+              total: Number(source?.total ?? source?.count ?? 0),
+              language: String(source?.language ?? "").toLowerCase(),
+            });
+            const normalizedList = sourceList.map(normalizeSource).filter((source: any) => source.key && source.name);
+            const normalizeGroup = (items: any[]) => items
+              .map(normalizeSource)
+              .filter((source: any) => source.key && source.name);
+            const groupedBn = Array.isArray(data?.bn) ? normalizeGroup(data.bn) : [];
+            const groupedEn = Array.isArray(data?.en) ? normalizeGroup(data.en) : [];
+            const isBn = (source: any) => source.language === "bn" || source.language.startsWith("bn-");
+            const isEn = (source: any) => source.language === "en" || source.language.startsWith("en-");
+            setNewsSources({
+              bn: groupedBn.length ? groupedBn : normalizedList.filter(isBn),
+              en: groupedEn.length ? groupedEn : normalizedList.filter(isEn),
+              other: normalizedList.filter((source: any) => !isBn(source) && !isEn(source)),
+            });
+          }
+        }
+
         if (pathname.startsWith("/contact")) {
           const res = await fetch(`${API_URL}/api/sidebar/contact-categories`, {
             signal: controller.signal,
@@ -346,6 +381,75 @@ export default function Sidebar() {
               onLeave={handleMouseLeave}
               showLabel={true}
             />
+            {/* ===================== NEWS HEADLINES ===================== */}
+            <div className="space-y-1">
+              <SidebarItem
+                href="/news/headlines"
+                icon={Newspaper}
+                label="সংবাদ শিরোনাম"
+                isActive={pathname.startsWith("/news")}
+                collapsed={collapsed}
+                onHover={handleMouseEnter}
+                onLeave={handleMouseLeave}
+              />
+              {pathname.startsWith("/news") && (
+                <>
+                  {!collapsed && (
+                    <h3 className="mb-2 mt-3 px-3 text-xs uppercase tracking-wider text-zinc-400">
+                      সংবাদমাধ্যম
+                    </h3>
+                  )}
+                  {(newsSources.bn ?? []).length > 0 && !collapsed && (
+                    <p className="px-3 pt-1 text-[11px] font-semibold text-zinc-400">বাংলা সংবাদ</p>
+                  )}
+                  {(newsSources.bn ?? []).map((source: any) => (
+                    <SidebarItem
+                      key={source.key}
+                      href={`/news/headlines/${encodeURIComponent(source.key)}`}
+                      icon={Newspaper}
+                      label={source.name}
+                      badge={Number.isFinite(source.total) ? source.total : undefined}
+                      isActive={pathname === `/news/headlines/${encodeURIComponent(source.key)}`}
+                      collapsed={collapsed}
+                      onHover={handleMouseEnter}
+                      onLeave={handleMouseLeave}
+                    />
+                  ))}
+                  {(newsSources.en ?? []).length > 0 && !collapsed && (
+                    <p className="px-3 pt-2 text-[11px] font-semibold text-zinc-400">English news</p>
+                  )}
+                  {(newsSources.en ?? []).map((source: any) => (
+                    <SidebarItem
+                      key={source.key}
+                      href={`/news/headlines/${encodeURIComponent(source.key)}`}
+                      icon={Newspaper}
+                      label={source.name}
+                      badge={typeof source.total === "number" ? source.total : undefined}
+                      isActive={pathname === `/news/headlines/${encodeURIComponent(source.key)}`}
+                      collapsed={collapsed}
+                      onHover={handleMouseEnter}
+                      onLeave={handleMouseLeave}
+                    />
+                  ))}
+                  {(newsSources.other ?? []).length > 0 && !collapsed && (
+                    <p className="px-3 pt-2 text-[11px] font-semibold text-zinc-400">অন্যান্য সংবাদমাধ্যম</p>
+                  )}
+                  {(newsSources.other ?? []).map((source: any) => (
+                    <SidebarItem
+                      key={source.key}
+                      href={`/news/headlines/${encodeURIComponent(source.key)}`}
+                      icon={Newspaper}
+                      label={source.name}
+                      badge={Number.isFinite(source.total) ? source.total : undefined}
+                      isActive={pathname === `/news/headlines/${encodeURIComponent(source.key)}`}
+                      collapsed={collapsed}
+                      onHover={handleMouseEnter}
+                      onLeave={handleMouseLeave}
+                    />
+                  ))}
+                </>
+              )}
+            </div>
             {/* ===================== CALENDAR ===================== */}
             {pathname.startsWith("/bangla/") && (
               <div className="space-y-1">
