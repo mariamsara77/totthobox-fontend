@@ -88,6 +88,23 @@ const nextConfig: NextConfig = {
         ],
       },
 
+      // Stable, source-controlled public icons. Change the URL when replacing
+      // one of these assets so immutable client caches can be invalidated safely.
+      ...[
+        "/apple-touch-icon.png",
+        "/favicon-16x16.png",
+        "/favicon-32x32.png",
+        "/favicon-96x96.png",
+        "/favicon.svg",
+        "/web-app-manifest-192x192.png",
+        "/web-app-manifest-512x512.png",
+      ].map((source) => ({
+        source,
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      })),
+
       // Public routes only. Vercel can serve a fresh cached representation
       // while revalidating stale content in the background.
       ...publicPageSources.map((source) => ({
@@ -167,8 +184,11 @@ const nextConfig: NextConfig = {
   },
 };
 
-// Cache query-free public document navigations locally for 30 minutes.
-// Private/account routes, APIs, and query-string variants are intentionally excluded.
+// Cache only known public, query-free document routes. This explicit allowlist
+// keeps authentication, account, admin, API, and unknown routes out of the service-worker HTML cache.
+const publicDocumentPath =
+  /^\/(?:$|about-us(?:\/|$)|contact-us(?:\/|$)|services(?:\/|$)|privacy-policy(?:\/|$)|terms-of-service(?:\/|$)|bangla(?:\/|$)|bangladesh(?:\/|$)|international(?:\/|$)|islam(?:\/|$)|converter(?:\/|$)|pdf-editor(?:\/|$)|tools(?:\/|$)|software(?:\/|$)|signs(?:\/|$)|contact\/police(?:\/|$)|news\/headlines(?:\/|$))/i;
+
 const publicDocumentCaching: RuntimeCaching = {
   handler: "CacheFirst",
   method: "GET",
@@ -176,9 +196,9 @@ const publicDocumentCaching: RuntimeCaching = {
     request.mode === "navigate" &&
     url.origin === self.location.origin &&
     url.search === "" &&
-    !/^\/(?:api|auth|dashboard|profile|settings|messages|ai\/chat|offline)(?:\/|$)/i.test(url.pathname),
+    publicDocumentPath.test(url.pathname),
   options: {
-    cacheName: "public-document-pages-v1",
+    cacheName: "public-document-pages-v2",
     expiration: {
       maxEntries: 80,
       maxAgeSeconds: 30 * 60,
