@@ -142,7 +142,7 @@ export async function generateMetadata({
     const title = `${source.name} — সংবাদ শিরোনাম`;
     const description = cleanSeoText(
       `${source.name} সংবাদমাধ্যমের সর্বশেষ শিরোনাম ও প্রকাশিত খবর এক জায়গায় দেখুন।`,
-      "বিভিন্ন সংবাদমাধ্যমের সর্বশেষ শিরোনাম এক জায়গায় দেখুন。",
+      "বিভিন্ন সংবাদমাধ্যমের সর্বশেষ শিরোনাম এক জায়গায় দেখুন।",
     );
     const canonical = `${SITE_URL}/news/headlines/${encodeURIComponent(source.key)}`;
     return {
@@ -179,7 +179,7 @@ export async function generateMetadata({
   const authorName = item.author_name?.trim() || item.author?.trim() || item.source_name?.trim();
   const authorUrl = absolutePublicUrl(item.author_url);
   const publishedTime = isoDate(item.published_at);
-  const modifiedTime = isoDate(item.updated_at ?? item.modified_at ?? item.published_at);
+  const modifiedTime = isoDate(item.updated_at ?? item.modified_at);
 
   return {
     title: item.title,
@@ -228,7 +228,7 @@ export default async function NewsDetailPage({
   const articleImage = socialImageUrl(item.image_url);
   const articleAuthorName = item.author_name?.trim() || item.author?.trim() || item.source_name?.trim() || "Totthobox";
   const published = isoDate(item.published_at);
-  const modified = isoDate(item.updated_at ?? item.modified_at ?? item.published_at);
+  const modified = isoDate(item.updated_at ?? item.modified_at);
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "NewsArticle",
