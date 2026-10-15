@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -55,6 +56,74 @@ async function getProfileData(slug: string): Promise<UserProfileData | null> {
         console.error('Fetch error:', error);
         return null;
     }
+}
+
+const SITE_URL = "https://totthobox.com";
+const FALLBACK_SOCIAL_IMAGE = `${SITE_URL}/og-image.png`;
+
+function absoluteSocialImage(value?: string | null): string {
+    if (!value?.trim()) return FALLBACK_SOCIAL_IMAGE;
+    try {
+        const url = new URL(value, SITE_URL);
+        return url.protocol === "http:" || url.protocol === "https:"
+            ? url.toString()
+            : FALLBACK_SOCIAL_IMAGE;
+    } catch {
+        return FALLBACK_SOCIAL_IMAGE;
+    }
+}
+
+function profileDescription(name: string, bio?: string | null): string {
+    const cleaned = (bio || `${name} এর Totthobox প্রোফাইল, পরিচিতি এবং প্রকাশিত কন্টেন্ট দেখুন।`)
+        .replace(/<[^>]*>/g, " ")
+        .replace(/&nbsp;/gi, " ")
+        .replace(/\\s+/g, " ")
+        .trim();
+    return cleaned.length > 160 ? `${cleaned.slice(0, 157).trimEnd()}...` : cleaned;
+}
+
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+    const { slug } = await params;
+    const data = await getProfileData(slug);
+
+    if (!data) {
+        return {
+            title: "প্রোফাইল পাওয়া যায়নি",
+            robots: { index: false, follow: true },
+        };
+    }
+
+    const { profile } = data;
+    const title = `${profile.name} — প্রোফাইল`;
+    const description = profileDescription(profile.name, profile.bio);
+    const canonical = `${SITE_URL}/users/${encodeURIComponent(profile.slug || slug)}`;
+    const image = absoluteSocialImage(profile.avatar);
+    const socialTitle = `${title} | Totthobox`;
+
+    return {
+        title,
+        description,
+        alternates: { canonical },
+        openGraph: {
+            title: socialTitle,
+            description,
+            url: canonical,
+            siteName: "Totthobox",
+            type: "profile",
+            locale: "bn_BD",
+            images: [{ url: image, alt: profile.name }],
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: socialTitle,
+            description,
+            images: [{ url: image, alt: profile.name }],
+        },
+    };
 }
 
 export default async function UserProfilePage({ 
