@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description:
     "সবচেয়ে ফিচার-সমৃদ্ধ ফ্রি QR কোড জেনারেটর। টেক্সট, লিংক, ওয়াইফাই, ইমেইল, ফোন, SMS, ভিকার্ড থেকে তাৎক্ষণিক QR বানান। রঙ, গ্রেডিয়েন্ট, ডট স্টাইল, লোগো, সাইজ কাস্টমাইজ + PNG/SVG/JPEG ডাউনলোড। রেজিস্ট্রেশন লাগবে না।",
   alternates: {
-    canonical: "https://totthobox.com/tools/qr-generator",
+    canonical: "https://totthobox.com/tools/qrcode-generator",
   },
   openGraph: {
     title:

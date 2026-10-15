@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description:
     "অনলাইনে তাৎক্ষণিকভাবে শব্দ, অক্ষর (স্পেসসহ/ছাড়া), বাক্য, প্যারাগ্রাফ, লাইন এবং পড়ার সময় হিসাব করুন। বাংলা ও ইংরেজি দুই ভাষাতেই নিখুঁত কাজ করে। Uppercase, Lowercase, Title Case টুলসহ।",
   alternates: {
-    canonical: "https://totthobox.com/tools/word-counter",
+    canonical: "https://totthobox.com/tools/word-and-character-counter",
   },
   openGraph: {
     title:
