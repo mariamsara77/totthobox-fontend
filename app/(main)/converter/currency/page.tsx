@@ -19,7 +19,6 @@ export const metadata: Metadata = {
     url: "https://totthobox.com/converter/currency",
     images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
   },
-,
   twitter: { card: "summary_large_image", title: "লাইভ কারেন্সি কনভার্টার - টাকার সর্বশেষ রেট জানুন | Totthobox", description: "ডলার, ইউরো, রিয়ালসহ বিশ্বের যেকোনো দেশের মুদ্রাকে বাংলাদেশি টাকায় কনভার্ট করুন। Totthobox-এ পান রিয়েল-টাইম এক্সচেঞ্জ রেট এবং নির্ভুল হিসাব।", images: [{ url: "https://totthobox.com/og-image.png", alt: "Totthobox" }] },
 };
 

@@ -15,7 +15,6 @@ export const metadata: Metadata = {
     type: "website",
     locale: "bn_BD",
   },
-,
   twitter: { card: "summary_large_image", title: "Free Online Media Converter", description: "Convert video & audio files instantly. MP4, MP3, MKV, WAV and more.", images: [{ url: "https://totthobox.com/og-image.png", alt: "Totthobox" }] },
 };
 
