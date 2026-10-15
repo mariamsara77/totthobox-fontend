@@ -12,9 +12,9 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://totthobox.com/converter/image",
-        width: 240,
-        height: 480,
+        url: "https://totthobox.com/og-image.png",
+        width: 1200,
+        height: 630,
         alt: "Image Converter Tool",
       },
     ],
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     images: [{ url: "https://totthobox.com/og-image.png", alt: "Totthobox" }],
   },
   alternates: {
-    canonical: "https://totthobox.com/converter/image", // ← change to your real domain
+    canonical: "https://totthobox.com/converter/image"
   },
 };
 
