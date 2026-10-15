@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/terms-of-service" },
-  title: "ব্যবহারের শর্তাবলি (Terms of Service) | Totthobox",
+  title: "ব্যবহারের শর্তাবলি (Terms of Service)",
   description:
     "Totthobox প্ল্যাটফর্ম ব্যবহারের সম্পূর্ণ নিয়ম ও শর্তাবলি। ব্যবহারকারীর দায়িত্ব, সেবার সীমাবদ্ধতা এবং তথ্যের সঠিকতা সম্পর্কে বিস্তারিত জানুন।",
   keywords: [
@@ -12,6 +12,21 @@ export const metadata: Metadata = {
     "নিয়মাবলী",
     "তথ্যবক্স শর্তাবলি",
   ],
+  openGraph: {
+    title: "ব্যবহারের শর্তাবলি | Totthobox",
+    description: "Totthobox প্ল্যাটফর্ম ব্যবহারের নিয়ম, ব্যবহারকারীর দায়িত্ব এবং সেবার সীমাবদ্ধতা সম্পর্কে জানুন।",
+    url: "https://totthobox.com/terms-of-service",
+    siteName: "Totthobox",
+    type: "website",
+    locale: "bn_BD",
+    images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ব্যবহারের শর্তাবলি | Totthobox",
+    description: "Totthobox প্ল্যাটফর্ম ব্যবহারের নিয়ম, ব্যবহারকারীর দায়িত্ব এবং সেবার সীমাবদ্ধতা সম্পর্কে জানুন।",
+    images: [{ url: "https://totthobox.com/og-image.png", alt: "Totthobox" }],
+  },
 };
 
 export default function TermsPage() {

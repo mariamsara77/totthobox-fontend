@@ -3,7 +3,7 @@ import ContactClient from "./ContactClient";
 
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/contact-us" },
-  title: "যোগাযোগ করুন (Contact Us) | Totthobox",
+  title: "যোগাযোগ করুন (Contact Us)",
   description:
     "Totthobox-এর সাথে যোগাযোগ করুন। আপনার যেকোনো জিজ্ঞাসা, মতামত, বিজ্ঞাপন বা সাপোর্টের জন্য আমাদের মেসেজ দিন।",
   keywords: [
@@ -15,8 +15,20 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: "যোগাযোগ করুন | Totthobox",
-    description: "Totthobox-এর সাথে যোগাযোগ করুন।",
+    description:
+      "Totthobox-এর সাথে যোগাযোগ করুন। আপনার যেকোনো জিজ্ঞাসা, মতামত, বিজ্ঞাপন বা সাপোর্টের জন্য আমাদের মেসেজ দিন।",
+    url: "https://totthobox.com/contact-us",
+    siteName: "Totthobox",
     type: "website",
+    locale: "bn_BD",
+    images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "যোগাযোগ করুন | Totthobox",
+    description:
+      "Totthobox-এর সাথে যোগাযোগ করুন। আপনার যেকোনো জিজ্ঞাসা, মতামত, বিজ্ঞাপন বা সাপোর্টের জন্য আমাদের মেসেজ দিন।",
+    images: [{ url: "https://totthobox.com/og-image.png", alt: "Totthobox" }],
   },
 };
 

@@ -22,7 +22,16 @@ type NewsRecord = {
   source_key?: string | null;
   category?: string | null;
   language?: string | null;
+  summary?: string | null;
+  description?: string | null;
+  excerpt?: string | null;
+  author?: string | null;
+  author_name?: string | null;
+  author_url?: string | null;
+  author_twitter?: string | null;
   published_at?: string | null;
+  updated_at?: string | null;
+  modified_at?: string | null;
   image_url?: string | null;
   story_group?: string | null;
   coverage?: Array<{
@@ -38,6 +47,37 @@ type NewsRecord = {
 };
 
 const API_BASE = (process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com").replace(/\/$/, "");
+const SITE_URL = "https://totthobox.com";
+const FALLBACK_SOCIAL_IMAGE = `${SITE_URL}/og-image.png`;
+
+function absolutePublicUrl(value?: string | null): string | undefined {
+  if (!value?.trim()) return undefined;
+  try {
+    const url = new URL(value, SITE_URL);
+    return url.protocol === "http:" || url.protocol === "https:" ? url.toString() : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function socialImageUrl(value?: string | null): string {
+  return absolutePublicUrl(value) ?? FALLBACK_SOCIAL_IMAGE;
+}
+
+function cleanSeoText(value: string | null | undefined, fallback: string): string {
+  const cleaned = (value ?? "")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  return (cleaned || fallback).slice(0, 200);
+}
+
+function isoDate(value?: string | null): string | undefined {
+  if (!value) return undefined;
+  const time = Date.parse(value);
+  return Number.isNaN(time) ? undefined : new Date(time).toISOString();
+}
 
 const getNews = cache(async (slug: string): Promise<NewsRecord | null> => {
   try {
@@ -99,40 +139,71 @@ export async function generateMetadata({
   const { slug } = await params;
   const source = await getNewsSource(slug);
   if (source) {
-    const title = `${source.name} — সংবাদ শিরোনাম | Totthobox`;
-    const description = `${source.name} সংবাদমাধ্যমের সর্বশেষ শিরোনাম ও প্রকাশিত খবর এক জায়গায় দেখুন।`;
+    const title = `${source.name} — সংবাদ শিরোনাম`;
+    const description = cleanSeoText(
+      `${source.name} সংবাদমাধ্যমের সর্বশেষ শিরোনাম ও প্রকাশিত খবর এক জায়গায় দেখুন।`,
+      "বিভিন্ন সংবাদমাধ্যমের সর্বশেষ শিরোনাম এক জায়গায় দেখুন。",
+    );
+    const canonical = `${SITE_URL}/news/headlines/${encodeURIComponent(source.key)}`;
     return {
       title,
       description,
-      alternates: { canonical: `/news/headlines/${encodeURIComponent(source.key)}` },
+      alternates: { canonical },
       openGraph: {
-        title,
+        title: `${title} | Totthobox`,
         description,
-        url: `https://totthobox.com/news/headlines/${encodeURIComponent(source.key)}`,
+        url: canonical,
+        siteName: "Totthobox",
+        locale: "bn_BD",
         type: "website",
+        images: [{ url: FALLBACK_SOCIAL_IMAGE, alt: "Totthobox" }],
       },
-      twitter: { card: "summary", title, description },
+      twitter: {
+        card: "summary_large_image",
+        title: `${title} | Totthobox`,
+        description,
+        images: [{ url: FALLBACK_SOCIAL_IMAGE, alt: "Totthobox" }],
+      },
     };
   }
+
   const item = await getNews(slug);
   if (!item) return { title: "সংবাদ পাওয়া যায়নি", robots: { index: false, follow: true } };
-  const description = `${item.title} — ${item.source_name || "Totthobox সংবাদ শিরোনাম"}`;
+
+  const canonical = `${SITE_URL}/news/headlines/story/${encodeURIComponent(item.slug)}`;
+  const description = cleanSeoText(
+    item.summary ?? item.description ?? item.excerpt,
+    `${item.title} — ${item.source_name || "Totthobox সংবাদ শিরোনাম"}`,
+  );
+  const image = socialImageUrl(item.image_url);
+  const authorName = item.author_name?.trim() || item.author?.trim() || item.source_name?.trim();
+  const authorUrl = absolutePublicUrl(item.author_url);
+  const publishedTime = isoDate(item.published_at);
+  const modifiedTime = isoDate(item.updated_at ?? item.modified_at ?? item.published_at);
+
   return {
     title: item.title,
     description,
-    alternates: { canonical: `/news/headlines/story/${encodeURIComponent(item.slug)}` },
+    ...(authorName ? { authors: [{ name: authorName, ...(authorUrl ? { url: authorUrl } : {}) }] } : {}),
+    alternates: { canonical },
     openGraph: {
       title: item.title,
       description,
-      url: `https://totthobox.com/news/headlines/story/${encodeURIComponent(item.slug)}`,
+      url: canonical,
+      siteName: "Totthobox",
+      locale: item.language?.toLowerCase().startsWith("en") ? "en_US" : "bn_BD",
       type: "article",
-      ...(item.image_url ? { images: [item.image_url] } : {}),
+      ...(publishedTime ? { publishedTime } : {}),
+      ...(modifiedTime ? { modifiedTime } : {}),
+      ...(authorUrl ? { authors: [authorUrl] } : {}),
+      images: [{ url: image, alt: item.title }],
     },
     twitter: {
-      card: item.image_url ? "summary_large_image" : "summary",
+      card: "summary_large_image",
       title: item.title,
       description,
-      ...(item.image_url ? { images: [item.image_url] } : {}),
+      ...(item.author_twitter ? { creator: item.author_twitter } : {}),
+      images: [{ url: image, alt: item.title }],
     },
   };
 }
@@ -149,7 +220,46 @@ export default async function NewsDetailPage({
   const item = await getNews(slug);
   if (!item) notFound();
 
+  const canonicalUrl = `${SITE_URL}/news/headlines/story/${encodeURIComponent(item.slug)}`;
+  const articleDescription = cleanSeoText(
+    item.summary ?? item.description ?? item.excerpt,
+    `${item.title} — ${item.source_name || "Totthobox সংবাদ শিরোনাম"}`,
+  );
+  const articleImage = socialImageUrl(item.image_url);
+  const articleAuthorName = item.author_name?.trim() || item.author?.trim() || item.source_name?.trim() || "Totthobox";
+  const published = isoDate(item.published_at);
+  const modified = isoDate(item.updated_at ?? item.modified_at ?? item.published_at);
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    headline: item.title,
+    description: articleDescription,
+    url: canonicalUrl,
+    mainEntityOfPage: { "@type": "WebPage", "@id": canonicalUrl },
+    image: [articleImage],
+    ...(published ? { datePublished: published } : {}),
+    ...(modified ? { dateModified: modified } : {}),
+    author: { "@type": "Organization", name: articleAuthorName },
+    publisher: {
+      "@type": "Organization",
+      name: "Totthobox",
+      url: SITE_URL,
+      logo: { "@type": "ImageObject", url: FALLBACK_SOCIAL_IMAGE },
+    },
+    ...(item.category ? { articleSection: item.category } : {}),
+    inLanguage: item.language?.toLowerCase().startsWith("en") ? "en" : "bn-BD",
+    isAccessibleForFree: true,
+  };
+
   return (
+    <>
+      <script
+        id="news-article-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(articleJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
     <article className="mx-auto w-full max-w-2xl px-4 py-6 sm:px-6 lg:py-10">
       <Link href="/news/headlines" className="mb-6 inline-flex items-center gap-2 rounded-lg px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-400/10 dark:text-zinc-200">
         <ArrowLeft className="h-4 w-4" /> সব সংবাদ শিরোনাম
@@ -185,5 +295,6 @@ export default async function NewsDetailPage({
         </section>
       )}
     </article>
+    </>
   );
 }

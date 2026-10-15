@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/privacy-policy" },
-  title: "গোপনীয়তা নীতি (Privacy Policy) | Totthobox",
+  title: "গোপনীয়তা নীতি (Privacy Policy)",
   description:
     "Totthobox-এর সম্পূর্ণ গোপনীয়তা নীতি। আমরা কীভাবে আপনার ব্যক্তিগত তথ্য, কুকিজ এবং Google AdSense-এর মাধ্যমে তথ্য সংগ্রহ, ব্যবহার ও সুরক্ষা করি তা বিস্তারিত জানুন।",
   keywords: [
@@ -15,6 +15,21 @@ export const metadata: Metadata = {
     "তথ্য সুরক্ষা",
     "data protection Bangladesh",
   ],
+  openGraph: {
+    title: "গোপনীয়তা নীতি | Totthobox",
+    description: "Totthobox-এর গোপনীয়তা নীতি, কুকিজ, ব্যক্তিগত তথ্যের ব্যবহার এবং তথ্য সুরক্ষা সম্পর্কে জানুন।",
+    url: "https://totthobox.com/privacy-policy",
+    siteName: "Totthobox",
+    type: "website",
+    locale: "bn_BD",
+    images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "গোপনীয়তা নীতি | Totthobox",
+    description: "Totthobox-এর গোপনীয়তা নীতি, কুকিজ, ব্যক্তিগত তথ্যের ব্যবহার এবং তথ্য সুরক্ষা সম্পর্কে জানুন।",
+    images: [{ url: "https://totthobox.com/og-image.png", alt: "Totthobox" }],
+  },
 };
 
 export default function PrivacyPolicyPage() {

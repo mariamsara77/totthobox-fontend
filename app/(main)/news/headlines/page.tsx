@@ -10,12 +10,16 @@ export const metadata: Metadata = {
     title: "সংবাদ শিরোনাম | Totthobox",
     description: "বিভিন্ন সংবাদমাধ্যমের সর্বশেষ শিরোনাম এক জায়গায়।",
     url: "https://totthobox.com/news/headlines",
+    siteName: "Totthobox",
     type: "website",
+    locale: "bn_BD",
+    images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "সংবাদ শিরোনাম | Totthobox",
     description: "বিভিন্ন সংবাদমাধ্যমের সর্বশেষ শিরোনাম এক জায়গায়।",
+    images: [{ url: "https://totthobox.com/og-image.png", alt: "Totthobox" }],
   },
 };
 
