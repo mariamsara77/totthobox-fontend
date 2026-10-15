@@ -79,6 +79,23 @@ const publicDocumentCaching: RuntimeCaching = {
   },
 };
 
+// Reuse optimized and public image/font assets for a week on repeat visits.
+const publicAssetCaching: RuntimeCaching = {
+  handler: "CacheFirst",
+  method: "GET",
+  urlPattern: ({ url }) =>
+    url.origin === self.location.origin &&
+    (url.pathname === "/_next/image" ||
+      /\\.(?:avif|gif|ico|jpe?g|png|svg|webp|woff2?)$/i.test(url.pathname)),
+  options: {
+    cacheName: "public-image-font-assets-v1",
+    expiration: {
+      maxEntries: 160,
+      maxAgeSeconds: 7 * 24 * 60 * 60,
+    },
+  },
+};
+
 const apiNetworkOnlyCaching: RuntimeCaching = {
   handler: "NetworkOnly",
   method: "GET",
@@ -100,7 +117,7 @@ const withPWA = withPWAInit({
   },
   workboxOptions: {
     // Custom routes run before defaults: cache safe public pages, never API responses.
-    runtimeCaching: [publicDocumentCaching, apiNetworkOnlyCaching],
+    runtimeCaching: [publicDocumentCaching, publicAssetCaching, apiNetworkOnlyCaching],
   },
 });
 
