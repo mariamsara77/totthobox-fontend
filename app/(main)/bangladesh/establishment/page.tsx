@@ -37,12 +37,14 @@ export const metadata: Metadata = {
     siteName: "Totthobox",
     type: "website",
     locale: "bn_BD",
+    images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "বাংলাদেশের সকল গুরুত্বপূর্ণ স্থাপনা ও প্রতিষ্ঠান | তথ্যবক্স",
     description:
       "বাংলাদেশের ৬৪ জেলার সরকারি-বেসরকারি প্রতিষ্ঠান, ঐতিহাসিক ভবন ও প্রয়োজনীয় স্থাপনাসমূহের সম্পূর্ণ তালিকা।",
+    images: [{ url: "https://totthobox.com/og-image.png", alt: "Totthobox" }],
   },
 };
 

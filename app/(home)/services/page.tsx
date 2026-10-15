@@ -26,11 +26,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: "মূল সেবা | Totthobox",
     description: "Totthobox-এর তথ্যভিত্তিক সেবা, ক্যালেন্ডার, কনভার্টার, ডিজিটাল টুলস, বাংলাদেশ ও আন্তর্জাতিক তথ্য এক জায়গায়।",
-    url: "https://totthobox.com/services",
+    url: "/services",
     siteName: "Totthobox",
     type: "website",
     locale: "bn_BD",
+    images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
   },
+  twitter: { card: "summary_large_image", title: "মূল সেবা | Totthobox", description: "Totthobox-এর তথ্যভিত্তিক সেবা, ক্যালেন্ডার, কনভার্টার, ডিজিটাল টুলস, বাংলাদেশ ও আন্তর্জাতিক তথ্য এক জায়গায়।", images: [{ url: "https://totthobox.com/og-image.png", alt: "Totthobox" }] },
 };
 // Public service directory
 const services = [
