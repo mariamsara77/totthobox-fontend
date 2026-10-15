@@ -5,7 +5,7 @@ import AreaConverter from "@/components/converter/AreaConverter";
 
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/converter/area" },
-  title: "অনলাইন ক্ষেত্রফল রূপান্তরকারী - Square Meter, Foot, Acre, Hectare | Totthobox",
+  title: "অনলাইন ক্ষেত্রফল রূপান্তরকারী - Square Meter, Foot, Acre, Hectare",
   description:
     "সহজেই Square Meter, Square Foot, Acre, Hectare কনভার্ট করুন। Totthobox-এর নিখুঁত Area Converter।",
   openGraph: {

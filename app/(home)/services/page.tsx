@@ -17,7 +17,7 @@ import {
 
 // SEO Metadata
 export const metadata: Metadata = {
-  title: "মূল সেবা | Totthobox",
+  title: "মূল সেবা",
   description:
     "Totthobox-এ পাবেন বাংলাদেশ জেলা তথ্য, ইসলামিক শিক্ষা, স্বাস্থ্য জ্ঞান, জরুরী নম্বর, ছুটির তালিকা, কনভার্টার এবং প্রয়োজনীয় ডিজিটাল সেবা।",
   keywords:

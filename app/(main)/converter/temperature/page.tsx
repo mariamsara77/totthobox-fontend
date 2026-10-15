@@ -3,7 +3,7 @@ import TemperatureConverter from "@/components/converter/TemperatureConverter";
 
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/converter/temperature" },
-  title: "অনলাইন তাপমাত্রা রূপান্তরকারী - °C, °F, Kelvin কনভার্টার | Totthobox",
+  title: "অনলাইন তাপমাত্রা রূপান্তরকারী - °C, °F, Kelvin কনভার্টার",
   description:
     "সহজেই Celsius, Fahrenheit এবং Kelvin কনভার্ট করুন। Totthobox-এর নিখুঁত Temperature Converter।",
   openGraph: {

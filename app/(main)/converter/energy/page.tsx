@@ -3,7 +3,7 @@ import EnergyConverter from "@/components/converter/EnergyConverter";
 
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/converter/energy" },
-  title: "অনলাইন এনার্জি রূপান্তরকারী - Joule, Calorie, kWh | Totthobox",
+  title: "অনলাইন এনার্জি রূপান্তরকারী - Joule, Calorie, kWh",
   description:
     "সহজেই Joule, Calorie, Kilocalorie এবং kWh কনভার্ট করুন। Totthobox-এর নিখুঁত Energy Converter।",
   openGraph: {

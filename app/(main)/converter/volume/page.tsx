@@ -3,7 +3,7 @@ import VolumeConverter from "@/components/converter/VolumeConverter";
 
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/converter/volume" },
-  title: "অনলাইন আয়তন রূপান্তরকারী - লিটার, CFT, CC, গ্যালন কনভার্টার | Totthobox",
+  title: "অনলাইন আয়তন রূপান্তরকারী - লিটার, CFT, CC, গ্যালন কনভার্টার",
   description:
     "সহজেই লিটার (L), সেফটি/কিউবিক ফুট (CFT), সিসি (CC), মিলিলিটার এবং গ্যালন কনভার্ট করুন। Totthobox-এর নিখুঁত Volume Converter।",
   openGraph: {

@@ -3,7 +3,7 @@ import TimeConverter from "@/components/converter/TimeConverter";
 
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/converter/time" },
-  title: "অনলাইন সময় রূপান্তরকারী - সেকেন্ড, মিনিট, ঘণ্টা, দিন | Totthobox",
+  title: "অনলাইন সময় রূপান্তরকারী - সেকেন্ড, মিনিট, ঘণ্টা, দিন",
   description:
     "সহজেই সেকেন্ড, মিনিট, ঘণ্টা, দিন, সপ্তাহ কনভার্ট করুন। Totthobox-এর নিখুঁত Time Converter।",
   openGraph: {

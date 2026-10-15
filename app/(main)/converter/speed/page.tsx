@@ -3,7 +3,7 @@ import VelocityConverter from "@/components/converter/VelocityConverter";
 
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/converter/speed" },
-  title: "অনলাইন গতিবেগ রূপান্তরকারী - m/s, km/h, mph, Knots | Totthobox",
+  title: "অনলাইন গতিবেগ রূপান্তরকারী - m/s, km/h, mph, Knots",
   description:
     "সহজেই m/s, km/h, mph এবং Knots কনভার্ট করুন। Totthobox-এর নিখুঁত Velocity Converter।",
   openGraph: {
