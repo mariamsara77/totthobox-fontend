@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+
+// Public news content can be served from ISR instead of rendering on every visit.
+export const revalidate = 300;
 import Link from "next/link";
 import NewsHeadlines from "@/components/news/NewsHeadlines";
 import { notFound } from "next/navigation";
