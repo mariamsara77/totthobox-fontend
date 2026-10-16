@@ -69,6 +69,11 @@ const groups: { match: (path: string) => boolean; title: string; items: RelatedI
       { href: "/tools/qrcode-generator", label: "QR Code Generator", description: "দ্রুত QR কোড তৈরি করুন।" },
       { href: "/tools/writing-practice", label: "Writing Practice", description: "বাংলা লেখার অনুশীলন করুন।" },
       { href: "/tools/zodiac-calculator", label: "রাশি ক্যালকুলেটর", description: "জন্মতারিখের ভিত্তিতে রাশি দেখুন।" },
+      { href: "/tools/bangla-typing", label: "বাংলা টাইপিং", description: "Avro, Bijoy ও keyboard layout সহায়তা।" },
+      { href: "/tools/font-tester", label: "Font Tester", description: "বাংলা ও English font live preview করুন।" },
+      { href: "/tools/pdf-merger", label: "PDF Merger", description: "একাধিক PDF একত্র করুন।" },
+      { href: "/tools/gpa-cgpa-calculator", label: "GPA Calculator", description: "SSC, HSC ও NU marks-based হিসাব।" },
+      { href: "/tools/resume-builder", label: "Resume Builder", description: "সহজ bio-data ও resume তৈরি করুন।" },
     ],
   },
   {
