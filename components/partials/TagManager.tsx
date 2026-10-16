@@ -6,15 +6,18 @@ declare global {
   interface Window {
     dataLayer?: unknown[];
     gtag?: (...args: unknown[]) => void;
+    __totthoboxGA4Initialized?: boolean;
   }
 }
 
+// This is a direct GA4 Google tag, not a Google Tag Manager container.
+// The configured GA4 measurement ID is the existing production ID.
 const ANALYTICS_ID = "G-HGE2T2J8ZT";
 
 function loadAnalytics() {
-  if (document.querySelector('script[data-totthobox-analytics="1"]')) return;
-  if (document.querySelector('script[src*="googletagmanager.com/gtag/js"]')) return;
-
+  // Queue the configuration before loading gtag.js so the first page view
+  // retains the landing URL and attribution. Do not gate analytics on clicks
+  // or a long fallback timer.
   window.dataLayer = window.dataLayer || [];
   window.gtag =
     window.gtag ||
@@ -22,54 +25,31 @@ function loadAnalytics() {
       window.dataLayer?.push(args);
     };
 
-  window.gtag("js", new Date());
-  window.gtag("config", ANALYTICS_ID);
+  // React Strict Mode can run effects more than once in development. This
+  // global guard also prevents duplicate config/page_view initialization.
+  if (!window.__totthoboxGA4Initialized) {
+    window.gtag("js", new Date());
+    window.gtag("config", ANALYTICS_ID);
+    window.__totthoboxGA4Initialized = true;
+  }
+
+  // Reuse an existing gtag.js loader if another integration has already
+  // added it; otherwise load Google's library exactly once.
+  const existingScript = document.querySelector(
+    'script[src*="googletagmanager.com/gtag/js"]',
+  );
+  if (existingScript) return;
 
   const script = document.createElement("script");
   script.async = true;
-  script.src =
-    "https://www.googletagmanager.com/gtag/js?id=" + ANALYTICS_ID;
+  script.src = `https://www.googletagmanager.com/gtag/js?id=${ANALYTICS_ID}`;
   script.dataset.totthoboxAnalytics = "1";
-  script.crossOrigin = "anonymous";
   document.head.appendChild(script);
 }
 
 export default function TagManager() {
   useEffect(() => {
-    let started = false;
-    let fallbackTimer = 0;
-    const events = ["pointerdown", "touchstart", "keydown", "scroll"] as const;
-
-    const start = () => {
-      if (started) return;
-      started = true;
-      events.forEach((event) => window.removeEventListener(event, start, true));
-      window.clearTimeout(fallbackTimer);
-      loadAnalytics();
-    };
-
-    events.forEach((event) =>
-      window.addEventListener(event, start, {
-        capture: true,
-        passive: true,
-      }),
-    );
-
-    const armFallback = () => {
-      fallbackTimer = window.setTimeout(start, 15000);
-    };
-
-    if (document.readyState === "complete") {
-      armFallback();
-    } else {
-      window.addEventListener("load", armFallback, { once: true });
-    }
-
-    return () => {
-      events.forEach((event) => window.removeEventListener(event, start, true));
-      window.removeEventListener("load", armFallback);
-      window.clearTimeout(fallbackTimer);
-    };
+    loadAnalytics();
   }, []);
 
   return null;
