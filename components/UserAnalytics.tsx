@@ -62,7 +62,7 @@ export default function UserAnalytics() {
       <div className="flex items-center gap-4 rounded-full border border-zinc-400/25 px-4 py-2">
         <span className="relative flex">
           <span className="absolute h-full w-full animate-ping rounded-full bg-zinc-700 opacity-75" />
-          <span className="relative size-2 rounded-full bg-zinc-900 dark:bg-zinc-100" />
+          <span className="relative size-2 rounded-full bg-zinc-400/10 dark:bg-zinc-100" />
         </span>
         <p className="text-sm">
           প্ল্যাটফর্মটি ব্যবহার করেছেন{" "}

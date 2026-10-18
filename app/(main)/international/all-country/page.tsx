@@ -218,7 +218,7 @@ export default async function InternationalAllCountryPage({
 
       {/* Only show on clean first page — gives AdSense real content */}
       {!search && !region && page === 1 && (
-        <div className="rounded-2xl border border-zinc-200/60 bg-zinc-50/80 p-6 dark:border-zinc-700/50 dark:bg-zinc-900/40">
+        <div className="rounded-2xl border border-zinc-200/60 bg-zinc-50/80 p-6 dark:border-zinc-700/50 dark:bg-zinc-400/10">
           <h2 className="text-xl font-semibold">বিশ্বের দেশগুলোর তথ্য</h2>
           <p className="mt-3 text-sm leading-7 text-zinc-600 dark:text-zinc-400">
             এই তালিকায় বিশ্বের বিভিন্ন দেশের নাম, রাজধানী, জনসংখ্যা, আয়তন,
@@ -245,7 +245,7 @@ export default async function InternationalAllCountryPage({
       />
 
       {!search && !region && page === 1 && (
-        <div className="rounded-2xl border border-zinc-200/60 bg-zinc-50/80 p-6 dark:border-zinc-700/50 dark:bg-zinc-900/40">
+        <div className="rounded-2xl border border-zinc-200/60 bg-zinc-50/80 p-6 dark:border-zinc-700/50 dark:bg-zinc-400/10">
           <h2 className="text-xl font-semibold">
             দেশভিত্তিক তথ্য কেন কাজে লাগে?
           </h2>

@@ -1074,7 +1074,7 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
                       role="menu"
                     >
                       <div className="mx-auto max-w-lg px-3 pb-safe">
-                        <div className="overflow-hidden rounded-2xl bg-zinc-900/95 shadow-2xl backdrop-blur-xl dark:bg-zinc-800/95">
+                        <div className="overflow-hidden rounded-2xl bg-zinc-400/10 shadow-2xl backdrop-blur-xl dark:bg-zinc-800/95">
                           {/* Handle bar */}
                           <div className="flex justify-center pt-3 pb-1">
                             <div className="h-1 w-10 rounded-full bg-zinc-500/40" />

@@ -53,7 +53,7 @@ export default function MessageBubble({
     >
       {!isUser && (
         <div className="flex items-start pt-3 pr-2 shrink-0">
-          <div className="p-1.5 rounded-lg bg-zinc-9000/10">
+          <div className="p-1.5 rounded-lg bg-zinc-400/100/10">
             <Sparkles className="w-3.5 h-3.5 text-zinc-300" />
           </div>
         </div>
@@ -68,7 +68,7 @@ export default function MessageBubble({
               setNewContent(msg.content);
               setEditing(true);
             }}
-            className="absolute -left-8 top-3 p-1  opacity-0 group-hover:opacity-100 rounded-md hover:bg-zinc-700 "
+            className="absolute -left-8 top-3 p-1 opacity-0 group-hover:opacity-100 rounded-md hover:bg-zinc-700"
             title="সম্পাদনা"
           >
             <Pencil className="w-3.5 h-3.5" />
@@ -104,7 +104,7 @@ export default function MessageBubble({
                       <button
                         type="button"
                         onClick={() => setCollapsed(false)}
-                        className="shrink-0 p-0.5 rounded-full  hover:bg-zinc-400/25 "
+                        className="shrink-0 p-0.5 rounded-full hover:bg-zinc-400/25"
                       >
                         <ChevronDown className="w-3.5 h-3.5" />
                       </button>
@@ -116,7 +116,7 @@ export default function MessageBubble({
                           <button
                             type="button"
                             onClick={() => setCollapsed(true)}
-                            className="p-0.5 rounded-full  hover:bg-zinc-400/25 "
+                            className="p-0.5 rounded-full hover:bg-zinc-400/25"
                           >
                             <ChevronUp className="w-3.5 h-3.5" />
                           </button>
@@ -136,7 +136,7 @@ export default function MessageBubble({
                     <button
                       type="button"
                       onClick={copy}
-                      className="flex items-center gap-2 px-2 py-1 text-xs  hover:bg-zinc-400/25/50 rounded-lg "
+                      className="flex items-center gap-2 px-2 py-1 text-xs hover:bg-zinc-400/25/50 rounded-lg"
                     >
                       {copied ? (
                         <Check className="wx-4 py-2" />
@@ -149,7 +149,7 @@ export default function MessageBubble({
                       <button
                         type="button"
                         onClick={onRegenerate}
-                        className="flex items-center gap-2 px-2 py-1 text-xs  hover:bg-zinc-400/25/50 rounded-lg "
+                        className="flex items-center gap-2 px-2 py-1 text-xs hover:bg-zinc-400/25/50 rounded-lg"
                       >
                         <RotateCcw className="wx-4 py-2" />
                         পুনরায় তৈরি
@@ -178,7 +178,7 @@ export default function MessageBubble({
                 }}
               />
               <div className="flex justify-between items-center">
-                <p className="text-xs ">Ctrl+Enter এ পাঠান</p>
+                <p className="text-xs">Ctrl+Enter এ পাঠান</p>
                 <div className="flex gap-2">
                   <button
                     type="button"
@@ -195,7 +195,7 @@ export default function MessageBubble({
                         setEditing(false);
                       }
                     }}
-                    className="text-xs px-2 py-1 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 "
+                    className="text-xs px-2 py-1 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700"
                   >
                     আপডেট ও পাঠান
                   </button>

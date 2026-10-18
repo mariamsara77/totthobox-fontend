@@ -27,7 +27,7 @@ export default function FloatingToolbar({
 }: Props) {
   return (
     <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-20">
-      <div className="flex items-center gap-1 p-1.5 rounded-2xl bg-zinc-900/90 dark:bg-zinc-800/90 backdrop-blur-md border border-zinc-700/50 shadow-xl">
+      <div className="flex items-center gap-1 p-1.5 rounded-2xl bg-zinc-400/10 dark:bg-zinc-800/90 backdrop-blur-md border border-zinc-700/50 shadow-xl">
         {/* Pen */}
         <button
           onClick={() => onToolChange("pen")}

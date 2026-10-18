@@ -41,17 +41,17 @@ export default function PrivacyPolicyPage() {
 
   return (
     <section>
-      <div className=" max-w-2xl mx-auto space-y-4 py-6">
+      <div className="max-w-2xl mx-auto space-y-4 py-6">
         {/* Header */}
         <div className="text-center mb-16">
           <h1 className="text-3xl font-bold mb-4">
             গোপনীয়তা নীতি (Privacy Policy)
           </h1>
-          <p className="text-base ">
+          <p className="text-base">
             Totthobox - আপনার ব্যক্তিগত তথ্যের সুরক্ষা আমাদের সর্বোচ্চ
             অগ্রাধিকার
           </p>
-          <div className="mt-4 h-px bg-zinc-800 bg-zinc-800" />
+          <div className="mt-4 h-px bg-zinc-800" />
           <p className="mt-4 text-sm text-zinc-400">
             সর্বশেষ আপডেট: {lastUpdated}
           </p>
@@ -59,7 +59,7 @@ export default function PrivacyPolicyPage() {
 
         {/* Introduction */}
         <section className="space-y-4">
-          <h2 className="text-xl ">ভূমিকা</h2>
+          <h2 className="text-xl">ভূমিকা</h2>
           <p className="leading-relaxed">
             <strong>Totthobox</strong>-এ আপনাকে স্বাগতম। আমরা (
             <a
@@ -81,8 +81,8 @@ export default function PrivacyPolicyPage() {
         </section>
 
         {/* Services Overview */}
-        <div className="p-6 rounded-xl bg-zinc-400/10/50">
-          <h3 className="mb-4 text-indigo-600 ">আমাদের মূল সেবাসমূহ</h3>
+        <div className="p-6 rounded-xl bg-zinc-400/10">
+          <h3 className="mb-4 text-indigo-600">আমাদের মূল সেবাসমূহ</h3>
           <p className="mb-5">
             Totthobox আপনার দৈনন্দিন প্রয়োজনীয় তথ্য, টুলস ও ডিজিটাল সেবা এক
             জায়গায় প্রদান করে। আমাদের প্রধান সেবাগুলো হলো:
@@ -112,8 +112,8 @@ export default function PrivacyPolicyPage() {
 
         {/* Tools */}
         <div className="p-6 rounded-xl border">
-          <h3 className="mb-4 ">টুলস ও কনভার্টারসমূহ</h3>
-          <p className=" mb-2">ইউটিলিটি টুলস:</p>
+          <h3 className="mb-4">টুলস ও কনভার্টারসমূহ</h3>
+          <p className="mb-2">ইউটিলিটি টুলস:</p>
           <div className="flex flex-wrap gap-2 mb-5">
             {[
               "Image Resizer",
@@ -131,7 +131,7 @@ export default function PrivacyPolicyPage() {
               </span>
             ))}
           </div>
-          <p className=" mb-2">কনভার্টারসমূহ:</p>
+          <p className="mb-2">কনভার্টারসমূহ:</p>
           <div className="flex flex-wrap gap-2">
             {[
               "Number to Word",
@@ -157,26 +157,26 @@ export default function PrivacyPolicyPage() {
 
         {/* 1. Information We Collect */}
         <section className="space-y-4">
-          <h2 className="text-xl ">১. আমরা কী ধরনের তথ্য সংগ্রহ করি</h2>
+          <h2 className="text-xl">১. আমরা কী ধরনের তথ্য সংগ্রহ করি</h2>
 
-          <h3 className="mt-4 ">ক. আপনার দেওয়া তথ্য</h3>
+          <h3 className="mt-4">ক. আপনার দেওয়া তথ্য</h3>
           <p>
             আপনি যখন যোগাযোগ ফর্ম পূরণ করেন, Totthobox AI ব্যবহার করেন বা কোনো
             ফিডব্যাক দেন, তখন আমরা নিম্নলিখিত তথ্য সংগ্রহ করতে পারি:
           </p>
-          <ul className="list-disc ml-6 space-y-1.5 ">
+          <ul className="list-disc ml-6 space-y-1.5">
             <li>নাম</li>
             <li>ইমেইল ঠিকানা</li>
             <li>মোবাইল নম্বর (যদি প্রদান করা হয়)</li>
             <li>বার্তা বা মন্তব্য</li>
           </ul>
 
-          <h3 className="mt-4 ">খ. স্বয়ংক্রিয়ভাবে সংগৃহীত তথ্য</h3>
+          <h3 className="mt-4">খ. স্বয়ংক্রিয়ভাবে সংগৃহীত তথ্য</h3>
           <p>
             আপনি আমাদের সাইট ভিজিট করলে আমরা নিম্নলিখিত তথ্য স্বয়ংক্রিয়ভাবে
             সংগ্রহ করতে পারি:
           </p>
-          <ul className="list-disc ml-6 space-y-1.5 ">
+          <ul className="list-disc ml-6 space-y-1.5">
             <li>আইপি ঠিকানা</li>
             <li>ব্রাউজারের ধরন ও ভার্সন</li>
             <li>ডিভাইসের তথ্য (মোবাইল/ডেস্কটপ)</li>
@@ -185,7 +185,7 @@ export default function PrivacyPolicyPage() {
             <li>ভিজিটের সময় ও পৃষ্ঠা দেখার তথ্য</li>
           </ul>
 
-          <h3 className="mt-4 ">গ. কুকিজ এবং ট্র্যাকিং প্রযুক্তি</h3>
+          <h3 className="mt-4">গ. কুকিজ এবং ট্র্যাকিং প্রযুক্তি</h3>
           <p>
             আমরা এবং আমাদের তৃতীয় পক্ষের অংশীদাররা (যেমন Google) কুকিজ, ওয়েব
             বীকন এবং অনুরূপ প্রযুক্তি ব্যবহার করি। কুকিজ হলো ছোট টেক্সট ফাইল যা
@@ -197,9 +197,9 @@ export default function PrivacyPolicyPage() {
 
         {/* 2-10 sections (same content as original) */}
         <section className="space-y-4">
-          <h2 className="text-xl ">২. তথ্য কীভাবে ব্যবহার করি</h2>
+          <h2 className="text-xl">২. তথ্য কীভাবে ব্যবহার করি</h2>
           <p>আমরা সংগৃহীত তথ্য নিম্নলিখিত উদ্দেশ্যে ব্যবহার করি:</p>
-          <ul className="list-disc ml-6 space-y-1.5 ">
+          <ul className="list-disc ml-6 space-y-1.5">
             <li>আমাদের সেবা পরিচালনা ও উন্নত করা</li>
             <li>ব্যবহারকারীর অভিজ্ঞতা ব্যক্তিগত করা</li>
             <li>Totthobox AI এবং অন্যান্য টুলসের কার্যকারিতা নিশ্চিত করা</li>
@@ -211,7 +211,7 @@ export default function PrivacyPolicyPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-xl ">
+          <h2 className="text-xl">
             ৩. Google AdSense এবং তৃতীয় পক্ষের বিজ্ঞাপন
           </h2>
           <p>
@@ -248,9 +248,9 @@ export default function PrivacyPolicyPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-xl ">৪. কুকিজ নীতি</h2>
+          <h2 className="text-xl">৪. কুকিজ নীতি</h2>
           <p>আমরা নিম্নলিখিত ধরনের কুকিজ ব্যবহার করি:</p>
-          <ul className="list-disc ml-6 space-y-1.5 ">
+          <ul className="list-disc ml-6 space-y-1.5">
             <li>
               <strong>প্রয়োজনীয় কুকিজ:</strong> সাইটের মৌলিক কার্যকারিতার জন্য
             </li>
@@ -271,12 +271,12 @@ export default function PrivacyPolicyPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-xl ">৫. তথ্য শেয়ারিং</h2>
+          <h2 className="text-xl">৫. তথ্য শেয়ারিং</h2>
           <p>
             আমরা আপনার ব্যক্তিগত তথ্য বিক্রি বা ভাড়া দিই না। তবে নিম্নলিখিত
             ক্ষেত্রে তথ্য শেয়ার করা হতে পারে:
           </p>
-          <ul className="list-disc ml-6 space-y-1.5 ">
+          <ul className="list-disc ml-6 space-y-1.5">
             <li>
               সেবা প্রদানকারীদের সাথে (হোস্টিং, অ্যানালিটিক্স, ইমেইল সার্ভিস)
             </li>
@@ -287,7 +287,7 @@ export default function PrivacyPolicyPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-xl ">৬. তথ্যের নিরাপত্তা</h2>
+          <h2 className="text-xl">৬. তথ্যের নিরাপত্তা</h2>
           <p>
             আমরা আপনার ব্যক্তিগত তথ্য সুরক্ষিত রাখতে যুক্তিসঙ্গত প্রযুক্তিগত ও
             সাংগঠনিক ব্যবস্থা গ্রহণ করি। তবে ইন্টারনেটের মাধ্যমে কোনো তথ্য
@@ -297,7 +297,7 @@ export default function PrivacyPolicyPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-xl ">৭. শিশুদের গোপনীয়তা</h2>
+          <h2 className="text-xl">৭. শিশুদের গোপনীয়তা</h2>
           <p>
             আমাদের সেবা ১৩ বছরের কম বয়সী শিশুদের জন্য নির্দিষ্টভাবে তৈরি নয়।
             আমরা জেনেশুনে ১৩ বছরের কম বয়সী কোনো শিশুর ব্যক্তিগত তথ্য সংগ্রহ করি
@@ -307,9 +307,9 @@ export default function PrivacyPolicyPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-xl ">৮. আপনার অধিকার</h2>
+          <h2 className="text-xl">৮. আপনার অধিকার</h2>
           <p>আপনার নিম্নলিখিত অধিকার রয়েছে:</p>
-          <ul className="list-disc ml-6 space-y-1.5 ">
+          <ul className="list-disc ml-6 space-y-1.5">
             <li>আপনার সম্পর্কে আমাদের কাছে থাকা তথ্য জানার অধিকার</li>
             <li>ভুল তথ্য সংশোধনের অনুরোধ করার অধিকার</li>
             <li>আপনার তথ্য মুছে ফেলার অনুরোধ করার অধিকার</li>
@@ -321,7 +321,7 @@ export default function PrivacyPolicyPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-xl ">৯. তৃতীয় পক্ষের লিঙ্ক</h2>
+          <h2 className="text-xl">৯. তৃতীয় পক্ষের লিঙ্ক</h2>
           <p>
             আমাদের সাইটে জরুরি সেবা, সংবাদমাধ্যম, সরকারি ওয়েবসাইট বা অন্যান্য
             বহিঃস্থ লিঙ্ক থাকতে পারে। এই সাইটগুলোর নিজস্ব গোপনীয়তা নীতি রয়েছে।
@@ -330,7 +330,7 @@ export default function PrivacyPolicyPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-xl ">১০. নীতির পরিবর্তন</h2>
+          <h2 className="text-xl">১০. নীতির পরিবর্তন</h2>
           <p>
             আমরা সময় সময় এই গোপনীয়তা নীতি আপডেট করতে পারি। কোনো পরিবর্তন হলে
             আমরা এই পৃষ্ঠায় নতুন তারিখ উল্লেখ করব। নিয়মিত এই পৃষ্ঠা দেখার
@@ -339,11 +339,11 @@ export default function PrivacyPolicyPage() {
           </p>
         </section>
 
-        <div className="h-px bg-zinc-800 bg-zinc-800 my-10" />
+        <div className="h-px bg-zinc-800 my-10" />
 
         {/* Contact */}
         <div className="bg-zinc-400/10 p-8 rounded-2xl text-center space-y-4">
-          <h3 className="text-lg ">যোগাযোগ</h3>
+          <h3 className="text-lg">যোগাযোগ</h3>
           <p>
             এই গোপনীয়তা নীতি সম্পর্কে কোনো প্রশ্ন, অভিযোগ বা অনুরোধ থাকলে
             নির্দ্বিধায় আমাদের সাথে যোগাযোগ করুন।

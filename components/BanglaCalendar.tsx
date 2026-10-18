@@ -287,7 +287,7 @@ export default function AdvancedBanglaCalendar() {
             {bnNum(selBn.day)} {selBn.month} {bnNum(selBn.year)}
           </span>
         </h1>
-        <p className="text-base ">
+        <p className="text-base">
           ইংরেজি: <strong>{format(selectedDate, "dd MMMM yyyy")}</strong> |
           হিজরি: <strong>{selHijri}</strong>
         </p>
@@ -301,7 +301,7 @@ export default function AdvancedBanglaCalendar() {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-zinc-400 mb-1">বাংলা তারিখ</p>
-            <p className="text-2xl  text-zinc-300 group-hover:scale-105 transition-transform origin-left">
+            <p className="text-2xl text-zinc-300 group-hover:scale-105 transition-transform origin-left">
               {bnNum(selBn.day)} {selBn.month}
             </p>
           </div>
@@ -322,7 +322,7 @@ export default function AdvancedBanglaCalendar() {
                 e.stopPropagation();
                 addToGoogleCalendar();
               }}
-              className="text-xs flex items-center gap-1 text-zinc-400 hover:text-zinc-300 "
+              className="text-xs flex items-center gap-1 text-zinc-400 hover:text-zinc-300"
             >
               <CalendarPlus className="w-4 h-4" /> গুগলে সেভ করুন
             </button>
@@ -331,10 +331,10 @@ export default function AdvancedBanglaCalendar() {
       </section>
 
       {/* --- Calendar Controls (Dropdowns + Nav) --- */}
-      <section className="flex items-center justify-between rounded-2xl bg-zinc-400/10/50 px-3 py-2 ">
+      <section className="flex items-center justify-between rounded-2xl bg-zinc-400/10 px-3 py-2">
         <button
           onClick={() => navigateMonth(-1)}
-          className="p-2 hover:bg-zinc-800 hover:bg-zinc-700 rounded-full "
+          className="p-2 hover:bg-zinc-800 hover:bg-zinc-700 rounded-full"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
@@ -381,7 +381,7 @@ export default function AdvancedBanglaCalendar() {
 
         <button
           onClick={() => navigateMonth(1)}
-          className="p-2 hover:bg-zinc-800 hover:bg-zinc-700 rounded-full "
+          className="p-2 hover:bg-zinc-800 hover:bg-zinc-700 rounded-full"
         >
           <ChevronRight className="w-5 h-5" />
         </button>
@@ -419,11 +419,11 @@ export default function AdvancedBanglaCalendar() {
                 return <div key={`empty-${index}`} className="aspect-square" />;
 
               const { isSelected, isToday, holiday } = day;
-              let cellBg = "hover:bg-zinc-900 hover:bg-zinc-800";
+              let cellBg = "hover:bg-zinc-400/10 hover:bg-zinc-800";
               if (isSelected)
                 cellBg =
                   "bg-emerald-600  shadow-emerald-200/60 scale-[1.05] z-10";
-              else if (isToday) cellBg = "bg-zinc-900 ring-2 ring-zinc-500";
+              else if (isToday) cellBg = "bg-zinc-400/10 ring-2 ring-zinc-500";
 
               return (
                 <button
@@ -452,7 +452,7 @@ export default function AdvancedBanglaCalendar() {
 
                   {/* Tooltip on Hover */}
                   {holiday && !isSelected && (
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-2 py-1 bg-zinc-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-2 py-1 bg-zinc-400/10 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                       {holiday.title}
                     </div>
                   )}
@@ -475,11 +475,11 @@ export default function AdvancedBanglaCalendar() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-zinc-950 bg-zinc-900 rounded-3xl p-4 w-full max-w-sm shadow-2xl relative"
+              className="bg-zinc-400/10 rounded-3xl p-4 w-full max-w-sm shadow-2xl relative"
             >
               <button
                 onClick={() => setShowModal(false)}
-                className="absolute top-4 right-4 p-1 rounded-full hover:bg-zinc-900 hover:bg-zinc-800 text-zinc-400 "
+                className="absolute top-4 right-4 p-1 rounded-full hover:bg-zinc-800 text-zinc-400"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -493,7 +493,7 @@ export default function AdvancedBanglaCalendar() {
                   {bnNum(selBn.day)} {selBn.month}, {bnNum(selBn.year)}
                 </h3>
 
-                <div className=" space-y-1 text-sm">
+                <div className="space-y-1 text-sm">
                   <p>
                     ইংরেজি: {format(selectedDate, "dd MMMM yyyy")} (
                     {format(selectedDate, "EEEE")})
@@ -506,12 +506,12 @@ export default function AdvancedBanglaCalendar() {
                     <h4 className="font-bold text-rose-600 flex items-center justify-center gap-2 mb-2">
                       <Sparkles className="w-4 h-4" /> সরকারি ছুটি
                     </h4>
-                    <p className="text-rose-800 dark:text-rose-300 ">
+                    <p className="text-rose-800 dark:text-rose-300">
                       {selHoliday.title}
                     </p>
                     <button
                       onClick={addToGoogleCalendar}
-                      className="mt-3 w-full py-2 px-4 bg-zinc-950 bg-zinc-800 rounded-xl text-sm  text-rose-600  border border-rose-100 dark:border-rose-900 hover:scale-[1.02] transition-transform"
+                      className="mt-3 w-full py-2 px-4 bg-zinc-400/10 rounded-xl text-sm text-rose-600 border border-rose-100 dark:border-rose-900 hover:scale-[1.02] transition-transform"
                     >
                       ক্যালেন্ডারে সেভ করুন
                     </button>
@@ -528,13 +528,13 @@ export default function AdvancedBanglaCalendar() {
         <h2 className="text-lg font-bold text-zinc-50 text-zinc-100">
           বাংলা ক্যালেন্ডার সম্পর্কে
         </h2>
-        <p className=" text-sm leading-relaxed">
+        <p className="text-sm leading-relaxed">
           বাংলা ক্যালেন্ডার বা বঙ্গাব্দ বাংলাদেশ ও পশ্চিমবঙ্গে ব্যবহৃত একটি সৌর
           বর্ষপঞ্জি। বাংলা সনের নতুন বছর শুরু হয় সাধারণত ১৪ এপ্রিল (পহেলা
           বৈশাখ) থেকে। বর্তমানে চলছে{" "}
           <strong>{bnNum(startMonthBn.year)} বঙ্গাব্দ</strong>।
         </p>
-        <p className=" text-sm leading-relaxed">
+        <p className="text-sm leading-relaxed">
           এই পেজে আপনি সহজেই <strong>আজকের বাংলা তারিখ</strong>, ইংরেজি তারিখের
           সাথে তুলনা, মাসভিত্তিক ক্যালেন্ডার এবং সরকারি ছুটির তালিকা দেখতে
           পারবেন।
@@ -548,13 +548,13 @@ export default function AdvancedBanglaCalendar() {
         </h2>
 
         <details className="group /50 rounded-xl [&_summary::-webkit-details-marker]:hidden">
-          <summary className="flex cursor-pointer items-center justify-between gap-2 p-4 text-zinc-50 text-zinc-100 ">
+          <summary className="flex cursor-pointer items-center justify-between gap-2 p-4 text-zinc-50 text-zinc-100">
             আজকের বাংলা তারিখ কত?
             <span className="shrink-0 transition duration-300 group-open:-rotate-180">
               <ChevronRight className="w-5 h-5 rotate-90" />
             </span>
           </summary>
-          <div className="px-4 pb-4 text-sm  leading-relaxed">
+          <div className="px-4 pb-4 text-sm leading-relaxed">
             আজকের বাংলা তারিখ হলো{" "}
             <strong>
               {bnNum(selBn.day)} {selBn.month} {bnNum(selBn.year)}
@@ -564,13 +564,13 @@ export default function AdvancedBanglaCalendar() {
         </details>
 
         <details className="group /50 rounded-xl [&_summary::-webkit-details-marker]:hidden">
-          <summary className="flex cursor-pointer items-center justify-between gap-2 p-4 text-zinc-50 text-zinc-100 ">
+          <summary className="flex cursor-pointer items-center justify-between gap-2 p-4 text-zinc-50 text-zinc-100">
             বাংলা সন কীভাবে হিসাব করা হয়?
             <span className="shrink-0 transition duration-300 group-open:-rotate-180">
               <ChevronRight className="w-5 h-5 rotate-90" />
             </span>
           </summary>
-          <div className="px-4 pb-4 text-sm  leading-relaxed">
+          <div className="px-4 pb-4 text-sm leading-relaxed">
             বাংলা সন সাধারণত ১৪ এপ্রিল থেকে শুরু হয়। ইংরেজি বছর থেকে ৫৯৩ বা ৫৯৪
             বিয়োগ করে বাংলা সন পাওয়া যায়। এপ্রিলের ১৪ তারিখের আগে হলে ৫৯৪ এবং
             পরে হলে ৫৯৩ বিয়োগ করা হয়।

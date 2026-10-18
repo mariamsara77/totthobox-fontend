@@ -170,7 +170,7 @@ export default function NewsHeadlines({ initialSourceKey = "" }: { initialSource
 
   return (
     <section className="mx-auto w-full max-w-2xl px-4 py-6 sm:px-6">
-      <div className="mb-6 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm shadow-zinc-950/[0.02] sm:p-7 dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="mb-6 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm shadow-zinc-950/[0.02] sm:p-7 dark:border-zinc-800 dark:bg-zinc-400/10">
         <div className="flex items-start gap-3">
           <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-zinc-800 text-white dark:bg-zinc-100 dark:text-zinc-900">
             <Newspaper className="h-6 w-6" />
@@ -185,29 +185,29 @@ export default function NewsHeadlines({ initialSourceKey = "" }: { initialSource
         </div>
       </div>
 
-      <form onSubmit={submitSearch} className="mb-6 grid grid-cols-1 gap-3 rounded-2xl border border-zinc-200 bg-white p-3 shadow-sm shadow-zinc-950/[0.02] sm:grid-cols-2 dark:border-zinc-800 dark:bg-zinc-900">
+      <form onSubmit={submitSearch} className="mb-6 grid grid-cols-1 gap-3 rounded-2xl border border-zinc-200 bg-white p-3 shadow-sm shadow-zinc-950/[0.02] sm:grid-cols-2 dark:border-zinc-800 dark:bg-zinc-400/10">
         <label className="relative block sm:col-span-2">
           <span className="sr-only">সংবাদ খুঁজুন</span>
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
-          <input value={searchInput} onChange={(event) => setSearchInput(event.target.value)} placeholder="শিরোনাম খুঁজুন..." className="!m-0 !h-11 !min-w-0 !w-full !rounded-xl !border !border-zinc-200 !bg-zinc-50 !py-0 pl-9 pr-3 text-sm leading-normal !shadow-none !outline-none !ring-0 transition placeholder:text-zinc-500 focus:!border-zinc-400 focus:!bg-white dark:!border-zinc-700 dark:!bg-zinc-950 dark:focus:!border-zinc-500 dark:placeholder:text-zinc-400" />
+          <input value={searchInput} onChange={(event) => setSearchInput(event.target.value)} placeholder="শিরোনাম খুঁজুন..." className="!m-0 !h-11 !min-w-0 !w-full !rounded-xl !border !border-zinc-200 !bg-zinc-50 !py-0 pl-9 pr-3 text-sm leading-normal !shadow-none !outline-none !ring-0 transition placeholder:text-zinc-500 focus:!border-zinc-400 focus:!bg-white dark:!border-zinc-700 dark:!bg-zinc-400/10 dark:focus:!border-zinc-500 dark:placeholder:text-zinc-400" />
         </label>
         <label>
           <span className="sr-only">সংবাদমাধ্যম নির্বাচন</span>
-          <select value={source} onChange={(event) => updateFilters({ source: event.target.value || null })} className="h-11 w-full min-w-0 cursor-pointer rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-sm text-zinc-800 outline-none transition-colors hover:border-zinc-300 hover:bg-zinc-100 focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100 dark:hover:border-zinc-600 dark:hover:bg-zinc-900 dark:focus:border-zinc-500">
+          <select value={source} onChange={(event) => updateFilters({ source: event.target.value || null })} className="h-11 w-full min-w-0 cursor-pointer rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-sm text-zinc-800 outline-none transition-colors hover:border-zinc-300 hover:bg-zinc-100 focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30 dark:border-zinc-700 dark:bg-zinc-400/10 dark:text-zinc-100 dark:hover:border-zinc-600 dark:hover:bg-zinc-400/10 dark:focus:border-zinc-500">
             <option value="">সব সংবাদমাধ্যম</option>
             {sources.map((item) => <option key={item.key} value={item.key}>{item.name}{typeof item.total === "number" && item.total > 0 ? ` (${item.total.toLocaleString("bn-BD")})` : ""}</option>)}
           </select>
         </label>
         <label>
           <span className="sr-only">বিভাগ নির্বাচন</span>
-          <select value={category} onChange={(event) => updateFilters({ category: event.target.value || null })} className="h-11 w-full min-w-0 cursor-pointer rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-sm text-zinc-800 outline-none transition-colors hover:border-zinc-300 hover:bg-zinc-100 focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100 dark:hover:border-zinc-600 dark:hover:bg-zinc-900 dark:focus:border-zinc-500">
+          <select value={category} onChange={(event) => updateFilters({ category: event.target.value || null })} className="h-11 w-full min-w-0 cursor-pointer rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-sm text-zinc-800 outline-none transition-colors hover:border-zinc-300 hover:bg-zinc-100 focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30 dark:border-zinc-700 dark:bg-zinc-400/10 dark:text-zinc-100 dark:hover:border-zinc-600 dark:hover:bg-zinc-400/10 dark:focus:border-zinc-500">
             <option value="">সব বিভাগ</option>
             {categories.map((item) => <option key={item} value={item}>{item}</option>)}
           </select>
         </label>
         <label>
           <span className="sr-only">ভাষা নির্বাচন</span>
-          <select value={language} onChange={(event) => updateFilters({ language: event.target.value || null })} className="h-11 w-full min-w-0 cursor-pointer rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-sm text-zinc-800 outline-none transition-colors hover:border-zinc-300 hover:bg-zinc-100 focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100 dark:hover:border-zinc-600 dark:hover:bg-zinc-900 dark:focus:border-zinc-500">
+          <select value={language} onChange={(event) => updateFilters({ language: event.target.value || null })} className="h-11 w-full min-w-0 cursor-pointer rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-sm text-zinc-800 outline-none transition-colors hover:border-zinc-300 hover:bg-zinc-100 focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30 dark:border-zinc-700 dark:bg-zinc-400/10 dark:text-zinc-100 dark:hover:border-zinc-600 dark:hover:bg-zinc-400/10 dark:focus:border-zinc-500">
             <option value="">সব ভাষা</option>
             <option value="bn">বাংলা</option>
             <option value="en">English</option>
@@ -228,21 +228,21 @@ export default function NewsHeadlines({ initialSourceKey = "" }: { initialSource
       {loading ? (
         <div aria-label="সংবাদ শিরোনাম লোড হচ্ছে" aria-busy="true" className="grid grid-cols-1 gap-3">
           {Array.from({ length: 6 }).map((_, index) => (
-            <article key={index} className="overflow-hidden rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-              <div className="h-36 animate-pulse bg-zinc-100 dark:bg-zinc-800 sm:h-40" />
+            <article key={index} className="overflow-hidden rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-400/10">
+              <div className="h-36 animate-pulse bg-zinc-400/10 sm:h-40" />
               <div className="animate-pulse p-4">
                 <div className="mb-3 flex items-center gap-2">
-                  <div className="h-6 w-24 rounded-full bg-zinc-200 dark:bg-zinc-800" />
-                  <div className="h-3 w-16 rounded-full bg-zinc-100 dark:bg-zinc-800/70" />
+                  <div className="h-6 w-24 rounded-full bg-zinc-400/10" />
+                  <div className="h-3 w-16 rounded-full bg-zinc-400/10" />
                 </div>
                 <div className="space-y-2">
-                  <div className="h-4 w-full rounded-md bg-zinc-200 dark:bg-zinc-800" />
-                  <div className="h-4 w-5/6 rounded-md bg-zinc-200 dark:bg-zinc-800" />
-                  <div className="h-4 w-2/3 rounded-md bg-zinc-100 dark:bg-zinc-800/70" />
+                  <div className="h-4 w-full rounded-md bg-zinc-400/10" />
+                  <div className="h-4 w-5/6 rounded-md bg-zinc-400/10" />
+                  <div className="h-4 w-2/3 rounded-md bg-zinc-400/10" />
                 </div>
                 <div className="mt-5 flex items-center justify-between gap-3">
-                  <div className="h-3 w-32 rounded-full bg-zinc-100 dark:bg-zinc-800/70" />
-                  <div className="h-3 w-16 rounded-full bg-zinc-200 dark:bg-zinc-800" />
+                  <div className="h-3 w-32 rounded-full bg-zinc-400/10" />
+                  <div className="h-3 w-16 rounded-full bg-zinc-400/10" />
                 </div>
               </div>
             </article>
@@ -259,7 +259,7 @@ export default function NewsHeadlines({ initialSourceKey = "" }: { initialSource
         <>
           <div className="grid grid-cols-1 gap-3">
             {(payload.data ?? []).map((item) => (
-              <article key={item.id ?? item.slug} className="group flex min-w-0 flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white transition duration-200 hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-md hover:shadow-zinc-950/[0.04] focus-within:ring-2 focus-within:ring-zinc-400/40 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700">
+              <article key={item.id ?? item.slug} className="group flex min-w-0 flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white transition duration-200 hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-md hover:shadow-zinc-950/[0.04] focus-within:ring-2 focus-within:ring-zinc-400/40 dark:border-zinc-800 dark:bg-zinc-400/10 dark:hover:border-zinc-700">
                 {item.image_url ? <Link href={`/news/headlines/story/${encodeURIComponent(item.slug)}`} tabIndex={-1} aria-hidden="true" className="block h-44 overflow-hidden bg-zinc-400/10"><img src={item.image_url} alt="" loading="lazy" className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]" /></Link> : <div className="flex h-24 items-center justify-center bg-zinc-400/10 text-zinc-600 dark:text-zinc-300"><Newspaper className="h-8 w-8 opacity-70" /></div>}
                 <div className="flex flex-1 flex-col p-4">
                   <div className="mb-2 flex flex-wrap items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">

@@ -53,7 +53,7 @@ export default function NetworkStatus() {
           transition-all duration-300
           ${
             isOffline
-              ? "border-zinc-300/70 bg-white/95 text-zinc-900 dark:border-zinc-700/70 dark:bg-zinc-900/95 dark:text-zinc-100"
+              ? "border-zinc-300/70 bg-white/95 text-zinc-900 dark:border-zinc-700/70 dark:bg-zinc-400/10 dark:text-zinc-100"
               : "border-emerald-400/25 bg-emerald-600/95 text-white"
           }
         `}

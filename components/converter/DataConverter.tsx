@@ -585,7 +585,7 @@ function FaqItem({
     <div className="rounded-xl border border-zinc-400/25 dark:border-zinc-700 overflow-hidden">
       <button
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between px-4 py-3.5 text-left  text-zinc-50 text-zinc-200 hover:bg-zinc-900 hover:bg-zinc-800/50 transition"
+        className="flex w-full items-center justify-between px-4 py-3.5 text-left text-zinc-50 text-zinc-200 hover:bg-zinc-800/50 transition"
       >
         <span>{question}</span>
         <ChevronDown
@@ -603,7 +603,7 @@ function FaqItem({
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <div className="px-4 pb-4 text-sm  leading-relaxed">{children}</div>
+            <div className="px-4 pb-4 text-sm leading-relaxed">{children}</div>
           </motion.div>
         )}
       </AnimatePresence>

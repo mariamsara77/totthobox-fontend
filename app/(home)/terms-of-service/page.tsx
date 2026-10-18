@@ -42,7 +42,7 @@ export default function TermsPage() {
         {/* Header */}
         <div className="text-center space-y-4">
           <h1 className="text-3xl font-bold">ব্যবহারের শর্তাবলি</h1>
-          <p className="max-w-xl mx-auto ">
+          <p className="max-w-xl mx-auto">
             Totthobox প্ল্যাটফর্ম ব্যবহারের নিয়ম, শর্ত ও নির্দেশিকা
           </p>
           <div className="pt-1">
@@ -50,14 +50,14 @@ export default function TermsPage() {
               সর্বশেষ আপডেট: {lastUpdated}
             </span>
           </div>
-          <div className="pt-2 h-px bg-zinc-800 bg-zinc-800" />
+          <div className="pt-2 h-px bg-zinc-800" />
         </div>
 
         {/* 1. Acceptance */}
         <section className="space-y-4">
           <div className="flex items-center gap-4">
             <div className="p-2 rounded-lg bg-zinc-400/10">📄</div>
-            <h2 className="text-xl ">
+            <h2 className="text-xl">
               ১. সাধারণ নিয়মাবলি ও গ্রহণযোগ্যতা
             </h2>
           </div>
@@ -84,7 +84,7 @@ export default function TermsPage() {
         <section className="space-y-4">
           <div className="flex items-center gap-4">
             <div className="p-2 rounded-lg bg-zinc-400/10">▦</div>
-            <h2 className="text-xl ">২. আমাদের সেবাসমূহ</h2>
+            <h2 className="text-xl">২. আমাদের সেবাসমূহ</h2>
           </div>
           <p>Totthobox নিম্নলিখিত ধরনের সেবা প্রদান করে:</p>
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -110,7 +110,7 @@ export default function TermsPage() {
         <section className="space-y-4">
           <div className="flex items-center gap-4">
             <div className="p-2 rounded-lg bg-zinc-400/10">👥</div>
-            <h2 className="text-xl ">৩. ব্যবহারকারীর দায়িত্ব</h2>
+            <h2 className="text-xl">৩. ব্যবহারকারীর দায়িত্ব</h2>
           </div>
           <p>
             আমাদের সেবা ব্যবহার করার সময় আপনাকে নিম্নলিখিত নিয়মগুলো মেনে চলতে
@@ -138,39 +138,39 @@ export default function TermsPage() {
             <div className="p-2 rounded-lg bg-amber-50 dark:bg-amber-950/30 text-amber-600">
               ⚠️
             </div>
-            <h2 className="text-xl ">
+            <h2 className="text-xl">
               ৪. সেবা সংক্রান্ত সীমাবদ্ধতা ও দায়মুক্তি
             </h2>
           </div>
 
           <div className="space-y-5">
             <div>
-              <h3 className=" mb-2">টুলস ও কনভার্টার</h3>
-              <p className="text-sm ">
+              <h3 className="mb-2">টুলস ও কনভার্টার</h3>
+              <p className="text-sm">
                 আমাদের প্রদত্ত সকল টুলস (Image Resizer, QR Generator, কনভার্টার
                 ইত্যাদি) শিক্ষামূলক ও সহায়ক উদ্দেশ্যে দেওয়া হয়েছে। গুরুত্বপূর্ণ
                 কাজের আগে ফলাফল যাচাই করে নেওয়ার পরামর্শ দেওয়া হচ্ছে।
               </p>
             </div>
             <div>
-              <h3 className=" mb-2">জরুরি সেবা ও হেল্পলাইন</h3>
-              <p className="text-sm ">
+              <h3 className="mb-2">জরুরি সেবা ও হেল্পলাইন</h3>
+              <p className="text-sm">
                 আমরা সঠিক নম্বর প্রদানের সর্বোচ্চ চেষ্টা করি। তবে টেলিকম অপারেটর
                 বা সরকারি পরিবর্তনের কারণে কোনো নম্বর কাজ না করলে Totthobox তার
                 জন্য দায়ী থাকবে না।
               </p>
             </div>
             <div>
-              <h3 className=" mb-2">সংবাদ ও তথ্য</h3>
-              <p className="text-sm ">
+              <h3 className="mb-2">সংবাদ ও তথ্য</h3>
+              <p className="text-sm">
                 সংবাদ ও তথ্য বিভিন্ন উৎস থেকে সংগ্রহ করা হয়। আমরা তথ্যের শতভাগ
                 নির্ভুলতার গ্যারান্টি দিই না। গুরুত্বপূর্ণ সিদ্ধান্ত নেওয়ার আগে
                 মূল উৎস থেকে যাচাই করে নিন।
               </p>
             </div>
             <div>
-              <h3 className=" mb-2">Totthobox AI</h3>
-              <p className="text-sm ">
+              <h3 className="mb-2">Totthobox AI</h3>
+              <p className="text-sm">
                 AI চ্যাটবট সাধারণ তথ্য সহায়তার জন্য তৈরি। এটি পেশাদার পরামর্শ
                 (চিকিৎসা, আইনগত ইত্যাদি) হিসেবে ব্যবহার করা উচিত নয়।
               </p>
@@ -182,7 +182,7 @@ export default function TermsPage() {
         <section className="space-y-4">
           <div className="flex items-center gap-4">
             <div className="p-2 rounded-lg bg-zinc-400/10">🛡️</div>
-            <h2 className="text-xl ">৫. মেধা সম্পত্তি অধিকার</h2>
+            <h2 className="text-xl">৫. মেধা সম্পত্তি অধিকার</h2>
           </div>
           <p className="leading-relaxed">
             এই ওয়েবসাইটের সকল কনটেন্ট, লোগো, ডিজাইন, কোড এবং উপকরণ Totthobox-এর
@@ -194,7 +194,7 @@ export default function TermsPage() {
         <section className="space-y-4">
           <div className="flex items-center gap-4">
             <div className="p-2 rounded-lg bg-zinc-400/10">🔗</div>
-            <h2 className="text-xl ">৬. তৃতীয় পক্ষের লিংক</h2>
+            <h2 className="text-xl">৬. তৃতীয় পক্ষের লিংক</h2>
           </div>
           <p className="leading-relaxed">
             আমাদের সাইটে বাহ্যিক ওয়েবসাইট, সংবাদমাধ্যম বা সরকারি সার্ভিসের লিংক
@@ -207,7 +207,7 @@ export default function TermsPage() {
         <section className="space-y-4">
           <div className="flex items-center gap-4">
             <div className="p-2 rounded-lg bg-zinc-400/10">⚖️</div>
-            <h2 className="text-xl ">৭. দায়বদ্ধতার সীমাবদ্ধতা</h2>
+            <h2 className="text-xl">৭. দায়বদ্ধতার সীমাবদ্ধতা</h2>
           </div>
           <p className="leading-relaxed">
             Totthobox “যেমন আছে” (as is) ভিত্তিতে সেবা প্রদান করে। সাইট
@@ -219,7 +219,7 @@ export default function TermsPage() {
         <section className="space-y-4">
           <div className="flex items-center gap-4">
             <div className="p-2 rounded-lg bg-zinc-400/10">🔄</div>
-            <h2 className="text-xl ">৮. শর্তাবলির পরিবর্তন</h2>
+            <h2 className="text-xl">৮. শর্তাবলির পরিবর্তন</h2>
           </div>
           <p className="leading-relaxed">
             Totthobox কর্তৃপক্ষ যেকোনো সময় এই শর্তাবলি আপডেট বা পরিবর্তন করার
@@ -232,7 +232,7 @@ export default function TermsPage() {
         <section className="space-y-4">
           <div className="flex items-center gap-4">
             <div className="p-2 rounded-lg bg-zinc-400/10">🏛️</div>
-            <h2 className="text-xl ">৯. প্রযোজ্য আইন</h2>
+            <h2 className="text-xl">৯. প্রযোজ্য আইন</h2>
           </div>
           <p className="leading-relaxed">
             এই শর্তাবলি বাংলাদেশের প্রচলিত আইন অনুসারে পরিচালিত ও ব্যাখ্যা করা

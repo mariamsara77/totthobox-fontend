@@ -79,7 +79,7 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
   };
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2.5 border-b border-zinc-400/25 bg-zinc-950 dark:bg-zinc-950">
+    <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2.5 border-b border-zinc-400/25 bg-zinc-400/10">
       {/* Left: Tools */}
       <div className="flex items-center gap-1">
         {tools.map((t) => (
@@ -91,7 +91,7 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
               "p-2 rounded-lg transition",
               tool === t.id
                 ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300"
-                : "hover:bg-zinc-900 hover:bg-zinc-800 ",
+                : "hover:bg-zinc-400/10 hover:bg-zinc-800 ",
             )}
           >
             <t.icon className="size-5" />
@@ -104,7 +104,7 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
         <button
           onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
           disabled={currentPage <= 1}
-          className="p-1.5 rounded-lg hover:bg-zinc-900 hover:bg-zinc-800 disabled:opacity-40"
+          className="p-1.5 rounded-lg hover:bg-zinc-400/10 hover:bg-zinc-800 disabled:opacity-40"
         >
           <ChevronLeft className="size-5" />
         </button>
@@ -114,7 +114,7 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
         <button
           onClick={() => setCurrentPage(Math.min(numPages, currentPage + 1))}
           disabled={currentPage >= numPages}
-          className="p-1.5 rounded-lg hover:bg-zinc-900 hover:bg-zinc-800 disabled:opacity-40"
+          className="p-1.5 rounded-lg hover:bg-zinc-800 disabled:opacity-40"
         >
           <ChevronRight className="size-5" />
         </button>
@@ -123,7 +123,7 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
 
         <button
           onClick={() => setScale(Math.max(0.5, +(scale - 0.15).toFixed(2)))}
-          className="p-1.5 rounded-lg hover:bg-zinc-900 hover:bg-zinc-800"
+          className="p-1.5 rounded-lg hover:bg-zinc-800"
         >
           <ZoomOut className="size-5" />
         </button>
@@ -132,7 +132,7 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
         </span>
         <button
           onClick={() => setScale(Math.min(2.5, +(scale + 0.15).toFixed(2)))}
-          className="p-1.5 rounded-lg hover:bg-zinc-900 hover:bg-zinc-800"
+          className="p-1.5 rounded-lg hover:bg-zinc-800"
         >
           <ZoomIn className="size-5" />
         </button>
@@ -162,7 +162,7 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
                     }
                     className="w-20 h-1.5 accent-indigo-600"
                   />
-                  <span className="text-xs  w-6 text-center">
+                  <span className="text-xs w-6 text-center">
                     {selectedAnn.fontSize || 18}
                   </span>
                 </div>
@@ -216,7 +216,7 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
           onClick={undo}
           disabled={past.length === 0}
           title="Undo"
-          className="p-2 rounded-lg hover:bg-zinc-900 hover:bg-zinc-800 disabled:opacity-40"
+          className="p-2 rounded-lg hover:bg-zinc-800 disabled:opacity-40"
         >
           <Undo2 className="size-5" />
         </button>
@@ -224,7 +224,7 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
           onClick={redo}
           disabled={future.length === 0}
           title="Redo"
-          className="p-2 rounded-lg hover:bg-zinc-900 hover:bg-zinc-800 disabled:opacity-40"
+          className="p-2 rounded-lg hover:bg-zinc-800 disabled:opacity-40"
         >
           <Redo2 className="size-5" />
         </button>
@@ -234,7 +234,7 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
         <button
           onClick={() => rotatePage(currentPage - 1)}
           title="Rotate Page"
-          className="p-2 rounded-lg hover:bg-zinc-900 hover:bg-zinc-800"
+          className="p-2 rounded-lg hover:bg-zinc-800"
         >
           <RotateCw className="size-5" />
         </button>
@@ -252,7 +252,7 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
         <button
           onClick={() => clearPageAnnotations(currentPage - 1)}
           title="Clear all annotations on this page"
-          className="p-2 rounded-lg hover:bg-zinc-900 hover:bg-zinc-800"
+          className="p-2 rounded-lg hover:bg-zinc-800"
         >
           <Trash2 className="size-5 text-zinc-400" />
         </button>
@@ -261,7 +261,7 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
           <button
             onClick={onNewFile}
             title="Open another PDF"
-            className="p-2 rounded-lg hover:bg-zinc-900 hover:bg-zinc-800"
+            className="p-2 rounded-lg hover:bg-zinc-800"
           >
             <Upload className="size-5" />
           </button>
@@ -269,7 +269,7 @@ export function Toolbar({ onNewFile }: ToolbarProps) {
 
         <button
           onClick={handleDownload}
-          className="ml-1 flex items-center gap-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-2 text-sm  transition"
+          className="ml-1 flex items-center gap-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-2 text-sm transition"
         >
           <Download className="size-4" />
           Download

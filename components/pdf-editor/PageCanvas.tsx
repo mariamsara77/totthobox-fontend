@@ -279,9 +279,9 @@ export function PageCanvas({ pageNumber }: Props) {
   };
 
   return (
-    <div className="relative shadow-2xl rounded-lg overflow-hidden bg-zinc-950 select-none">
+    <div className="relative shadow-2xl rounded-lg overflow-hidden bg-zinc-400/10 select-none">
       {isRendering && (
-        <div className="absolute inset-0 z-30 flex items-center justify-center bg-zinc-950/60">
+        <div className="absolute inset-0 z-30 flex items-center justify-center bg-zinc-400/10">
           <div className="size-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
         </div>
       )}
@@ -485,7 +485,7 @@ function SelectionBox({
       />
       <div
         onMouseDown={onResize}
-        className="absolute size-4 bg-zinc-950 border-2 border-indigo-500 rounded-sm cursor-se-resize shadow"
+        className="absolute size-4 bg-zinc-400/10 border-2 border-indigo-500 rounded-sm cursor-se-resize shadow"
         style={{ right: -7, bottom: -7 }}
       />
       <div

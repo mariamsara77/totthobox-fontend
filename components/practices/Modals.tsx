@@ -18,7 +18,7 @@ export function ClearModal({ open, onClose, onConfirm }: ClearModalProps) {
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative bg-zinc-200 dark:bg-zinc-900 rounded-2xl p-5 max-w-sm w-full shadow-2xl space-y-4">
+      <div className="relative bg-zinc-200 dark:bg-zinc-400/10 rounded-2xl p-5 max-w-sm w-full shadow-2xl space-y-4">
         <div>
           <h2 className="text-lg font-semibold">ক্যানভাস মুছে ফেলবেন?</h2>
           <p className="mt-2 text-sm">
@@ -78,7 +78,7 @@ export function SaveModal({
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative bg-zinc-200 dark:bg-zinc-900 rounded-2xl p-5 max-w-sm w-full shadow-2xl space-y-5">
+      <div className="relative bg-zinc-200 dark:bg-zinc-400/10 rounded-2xl p-5 max-w-sm w-full shadow-2xl space-y-5">
         <h2 className="text-lg font-semibold">সংরক্ষণ অপশন</h2>
 
         <div className="space-y-1.5">
@@ -161,7 +161,7 @@ export function HelpModal({ open, onClose }: HelpModalProps) {
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative bg-zinc-200 dark:bg-zinc-900 rounded-2xl p-5 max-w-lg w-full shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-zinc-200 dark:bg-zinc-400/10 rounded-2xl p-5 max-w-lg w-full shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
         <h2 className="text-lg font-semibold">সহায়তা ও শর্টকাট</h2>
 
         <div>

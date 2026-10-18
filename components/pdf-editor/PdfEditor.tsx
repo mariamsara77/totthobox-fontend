@@ -74,7 +74,7 @@ export default function PdfEditor() {
   }
 
   return (
-    <div className="flex h-[calc(100vh-80px)] flex-col overflow-hidden rounded-2xl border border-zinc-400/25 bg-zinc-900">
+    <div className="flex h-[calc(100vh-80px)] flex-col overflow-hidden rounded-2xl border border-zinc-400/25 bg-zinc-400/10">
       <Toolbar />
 
       <div className="flex flex-1 overflow-hidden">

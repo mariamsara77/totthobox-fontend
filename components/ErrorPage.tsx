@@ -54,7 +54,7 @@ export default function ErrorPage({
 
           <Link
             href="/"
-            className="rounded-xl border border-zinc-300 bg-white px-5 py-2.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
+            className="rounded-xl border border-zinc-300 bg-white px-5 py-2.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-400/10 dark:text-zinc-200 dark:hover:bg-zinc-800"
           >
             হোম পেজে ফিরে যান
           </Link>

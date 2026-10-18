@@ -480,7 +480,7 @@ export default function ContactClient() {
 
       {/* Bottom Badge */}
       <div className="flex justify-center pt-2">
-        <div className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-400/25">
+        <div className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-zinc-100 dark:bg-zinc-400/10 border border-zinc-400/25">
           <Clock className="w-4 h-4 text-zinc-500" />
           <span className="text-sm font-medium text-zinc-600 dark:text-zinc-300">
             ২৪/৭ সাপোর্ট উপলব্ধ

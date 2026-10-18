@@ -22,9 +22,9 @@ export default function OfflinePage() {
   };
 
   return (
-    <main className="flex min-h-[100dvh] items-center justify-center bg-white px-4 py-8 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
+    <main className="flex min-h-[100dvh] items-center justify-center bg-white px-4 py-8 text-zinc-900 dark:bg-zinc-400/10 dark:text-zinc-100">
       <section className="w-full max-w-md text-center">
-        <div className="mx-auto flex size-16 items-center justify-center rounded-2xl border border-zinc-200 bg-zinc-100/80 text-zinc-700 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200">
+        <div className="mx-auto flex size-16 items-center justify-center rounded-2xl border border-zinc-200 bg-zinc-100/80 text-zinc-700 shadow-sm dark:border-zinc-800 dark:bg-zinc-400/10 dark:text-zinc-200">
           <WifiOff className="size-7" aria-hidden="true" />
         </div>
 

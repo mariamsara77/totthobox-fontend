@@ -111,7 +111,7 @@ export default function SettingsPanel({
         onClick={onClose}
       />
 
-      <div className="relative w-full max-w-md bg-zinc-200 dark:bg-zinc-900 h-full overflow-y-auto shadow-2xl p-5 space-y-7">
+      <div className="relative w-full max-w-md bg-zinc-200 dark:bg-zinc-400/10 h-full overflow-y-auto shadow-2xl p-5 space-y-7">
         {/* Header */}
         <div className="flex items-center justify-between sticky top-0 pb-3 z-10">
           <h2 className="text-xl font-semibold">সেটিংস</h2>

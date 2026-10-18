@@ -106,7 +106,7 @@ export default function LanguageSelect() {
             id="totthobox-language"
             value={currentLang}
             onChange={(event) => handleLanguageChange(event.target.value)}
-            className="mt-3 w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-800 outline-none transition-colors focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/15 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+            className="mt-3 w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-800 outline-none transition-colors focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/15 dark:border-zinc-700 dark:bg-zinc-400/10 dark:text-zinc-100"
           >
             {languages.map((language) => (
               <option key={language.code} value={language.code}>

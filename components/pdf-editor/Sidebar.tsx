@@ -31,8 +31,8 @@ export function Sidebar() {
   }, [pdfDoc, numPages]);
 
   return (
-    <div className="w-44 border-r border-zinc-400/25 overflow-y-auto bg-zinc-950 dark:bg-zinc-950 p-2 space-y-4">
-      <p className="text-xs  text-zinc-400 px-1">
+    <div className="w-44 border-r border-zinc-400/25 overflow-y-auto bg-zinc-400/10 p-2 space-y-4">
+      <p className="text-xs text-zinc-400 px-1">
         Pages ({numPages})
       </p>
       {thumbnails.map((src, idx) => (

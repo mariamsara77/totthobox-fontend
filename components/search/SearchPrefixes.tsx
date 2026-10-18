@@ -33,7 +33,7 @@ export default function SearchPrefixes({
             <span
               key={w}
               style={{ width: w }}
-              className="h-7 animate-pulse rounded-lg bg-zinc-100 dark:bg-zinc-900"
+              className="h-7 animate-pulse rounded-lg bg-zinc-100 dark:bg-zinc-400/10"
             />
           ))}
         </div>
@@ -44,7 +44,7 @@ export default function SearchPrefixes({
               key={prefix}
               type="button"
               onClick={() => onChoose(prefix)}
-              className="rounded-lg border border-zinc-200/80 bg-zinc-50 px-2.5 py-1.5 text-[11.5px] font-medium text-zinc-600 transition-all hover:border-zinc-300 hover:bg-white hover:text-zinc-900 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-zinc-300 dark:border-zinc-800 dark:bg-zinc-900/60 dark:text-zinc-400 dark:hover:border-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+              className="rounded-lg border border-zinc-200/80 bg-zinc-50 px-2.5 py-1.5 text-[11.5px] font-medium text-zinc-600 transition-all hover:border-zinc-300 hover:bg-white hover:text-zinc-900 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-zinc-300 dark:border-zinc-800 dark:bg-zinc-400/10 dark:text-zinc-400 dark:hover:border-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
             >
               {prefix}:
             </button>
@@ -60,7 +60,7 @@ export default function SearchPrefixes({
               key={english}
               type="button"
               onClick={() => onChoose(english)}
-              className="rounded px-1.5 py-0.5 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-800 dark:hover:bg-zinc-900 dark:hover:text-zinc-200"
+              className="rounded px-1.5 py-0.5 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-800 dark:hover:bg-zinc-400/10 dark:hover:text-zinc-200"
             >
               {english}:
             </button>

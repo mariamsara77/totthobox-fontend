@@ -220,20 +220,20 @@ export default function SearchModal({ onClose }: SearchModalProps) {
 
             <div className="hidden items-center gap-3 sm:flex">
               <span className="flex items-center gap-1">
-                <kbd className="inline-flex gap-0.5 rounded border border-zinc-200 bg-white px-1.5 py-0.5 dark:border-zinc-800 dark:bg-zinc-950">
+                <kbd className="inline-flex gap-0.5 rounded border border-zinc-200 bg-white px-1.5 py-0.5 dark:border-zinc-800 dark:bg-zinc-400/10">
                   <ArrowUpIcon className="size-2.5" />
                   <ArrowDownIcon className="size-2.5" />
                 </kbd>
                 নেভিগেট
               </span>
               <span className="flex items-center gap-1">
-                <kbd className="rounded border border-zinc-200 bg-white px-1.5 py-0.5 dark:border-zinc-800 dark:bg-zinc-950">
+                <kbd className="rounded border border-zinc-200 bg-white px-1.5 py-0.5 dark:border-zinc-800 dark:bg-zinc-400/10">
                   ↵
                 </kbd>
                 খুলুন
               </span>
               <span className="flex items-center gap-1">
-                <kbd className="rounded border border-zinc-200 bg-white px-1.5 py-0.5 dark:border-zinc-800 dark:bg-zinc-950">
+                <kbd className="rounded border border-zinc-200 bg-white px-1.5 py-0.5 dark:border-zinc-800 dark:bg-zinc-400/10">
                   Esc
                 </kbd>
                 বন্ধ

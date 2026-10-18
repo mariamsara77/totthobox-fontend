@@ -556,7 +556,7 @@ function StatusBadge({ status }: { status: ConversionStatus }) {
     },
     completed: {
       label: "Completed",
-      color: "bg-zinc-900 text-zinc-200 dark:bg-emerald-900/40 text-zinc-300",
+      color: "bg-zinc-400/10 text-zinc-200 dark:bg-emerald-900/40 text-zinc-300",
     },
     failed: {
       label: "Failed",
@@ -565,7 +565,7 @@ function StatusBadge({ status }: { status: ConversionStatus }) {
   };
   const item = map[status] || {
     label: status,
-    color: "bg-zinc-900 text-zinc-300",
+    color: "bg-zinc-400/10 text-zinc-300",
   };
   return (
     <span
@@ -592,7 +592,7 @@ function FaqItem({
     <div className="rounded-xl border border-zinc-400/25 dark:border-zinc-700 overflow-hidden">
       <button
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between px-4 py-3.5 text-left  hover:bg-zinc-900 hover:bg-zinc-800/50 transition"
+        className="flex w-full items-center justify-between px-4 py-3.5 text-left hover:bg-zinc-800/50 transition"
       >
         <span>{question}</span>
         <ChevronDown
@@ -610,7 +610,7 @@ function FaqItem({
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <div className="px-4 pb-4 text-sm  leading-relaxed">{children}</div>
+            <div className="px-4 pb-4 text-sm leading-relaxed">{children}</div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -81,7 +81,7 @@ export default function SearchInput({
         <XMarkIcon className="size-4" />
       </button>
 
-      <kbd className="hidden shrink-0 rounded-md border border-zinc-200/80 bg-zinc-50 px-2 py-1 text-[10px] font-medium text-zinc-400 sm:block dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-500">
+      <kbd className="hidden shrink-0 rounded-md border border-zinc-200/80 bg-zinc-50 px-2 py-1 text-[10px] font-medium text-zinc-400 sm:block dark:border-zinc-700 dark:bg-zinc-400/10 dark:text-zinc-500">
         ESC
       </kbd>
     </div>

@@ -11,7 +11,7 @@ export function CoatOfArms({ src, alt }: CoatOfArmsProps) {
   }
 
   return (
-    <div className="p-6 flex justify-center bg-zinc-900/50 dark:bg-zinc-950/30">
+    <div className="p-6 flex justify-center bg-zinc-400/10">
       <img
         src={src}
         alt={alt}

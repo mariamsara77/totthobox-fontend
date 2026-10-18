@@ -35,13 +35,11 @@ export default function MarkdownRenderer({ content, animate = false }: Props) {
 
       // র‍্যাপার তৈরি
       const wrapper = document.createElement("div");
-      wrapper.className =
-        "code-block-wrapper not-prose my-3 rounded-lg overflow-hidden border border-zinc-400/25 dark:border-zinc-700";
+      wrapper.className="code-block-wrapper not-prose my-3 rounded-lg overflow-hidden border border-zinc-400/25 dark:border-zinc-700";
 
       // টুলবার তৈরি
       const toolbar = document.createElement("div");
-      toolbar.className =
-        "code-toolbar flex items-center justify-between p-2 text-xs";
+      toolbar.className="code-toolbar flex items-center justify-between p-2 text-xs";
       toolbar.innerHTML = `
         <span class="uppercase tracking-wider opacity-60">${lang}</span>
         <button type="button" class="code-copy-btn transition p-2 rounded">কপি</button>
@@ -76,7 +74,7 @@ export default function MarkdownRenderer({ content, animate = false }: Props) {
     <div
       ref={rootRef}
       className={`ai-prose prose prose-sm dark:prose-invert max-w-none
-        prose-a: prose-pre:bg-zinc-900 prose-pre:p-0
+        prose-a: prose-pre:bg-zinc-400/10 prose-pre:p-0
         ${animate ? "ai-response-new" : ""}`}
     >
       <ReactMarkdown

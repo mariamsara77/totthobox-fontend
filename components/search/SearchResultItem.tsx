@@ -66,15 +66,15 @@ export default function SearchResultItem({
       className={`group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-all duration-100 focus:outline-none focus:ring-2 focus:ring-zinc-300/60 dark:focus:ring-zinc-600 ${
         selected
           ? "bg-zinc-100/90 dark:bg-zinc-800/70"
-          : "hover:bg-zinc-50 dark:hover:bg-zinc-900/50"
+          : "hover:bg-zinc-50 dark:hover:bg-zinc-400/10"
       }`}
       aria-current={selected ? "true" : undefined}
     >
       <div
         className={`flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-xl border text-sm transition-colors ${
           selected
-            ? "border-zinc-300/70 bg-white dark:border-zinc-600 dark:bg-zinc-900"
-            : "border-zinc-200/70 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900/60"
+            ? "border-zinc-300/70 bg-white dark:border-zinc-600 dark:bg-zinc-400/10"
+            : "border-zinc-200/70 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-400/10"
         }`}
       >
         {item._search_image ? (
@@ -110,7 +110,7 @@ export default function SearchResultItem({
         )}
       </span>
 
-      <span className="hidden shrink-0 rounded-md border border-zinc-200/70 bg-zinc-50 px-2 py-0.5 text-[10.5px] font-medium text-zinc-400 sm:block dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-500">
+      <span className="hidden shrink-0 rounded-md border border-zinc-200/70 bg-zinc-50 px-2 py-0.5 text-[10.5px] font-medium text-zinc-400 sm:block dark:border-zinc-800 dark:bg-zinc-400/10 dark:text-zinc-500">
         {item._search_label}
       </span>
 

@@ -68,10 +68,10 @@ export default function MessageList({
             <div className="p-3 rounded-2xl bg-zinc-400/10">
               <Sparkles className="size-6" />
             </div>
-            <p className="text-sm  ">আমি আপনাকে কিভাবে সাহায্য করতে পারি?</p>
-            <p className="text-xs ">ছবি paste করুন বা drag করে আনুন</p>
+            <p className="text-sm">আমি আপনাকে কিভাবে সাহায্য করতে পারি?</p>
+            <p className="text-xs">ছবি paste করুন বা drag করে আনুন</p>
             {isGuest && (
-              <p className="text-xs ">
+              <p className="text-xs">
                 লগইন ছাড়াই বেশ কয়েকবার জিজ্ঞেস করা যাবে
               </p>
             )}
@@ -91,19 +91,19 @@ export default function MessageList({
 
         {isTyping && (
           <div className="flex justify-start py-2 ps-2">
-            <div className="flex items-center gap-4 p-4 rounded-2xl ">
+            <div className="flex items-center gap-4 p-4 rounded-2xl">
               <div className="relative">
-                <div className="absolute inset-0 rounded-full bg-zinc-9000/20 animate-ping" />
-                <div className="relative bg-zinc-9000/10 p-2 rounded-lg animate-bounce">
-                  <Sparkles className="w-5 h-5 " />
+                <div className="absolute inset-0 rounded-full bg-zinc-400/100/20 animate-ping" />
+                <div className="relative bg-zinc-400/100/10 p-2 rounded-lg animate-bounce">
+                  <Sparkles className="w-5 h-5" />
                 </div>
               </div>
               <div>
-                <span className="text-xs  ">তথ্যবক্স এআই ভাবছে...</span>
+                <span className="text-xs">তথ্যবক্স এআই ভাবছে...</span>
                 <div className="flex gap-1 mt-0.5">
-                  <span className="w-1 h-1 bg-zinc-9000/40 rounded-full animate-pulse" />
-                  <span className="w-1 h-1 bg-zinc-9000/40 rounded-full animate-pulse [animation-delay:200ms]" />
-                  <span className="w-1 h-1 bg-zinc-9000/40 rounded-full animate-pulse [animation-delay:400ms]" />
+                  <span className="w-1 h-1 bg-zinc-400/100/40 rounded-full animate-pulse" />
+                  <span className="w-1 h-1 bg-zinc-400/100/40 rounded-full animate-pulse [animation-delay:200ms]" />
+                  <span className="w-1 h-1 bg-zinc-400/100/40 rounded-full animate-pulse [animation-delay:400ms]" />
                 </div>
               </div>
             </div>
@@ -118,7 +118,7 @@ export default function MessageList({
               <button
                 type="button"
                 onClick={onRetry}
-                className="underline underline-offset-2 ml-1  hover:text-red-300 "
+                className="underline underline-offset-2 ml-1 hover:text-red-300"
               >
                 আবার চেষ্টা
               </button>
@@ -132,7 +132,7 @@ export default function MessageList({
           <button
             type="button"
             onClick={() => scrollBottom(true)}
-            className="p-2 rounded-full  bg-zinc-800 border border-zinc-700  hover:bg-zinc-700 "
+            className="p-2 rounded-full bg-zinc-800 border border-zinc-700 hover:bg-zinc-700"
           >
             <ArrowDown className="w-4 h-4" />
           </button>

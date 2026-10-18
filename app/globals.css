@@ -179,16 +179,42 @@ body {
 }
 
 /* =========================================
-   Native Select Dark Mode
+   Native Select Palette
    ========================================= */
-select,
-select option {
+/* Equivalent to bg-zinc-200 in light mode and dark:bg-zinc-700 in dark mode.
+   !important guarantees a consistent palette even where legacy select utilities
+   are still present; native option popovers receive the same color scheme. */
+select {
   color-scheme: light;
+  background-color: var(--color-zinc-200) !important;
+  color: var(--color-zinc-900);
 }
 
-.dark select,
-.dark select option {
+.dark select {
   color-scheme: dark;
-  background-color: var(--color-zinc-900);
+  background-color: var(--color-zinc-700) !important;
   color: var(--color-zinc-50);
+}
+
+select option,
+select optgroup {
+  background-color: var(--color-zinc-200);
+  color: var(--color-zinc-900);
+}
+
+.dark select option,
+.dark select optgroup {
+  background-color: var(--color-zinc-700);
+  color: var(--color-zinc-50);
+}
+
+/* Keep sized skeleton placeholders on the shared subtle neutral surface.
+   Restrict this to pulse-loading regions so real content surfaces are unchanged. */
+.animate-pulse[class*="h-"][class*="bg-zinc-"],
+.animate-pulse [class*="h-"][class*="bg-zinc-"],
+.animate-pulse[class*="h-"][class*="bg-gray-"],
+.animate-pulse [class*="h-"][class*="bg-gray-"],
+.animate-pulse[class*="h-"][class*="bg-neutral-"],
+.animate-pulse [class*="h-"][class*="bg-neutral-"] {
+  background-color: color-mix(in oklab, var(--color-zinc-400) 10%, transparent) !important;
 }

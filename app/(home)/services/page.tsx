@@ -109,10 +109,10 @@ export default function ServicesPage() {
     <div className="max-w-7xl mx-auto p-4 lg:px-8 space-y-8 py-8">
       {/* Header */}
       <header className="text-center space-y-4">
-        <h1 className="text-3xl   font-bold text-zinc-900 dark:text-white tracking-tight">
+        <h1 className="text-3xl font-bold text-zinc-900 dark:text-white tracking-tight">
           মূল সেবা
         </h1>
-        <p className="text-base sm:text-lg  max-w-2xl mx-auto">
+        <p className="text-base sm:text-lg max-w-2xl mx-auto">
           আপনার দৈনন্দিন প্রয়োজনীয় তথ্য, টুলস ও ডিজিটাল সেবা এক জায়গায় —
           নির্ভরযোগ্য ও সহজভাবে।
         </p>
@@ -120,7 +120,7 @@ export default function ServicesPage() {
 
       {/* Service introduction */}
       <div className="w-full">
-        <div className=" border border-zinc-400/25 rounded-2xl p-4 text-center">
+        <div className="border border-zinc-400/25 rounded-2xl p-4 text-center">
           <p className="">
             প্রয়োজনীয় সেবাগুলো নিচের তালিকা থেকে সরাসরি ব্যবহার করুন।
           </p>
@@ -140,17 +140,17 @@ export default function ServicesPage() {
               <Link
                 key={index}
                 href={service.href}
-                className="relative flex flex-col items-center h-full p-4 text-center transition-all duration-200 border border-transparent group rounded-3xl bg-zinc-900 dark:bg-zinc-950/5 border-zinc-400/25 border-zinc-400/25"
+                className="relative flex flex-col items-center h-full p-4 text-center transition-all duration-200 border border-transparent group rounded-3xl bg-zinc-400/10 border-zinc-400/25"
               >
                 <div className="mb-4 transition-transform duration-200 transform group-hover:scale-110 text-zinc-900 dark:text-white">
                   <Icon className="w-12 h-12 stroke-[1.5]" />
                 </div>
 
-                <h3 className="text-lg  text-zinc-900 dark:text-white  group-hover:font-bold">
+                <h3 className="text-lg text-zinc-900 dark:text-white group-hover:font-bold">
                   {service.label}
                 </h3>
 
-                <span className="mt-2 text-xs leading-relaxed ">
+                <span className="mt-2 text-xs leading-relaxed">
                   {service.details}
                 </span>
               </Link>
@@ -167,7 +167,7 @@ export default function ServicesPage() {
           তথ্যবক্স (Totthobox) — আপনার দৈনন্দিন ডিজিটাল সহায়ক
         </h2>
 
-        <div className="space-y-5  prose prose-zinc dark:prose-invert max-w-none">
+        <div className="space-y-5 prose prose-zinc dark:prose-invert max-w-none">
           <p className="text-base leading-relaxed">
             বর্তমানে সঠিক তথ্য দ্রুত পাওয়া অত্যন্ত জরুরি।{" "}
             <strong>Totthobox</strong> বাংলাদেশের ব্যবহারকারীদের জন্য তৈরি একটি
@@ -176,7 +176,7 @@ export default function ServicesPage() {
             আপনি সহজে নির্ভরযোগ্য তথ্য পেতে পারেন।
           </p>
 
-          <h3 className="text-xl  text-zinc-900 dark:text-white mt-8 mb-4">
+          <h3 className="text-xl text-zinc-900 dark:text-white mt-8 mb-4">
             কী কী সেবা পাবেন
           </h3>
 
@@ -217,7 +217,7 @@ export default function ServicesPage() {
             </li>
           </ul>
 
-          <h3 className="text-xl  text-zinc-900 dark:text-white mt-8 mb-4">
+          <h3 className="text-xl text-zinc-900 dark:text-white mt-8 mb-4">
             কেন Totthobox ব্যবহার করবেন
           </h3>
 

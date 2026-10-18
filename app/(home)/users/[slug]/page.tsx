@@ -189,7 +189,7 @@ export default async function UserProfilePage({
                         </div>
 
                         <div className="flex gap-4">
-                            <Link href={`/messages/${profile.slug}`} className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-sm font-medium bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 hover:opacity-90 transition">
+                            <Link href={`/messages/${profile.slug}`} className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-sm font-medium bg-zinc-400/10 text-white dark:bg-zinc-100 dark:text-zinc-900 hover:opacity-90 transition">
                                 মেসেজ পাঠান
                             </Link>
                         </div>
@@ -208,7 +208,7 @@ export default async function UserProfilePage({
                     </div>
                 )}
 
-                <div className="p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 space-y-4">
+                <div className="p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-400/10 space-y-4">
                     <h2 className="text-base font-semibold text-zinc-800 dark:text-zinc-200">যোগাযোগের তথ্য</h2>
                     <div className="space-y-4">
                         {profile.location && (

@@ -107,7 +107,7 @@ export default function InteractiveActions({
             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition disabled:opacity-50 ${
               liked
                 ? "text-blue-600 bg-blue-50 dark:bg-blue-900/30"
-                : " hover:bg-zinc-900 hover:bg-zinc-800"
+                : " hover:bg-zinc-400/10 hover:bg-zinc-800"
             }`}
           >
             <ThumbsUp className="w-4 h-4" />
@@ -120,7 +120,7 @@ export default function InteractiveActions({
             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition disabled:opacity-50 ${
               disliked
                 ? "text-red-600 bg-red-50 dark:bg-red-900/30"
-                : " hover:bg-zinc-900 hover:bg-zinc-800"
+                : " hover:bg-zinc-400/10 hover:bg-zinc-800"
             }`}
           >
             <ThumbsDown className="w-4 h-4" />
@@ -130,7 +130,7 @@ export default function InteractiveActions({
 
         <button
           onClick={share}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm  hover:bg-zinc-900 hover:bg-zinc-800"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm hover:bg-zinc-800"
         >
           <Share2 className="w-4 h-4" />
           শেয়ার
@@ -144,7 +144,7 @@ export default function InteractiveActions({
             message.includes("ব্যর্থ") ||
             message.includes("সংযোগ")
               ? "bg-red-50 text-red-600 dark:bg-red-900/20"
-              : "bg-zinc-900 text-zinc-200 dark:bg-emerald-900/20"
+              : "bg-zinc-400/10 text-zinc-200 dark:bg-emerald-900/20"
           }`}
         >
           {message}
