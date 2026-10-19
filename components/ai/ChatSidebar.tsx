@@ -107,7 +107,7 @@ export default function ChatSidebar({ currentUuid, onNavigate }: Props) {
     const sessionId =
       typeof session.id === "number"
         ? session.id
-        : typeof session.id === "string" && /^\\d+$/.test(session.id)
+        : typeof session.id === "string" && /^\d+$/.test(session.id)
           ? Number(session.id)
           : Number.NaN;
 
