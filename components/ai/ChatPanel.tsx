@@ -243,6 +243,10 @@ export default function ChatPanel({
         const guestUsage = data?.guest_usage ?? json?.guest_usage;
         syncGuestUsage(guestUsage, res.status);
 
+        if (isGuest && res.ok && getGuestRemaining(guestUsage) === null) {
+          void loadGuestUsage();
+        }
+
         if (
           !res.ok ||
           !json?.success ||
@@ -290,6 +294,7 @@ export default function ChatPanel({
       getHeaders,
       openLoginModal,
       syncGuestUsage,
+      loadGuestUsage,
     ],
   );
 
@@ -323,6 +328,10 @@ export default function ChatPanel({
       const guestUsage = data?.guest_usage ?? json?.guest_usage;
       syncGuestUsage(guestUsage, res.status);
 
+      if (isGuest && res.ok && getGuestRemaining(guestUsage) === null) {
+        void loadGuestUsage();
+      }
+
       if (!res.ok || !json?.success || !data?.ai_message) {
         setError(
           typeof json?.message === "string"
@@ -344,7 +353,16 @@ export default function ChatPanel({
       setIsTyping(false);
       setSending(false);
     }
-  }, [sending, isGuest, guestRemaining, uuid, getHeaders, openLoginModal, syncGuestUsage]);
+  }, [
+    sending,
+    isGuest,
+    guestRemaining,
+    uuid,
+    getHeaders,
+    openLoginModal,
+    syncGuestUsage,
+    loadGuestUsage,
+  ]);
 
   const editAndRegenerate = useCallback(
     async (messageId: number, newContent: string) => {
@@ -380,6 +398,10 @@ export default function ChatPanel({
         const guestUsage = data?.guest_usage ?? json?.guest_usage;
         syncGuestUsage(guestUsage, res.status);
 
+        if (isGuest && res.ok && getGuestRemaining(guestUsage) === null) {
+          void loadGuestUsage();
+        }
+
         if (
           !res.ok ||
           !json?.success ||
@@ -407,7 +429,16 @@ export default function ChatPanel({
         setSending(false);
       }
     },
-    [isGuest, guestRemaining, uuid, sending, getHeaders, openLoginModal, syncGuestUsage],
+    [
+      isGuest,
+      guestRemaining,
+      uuid,
+      sending,
+      getHeaders,
+      openLoginModal,
+      syncGuestUsage,
+      loadGuestUsage,
+    ],
   );
 
   const inputDisabled = isTyping || sending || (isGuest && guestRemaining <= 0);
