@@ -119,9 +119,9 @@ export default function ChatPanel({
         const res = await fetch(
           `/api/backend/ai/sessions/${uuid}?visitor_id=${encodeURIComponent(visitorId)}`,
           {
-          credentials: "include",
-          headers: getHeaders(),
-          cache: "no-store", // ← এটা যোগ করুন
+            credentials: "include",
+            headers: getHeaders(),
+            cache: "no-store", // ← এটা যোগ করুন
           },
         );
 
