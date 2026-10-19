@@ -25,12 +25,24 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
+function normalizeSessionArray(candidates: unknown[]): ChatSession[] {
+  return candidates
+    .filter(isRecord)
+    .filter(
+      (session) => typeof session.uuid === "string" && session.uuid.length > 0,
+    )
+    .map((session) => ({
+      ...(typeof session.id === "number" || typeof session.id === "string"
+        ? { id: session.id }
+        : {}),
+      uuid: session.uuid as string,
+      title: typeof session.title === "string" ? session.title : null,
+    }));
+}
+
 function parseSessions(payload: unknown): ChatSession[] {
   if (Array.isArray(payload)) {
-    return payload.filter(isRecord).filter(
-      (session): session is Record<string, unknown> =>
-        typeof session.uuid === "string" && session.uuid.length > 0,
-    ) as ChatSession[];
+    return normalizeSessionArray(payload);
   }
 
   if (!isRecord(payload) || payload.success === false) {
@@ -44,18 +56,7 @@ function parseSessions(payload: unknown): ChatSession[] {
     ? data
     : nestedSessions ?? (Array.isArray(payload.sessions) ? payload.sessions : []);
 
-  return candidates
-    .filter(isRecord)
-    .filter(
-      (session) => typeof session.uuid === "string" && session.uuid.length > 0,
-    )
-    .map((session) => ({
-      ...(typeof session.id === "number" || typeof session.id === "string"
-        ? { id: session.id }
-        : {}),
-      uuid: session.uuid as string,
-      title: typeof session.title === "string" ? session.title : null,
-    }));
+  return normalizeSessionArray(candidates);
 }
 
 export default function ChatSidebar({ currentUuid, onNavigate }: Props) {
