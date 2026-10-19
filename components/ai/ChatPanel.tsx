@@ -15,6 +15,24 @@ export type ChatMessage = {
   created_at?: string;
 };
 
+type GuestUsage = {
+  used?: number;
+  limit?: number;
+  remaining?: number;
+};
+
+type AskResponse = {
+  success?: boolean;
+  message?: string;
+  guest_usage?: GuestUsage;
+  data?: {
+    session?: { is_new?: boolean; uuid?: string; title?: string };
+    user_message?: ChatMessage;
+    ai_message?: ChatMessage;
+    guest_usage?: GuestUsage;
+  };
+};
+
 export default function ChatPanel({
   uuid: initialUuid,
 }: {
@@ -55,23 +73,31 @@ export default function ChatPanel({
     setUuid(initialUuid);
   }, [initialUuid]);
 
-  const loadGuestUsage = async () => {
+  const loadGuestUsage = useCallback(async () => {
     try {
-      const res = await fetch(`/api/backend/ai/guest-usage`, {
+      const res = await fetch("/api/backend/ai/guest-usage", {
         credentials: "include",
-        headers: getHeaders(), // 👈 টোকেন পাঠানো হচ্ছে
+        headers: getHeaders(),
         cache: "no-store",
       });
-      const json = await res.json();
-      if (json.success) setGuestRemaining(json.data.remaining);
-    } catch {}
-  };
+      const json = (await res.json().catch(() => null)) as {
+        success?: boolean;
+        data?: GuestUsage;
+      } | null;
+
+      if (res.ok && json?.success && typeof json.data?.remaining === "number") {
+        setGuestRemaining(json.data.remaining);
+      }
+    } catch {
+      // Usage lookup is best-effort; keep the last known remaining count.
+    }
+  }, [getHeaders]);
 
   useEffect(() => {
     if (isGuest && !authLoading) {
-      loadGuestUsage();
+      void loadGuestUsage();
     }
-  }, [isGuest, authLoading, getHeaders]);
+  }, [isGuest, authLoading, loadGuestUsage]);
 
   // ২. Session Load Effect (Fixes Old Chat Fetching)
   useEffect(() => {
@@ -160,41 +186,53 @@ export default function ChatPanel({
           headers: getHeaders(true), // 👈 POST রিকোয়েস্টেও টোকেন পাঠানো হচ্ছে
           cache: "no-store",
           body: JSON.stringify({
-            question: content,
-            image: imageBase64 || undefined,
-            image_mime: imageMime || undefined,
-            uuid: uuid || undefined,
-            history: isGuest ? history : undefined,
+            question: content || null,
+            image: imageBase64 || null,
+            image_mime: imageMime || null,
+            uuid: uuid || null,
+            history: isGuest ? history : null,
           }),
         });
 
-        const json = await res.json();
+        const json = (await res.json().catch(() => null)) as AskResponse | null;
+        const data = json?.data;
+        const guestUsage = data?.guest_usage ?? json?.guest_usage;
 
-        if (res.status === 429 || !json.success) {
+        if (
+          !res.ok ||
+          !json?.success ||
+          !data?.user_message ||
+          !data?.ai_message
+        ) {
           setMessages((prev) => prev.filter((m) => m.id !== tempUserId));
-          setError(json.message || "সমস্যা হয়েছে");
-          if (json.guest_usage) setGuestRemaining(json.guest_usage.remaining);
+          setError(
+            typeof json?.message === "string"
+              ? json.message
+              : "সমস্যা হয়েছে। আবার চেষ্টা করুন।",
+          );
+          if (typeof guestUsage?.remaining === "number") {
+            setGuestRemaining(guestUsage.remaining);
+          }
           return;
         }
 
-        const { data } = json;
-
         if (data.session?.is_new && data.session.uuid) {
           setUuid(data.session.uuid);
-          setTitle(data.session.title);
+          setTitle(data.session.title || "নতুন চ্যাট");
           router.replace(`/ai/chat/${data.session.uuid}`, { scroll: false });
 
-          // ✅ sidebar কে refresh করতে বলো
           window.dispatchEvent(new CustomEvent("chat:session-created"));
         }
 
         setMessages((prev) => {
           const withoutTmp = prev.filter((m) => m.id !== tempUserId);
-          return [...withoutTmp, data.user_message, data.ai_message];
+          return [...withoutTmp, data.user_message!, data.ai_message!];
         });
         setNewMessageId(data.ai_message.id);
 
-        if (data.guest_usage) setGuestRemaining(data.guest_usage.remaining);
+        if (typeof guestUsage?.remaining === "number") {
+          setGuestRemaining(guestUsage.remaining);
+        }
       } catch (e) {
         setMessages((prev) => prev.filter((m) => m.id !== tempUserId));
         setError("উত্তর পেতে সমস্যা হচ্ছে — আবার চেষ্টা করুন।");

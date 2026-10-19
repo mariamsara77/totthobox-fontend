@@ -3,6 +3,8 @@
 import { useState, useRef, ChangeEvent, KeyboardEvent } from "react";
 import { Send, Image as ImageIcon, X, LogIn } from "lucide-react";
 
+type SupportedImageMime = "image/jpeg" | "image/png" | "image/gif" | "image/webp";
+
 type ChatInputProps = {
   disabled?: boolean;
   isGuest?: boolean;
@@ -10,7 +12,7 @@ type ChatInputProps = {
   onSend: (
     question: string,
     imageBase64?: string | null,
-    imageMime?: string | null,
+    imageMime?: SupportedImageMime | null,
   ) => Promise<void>;
   onLogin?: () => void;
 };
@@ -24,7 +26,7 @@ export default function ChatInput({
 }: ChatInputProps) {
   const [text, setText] = useState("");
   const [imageBase64, setImageBase64] = useState<string | null>(null);
-  const [imageMime, setImageMime] = useState<string | null>(null);
+  const [imageMime, setImageMime] = useState<SupportedImageMime | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -32,18 +34,48 @@ export default function ChatInput({
     const file = e.target.files?.[0];
     if (!file) return;
 
+    const supportedMimeTypes: readonly SupportedImageMime[] = [
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "image/webp",
+    ];
+
+    if (!supportedMimeTypes.includes(file.type as SupportedImageMime)) {
+      alert("শুধু JPEG, PNG, GIF অথবা WebP ছবি আপলোড করা যাবে।");
+      e.target.value = "";
+      return;
+    }
+
     if (file.size > 5 * 1024 * 1024) {
       alert("ছবি সর্বোচ্চ ৫MB হতে পারবে।");
+      e.target.value = "";
       return;
     }
 
     const reader = new FileReader();
     reader.onload = () => {
-      const result = reader.result as string;
-      const base64Data = result.split(",")[1];
+      if (typeof reader.result !== "string") {
+        alert("ছবিটি পড়া যায়নি। আবার চেষ্টা করুন।");
+        return;
+      }
+
+      const separatorIndex = reader.result.indexOf(",");
+      const base64Data =
+        separatorIndex >= 0 ? reader.result.slice(separatorIndex + 1) : "";
+
+      if (!base64Data) {
+        alert("ছবিটি পড়া যায়নি। আবার চেষ্টা করুন।");
+        return;
+      }
+
       setImageBase64(base64Data);
-      setImageMime(file.type);
-      setImagePreview(result);
+      setImageMime(file.type as SupportedImageMime);
+      setImagePreview(reader.result);
+    };
+    reader.onerror = () => {
+      alert("ছবিটি পড়া যায়নি। আবার চেষ্টা করুন।");
+      e.target.value = "";
     };
     reader.readAsDataURL(file);
   };
@@ -120,7 +152,7 @@ export default function ChatInput({
           type="file"
           ref={fileInputRef}
           onChange={handleImageChange}
-          accept="image/*"
+          accept="image/jpeg,image/png,image/gif,image/webp"
           className="hidden"
         />
         <button
