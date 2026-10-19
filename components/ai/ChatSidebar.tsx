@@ -54,7 +54,7 @@ export default function ChatSidebar({ currentUuid, onNavigate }: Props) {
     } finally {
       setLoading(false);
     }
-  }, [isLoggedIn]);
+  }, []);
 
   useEffect(() => {
     if (!authLoading) {
