@@ -1,9 +1,13 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import ReactMarkdown from "react-markdown";
+import { isValidElement, useCallback, useState, type ReactNode } from "react";
+import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
+import { Check, Clipboard, ExternalLink } from "lucide-react";
+import AiImageViewer from "./AiImageViewer";
+
+import "highlight.js/styles/github.css";
 
 type Props = {
   content: string;
@@ -11,75 +15,158 @@ type Props = {
   animate?: boolean;
 };
 
-export default function MarkdownRenderer({ content, animate = false }: Props) {
-  const rootRef = useRef<HTMLDivElement>(null);
+function getTextContent(node: ReactNode): string {
+  if (typeof node === "string" || typeof node === "number") {
+    return String(node);
+  }
 
-  useEffect(() => {
-    if (!rootRef.current) return;
+  if (Array.isArray(node)) {
+    return node.map(getTextContent).join("");
+  }
 
-    // Code copy buttons logic
-    const preElements = rootRef.current.querySelectorAll("pre");
+  if (isValidElement<{ children?: ReactNode }>(node)) {
+    return getTextContent(node.props.children);
+  }
 
-    preElements.forEach((pre) => {
-      // যদি আগে থেকেই র‍্যাপ করা থাকে, তবে স্কিপ করুন
-      if (pre.parentElement?.classList.contains("code-block-wrapper")) return;
+  return "";
+}
 
-      const code = pre.querySelector("code");
-      if (!code) return;
+function getCodeLanguage(node: ReactNode): string {
+  if (Array.isArray(node)) {
+    for (const child of node) {
+      const language = getCodeLanguage(child);
+      if (language !== "code") return language;
+    }
+    return "code";
+  }
 
-      // ক্লাসনম থেকে ল্যাঙ্গুয়েজ বের করা
-      const lang =
-        [...code.classList]
-          .find((c) => c.startsWith("language-"))
-          ?.replace("language-", "") || "code";
+  if (isValidElement<{ className?: string; children?: ReactNode }>(node)) {
+    const match = node.props.className?.match(/(?:^|\\s)language-([\\w+-]+)/);
+    if (match?.[1]) return match[1];
+    return getCodeLanguage(node.props.children);
+  }
 
-      // র‍্যাপার তৈরি
-      const wrapper = document.createElement("div");
-      wrapper.className="code-block-wrapper not-prose my-3 rounded-lg overflow-hidden border border-zinc-400/25 dark:border-zinc-700";
+  return "code";
+}
 
-      // টুলবার তৈরি
-      const toolbar = document.createElement("div");
-      toolbar.className="code-toolbar flex items-center justify-between p-2 text-xs";
-      toolbar.innerHTML = `
-        <span class="uppercase tracking-wider opacity-60">${lang}</span>
-        <button type="button" class="code-copy-btn transition p-2 rounded">কপি</button>
-      `;
+async function copyText(text: string): Promise<boolean> {
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {
+    // Use the legacy browser fallback below when clipboard permissions are denied.
+  }
 
-      // কপি বাটন ইভেন্ট লিসেনার
-      const btn = toolbar.querySelector("button");
-      if (btn) {
-        btn.addEventListener("click", () => {
-          // textContent ব্যবহার করলে highlight এর span গুলো বাদ দিয়ে শুধু টেক্সট কপি হবে
-          navigator.clipboard.writeText(code.textContent || "").then(() => {
-            btn.textContent = "কপি হয়েছে ✓";
-            btn.classList.add("");
-            setTimeout(() => {
-              btn.textContent = "কপি";
-              btn.classList.remove("");
-            }, 2000);
-          });
-        });
-      }
+  try {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    textarea.style.pointerEvents = "none";
+    document.body.appendChild(textarea);
+    textarea.select();
+    const copied = document.execCommand("copy");
+    textarea.remove();
+    return copied;
+  } catch {
+    return false;
+  }
+}
 
-      // DOM-এ নতুন এলিমেন্টগুলো যুক্ত করা
-      if (pre.parentNode) {
-        pre.parentNode.insertBefore(wrapper, pre);
-        wrapper.appendChild(toolbar);
-        wrapper.appendChild(pre);
-      }
-    });
-  }, [content]);
+function CodeBlock({ children }: { children: ReactNode }) {
+  const [copied, setCopied] = useState(false);
+  const codeText = getTextContent(children);
+  const language = getCodeLanguage(children);
+
+  const handleCopy = useCallback(async () => {
+    const didCopy = await copyText(codeText);
+    if (!didCopy) return;
+
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1800);
+  }, [codeText]);
 
   return (
-    <div
-      ref={rootRef}
-      className={`ai-prose prose prose-sm dark:prose-invert max-w-none
-        prose-a: prose-pre:bg-zinc-400/10 prose-pre:p-0
-        ${animate ? "ai-response-new" : ""}`}
-    >
+    <div className="ai-code-block">
+      <div className="ai-code-toolbar">
+        <span className="ai-code-language">{language}</span>
+        <button
+          type="button"
+          onClick={handleCopy}
+          className="ai-code-copy"
+          aria-label={copied ? "কোড কপি হয়েছে" : "কোড কপি করুন"}
+        >
+          {copied ? (
+            <Check aria-hidden="true" className="h-3.5 w-3.5" />
+          ) : (
+            <Clipboard aria-hidden="true" className="h-3.5 w-3.5" />
+          )}
+          <span>{copied ? "কপি হয়েছে" : "কপি"}</span>
+        </button>
+      </div>
+      <pre className="ai-code-pre">{children}</pre>
+    </div>
+  );
+}
+
+const markdownComponents: Components = {
+  a: ({ href, children }) => {
+    const isExternal = typeof href === "string" && /^https?:\\/\\//i.test(href);
+
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="ai-markdown-link"
+      >
+        {children}
+        {isExternal && (
+          <ExternalLink
+            aria-hidden="true"
+            className="ml-1 inline-block h-3.5 w-3.5 align-[-2px]"
+          />
+        )}
+      </a>
+    );
+  },
+  img: ({ src, alt }) => {
+    if (typeof src !== "string" || !src.trim()) return null;
+
+    return (
+      <AiImageViewer src={src} alt={alt ?? ""}>
+        <img
+          src={src}
+          alt={alt ?? ""}
+          loading="lazy"
+          className="ai-markdown-image"
+        />
+      </AiImageViewer>
+    );
+  },
+  table: ({ children }) => (
+    <div className="ai-markdown-table-wrap">
+      <table>{children}</table>
+    </div>
+  ),
+  code: ({ children, className }) => (
+    <code className={["ai-markdown-code", className].filter(Boolean).join(" ")}>
+      {children}
+    </code>
+  ),
+  pre: ({ children }) => <CodeBlock>{children}</CodeBlock>,
+};
+
+export default function MarkdownRenderer({ content, animate = false }: Props) {
+  return (
+    <div className={`ai-prose max-w-none min-w-0 ${animate ? "ai-response-new" : ""}`}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight]}
+        components={markdownComponents}
       >
         {content}
       </ReactMarkdown>
