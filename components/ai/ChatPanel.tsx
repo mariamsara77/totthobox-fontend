@@ -69,23 +69,45 @@ export default function ChatPanel({
   );
 
   // 🛠️ ফিক্স ১: সব API Request-এর জন্য Authorization Header তৈরি করার ফাংশন
-  const getHeaders = useCallback((isPost = false) => {
-    const headers: Record<string, string> = {
-      Accept: "application/json",
-      "X-Visitor-Id": getVisitorId(),
-    };
+  const getHeaders = useCallback(
+    (isPost = false, visitorId = getVisitorId()) => {
+      const headers: Record<string, string> = {
+        Accept: "application/json",
+        "X-Visitor-Id": visitorId,
+      };
 
-    if (isPost) {
-      headers["Content-Type"] = "application/json";
-    }
+      if (isPost) {
+        headers["Content-Type"] = "application/json";
+      }
 
-    return headers;
-  }, []);
+      return headers;
+    },
+    [],
+  );
 
   // ১. URL/Props থেকে initialUuid পরিবর্তন হলে uuid স্টেট আপডেট করা
   useEffect(() => {
     setUuid(initialUuid);
   }, [initialUuid]);
+
+  const syncGuestUsage = useCallback(
+    (usage?: GuestUsage, status?: number) => {
+      const remaining = getGuestRemaining(usage);
+
+      if (remaining !== null) {
+        setGuestRemaining(remaining);
+      }
+
+      if (isGuest && (status === 429 || remaining === 0)) {
+        setGuestRemaining(0);
+        openLoginModal({
+          reason:
+            "ফ্রি ব্যবহারের সীমা শেষ হয়েছে। আরও ব্যবহার করতে লগইন করুন।",
+        });
+      }
+    },
+    [isGuest, openLoginModal],
+  );
 
   const loadGuestUsage = useCallback(async () => {
     try {
@@ -99,14 +121,13 @@ export default function ChatPanel({
         data?: GuestUsage;
       } | null;
 
-      const remaining = getGuestRemaining(json?.data);
-      if (res.ok && json?.success && remaining !== null) {
-        setGuestRemaining(remaining);
+      if (res.ok && json?.success) {
+        syncGuestUsage(json.data, res.status);
       }
     } catch {
       // Usage lookup is best-effort; keep the last known remaining count.
     }
-  }, [getHeaders]);
+  }, [getHeaders, syncGuestUsage]);
 
   useEffect(() => {
     if (isGuest && !authLoading) {
@@ -130,10 +151,10 @@ export default function ChatPanel({
       try {
         const visitorId = getVisitorId();
         const res = await fetch(
-          `/api/backend/ai/sessions/${uuid}?visitor_id=${encodeURIComponent(visitorId)}`,
+          `/api/backend/ai/sessions/${encodeURIComponent(uuid)}?visitor_id=${encodeURIComponent(visitorId)}`,
           {
             credentials: "include",
-            headers: getHeaders(),
+            headers: getHeaders(false, visitorId),
             cache: "no-store", // ← এটা যোগ করুন
           },
         );
@@ -196,18 +217,19 @@ export default function ChatPanel({
           role: m.role,
           content: m.content,
         }));
+        const visitorId = getVisitorId();
 
         const res = await fetch(`/api/backend/ai/ask`, {
           method: "POST",
           credentials: "include",
-          headers: getHeaders(true), // 👈 POST রিকোয়েস্টেও টোকেন পাঠানো হচ্ছে
+          headers: getHeaders(true, visitorId),
           cache: "no-store",
           body: JSON.stringify({
             question: content || null,
             image: imageBase64 || null,
             image_mime: imageMime || null,
             uuid: uuid || null,
-            visitor_id: getVisitorId(),
+            visitor_id: visitorId,
             history: isGuest ? history : null,
           }),
         });
@@ -215,7 +237,7 @@ export default function ChatPanel({
         const json = (await res.json().catch(() => null)) as AskResponse | null;
         const data = json?.data;
         const guestUsage = data?.guest_usage ?? json?.guest_usage;
-        const remaining = getGuestRemaining(guestUsage);
+        syncGuestUsage(guestUsage, res.status);
 
         if (
           !res.ok ||
@@ -229,18 +251,6 @@ export default function ChatPanel({
               ? json.message
               : "সমস্যা হয়েছে। আবার চেষ্টা করুন।",
           );
-
-          if (remaining !== null) {
-            setGuestRemaining(remaining);
-          }
-
-          if (isGuest && (res.status === 429 || remaining === 0)) {
-            setGuestRemaining(0);
-            openLoginModal({
-              reason:
-                "ফ্রি ব্যবহারের সীমা শেষ হয়েছে। আরও ব্যবহার করতে লগইন করুন।",
-            });
-          }
 
           return;
         }
@@ -259,16 +269,6 @@ export default function ChatPanel({
         });
         setNewMessageId(data.ai_message.id);
 
-        if (remaining !== null) {
-          setGuestRemaining(remaining);
-
-          if (isGuest && remaining === 0) {
-            openLoginModal({
-              reason:
-                "ফ্রি ব্যবহারের সীমা শেষ হয়েছে। আরও ব্যবহার করতে লগইন করুন।",
-            });
-          }
-        }
       } catch (e) {
         setMessages((prev) => prev.filter((m) => m.id !== tempUserId));
         setError("উত্তর পেতে সমস্যা হচ্ছে — আবার চেষ্টা করুন।");
@@ -283,15 +283,11 @@ export default function ChatPanel({
   const regenerateLast = useCallback(async () => {
     if (sending) return;
 
-    if (isGuest) {
-      const lastUser = [...messages].reverse().find((m) => m.role === "user");
-      if (!lastUser) return;
-      setMessages((prev) => {
-        const copy = [...prev];
-        if (copy.length && copy[copy.length - 1].role === "model") copy.pop();
-        return copy;
+    if (isGuest && guestRemaining <= 0) {
+      setError("আপনার বিনামূল্যে সীমা শেষ। আরও ব্যবহারের জন্য লগইন করুন।");
+      openLoginModal({
+        reason: "ফ্রি ব্যবহারের সীমা শেষ হয়েছে। আরও ব্যবহার করতে লগইন করুন।",
       });
-      await ask(lastUser.content);
       return;
     }
 
@@ -300,65 +296,97 @@ export default function ChatPanel({
     setIsTyping(true);
     setError(null);
 
-    setMessages((prev) => {
-      const copy = [...prev];
-      if (copy.length && copy[copy.length - 1].role === "model") copy.pop();
-      return copy;
-    });
-
     try {
+      const visitorId = getVisitorId();
       const res = await fetch(`/api/backend/ai/regenerate`, {
         method: "POST",
         credentials: "include",
-        headers: getHeaders(true), // 👈 এখানেও টোকেন যোগ করা হলো
+        headers: getHeaders(true, visitorId),
         cache: "no-store",
-        body: JSON.stringify({ uuid }),
+        body: JSON.stringify({ uuid, visitor_id: visitorId }),
       });
-      const json = await res.json();
-      if (!json.success) {
-        setError(json.message);
+      const json = (await res.json().catch(() => null)) as AskResponse | null;
+      const data = json?.data;
+      const guestUsage = data?.guest_usage ?? json?.guest_usage;
+      syncGuestUsage(guestUsage, res.status);
+
+      if (!res.ok || !json?.success || !data?.ai_message) {
+        setError(
+          typeof json?.message === "string"
+            ? json.message
+            : "উত্তর পেতে সমস্যা হচ্ছে — আবার চেষ্টা করুন।",
+        );
         return;
       }
-      setMessages((prev) => [...prev, json.data.ai_message]);
-      setNewMessageId(json.data.ai_message.id);
+
+      setMessages((prev) => {
+        const copy = [...prev];
+        if (copy.length && copy[copy.length - 1].role === "model") copy.pop();
+        return [...copy, data.ai_message!];
+      });
+      setNewMessageId(data.ai_message.id);
     } catch {
       setError("উত্তর পেতে সমস্যা হচ্ছে — আবার চেষ্টা করুন।");
     } finally {
       setIsTyping(false);
       setSending(false);
     }
-  }, [sending, isGuest, messages, uuid, ask, getHeaders]);
+  }, [sending, isGuest, guestRemaining, uuid, getHeaders, openLoginModal, syncGuestUsage]);
 
   const editAndRegenerate = useCallback(
     async (messageId: number, newContent: string) => {
-      if (isGuest || !uuid || sending) return;
+      if (!uuid || sending) return;
+
+      if (isGuest && guestRemaining <= 0) {
+        setError("আপনার বিনামূল্যে সীমা শেষ। আরও ব্যবহারের জন্য লগইন করুন।");
+        openLoginModal({
+          reason: "ফ্রি ব্যবহারের সীমা শেষ হয়েছে। আরও ব্যবহার করতে লগইন করুন।",
+        });
+        return;
+      }
       setSending(true);
       setIsTyping(true);
       setError(null);
 
       try {
+        const visitorId = getVisitorId();
         const res = await fetch(`/api/backend/ai/edit-regenerate`, {
           method: "POST",
           credentials: "include",
-          headers: getHeaders(true), // 👈 এখানেও টোকেন যোগ করা হলো
+          headers: getHeaders(true, visitorId),
           cache: "no-store",
           body: JSON.stringify({
             uuid,
+            visitor_id: visitorId,
             message_id: messageId,
             content: newContent,
           }),
         });
-        const json = await res.json();
-        if (!json.success) {
-          setError(json.message);
+        const json = (await res.json().catch(() => null)) as AskResponse | null;
+        const data = json?.data;
+        const guestUsage = data?.guest_usage ?? json?.guest_usage;
+        syncGuestUsage(guestUsage, res.status);
+
+        if (
+          !res.ok ||
+          !json?.success ||
+          !data?.user_message ||
+          !data?.ai_message
+        ) {
+          setError(
+            typeof json?.message === "string"
+              ? json.message
+              : "উত্তর পেতে সমস্যা হচ্ছে — আবার চেষ্টা করুন।",
+          );
           return;
         }
+
         setMessages((prev) => {
           const idx = prev.findIndex((m) => m.id === messageId);
           const kept = idx >= 0 ? prev.slice(0, idx) : prev;
-          return [...kept, json.data.user_message, json.data.ai_message];
+          return [...kept, data.user_message!, data.ai_message!];
         });
-        setNewMessageId(json.data.ai_message.id);
+        setNewMessageId(data.ai_message.id);
       } catch {
         setError("উত্তর পেতে সমস্যা হচ্ছে — আবার চেষ্টা করুন।");
       } finally {
@@ -366,7 +394,7 @@ export default function ChatPanel({
         setSending(false);
       }
     },
-    [isGuest, uuid, sending, getHeaders],
+    [isGuest, guestRemaining, uuid, sending, getHeaders, openLoginModal, syncGuestUsage],
   );
 
   const inputDisabled = isTyping || sending || (isGuest && guestRemaining <= 0);
