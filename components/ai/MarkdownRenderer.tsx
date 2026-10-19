@@ -41,8 +41,8 @@ function getCodeLanguage(node: ReactNode): string {
   }
 
   if (isValidElement<{ className?: string; children?: ReactNode }>(node)) {
-    const match = node.props.className?.match(/(?:^|\\s)language-([\\w+-]+)/);
-    if (match?.[1]) return match[1];
+    const languageClass = node.props.className?.split(" ").find((part) => part.startsWith("language-"));
+    if (languageClass) return languageClass.slice("language-".length);
     return getCodeLanguage(node.props.children);
   }
 
@@ -114,7 +114,7 @@ function CodeBlock({ children }: { children: ReactNode }) {
 
 const markdownComponents: Components = {
   a: ({ href, children }) => {
-    const isExternal = typeof href === "string" && /^https?:\\/\\//i.test(href);
+    const isExternal = typeof href === "string" && (href.startsWith("https://") || href.startsWith("http://"));
 
     return (
       <a
