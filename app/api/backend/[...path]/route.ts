@@ -20,6 +20,13 @@ async function proxy(request: NextRequest, context: { params: Promise<{ path: st
   const extraHeaders: Record<string, string> = {};
   if (socketId) extraHeaders["X-Socket-ID"] = socketId;
 
+  // Forward the stable browser visitor identity only for AI endpoints.
+  // Other proxied API routes remain unchanged.
+  const visitorId = request.headers.get("x-visitor-id")?.trim();
+  if (path[0] === "ai" && visitorId) {
+    extraHeaders["X-Visitor-Id"] = visitorId;
+  }
+
   let laravelRes: Response;
   try {
     laravelRes = await laravelFetch(`/${path.join("/")}${request.nextUrl.search}`, {
