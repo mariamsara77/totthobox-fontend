@@ -6,6 +6,7 @@ import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import { Check, Clipboard, ExternalLink } from "lucide-react";
 import AiImageViewer from "./AiImageViewer";
+import styles from "./MarkdownRenderer.module.css";
 
 import "highlight.js/styles/github.css";
 
@@ -90,13 +91,13 @@ function CodeBlock({ children }: { children: ReactNode }) {
   }, [codeText]);
 
   return (
-    <div className="ai-code-block">
-      <div className="ai-code-toolbar">
-        <span className="ai-code-language">{language}</span>
+    <div className={styles.codeBlock}>
+      <div className={styles.codeToolbar}>
+        <span className={styles.codeLanguage}>{language}</span>
         <button
           type="button"
           onClick={handleCopy}
-          className="ai-code-copy"
+          className={styles.codeCopy}
           aria-label={copied ? "কোড কপি হয়েছে" : "কোড কপি করুন"}
         >
           {copied ? (
@@ -107,7 +108,7 @@ function CodeBlock({ children }: { children: ReactNode }) {
           <span>{copied ? "কপি হয়েছে" : "কপি"}</span>
         </button>
       </div>
-      <pre className="ai-code-pre">{children}</pre>
+      <pre className={styles.codePre}>{children}</pre>
     </div>
   );
 }
@@ -121,7 +122,7 @@ const markdownComponents: Components = {
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className="ai-markdown-link"
+        className={styles.link}
       >
         {children}
         {isExternal && (
@@ -142,27 +143,40 @@ const markdownComponents: Components = {
           src={src}
           alt={alt ?? ""}
           loading="lazy"
-          className="ai-markdown-image"
+          className={styles.markdownImage}
         />
       </AiImageViewer>
     );
   },
   table: ({ children }) => (
-    <div className="ai-markdown-table-wrap">
+    <div className={styles.tableWrap}>
       <table>{children}</table>
     </div>
   ),
-  code: ({ children, className }) => (
-    <code className={["ai-markdown-code", className].filter(Boolean).join(" ")}>
-      {children}
-    </code>
-  ),
+  code: ({ children, className }) => {
+    const isBlockCode = className?.split(" ").some(
+      (part) => part === "hljs" || part.startsWith("language-"),
+    );
+
+    return (
+      <code
+        className={[
+          !isBlockCode ? styles.inlineCode : "",
+          className ?? "",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+      >
+        {children}
+      </code>
+    );
+  },
   pre: ({ children }) => <CodeBlock>{children}</CodeBlock>,
 };
 
 export default function MarkdownRenderer({ content, animate = false }: Props) {
   return (
-    <div className={`ai-prose max-w-none min-w-0 ${animate ? "ai-response-new" : ""}`}>
+    <div className={`${styles.prose} ${animate ? styles.responseNew : ""}`}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight]}
