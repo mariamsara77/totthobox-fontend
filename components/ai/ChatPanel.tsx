@@ -34,6 +34,11 @@ function getGuestRemaining(usage?: GuestUsage): number | null {
   return null;
 }
 
+function withVisitorId(path: string, visitorId: string): string {
+  const separator = path.includes("?") ? "&" : "?";
+  return `${path}${separator}visitor_id=${encodeURIComponent(visitorId)}`;
+}
+
 type AskResponse = {
   success?: boolean;
   message?: string;
@@ -223,7 +228,7 @@ export default function ChatPanel({
         }));
         const visitorId = getVisitorId();
 
-        const res = await fetch(`/api/backend/ai/ask`, {
+        const res = await fetch(withVisitorId("/api/backend/ai/ask", visitorId), {
           method: "POST",
           credentials: "include",
           headers: getHeaders(true, visitorId),
@@ -316,7 +321,7 @@ export default function ChatPanel({
 
     try {
       const visitorId = getVisitorId();
-      const res = await fetch(`/api/backend/ai/regenerate`, {
+      const res = await fetch(withVisitorId("/api/backend/ai/regenerate", visitorId), {
         method: "POST",
         credentials: "include",
         headers: getHeaders(true, visitorId),
@@ -381,7 +386,7 @@ export default function ChatPanel({
 
       try {
         const visitorId = getVisitorId();
-        const res = await fetch(`/api/backend/ai/edit-regenerate`, {
+        const res = await fetch(withVisitorId("/api/backend/ai/edit-regenerate", visitorId), {
           method: "POST",
           credentials: "include",
           headers: getHeaders(true, visitorId),
