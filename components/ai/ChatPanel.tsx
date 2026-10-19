@@ -268,7 +268,6 @@ export default function ChatPanel({
           return [...withoutTmp, data.user_message!, data.ai_message!];
         });
         setNewMessageId(data.ai_message.id);
-
       } catch (e) {
         setMessages((prev) => prev.filter((m) => m.id !== tempUserId));
         setError("উত্তর পেতে সমস্যা হচ্ছে — আবার চেষ্টা করুন।");
@@ -277,7 +276,17 @@ export default function ChatPanel({
         setSending(false);
       }
     },
-    [sending, isGuest, guestRemaining, messages, uuid, router, getHeaders, openLoginModal],
+    [
+      sending,
+      isGuest,
+      guestRemaining,
+      messages,
+      uuid,
+      router,
+      getHeaders,
+      openLoginModal,
+      syncGuestUsage,
+    ],
   );
 
   const regenerateLast = useCallback(async () => {
