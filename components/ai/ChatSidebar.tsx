@@ -103,22 +103,34 @@ export default function ChatSidebar({ currentUuid, onNavigate }: Props) {
     return () => window.removeEventListener("chat:session-created", load);
   }, [load]);
 
-  const remove = async (uuid: string) => {
+  const remove = async (session: ChatSession) => {
+    const sessionId =
+      typeof session.id === "number"
+        ? session.id
+        : typeof session.id === "string" && /^\\d+$/.test(session.id)
+          ? Number(session.id)
+          : Number.NaN;
+
+    if (!Number.isSafeInteger(sessionId) || sessionId <= 0) {
+      console.error("Cannot delete chat session without a numeric backend ID.");
+      return;
+    }
+
     if (!confirm("এই চ্যাটটি মুছে ফেলতে চান?")) return;
 
     try {
       const visitorId = getVisitorId();
       await apiFetch(
-        `/ai/sessions/${encodeURIComponent(uuid)}?visitor_id=${encodeURIComponent(visitorId)}`,
+        `/ai/sessions/${sessionId}?visitor_id=${encodeURIComponent(visitorId)}`,
         {
           method: "DELETE",
           headers: { "X-Visitor-Id": visitorId },
         },
       );
 
-      setSessions((prev) => prev.filter((session) => session.uuid !== uuid));
+      setSessions((prev) => prev.filter((item) => item.uuid !== session.uuid));
 
-      if (currentUuid === uuid) {
+      if (currentUuid === session.uuid) {
         router.push("/ai/chat");
         onNavigate?.();
       }
@@ -166,7 +178,7 @@ export default function ChatSidebar({ currentUuid, onNavigate }: Props) {
               <div className="p-3 rounded-2xl bg-zinc-400/10">
                 <MessageSquare className="w-7 h-7 mx-auto mb-2 " />
                 <p className="text-xs  leading-relaxed">
-                  লগইন করলে আপনার সব চ্যাট এখানে সেভ হবে এবং পরে দেখতে পারবেন।
+                  এই ব্রাউজারের guest chat এখানে দেখা যাবে।
                 </p>
               </div>
             </div>
@@ -201,7 +213,7 @@ export default function ChatSidebar({ currentUuid, onNavigate }: Props) {
                   type="button"
                   onClick={(e) => {
                     e.preventDefault();
-                    remove(s.uuid);
+                    remove(s);
                   }}
                   className="absolute right-1.5 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 p-2 rounded-lg hover:bg-zinc-400/25 "
                 >
