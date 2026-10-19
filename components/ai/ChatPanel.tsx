@@ -6,6 +6,7 @@ import ChatInput from "./ChatInput";
 import MessageList from "./MessageList";
 import { useAuth } from "@/context/AuthContext";
 import { useAuthModal } from "@/context/AuthModalContext";
+import { getVisitorId } from "@/lib/visitor";
 
 export type ChatMessage = {
   id: string | number;
@@ -59,6 +60,7 @@ export default function ChatPanel({
   const getHeaders = useCallback((isPost = false) => {
     const headers: Record<string, string> = {
       Accept: "application/json",
+      "X-Visitor-Id": getVisitorId(),
     };
 
     if (isPost) {
@@ -109,17 +111,19 @@ export default function ChatPanel({
       return;
     }
 
-    if (isGuest) return;
-
     let isMounted = true;
 
     (async () => {
       try {
-        const res = await fetch(`/api/backend/ai/sessions/${uuid}`, {
+        const visitorId = getVisitorId();
+        const res = await fetch(
+          `/api/backend/ai/sessions/${uuid}?visitor_id=${encodeURIComponent(visitorId)}`,
+          {
           credentials: "include",
           headers: getHeaders(),
           cache: "no-store", // ← এটা যোগ করুন
-        });
+          },
+        );
 
         if (res.status === 410) {
           router.replace("/ai/chat");
@@ -139,7 +143,7 @@ export default function ChatPanel({
     return () => {
       isMounted = false;
     };
-  }, [uuid, isGuest, authLoading, router, getHeaders]);
+  }, [uuid, authLoading, router, getHeaders]);
 
   const ask = useCallback(
     async (
@@ -190,6 +194,7 @@ export default function ChatPanel({
             image: imageBase64 || null,
             image_mime: imageMime || null,
             uuid: uuid || null,
+            visitor_id: getVisitorId(),
             history: isGuest ? history : null,
           }),
         });
