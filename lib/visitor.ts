@@ -40,11 +40,12 @@ export function getVisitorId(): string {
           : createVisitorId()
         : `${VISITOR_ID_PREFIX}${existingId}`;
 
+      memoryVisitorId = visitorId;
+
       if (visitorId !== existingId) {
         window.localStorage.setItem(VISITOR_STORAGE_KEY, visitorId);
       }
 
-      memoryVisitorId = visitorId;
       return visitorId;
     }
 
@@ -52,8 +53,8 @@ export function getVisitorId(): string {
       ? memoryVisitorId
       : createVisitorId();
 
-    window.localStorage.setItem(VISITOR_STORAGE_KEY, visitorId);
     memoryVisitorId = visitorId;
+    window.localStorage.setItem(VISITOR_STORAGE_KEY, visitorId);
 
     return visitorId;
   } catch {
