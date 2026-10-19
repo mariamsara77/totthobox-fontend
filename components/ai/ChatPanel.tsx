@@ -111,11 +111,15 @@ export default function ChatPanel({
 
   const loadGuestUsage = useCallback(async () => {
     try {
-      const res = await fetch("/api/backend/ai/guest-usage", {
-        credentials: "include",
-        headers: getHeaders(),
-        cache: "no-store",
-      });
+      const visitorId = getVisitorId();
+      const res = await fetch(
+        `/api/backend/ai/guest-usage?visitor_id=${encodeURIComponent(visitorId)}`,
+        {
+          credentials: "include",
+          headers: getHeaders(false, visitorId),
+          cache: "no-store",
+        },
+      );
       const json = (await res.json().catch(() => null)) as {
         success?: boolean;
         data?: GuestUsage;
