@@ -22,6 +22,18 @@ type GuestUsage = {
   remaining?: number;
 };
 
+function getGuestRemaining(usage?: GuestUsage): number | null {
+  if (typeof usage?.remaining === "number") {
+    return Math.max(0, usage.remaining);
+  }
+
+  if (typeof usage?.used === "number" && typeof usage?.limit === "number") {
+    return Math.max(0, usage.limit - usage.used);
+  }
+
+  return null;
+}
+
 type AskResponse = {
   success?: boolean;
   message?: string;
@@ -87,8 +99,9 @@ export default function ChatPanel({
         data?: GuestUsage;
       } | null;
 
-      if (res.ok && json?.success && typeof json.data?.remaining === "number") {
-        setGuestRemaining(json.data.remaining);
+      const remaining = getGuestRemaining(json?.data);
+      if (res.ok && json?.success && remaining !== null) {
+        setGuestRemaining(remaining);
       }
     } catch {
       // Usage lookup is best-effort; keep the last known remaining count.
@@ -202,6 +215,7 @@ export default function ChatPanel({
         const json = (await res.json().catch(() => null)) as AskResponse | null;
         const data = json?.data;
         const guestUsage = data?.guest_usage ?? json?.guest_usage;
+        const remaining = getGuestRemaining(guestUsage);
 
         if (
           !res.ok ||
@@ -215,9 +229,19 @@ export default function ChatPanel({
               ? json.message
               : "সমস্যা হয়েছে। আবার চেষ্টা করুন।",
           );
-          if (typeof guestUsage?.remaining === "number") {
-            setGuestRemaining(guestUsage.remaining);
+
+          if (remaining !== null) {
+            setGuestRemaining(remaining);
           }
+
+          if (isGuest && (res.status === 429 || remaining === 0)) {
+            setGuestRemaining(0);
+            openLoginModal({
+              reason:
+                "ফ্রি ব্যবহারের সীমা শেষ হয়েছে। আরও ব্যবহার করতে লগইন করুন।",
+            });
+          }
+
           return;
         }
 
@@ -235,8 +259,15 @@ export default function ChatPanel({
         });
         setNewMessageId(data.ai_message.id);
 
-        if (typeof guestUsage?.remaining === "number") {
-          setGuestRemaining(guestUsage.remaining);
+        if (remaining !== null) {
+          setGuestRemaining(remaining);
+
+          if (isGuest && remaining === 0) {
+            openLoginModal({
+              reason:
+                "ফ্রি ব্যবহারের সীমা শেষ হয়েছে। আরও ব্যবহার করতে লগইন করুন।",
+            });
+          }
         }
       } catch (e) {
         setMessages((prev) => prev.filter((m) => m.id !== tempUserId));
@@ -246,7 +277,7 @@ export default function ChatPanel({
         setSending(false);
       }
     },
-    [sending, isGuest, guestRemaining, messages, uuid, router, getHeaders],
+    [sending, isGuest, guestRemaining, messages, uuid, router, getHeaders, openLoginModal],
   );
 
   const regenerateLast = useCallback(async () => {
