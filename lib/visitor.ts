@@ -3,6 +3,14 @@ const VISITOR_ID_PREFIX = "visitor_";
 
 let memoryVisitorId: string | null = null;
 
+function isValidVisitorId(value: string | null | undefined): value is string {
+  return (
+    typeof value === "string" &&
+    value.startsWith(VISITOR_ID_PREFIX) &&
+    value.length > VISITOR_ID_PREFIX.length
+  );
+}
+
 function createVisitorId(): string {
   const uniqueId =
     typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
@@ -27,7 +35,9 @@ export function getVisitorId(): string {
 
     if (existingId) {
       const visitorId = existingId.startsWith(VISITOR_ID_PREFIX)
-        ? existingId
+        ? isValidVisitorId(existingId)
+          ? existingId
+          : createVisitorId()
         : `${VISITOR_ID_PREFIX}${existingId}`;
 
       if (visitorId !== existingId) {
@@ -38,17 +48,16 @@ export function getVisitorId(): string {
       return visitorId;
     }
 
-    const visitorId =
-      memoryVisitorId?.startsWith(VISITOR_ID_PREFIX)
-        ? memoryVisitorId
-        : createVisitorId();
+    const visitorId = isValidVisitorId(memoryVisitorId)
+      ? memoryVisitorId
+      : createVisitorId();
 
     window.localStorage.setItem(VISITOR_STORAGE_KEY, visitorId);
     memoryVisitorId = visitorId;
 
     return visitorId;
   } catch {
-    if (!memoryVisitorId?.startsWith(VISITOR_ID_PREFIX)) {
+    if (!isValidVisitorId(memoryVisitorId)) {
       memoryVisitorId = createVisitorId();
     }
 
