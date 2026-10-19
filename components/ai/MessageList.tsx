@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowDown, AlertTriangle, Sparkles } from "lucide-react";
 import MessageBubble from "./MessageBubble";
 import type { ChatMessage } from "./ChatPanel";
@@ -25,64 +25,74 @@ export default function MessageList({
   onEditRegenerate,
   onRetry,
 }: Props) {
-  // Auth Context থেকে ভ্যালু নেওয়া হচ্ছে
   const { isLoggedIn } = useAuth();
   const isGuest = !isLoggedIn;
 
   const chatRef = useRef<HTMLDivElement>(null);
   const [showScrollBtn, setShowScrollBtn] = useState(false);
 
-  const scrollBottom = (smooth = true) => {
+  const scrollBottom = useCallback((smooth = true) => {
     const el = chatRef.current;
     if (!el) return;
-    el.scrollTo({ top: el.scrollHeight, behavior: smooth ? "smooth" : "auto" });
+
+    const prefersReducedMotion = window.matchMedia?.(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    el.scrollTo({
+      top: el.scrollHeight,
+      behavior: smooth && !prefersReducedMotion ? "smooth" : "auto",
+    });
     setShowScrollBtn(false);
-  };
+  }, []);
 
   useEffect(() => {
-    scrollBottom(true);
-  }, [messages, isTyping, error]);
+    const frame = window.requestAnimationFrame(() => scrollBottom(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, [messages, isTyping, error, scrollBottom]);
 
-  const onScroll = () => {
+  const onScroll = useCallback(() => {
     const el = chatRef.current;
     if (!el) return;
-    const dist = el.scrollHeight - el.scrollTop - el.clientHeight;
-    setShowScrollBtn(dist > 120);
-  };
+    const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+    setShowScrollBtn(distanceFromBottom > 120);
+  }, []);
 
   const lastAiIndex = [...messages]
-    .map((m, i) => (m.role === "model" ? i : -1))
-    .filter((i) => i >= 0)
+    .map((message, index) => (message.role === "model" ? index : -1))
+    .filter((index) => index >= 0)
     .pop();
 
   return (
-    <div className="relative flex-1 overflow-x-auto">
+    <div className="relative flex min-h-0 flex-1 overflow-hidden">
       <div
         ref={chatRef}
         onScroll={onScroll}
-        className="h-full overflow-y-auto space-y-1 scroll-smooth totthobox-scrollbar"
+        className="totthobox-scrollbar h-full min-h-0 w-full space-y-1 overflow-x-hidden overflow-y-auto px-1 scroll-smooth sm:px-0"
         id="chat-container"
+        aria-label="AI chat messages"
       >
         {messages.length === 0 && !isTyping && (
-          <div className="flex flex-col items-center justify-center h-full gap-4 select-none py-16">
-            <div className="p-3 rounded-2xl bg-zinc-400/10">
-              <Sparkles className="size-6" />
+          <div className="flex h-full select-none flex-col items-center justify-center gap-3 px-4 py-16 text-center">
+            <div className="rounded-2xl border border-sky-500/15 bg-sky-500/10 p-3 text-sky-600 dark:text-sky-300">
+              <Sparkles aria-hidden="true" className="h-6 w-6" />
             </div>
-            <p className="text-sm">আমি আপনাকে কিভাবে সাহায্য করতে পারি?</p>
-            <p className="text-xs">ছবি paste করুন বা drag করে আনুন</p>
+            <p className="text-sm font-medium">আমি আপনাকে কিভাবে সাহায্য করতে পারি?</p>
+            <p className="max-w-xs text-xs text-zinc-500">
+              আপনার প্রশ্ন লিখুন, অথবা ছবি যুক্ত করুন।
+            </p>
             {isGuest && (
-              <p className="text-xs">
+              <p className="text-xs text-zinc-500">
                 লগইন ছাড়াই বেশ কয়েকবার জিজ্ঞেস করা যাবে
               </p>
             )}
           </div>
         )}
 
-        {messages.map((msg, i) => (
+        {messages.map((msg, index) => (
           <MessageBubble
             key={String(msg.id)}
             msg={msg}
-            isLastAi={i === lastAiIndex}
+            isLastAi={index === lastAiIndex}
             shouldAnimate={String(msg.id) === String(newMessageId)}
             onRegenerate={onRegenerate}
             onEditRegenerate={onEditRegenerate}
@@ -90,35 +100,42 @@ export default function MessageList({
         ))}
 
         {isTyping && (
-          <div className="flex justify-start py-2 ps-2">
-            <div className="flex items-center gap-4 p-4 rounded-2xl">
-              <div className="relative">
-                <div className="absolute inset-0 rounded-full bg-zinc-400/100/20 animate-ping" />
-                <div className="relative bg-zinc-400/100/10 p-2 rounded-lg animate-bounce">
-                  <Sparkles className="w-5 h-5" />
-                </div>
+          <div
+            className="flex w-full justify-start py-2 sm:py-3"
+            role="status"
+            aria-live="polite"
+            aria-label="AI উত্তর তৈরি করছে"
+          >
+            <div className="flex max-w-[92%] items-center gap-3 rounded-2xl border border-zinc-200/70 bg-white/75 px-3.5 py-3 dark:border-zinc-800/70 dark:bg-zinc-900/50 sm:px-4">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-300">
+                <Sparkles aria-hidden="true" className="h-4 w-4 animate-pulse" />
               </div>
-              <div>
-                <span className="text-xs">তথ্যবক্স এআই ভাবছে...</span>
-                <div className="flex gap-1 mt-0.5">
-                  <span className="w-1 h-1 bg-zinc-400/100/40 rounded-full animate-pulse" />
-                  <span className="w-1 h-1 bg-zinc-400/100/40 rounded-full animate-pulse [animation-delay:200ms]" />
-                  <span className="w-1 h-1 bg-zinc-400/100/40 rounded-full animate-pulse [animation-delay:400ms]" />
-                </div>
+              <div className="min-w-0">
+                <span className="text-sm text-zinc-700 dark:text-zinc-200">
+                  তথ্যবক্স এআই উত্তর তৈরি করছে…
+                </span>
+                <span className="mt-1 flex h-2 items-center gap-1" aria-hidden="true">
+                  <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-sky-500 [animation-delay:0ms]" />
+                  <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-sky-500 [animation-delay:120ms]" />
+                  <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-sky-500 [animation-delay:240ms]" />
+                </span>
               </div>
             </div>
           </div>
         )}
 
         {error && (
-          <div className="flex justify-start ps-1 pb-2">
-            <div className="flex items-center gap-2 text-sm text-red-400 bg-red-950/30 px-3 py-2 rounded-xl border border-red-900/50">
-              <AlertTriangle className="w-4 h-4 shrink-0" />
-              <span>{error}</span>
+          <div className="flex justify-start pb-3">
+            <div
+              className="flex min-w-0 max-w-full flex-wrap items-center gap-2 rounded-xl border border-red-300/70 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900/60 dark:bg-red-950/30 dark:text-red-300"
+              role="alert"
+            >
+              <AlertTriangle aria-hidden="true" className="h-4 w-4 shrink-0" />
+              <span className="min-w-0 flex-1 break-words">{error}</span>
               <button
                 type="button"
                 onClick={onRetry}
-                className="underline underline-offset-2 ml-1 hover:text-red-300"
+                className="rounded-md px-1 py-0.5 underline underline-offset-2 hover:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
               >
                 আবার চেষ্টা
               </button>
@@ -128,13 +145,15 @@ export default function MessageList({
       </div>
 
       {showScrollBtn && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30">
+        <div className="absolute bottom-4 left-1/2 z-30 -translate-x-1/2">
           <button
             type="button"
             onClick={() => scrollBottom(true)}
-            className="p-2 rounded-full bg-zinc-800 border border-zinc-700 hover:bg-zinc-700"
+            className="rounded-full border border-zinc-300/80 bg-white/95 p-2.5 text-zinc-700 shadow-lg transition hover:bg-zinc-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 dark:border-zinc-700 dark:bg-zinc-900/95 dark:text-zinc-100 dark:hover:bg-zinc-800"
+            aria-label="সর্বশেষ বার্তায় যান"
+            title="সর্বশেষ বার্তায় যান"
           >
-            <ArrowDown className="w-4 h-4" />
+            <ArrowDown aria-hidden="true" className="h-4 w-4" />
           </button>
         </div>
       )}
