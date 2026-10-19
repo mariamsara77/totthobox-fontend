@@ -3,30 +3,73 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Plus, Trash2, MessageSquare, LogIn } from "lucide-react";
+import { Plus, Trash2, MessageSquare } from "lucide-react";
 
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api-client";
 import { getVisitorId } from "@/lib/visitor";
 import ProfileMenu from "../ProfileMenu";
 
+type ChatSession = {
+  id?: number | string;
+  uuid: string;
+  title?: string | null;
+};
+
 type Props = {
   currentUuid: string | null;
   onNavigate?: () => void;
 };
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function parseSessions(payload: unknown): ChatSession[] {
+  if (Array.isArray(payload)) {
+    return payload.filter(isRecord).filter(
+      (session): session is Record<string, unknown> =>
+        typeof session.uuid === "string" && session.uuid.length > 0,
+    ) as ChatSession[];
+  }
+
+  if (!isRecord(payload) || payload.success === false) {
+    return [];
+  }
+
+  const data = payload.data;
+  const nestedSessions =
+    isRecord(data) && Array.isArray(data.sessions) ? data.sessions : undefined;
+  const candidates = Array.isArray(data)
+    ? data
+    : nestedSessions ?? (Array.isArray(payload.sessions) ? payload.sessions : []);
+
+  return candidates
+    .filter(isRecord)
+    .filter(
+      (session) => typeof session.uuid === "string" && session.uuid.length > 0,
+    )
+    .map((session) => ({
+      ...(typeof session.id === "number" || typeof session.id === "string"
+        ? { id: session.id }
+        : {}),
+      uuid: session.uuid as string,
+      title: typeof session.title === "string" ? session.title : null,
+    }));
+}
+
 export default function ChatSidebar({ currentUuid, onNavigate }: Props) {
   const router = useRouter();
-  const { user, loading: authLoading, isLoggedIn } = useAuth();
+  const { loading: authLoading, isLoggedIn } = useAuth();
 
-  const [sessions, setSessions] = useState<any[]>([]);
+  const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [loading, setLoading] = useState(true);
 
   // ChatSidebar.tsx এ load function টা useCallback এ wrap করো
   const load = useCallback(async () => {
     try {
       const visitorId = getVisitorId();
-      const json = await apiFetch<any>(
+      const json = await apiFetch<unknown>(
         `/ai/sessions?t=${Date.now()}&visitor_id=${encodeURIComponent(visitorId)}`,
         {
           cache: "no-store",
@@ -39,15 +82,7 @@ export default function ChatSidebar({ currentUuid, onNavigate }: Props) {
         },
       );
 
-      if (json.success && Array.isArray(json.data)) {
-        setSessions(json.data);
-      } else if (Array.isArray(json)) {
-        setSessions(json);
-      } else if (json.data && Array.isArray(json.data)) {
-        setSessions(json.data);
-      } else {
-        setSessions([]);
-      }
+      setSessions(parseSessions(json));
     } catch (error) {
       console.error("Fetch Session Error:", error);
       setSessions([]);
@@ -67,16 +102,20 @@ export default function ChatSidebar({ currentUuid, onNavigate }: Props) {
     return () => window.removeEventListener("chat:session-created", load);
   }, [load]);
 
-  const remove = async (id: number, uuid: string) => {
+  const remove = async (uuid: string) => {
     if (!confirm("এই চ্যাটটি মুছে ফেলতে চান?")) return;
 
     try {
-      await apiFetch(`/ai/sessions/${id}?visitor_id=${encodeURIComponent(getVisitorId())}`, {
-        method: "DELETE",
-        headers: { "X-Visitor-Id": getVisitorId() },
-      });
+      const visitorId = getVisitorId();
+      await apiFetch(
+        `/ai/sessions/${encodeURIComponent(uuid)}?visitor_id=${encodeURIComponent(visitorId)}`,
+        {
+          method: "DELETE",
+          headers: { "X-Visitor-Id": visitorId },
+        },
+      );
 
-      setSessions((prev) => prev.filter((x) => x.id !== id));
+      setSessions((prev) => prev.filter((session) => session.uuid !== uuid));
 
       if (currentUuid === uuid) {
         router.push("/ai/chat");
@@ -161,7 +200,7 @@ export default function ChatSidebar({ currentUuid, onNavigate }: Props) {
                   type="button"
                   onClick={(e) => {
                     e.preventDefault();
-                    remove(s.id, s.uuid);
+                    remove(s.uuid);
                   }}
                   className="absolute right-1.5 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 p-2 rounded-lg hover:bg-zinc-400/25 "
                 >
