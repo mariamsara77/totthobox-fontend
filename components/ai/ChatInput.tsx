@@ -2,6 +2,7 @@
 
 import { useState, useRef, ChangeEvent, KeyboardEvent } from "react";
 import { Send, Image as ImageIcon, X, LogIn } from "lucide-react";
+import AiImageViewer from "./AiImageViewer";
 
 type SupportedImageMime = "image/jpeg" | "image/png" | "image/gif" | "image/webp";
 
@@ -131,11 +132,13 @@ export default function ChatInput({
       {/* ইমেজ প্রিভিউ */}
       {imagePreview && (
         <div className="relative inline-block mb-2">
-          <img
-            src={imagePreview}
-            alt="আপলোডের পূর্বরূপ"
-            className="h-16 w-16 rounded-xl border border-zinc-400/25 object-cover"
-          />
+          <AiImageViewer src={imagePreview} alt="আপলোডের পূর্বরূপ">
+            <img
+              src={imagePreview}
+              alt="আপলোডের পূর্বরূপ"
+              className="h-16 w-16 rounded-xl border border-zinc-400/25 object-cover"
+            />
+          </AiImageViewer>
           <button
             type="button"
             onClick={removeImage}
