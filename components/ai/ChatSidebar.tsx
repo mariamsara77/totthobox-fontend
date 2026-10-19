@@ -7,6 +7,7 @@ import { Plus, Trash2, MessageSquare, LogIn } from "lucide-react";
 
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api-client";
+import { getVisitorId } from "@/lib/visitor";
 import ProfileMenu from "../ProfileMenu";
 
 type Props = {
@@ -23,22 +24,20 @@ export default function ChatSidebar({ currentUuid, onNavigate }: Props) {
 
   // ChatSidebar.tsx এ load function টা useCallback এ wrap করো
   const load = useCallback(async () => {
-    if (!isLoggedIn) {
-      setSessions([]);
-      setLoading(false);
-      return;
-    }
-
     try {
-      // ↓↓↓ এখানে ?t= যোগ করুন
-      const json = await apiFetch<any>(`/ai/sessions?t=${Date.now()}`, {
-        cache: "no-store",
-        headers: {
-          "Cache-Control": "no-cache, no-store, must-revalidate",
-          Pragma: "no-cache",
-          Expires: "0",
+      const visitorId = getVisitorId();
+      const json = await apiFetch<any>(
+        `/ai/sessions?t=${Date.now()}&visitor_id=${encodeURIComponent(visitorId)}`,
+        {
+          cache: "no-store",
+          headers: {
+            "X-Visitor-Id": visitorId,
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            Pragma: "no-cache",
+            Expires: "0",
+          },
         },
-      });
+      );
 
       if (json.success && Array.isArray(json.data)) {
         setSessions(json.data);
@@ -72,8 +71,9 @@ export default function ChatSidebar({ currentUuid, onNavigate }: Props) {
     if (!confirm("এই চ্যাটটি মুছে ফেলতে চান?")) return;
 
     try {
-      await apiFetch(`/ai/sessions/${id}`, {
+      await apiFetch(`/ai/sessions/${id}?visitor_id=${encodeURIComponent(getVisitorId())}`, {
         method: "DELETE",
+        headers: { "X-Visitor-Id": getVisitorId() },
       });
 
       setSessions((prev) => prev.filter((x) => x.id !== id));
@@ -114,27 +114,29 @@ export default function ChatSidebar({ currentUuid, onNavigate }: Props) {
       </Link>
 
       <div className="flex-1 overflow-y-auto totthobox-scrollbar space-y-0.5 mt-2">
-        {/* ========== Guest View ========== */}
-        {!isLoggedIn ? (
-          <div className="px-2 py-6 text-center">
-            <div className="p-3 rounded-2xl bg-zinc-400/10">
-              <MessageSquare className="w-7 h-7 mx-auto mb-2 " />
-              <p className="text-xs  leading-relaxed">
-                লগইন করলে আপনার সব চ্যাট এখানে সেভ হবে এবং পরে দেখতে পারবেন।
-              </p>
-            </div>
-          </div>
-        ) : loading ? (
+        {loading ? (
           /* ========== Loading Sessions ========== */
           <div className="px-3 py-8 text-center text-xs  animate-pulse">
             লোড হচ্ছে...
           </div>
         ) : sessions.length === 0 ? (
-          /* ========== Empty ========== */
-          <div className="px-3 py-10 text-center text-xs ">
-            <MessageSquare className="w-8 h-8 mx-auto mb-2 opacity-40" />
-            এখনো কোনো চ্যাট নেই
-          </div>
+          !isLoggedIn ? (
+            /* ========== Guest View ========== */
+            <div className="px-2 py-6 text-center">
+              <div className="p-3 rounded-2xl bg-zinc-400/10">
+                <MessageSquare className="w-7 h-7 mx-auto mb-2 " />
+                <p className="text-xs  leading-relaxed">
+                  লগইন করলে আপনার সব চ্যাট এখানে সেভ হবে এবং পরে দেখতে পারবেন।
+                </p>
+              </div>
+            </div>
+          ) : (
+            /* ========== Empty ========== */
+            <div className="px-3 py-10 text-center text-xs ">
+              <MessageSquare className="w-8 h-8 mx-auto mb-2 opacity-40" />
+              এখনো কোনো চ্যাট নেই
+            </div>
+          )
         ) : (
           /* ========== Session List ========== */
           <>
