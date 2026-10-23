@@ -382,7 +382,8 @@ export default function Sidebar() {
               showLabel={true}
             />
             {/* ===================== NEWS HEADLINES ===================== */}
-            <div className="space-y-1">
+            {pathname.startsWith("/news") && (
+              <div className="space-y-1">
               <SidebarItem
                 href="/news/headlines"
                 icon={Newspaper}
@@ -449,7 +450,8 @@ export default function Sidebar() {
                   ))}
                 </>
               )}
-            </div>
+              </div>
+            )}
             {/* ===================== CALENDAR ===================== */}
             {pathname.startsWith("/bangla/") && (
               <div className="space-y-1">
