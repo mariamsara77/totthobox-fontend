@@ -54,17 +54,17 @@ export default function CookieSettings() {
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-1.5 rounded-full border border-zinc-700/50 bg-zinc-900/90 px-3 py-1.5 text-[11px] font-medium text-zinc-300 backdrop-blur transition hover:border-zinc-600 hover:text-zinc-100"
+        className="flex items-center gap-1.5 rounded-full border border-zinc-300 dark:border-zinc-700 bg-white/80 dark:bg-zinc-800/80 px-3 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300 shadow-xs transition hover:border-zinc-400 hover:text-zinc-900 dark:hover:border-zinc-600 dark:hover:text-zinc-100"
       >
         <RxSwitch className="h-3.5 w-3.5 opacity-70" />
-        কুকি
+        কুকি সেটিংস
       </button>
 
       {/* Bottom-right panel */}
       {isOpen && (
-        <div className="fixed bottom-8 right-5 z-50">
+        <div className="fixed bottom-6 right-4 sm:right-6 z-50">
           <div
-            className="fixed inset-0 -z-10"
+            className="fixed inset-0 -z-10 bg-black/20 dark:bg-black/50 backdrop-blur-xs"
             onClick={() => setIsOpen(false)}
           />
 
@@ -72,24 +72,24 @@ export default function CookieSettings() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="cookie-title"
-            className="w-100 overflow-hidden rounded-[50px] border border-zinc-700/40 backdrop-blur-xl"
+            className="w-[calc(100vw-2rem)] sm:w-96 max-w-sm overflow-hidden rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/95 shadow-2xl backdrop-blur-xl"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-8 py-2">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-100 dark:border-zinc-800/80">
               <h3
                 id="cookie-title"
-                className="text-[14px] font-medium tracking-tight text-zinc-100"
+                className="text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-100"
               >
-                কুকি সেটিংস
+                কুকি ও গোপনীয়তা সেটিংস
               </h3>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="rounded-full p-1.5 text-zinc-500 transition hover:bg-zinc-800 hover:text-zinc-200"
+                className="rounded-full p-1.5 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-800 dark:hover:text-zinc-200 transition"
                 aria-label="বন্ধ করুন"
               >
                 <svg
-                  className="h-3.5 w-3.5"
+                  className="h-4 w-4"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -108,11 +108,13 @@ export default function CookieSettings() {
             <button
               type="button"
               onClick={() => setIsExpanded(!isExpanded)}
-              className="mx-3 flex w-[calc(100%-24px)] items-center justify-between rounded-full px-4 py-2.5 text-left text-[12px] font-medium hover:bg-zinc-400/25 backdrop-blur-lg"
+              className="mx-3 mt-3 flex w-[calc(100%-1.5rem)] items-center justify-between rounded-xl px-4 py-2.5 text-left text-xs font-medium text-zinc-700 dark:text-zinc-300 bg-zinc-100/70 dark:bg-zinc-800/60 hover:bg-zinc-200/70 dark:hover:bg-zinc-700/60 transition"
             >
               <span>বিস্তারিত সেটিংস</span>
               <svg
-                className={`h-3.5 w-3.5 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
+                className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                  isExpanded ? "rotate-180" : ""
+                }`}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -126,27 +128,30 @@ export default function CookieSettings() {
               </svg>
             </button>
 
-            {/* Options - collapsed by default */}
+            {/* Options */}
             {isExpanded && (
-              <div className="mx-3 mb-2 space-y-0 rounded-4xl bg-zinc-400/10 px-4 py-1">
+              <div className="mx-3 mt-2 space-y-0 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/60 dark:border-zinc-800/60 px-4 py-1">
                 {/* Necessary */}
-                <div className="flex items-center justify-between py-3">
+                <div className="flex items-center justify-between py-2.5 border-b border-zinc-200/50 dark:border-zinc-800/50">
                   <div>
-                    <p className="text-[13px] font-medium text-zinc-200">
-                      প্রয়োজনীয়
+                    <p className="text-xs font-semibold text-zinc-800 dark:text-zinc-200">
+                      প্রয়োজনীয় কুকিজ
                     </p>
-                    <p className="text-[10px] text-zinc-500">সর্বদা চালু</p>
+                    <p className="text-[10px] text-zinc-500">সাইট পরিচালনার জন্য আবশ্যিক</p>
                   </div>
-                  <span className="rounded-full bg-zinc-800 px-2.5 py-0.5 text-[10px] font-medium text-zinc-400">
-                    On
+                  <span className="rounded-full bg-zinc-200 dark:bg-zinc-800 px-2 py-0.5 text-[10px] font-medium text-zinc-600 dark:text-zinc-400">
+                    সর্বদা সক্রিয়
                   </span>
                 </div>
 
                 {/* Analytics */}
-                <div className="flex items-center justify-between py-3">
-                  <p className="text-[13px] font-medium text-zinc-200">
-                    অ্যানালিটিক্স
-                  </p>
+                <div className="flex items-center justify-between py-2.5 border-b border-zinc-200/50 dark:border-zinc-800/50">
+                  <div>
+                    <p className="text-xs font-semibold text-zinc-800 dark:text-zinc-200">
+                      অ্যানালিটিক্স
+                    </p>
+                    <p className="text-[10px] text-zinc-500">ভিজিটর পরিসংখ্যান ও উন্নয়ন</p>
+                  </div>
                   <button
                     type="button"
                     aria-label="অ্যানালিটিক্স"
@@ -155,7 +160,9 @@ export default function CookieSettings() {
                       setSettings((s) => ({ ...s, analytics: !s.analytics }))
                     }
                     className={`relative h-5 w-9 shrink-0 rounded-full transition-colors duration-200 ${
-                      settings.analytics ? "bg-zinc-500" : "bg-zinc-800"
+                      settings.analytics
+                        ? "bg-emerald-600"
+                        : "bg-zinc-300 dark:bg-zinc-700"
                     }`}
                   >
                     <span
@@ -167,10 +174,13 @@ export default function CookieSettings() {
                 </div>
 
                 {/* Marketing */}
-                <div className="flex items-center justify-between py-3">
-                  <p className="text-[13px] font-medium text-zinc-200">
-                    মার্কেটিং
-                  </p>
+                <div className="flex items-center justify-between py-2.5">
+                  <div>
+                    <p className="text-xs font-semibold text-zinc-800 dark:text-zinc-200">
+                      মার্কেটিং ও বিজ্ঞাপন
+                    </p>
+                    <p className="text-[10px] text-zinc-500">গুগল অ্যাডসেন্স ও প্রাসঙ্গিক বিজ্ঞাপন</p>
+                  </div>
                   <button
                     type="button"
                     aria-label="মার্কেটিং"
@@ -179,7 +189,9 @@ export default function CookieSettings() {
                       setSettings((s) => ({ ...s, marketing: !s.marketing }))
                     }
                     className={`relative h-5 w-9 shrink-0 rounded-full transition-colors duration-200 ${
-                      settings.marketing ? "bg-zinc-500" : "bg-zinc-800"
+                      settings.marketing
+                        ? "bg-emerald-600"
+                        : "bg-zinc-300 dark:bg-zinc-700"
                     }`}
                   >
                     <span
@@ -193,37 +205,39 @@ export default function CookieSettings() {
             )}
 
             {/* Footer */}
-            <div className="px-5 pb-4 pt-1">
-              <p className="mb-3 text-[10px] text-zinc-500">
+            <div className="px-5 py-4">
+              <p className="mb-3 text-[11px] text-zinc-500 dark:text-zinc-400">
+                বিস্তারিত জানতে আমাদের{" "}
                 <Link
                   href="/privacy-policy"
-                  className="underline underline-offset-2 transition hover:text-zinc-300"
+                  className="text-indigo-600 dark:text-indigo-400 underline underline-offset-2 transition"
                 >
                   গোপনীয়তা নীতি
-                </Link>
+                </Link>{" "}
+                পড়ুন।
               </p>
 
               <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={() => save(false, true)}
-                  className="flex-1 rounded-full py-2 text-[11px] font-medium text-zinc-400 transition hover:bg-zinc-800 hover:text-zinc-200"
+                  className="flex-1 rounded-xl py-2 text-xs font-medium text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
                 >
                   শুধু প্রয়োজনীয়
                 </button>
                 <button
                   type="button"
                   onClick={() => save()}
-                  className="flex-1 rounded-full bg-zinc-800 py-2 text-[11px] font-medium text-zinc-100 transition hover:bg-zinc-700"
+                  className="flex-1 rounded-xl bg-zinc-100 dark:bg-zinc-800 py-2 text-xs font-medium text-zinc-800 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition"
                 >
                   সংরক্ষণ
                 </button>
                 <button
                   type="button"
                   onClick={() => save(true)}
-                  className="rounded-full bg-zinc-100 px-4 py-2 text-[11px] font-medium text-zinc-900 transition hover:bg-white"
+                  className="rounded-xl bg-zinc-900 dark:bg-zinc-100 px-4 py-2 text-xs font-medium text-white dark:text-zinc-900 hover:opacity-90 transition"
                 >
-                  সব
+                  সব গ্রহণ
                 </button>
               </div>
             </div>

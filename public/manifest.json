@@ -9,7 +9,13 @@
   "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
-  "categories": ["education", "books", "utilities", "lifestyle", "productivity"],
+  "categories": [
+    "education",
+    "books",
+    "utilities",
+    "lifestyle",
+    "productivity"
+  ],
   "lang": "bn-BD",
   "dir": "ltr",
   "prefer_related_applications": false,
@@ -65,16 +71,48 @@
   ],
   "shortcuts": [
     {
-      "name": "MCQ Practice",
-      "short_name": "MCQ",
-      "url": "/mcq",
-      "icons": [{ "src": "/web-app-manifest-192x192.png", "sizes": "192x192" }]
+      "name": "Bangla Calendar",
+      "short_name": "Calendar",
+      "url": "/bangla/calendar",
+      "icons": [
+        {
+          "src": "/web-app-manifest-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "Islamic Basics",
-      "short_name": "Islamic Basics",
-      "url": "/islam/basicislam",
-      "icons": [{ "src": "/web-app-manifest-192x192.png", "sizes": "192x192" }]
+      "short_name": "Islamic",
+      "url": "/islam/basic",
+      "icons": [
+        {
+          "src": "/web-app-manifest-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Bangladesh Info",
+      "short_name": "Bangladesh",
+      "url": "/bangladesh/introduction",
+      "icons": [
+        {
+          "src": "/web-app-manifest-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Converter",
+      "short_name": "Converter",
+      "url": "/converter/number-to-word",
+      "icons": [
+        {
+          "src": "/web-app-manifest-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ],
   "share_target": {

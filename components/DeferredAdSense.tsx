@@ -6,15 +6,19 @@ const ADSENSE_ID =
   process.env.NEXT_PUBLIC_ADSENSE_ID || "ca-pub-9522604367420521";
 const SCRIPT_SELECTOR = 'script[data-totthobox-adsense="1"]';
 
-function loadAdSense() {
+export function loadAdSense() {
+  if (typeof document === "undefined") return;
   if (document.querySelector(SCRIPT_SELECTOR)) return;
-  if (document.querySelector('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]')) return;
+  if (
+    document.querySelector(
+      'script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]',
+    )
+  )
+    return;
 
   const script = document.createElement("script");
   script.async = true;
-  script.src =
-    "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=" +
-    ADSENSE_ID;
+  script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_ID}`;
   script.crossOrigin = "anonymous";
   script.dataset.totthoboxAdsense = "1";
   document.head.appendChild(script);
@@ -29,7 +33,7 @@ export default function DeferredAdSense() {
       "keydown",
       "scroll",
     ] as const;
-    let fallbackTimer = 0;
+    let fallbackTimer: ReturnType<typeof setTimeout> | undefined;
 
     const start = () => {
       if (loaded) return;
@@ -38,7 +42,7 @@ export default function DeferredAdSense() {
       interactionEvents.forEach((event) =>
         window.removeEventListener(event, start, true),
       );
-      window.clearTimeout(fallbackTimer);
+      if (fallbackTimer) clearTimeout(fallbackTimer);
 
       loadAdSense();
     };
@@ -47,26 +51,29 @@ export default function DeferredAdSense() {
       window.addEventListener(event, start, {
         capture: true,
         passive: true,
-        once: false,
+        once: true,
       }),
     );
 
-    const armFallback = () => {
-      fallbackTimer = window.setTimeout(start, 12000);
+    // Guaranteed execution within 1.5s so Google AdSense verification bots detect the script immediately
+    const win = window as unknown as {
+      requestIdleCallback?: (
+        cb: () => void,
+        opts?: { timeout: number },
+      ) => number;
     };
 
-    if (document.readyState === "complete") {
-      armFallback();
+    if (typeof win.requestIdleCallback === "function") {
+      win.requestIdleCallback(start, { timeout: 2000 });
     } else {
-      window.addEventListener("load", armFallback, { once: true });
+      fallbackTimer = setTimeout(start, 1500);
     }
 
     return () => {
       interactionEvents.forEach((event) =>
         window.removeEventListener(event, start, true),
       );
-      window.removeEventListener("load", armFallback);
-      window.clearTimeout(fallbackTimer);
+      if (fallbackTimer) clearTimeout(fallbackTimer);
     };
   }, []);
 

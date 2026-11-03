@@ -7,21 +7,39 @@ import { SiGmail } from "react-icons/si";
 export default function Footer() {
   return (
     <footer className="pwa-safe-bottom mt-12 border-t border-zinc-400/25 py-8">
-      <div className="mx-auto flex max-w-2xl flex-col items-center gap-4 px-3 sm:px-4">
+      <div className="mx-auto flex max-w-3xl flex-col items-center gap-4 px-3 sm:px-4">
         <nav
-          className="flex flex-wrap justify-center items-center gap-4 md:gap-6"
+          className="flex flex-wrap justify-center items-center gap-3 md:gap-5"
           aria-label="ফুটার লিংক"
         >
-          <Link href="/about-us" className="rounded-xl px-2 py-1 text-sm text-zinc-600 transition-colors hover:bg-zinc-400/25 dark:text-zinc-400">
+          <Link
+            href="/about-us"
+            className="rounded-xl px-2.5 py-1 text-sm text-zinc-600 transition-colors hover:bg-zinc-400/25 dark:text-zinc-400"
+          >
             আমাদের সম্পর্কে
           </Link>
-          <Link href="/privacy-policy" className="rounded-xl px-2 py-1 text-sm text-zinc-600 transition-colors hover:bg-zinc-400/25 dark:text-zinc-400">
+          <Link
+            href="/privacy-policy"
+            className="rounded-xl px-2.5 py-1 text-sm text-zinc-600 transition-colors hover:bg-zinc-400/25 dark:text-zinc-400"
+          >
             গোপনীয়তা নীতি
           </Link>
-          <Link href="/terms-of-service" className="rounded-xl px-2 py-1 text-sm text-zinc-600 transition-colors hover:bg-zinc-400/25 dark:text-zinc-400">
+          <Link
+            href="/terms-of-service"
+            className="rounded-xl px-2.5 py-1 text-sm text-zinc-600 transition-colors hover:bg-zinc-400/25 dark:text-zinc-400"
+          >
             ব্যবহারের শর্তাবলী
           </Link>
-          <Link href="/contact-us" className="rounded-xl px-2 py-1 text-sm text-zinc-600 transition-colors hover:bg-zinc-400/25 dark:text-zinc-400">
+          <Link
+            href="/disclaimer"
+            className="rounded-xl px-2.5 py-1 text-sm text-zinc-600 transition-colors hover:bg-zinc-400/25 dark:text-zinc-400"
+          >
+            দায়মুক্তি (Disclaimer)
+          </Link>
+          <Link
+            href="/contact-us"
+            className="rounded-xl px-2.5 py-1 text-sm text-zinc-600 transition-colors hover:bg-zinc-400/25 dark:text-zinc-400"
+          >
             যোগাযোগ
           </Link>
           <CookieSettings />
@@ -69,7 +87,7 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} Totthobox. সর্বস্বত্ব সংরক্ষিত।
           </p>
           <p className="text-xs text-zinc-500 dark:text-zinc-400">
-            নির্ভরযোগ্য তথ্য ও সহজ ডিজিটাল সেবার প্রতিশ্রুতি।
+            নির্ভরযোগ্য তথ্য ও সহজ ডিজিটাল সেবার বিশ্বস্ত মাধ্যম।
           </p>
         </div>
       </div>

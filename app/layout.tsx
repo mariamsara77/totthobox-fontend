@@ -5,7 +5,6 @@ import "./globals.css";
 import { AppProviders } from "./providers";
 import TagManager from "@/components/partials/TagManager";
 import GoogleTranslate from "@/components/GoogleTranslate";
-import DeferredAdSense from "@/components/DeferredAdSense";
 import DeferredVisitorTracker from "@/components/DeferredVisitorTracker";
 import InstallPWA from "@/components/InstallPWA";
 import NetworkStatus from "@/components/NetworkStatus";
@@ -32,14 +31,32 @@ const notoBengali = Noto_Sans_Bengali({
   display: "swap",
 });
 
+const ADSENSE_ID =
+  process.env.NEXT_PUBLIC_ADSENSE_ID || "ca-pub-9522604367420521";
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://totthobox.com"),
+  alternates: {
+    canonical: "./",
+  },
   title: {
     default: "Totthobox - প্রয়োজনীয় সকল তথ্য ও সেবা এক জায়গায়",
     template: "%s | Totthobox",
   },
   description:
     "Totthobox হলো একটি আধুনিক ডিজিটাল ইনফরমেশন ও ইউটিলিটি সার্ভিস প্ল্যাটফর্ম। প্রয়োজনীয় সকল তথ্য ও সেবা সহজে পেতে ভিজিট করুন।",
+  keywords: [
+    "Totthobox",
+    "তথ্যবক্স",
+    "ডিজিটাল সেবা",
+    "বাংলা ক্যালেন্ডার",
+    "ছুটির তালিকা",
+    "কনভার্টার",
+    "জরুরি সেবা",
+    "বাংলাদেশ পরিচিতি",
+    "ইসলামিক জ্ঞান",
+    "ইউটিলিটি টুলস",
+  ],
   robots: {
     index: true,
     follow: true,
@@ -84,8 +101,7 @@ export const metadata: Metadata = {
   },
   formatDetection: { telephone: false },
   other: {
-    "google-adsense-account":
-      process.env.NEXT_PUBLIC_ADSENSE_ID || "ca-pub-9522604367420521",
+    "google-adsense-account": ADSENSE_ID,
   },
   verification: {
     google: "1-VsthqfGvXga4zKLbfjBjP6L0UFc-xBQ_aOzn1g9Ps",
@@ -124,6 +140,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-5RFHKJJJ');`}
         </Script>
+
+        {/* Official Google AdSense script - non-blocking after interactive */}
+        <Script
+          id="google-adsense"
+          strategy="afterInteractive"
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_ID}`}
+          crossOrigin="anonymous"
+        />
+
         <meta name="author" content="Totthobox Team" />
         <meta property="fb:app_id" content="1108131871544005" />
         <meta
@@ -147,7 +172,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             title="Google Tag Manager"
           />
         </noscript>
-        <DeferredAdSense />
 
         <SiteStructuredData />
         <TagManager />

@@ -13,6 +13,7 @@ const publicPageSources = [
   "/services",
   "/privacy-policy",
   "/terms-of-service",
+  "/disclaimer",
   "/bangla/:path*",
   "/bangladesh/:path*",
   "/international/:path*",

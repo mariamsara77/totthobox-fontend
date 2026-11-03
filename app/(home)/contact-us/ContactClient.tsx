@@ -15,7 +15,7 @@ import {
 import { FaFacebook, FaTelegram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://admin.totthobox.com/api";
 
 type FormData = {
   name: string;

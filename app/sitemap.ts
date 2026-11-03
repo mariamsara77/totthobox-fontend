@@ -15,6 +15,7 @@ const publicRoutes = [
   "/services",
   "/privacy-policy",
   "/terms-of-service",
+  "/disclaimer",
   "/bangla/calendar",
   "/bangla/holiday",
   "/bangladesh/introduction",
