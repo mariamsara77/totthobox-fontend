@@ -165,7 +165,7 @@ export default function ProfileMenu({
           onClick={() => openLoginModal()}
           onMouseEnter={(e) => collapsed && onHover?.(e, "লগইন")}
           onMouseLeave={onLeave}
-          className={`flex w-full items-center gap-4 rounded-lg px-3 py-2.5 text-left text-sm transition-all hover:bg-zinc-400/25 ${
+          className={`flex min-h-[44px] w-full items-center gap-4 rounded-xl px-3 py-2.5 text-left text-sm transition-all hover:bg-zinc-100 dark:hover:bg-zinc-800 ${
             collapsed ? "justify-center" : ""
           }`}
         >
@@ -179,7 +179,7 @@ export default function ProfileMenu({
       <button
         type="button"
         onClick={() => openLoginModal()}
-        className="flex items-center gap-2 rounded-xl bg-zinc-400/10 px-4 py-2.5 text-sm transition-all hover:bg-zinc-400/25"
+        className="flex min-h-[44px] items-center gap-2 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-100/80 dark:bg-zinc-800/80 px-4 py-2.5 text-sm font-medium transition-all hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-zinc-100 shadow-xs"
       >
         <UserIcon size={16} />
         লগইন
@@ -206,10 +206,10 @@ export default function ProfileMenu({
         aria-expanded={isDropdownOpen}
         className={
           isSidebar
-            ? `flex w-full items-center gap-2 rounded-xl px-2 py-2 transition-colors hover:bg-zinc-400/25 ${
-                collapsed ? "justify-center" : "bg-zinc-400/10 text-left"
+            ? `flex min-h-[44px] w-full items-center gap-2 rounded-xl px-2 py-2 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 ${
+                collapsed ? "justify-center" : "bg-zinc-100/70 dark:bg-zinc-800/60 text-left"
               }`
-            : "block"
+            : "flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full"
         }
       >
         <img
@@ -251,7 +251,7 @@ export default function ProfileMenu({
                 backdropFilter: "blur(20px) saturate(180%)",
                 WebkitBackdropFilter: "blur(20px) saturate(180%)",
               }}
-              className="overflow-hidden rounded-2xl border border-zinc-400/25  shadow-2xl"
+              className="overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/95 shadow-2xl"
             >
               {/* Header */}
               <div className="flex items-center gap-3 px-4 py-3">
@@ -276,7 +276,7 @@ export default function ProfileMenu({
               <div className="space-y-1 p-2">
                 <Link
                   href="/settings/profile"
-                  className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-colors hover:bg-zinc-500/10"
+                  className="flex min-h-[44px] items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
                   onClick={() => setIsDropdownOpen(false)}
                   role="menuitem"
                 >
@@ -286,7 +286,7 @@ export default function ProfileMenu({
 
                 <Link
                   href={`/messages/${user.slug || user.id}`}
-                  className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-colors hover:bg-zinc-500/10"
+                  className="flex min-h-[44px] items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
                   onClick={() => setIsDropdownOpen(false)}
                   role="menuitem"
                 >
@@ -302,7 +302,7 @@ export default function ProfileMenu({
                   type="button"
                   onClick={handleLogout}
                   disabled={isLoggingOut}
-                  className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50 dark:text-red-400 dark:hover:bg-red-500/10"
+                  className="flex min-h-[44px] w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium text-rose-600 transition-colors hover:bg-rose-50 disabled:opacity-50 dark:text-rose-400 dark:hover:bg-rose-950/30"
                   role="menuitem"
                 >
                   <LogOut className="size-5" />

@@ -1,4 +1,6 @@
 "use client";
+import { FavoriteButton } from "@/components/tools/QuickFavorites";
+import { ShareToolButton } from "@/components/tools/ToolActions";
 
 import { useState, useMemo } from "react";
 
@@ -299,7 +301,21 @@ export default function ZodiacCalculator() {
   return (
     <section className="w-full space-y-8">
       {/* Header */}
-      <header className="space-y-2 text-center">
+      <header className="space-y-3 text-center">
+        <div className="flex items-center justify-center gap-2">
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+            স্মার্ট রাশিফল ও বৈশিষ্ট্য
+          </span>
+          <FavoriteButton
+            tool={{
+              id: "zodiac-calculator",
+              title: "রাশিফল ক্যালকুলেটর",
+              path: "/tools/zodiac-calculator",
+              category: "টুলস",
+            }}
+          />
+          <ShareToolButton title="স্মার্ট রাশিফল ক্যালকুলেটর - সঠিক রাশি ও রাশির মিল" />
+        </div>
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
           স্মার্ট রাশিফল ক্যালকুলেটর
         </h1>
@@ -310,23 +326,23 @@ export default function ZodiacCalculator() {
       </header>
 
       {/* Tabs */}
-      <div className="flex rounded-xl bg-zinc-400/10 p-1">
+      <div className="flex rounded-xl bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200/80 dark:border-zinc-800/80 p-1">
         <button
           onClick={() => setTab("single")}
-          className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition ${
+          className={`flex-1 min-h-[44px] py-2.5 text-sm font-medium rounded-lg transition flex items-center justify-center ${
             tab === "single"
-              ? "bg-znic-400/25"
-              : "hover:bg-zinc-400/15"
+              ? "bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 shadow-xs font-semibold"
+              : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200"
           }`}
         >
           একক রাশি
         </button>
         <button
           onClick={() => setTab("compatibility")}
-          className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition ${
+          className={`flex-1 min-h-[44px] py-2.5 text-sm font-medium rounded-lg transition flex items-center justify-center ${
             tab === "compatibility"
-              ? "bg-znic-400/25"
-              : "hover:bg-zinc-400/15"
+              ? "bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 shadow-xs font-semibold"
+              : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200"
           }`}
         >
           রাশির মিল
@@ -346,7 +362,7 @@ export default function ZodiacCalculator() {
                 value={dob}
                 max={todayISO()}
                 onChange={(e) => setDob(e.target.value)}
-                className="w-full rounded-xl bg-zinc-400/10 px-3 py-2.5 text-sm outline-none"
+                className="w-full min-h-[44px] rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-800/60 px-3.5 py-2.5 text-sm outline-none transition focus:ring-2 focus:ring-emerald-500/20 text-zinc-900 dark:text-zinc-100"
               />
             </div>
             <button
@@ -436,7 +452,7 @@ export default function ZodiacCalculator() {
                   value={person1Dob}
                   max={todayISO()}
                   onChange={(e) => setPerson1Dob(e.target.value)}
-                  className="w-full rounded-xl bg-zinc-400/10 px-3 py-2.5 text-sm outline-none"
+                  className="w-full min-h-[44px] rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-800/60 px-3.5 py-2.5 text-sm outline-none transition focus:ring-2 focus:ring-emerald-500/20 text-zinc-900 dark:text-zinc-100"
                 />
               </div>
               <div className="space-y-1.5">
@@ -448,7 +464,7 @@ export default function ZodiacCalculator() {
                   value={person2Dob}
                   max={todayISO()}
                   onChange={(e) => setPerson2Dob(e.target.value)}
-                  className="w-full rounded-xl bg-zinc-400/10 px-3 py-2.5 text-sm outline-none"
+                  className="w-full min-h-[44px] rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-800/60 px-3.5 py-2.5 text-sm outline-none transition focus:ring-2 focus:ring-emerald-500/20 text-zinc-900 dark:text-zinc-100"
                 />
               </div>
             </div>

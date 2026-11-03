@@ -1,4 +1,6 @@
 "use client";
+import { FavoriteButton } from "@/components/tools/QuickFavorites";
+import { ShareToolButton } from "@/components/tools/ToolActions";
 
 import { useState, useEffect, useRef } from "react";
 
@@ -238,11 +240,25 @@ export default function CurrencyConverter() {
   return (
     <div className="space-y-8">
       {/* হেডার */}
-      <header className="text-center space-y-4">
-        <h1 className="text-2xl tracking-tight">
+      <header className="text-center space-y-3">
+        <div className="flex items-center justify-center gap-2">
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+            লাইভ এক্সচেঞ্জ রেট
+          </span>
+          <FavoriteButton
+            tool={{
+              id: "currency-converter",
+              title: "কারেন্সি কনভার্টার",
+              path: "/converter/currency",
+              category: "কনভার্টার",
+            }}
+          />
+          <ShareToolButton title="লাইভ কারেন্সি কনভার্টার - টাকার সর্বশেষ রেট জানুন" />
+        </div>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
           কারেন্সি কনভার্টার
         </h1>
-        <p>
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">
           সর্বনিম্ন পেলোড ও সুপার ফাস্ট রূপান্তর
         </p>
       </header>
@@ -255,147 +271,154 @@ export default function CurrencyConverter() {
 
       <div className="space-y-4">
         {/* From Currency Section */}
-        <div className="flex items-center gap-2">
-          <div className="relative w-full" ref={fromRef}>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+          <div className="relative flex-1" ref={fromRef}>
             <button
-              className="w-full flex items-center truncate justify-between rounded-xl bg-zinc-400/10 hover:bg-zinc-400/25 p-4"
+              type="button"
+              className="w-full min-h-[48px] flex items-center justify-between rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-100/60 dark:bg-zinc-800/60 hover:bg-zinc-200/60 dark:hover:bg-zinc-700/60 px-4 py-3 transition text-left"
               onClick={() => setFromDropdownOpen(!fromDropdownOpen)}
+              aria-label="মুদ্রা নির্বাচন করুন"
             >
-              <div className="flex items-center">
-                <img src={getFlagUrl(fromCurrency)} className="w-5 h-5 mr-3 rounded-sm" alt="flag" />
-                <span>{fromCurrency}</span>
-                <span className="ml-2 opacity-50">- {currencyData[fromCurrency]?.label}</span>
+              <div className="flex items-center min-w-0">
+                <img src={getFlagUrl(fromCurrency)} className="w-5 h-4 mr-3 rounded-xs shrink-0 object-cover" alt="flag" />
+                <span className="font-semibold text-zinc-900 dark:text-zinc-100">{fromCurrency}</span>
+                <span className="ml-2 text-zinc-500 truncate text-sm">- {currencyData[fromCurrency]?.label}</span>
               </div>
-              <svg className="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+              <svg className="w-5 h-5 text-zinc-500 shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
 
             {fromDropdownOpen && (
-              <div className="absolute z-50 mt-2 w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 backdrop-blur-xl overflow-hidden">
-                <div className="p-2">
+              <div className="absolute z-50 mt-2 w-full rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-2xl overflow-hidden">
+                <div className="p-2 border-b border-zinc-100 dark:border-zinc-800">
                   <input
                     type="text"
                     value={fromSearch}
                     onChange={(e) => setFromSearch(e.target.value)}
                     placeholder="সার্চ করুন..."
-                    className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-3 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
+                    className="w-full rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800 px-3 py-2 text-sm outline-none transition focus:ring-2 focus:ring-emerald-500/20"
                   />
                 </div>
-                <ul className="max-h-60 overflow-y-auto space-y-2 p-2">
+                <ul className="max-h-60 overflow-y-auto space-y-1 p-2">
                   {filteredFrom.map(([code, currency]) => (
                     <li
                       key={code}
-                      className="cursor-pointer px-4 py-2 hover:bg-zinc-400/25 rounded-xl flex items-center"
+                      className="cursor-pointer px-3 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg flex items-center transition"
                       onClick={() => {
                         setFromCurrency(code);
                         setFromDropdownOpen(false);
                         setFromSearch("");
                       }}
                     >
-                      <img src={getSmallFlagUrl(code)} className="mr-3 rounded-sm w-5 h-auto" alt={currency.label} />
-                      <strong>{code}</strong>
-                      <span className="ml-2 opacity-50">- {currency.label}</span>
+                      <img src={getSmallFlagUrl(code)} className="mr-3 rounded-xs w-5 h-auto shrink-0" alt={currency.label} />
+                      <strong className="text-zinc-900 dark:text-zinc-100">{code}</strong>
+                      <span className="ml-2 text-zinc-500 text-sm truncate">- {currency.label}</span>
                     </li>
                   ))}
                 </ul>
               </div>
             )}
           </div>
-          <div className="relative">
-            <span className="absolute inset-y-0 left-0 flex items-center pl-2 opacity-50">{currencyData[fromCurrency]?.symbol}</span>
+          <div className="relative w-full sm:w-48 shrink-0">
+            <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-zinc-500 pointer-events-none font-medium text-sm">{currencyData[fromCurrency]?.symbol}</span>
             <input
               type="number"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
+              aria-label="টাকার পরিমাণ"
+              className="w-full min-h-[48px] rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-100/60 dark:bg-zinc-800/60 pl-8 pr-4 py-3 text-base sm:text-sm font-semibold outline-none transition focus:ring-2 focus:ring-emerald-500/20 text-zinc-900 dark:text-zinc-100"
             />
           </div>
         </div>
 
         {/* Swap Button */}
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center py-1">
           <button
             onClick={swapCurrencyUnits}
-            className="p-2 rounded-full hover:bg-zinc-400/25 transition"
+            className="p-2.5 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 shadow-xs transition min-h-[44px] min-w-[44px] flex items-center justify-center text-zinc-700 dark:text-zinc-300"
             title="মুদ্রা অদলবদল করুন"
+            aria-label="মুদ্রা অদলবদল করুন"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>
           </button>
         </div>
 
         {/* To Currency Section */}
-        <div className="flex items-center gap-2">
-          <div className="relative w-full" ref={toRef}>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+          <div className="relative flex-1" ref={toRef}>
             <button
-              className="w-full flex items-center truncate justify-between rounded-xl bg-zinc-400/10 hover:bg-zinc-400/25 p-4"
+              type="button"
+              className="w-full min-h-[48px] flex items-center justify-between rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-100/60 dark:bg-zinc-800/60 hover:bg-zinc-200/60 dark:hover:bg-zinc-700/60 px-4 py-3 transition text-left"
               onClick={() => setToDropdownOpen(!toDropdownOpen)}
+              aria-label="লক্ষ্য মুদ্রা নির্বাচন করুন"
             >
-              <div className="flex items-center">
-                <img src={getFlagUrl(toCurrency)} className="w-5 h-5 mr-3 rounded-sm" alt="flag" />
-                <span>{toCurrency}</span>
-                <span className="ml-2 opacity-50">- {currencyData[toCurrency]?.label}</span>
+              <div className="flex items-center min-w-0">
+                <img src={getFlagUrl(toCurrency)} className="w-5 h-4 mr-3 rounded-xs shrink-0 object-cover" alt="flag" />
+                <span className="font-semibold text-zinc-900 dark:text-zinc-100">{toCurrency}</span>
+                <span className="ml-2 text-zinc-500 truncate text-sm">- {currencyData[toCurrency]?.label}</span>
               </div>
-              <svg className="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+              <svg className="w-5 h-5 text-zinc-500 shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
 
             {toDropdownOpen && (
-              <div className="absolute z-50 mt-2 w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 backdrop-blur-xl overflow-hidden">
-                <div className="p-2">
+              <div className="absolute z-50 mt-2 w-full rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-2xl overflow-hidden">
+                <div className="p-2 border-b border-zinc-100 dark:border-zinc-800">
                   <input
                     type="text"
                     value={toSearch}
                     onChange={(e) => setToSearch(e.target.value)}
                     placeholder="সার্চ করুন..."
-                    className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-3 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
+                    className="w-full rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800 px-3 py-2 text-sm outline-none transition focus:ring-2 focus:ring-emerald-500/20"
                   />
                 </div>
-                <ul className="max-h-60 overflow-y-auto space-y-2 p-2">
+                <ul className="max-h-60 overflow-y-auto space-y-1 p-2">
                   {filteredTo.map(([code, currency]) => (
                     <li
                       key={code}
-                      className="cursor-pointer px-4 py-2 hover:bg-zinc-400/25 rounded-xl flex items-center"
+                      className="cursor-pointer px-3 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg flex items-center transition"
                       onClick={() => {
                         setToCurrency(code);
                         setToDropdownOpen(false);
                         setToSearch("");
                       }}
                     >
-                      <img src={getSmallFlagUrl(code)} className="mr-3 rounded-sm w-5 h-auto" alt={currency.label} />
-                      <strong>{code}</strong>
-                      <span className="ml-2 opacity-50">- {currency.label}</span>
+                      <img src={getSmallFlagUrl(code)} className="mr-3 rounded-xs w-5 h-auto shrink-0" alt={currency.label} />
+                      <strong className="text-zinc-900 dark:text-zinc-100">{code}</strong>
+                      <span className="ml-2 text-zinc-500 text-sm truncate">- {currency.label}</span>
                     </li>
                   ))}
                 </ul>
               </div>
             )}
           </div>
-          <div className="relative">
-            <span className="absolute inset-y-0 left-0 flex items-center pl-2 opacity-50">{currencyData[toCurrency]?.symbol}</span>
+          <div className="relative w-full sm:w-48 shrink-0">
+            <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-zinc-500 pointer-events-none font-medium text-sm">{currencyData[toCurrency]?.symbol}</span>
             <input
               type="number"
               value={convertedAmount.toFixed(2)}
               readOnly
-              className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
+              aria-label="রূপান্তরিত পরিমাণ"
+              className="w-full min-h-[48px] rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-100/60 dark:bg-zinc-800/60 pl-8 pr-4 py-3 text-base sm:text-sm font-semibold outline-none cursor-default text-zinc-900 dark:text-zinc-100"
             />
           </div>
         </div>
 
         {/* কনভার্টেড অ্যামাউন্ট ডিসপ্লে */}
-        <div className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10 p-6 text-center">
-          <p className="text-sm uppercase tracking-wider opacity-50 mb-2">কনভার্টেড অ্যামাউন্ট</p>
-          <div className="flex justify-center items-baseline gap-4">
-            <span className="text-2xl tracking-tight">
+        <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-gradient-to-br from-zinc-50 to-zinc-100/80 dark:from-zinc-900 dark:to-zinc-800/60 p-6 text-center shadow-xs">
+          <p className="text-xs uppercase tracking-wider text-zinc-500 mb-2 font-semibold">কনভার্টেড অ্যামাউন্ট</p>
+          <div className="flex flex-wrap justify-center items-baseline gap-2 sm:gap-3">
+            <span className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50 tabular-nums">
               {convertedAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
-            <span className="text-sm uppercase opacity-50">{toCurrency}</span>
+            <span className="text-base sm:text-lg font-bold uppercase text-emerald-600 dark:text-emerald-400">{toCurrency}</span>
           </div>
-          <p className="mt-4 text-sm opacity-50">
-            1 {fromCurrency} = {exchangeRate.toFixed(4)} {toCurrency}
+          <p className="mt-3 text-xs sm:text-sm text-zinc-500">
+            ১ {fromCurrency} = {exchangeRate.toFixed(4)} {toCurrency}
           </p>
         </div>
       </div>
 
       {/* বাংলা নির্দেশিকা */}
-      <section className="rounded-2xl /40 p-4 space-y-4">
+      <section className="rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/50 dark:bg-zinc-800/30 p-5 space-y-4">
         <h2 className="text-xl">
           কীভাবে ব্যবহার করবেন?
         </h2>

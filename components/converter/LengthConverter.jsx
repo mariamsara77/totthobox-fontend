@@ -75,7 +75,7 @@ export default function LengthConverter() {
       <select
         value={inputUnit}
         onChange={(e) => setInputUnit(e.target.value)}
-        className="w-[42%] appearance-none rounded-l-xl rounded-r-none bg-zinc-400/10 px-3 py-3.5 outline-none border-r border-zinc-400/20 hover:bg-zinc-400/20 transition text-sm"
+        className="w-[42%] truncate appearance-none rounded-l-xl rounded-r-none bg-zinc-400/10 px-3 py-3.5 outline-none border-r border-zinc-400/20 hover:bg-zinc-400/20 transition text-sm"
       >
         {unitOptions.map((unit) => (
           <option key={unit.value} value={unit.value}>{unit.label}</option>
@@ -109,7 +109,7 @@ export default function LengthConverter() {
       <select
         value={outputUnit}
         onChange={(e) => setOutputUnit(e.target.value)}
-        className="w-[42%] appearance-none rounded-l-xl rounded-r-none bg-zinc-400/10 px-3 py-3.5 outline-none border-r border-zinc-400/20 hover:bg-zinc-400/20 transition text-sm"
+        className="w-[42%] truncate appearance-none rounded-l-xl rounded-r-none bg-zinc-400/10 px-3 py-3.5 outline-none border-r border-zinc-400/20 hover:bg-zinc-400/20 transition text-sm"
       >
         {unitOptions.map((unit) => (
           <option key={unit.value} value={unit.value}>{unit.label}</option>

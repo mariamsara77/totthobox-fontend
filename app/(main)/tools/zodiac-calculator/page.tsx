@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ZodiacCalculator from "@/components/tools/ZodiacCalculator";
+import ToolStructuredData from "@/components/seo/ToolStructuredData";
 
 export const metadata: Metadata = {
   title: "স্মার্ট রাশিফল ক্যালকুলেটর - সঠিক রাশি ও রাশির মিল জানুন | তথ্যবক্স",
@@ -31,8 +32,22 @@ export const metadata: Metadata = {
 
 export default function ZodiacCalculatorPage() {
   return (
-    <div className="max-w-2xl mx-auto px-4 py-6 sm:py-8">
-      <ZodiacCalculator />
-    </div>
+    <>
+      <ToolStructuredData
+        name="স্মার্ট রাশিফল ও রাশির মিল ক্যালকুলেটর"
+        description="জন্মতারিখ অনুযায়ী সঠিক রাশি এবং রাশিচক্রের বৈশিষ্ট্যাবলী ও যুগল সামঞ্জস্যতা পরিমাপের অনলাইন টুল।"
+        url="https://totthobox.com/tools/zodiac-calculator"
+        applicationCategory="EntertainmentApplication"
+        featureList={[
+          "জন্মতারিখ অনুযায়ী রাশি (Zodiac Sign) নির্ধারণ",
+          "রাশির শুভ সংখ্যা, রং ও অধিপতি গ্রহ",
+          "দুই রাশির মধ্যকার শতকরা সামঞ্জস্যতা (Compatibility)",
+          "ব্যক্তিত্ব ও চারিত্রিক বৈশিষ্ট্যের বিশ্লেষণ",
+        ]}
+      />
+      <div className="max-w-2xl mx-auto px-4 py-6 sm:py-8">
+        <ZodiacCalculator />
+      </div>
+    </>
   );
 }

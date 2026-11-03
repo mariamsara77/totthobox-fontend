@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ImageResizer from "@/components/tools/ImageResizer";
+import ToolStructuredData from "@/components/seo/ToolStructuredData";
 
 export const metadata: Metadata = {
   title: "ছবি রিসাইজ, ক্রপ ও সাইজ কমানোর অনলাইন টুল | Image Resizer | তথ্যবক্স",
@@ -31,8 +32,22 @@ export const metadata: Metadata = {
 
 export default function ImageResizerPage() {
   return (
-    <div className="max-w-2xl mx-auto px-4 py-6 sm:py-8">
-      <ImageResizer />
-    </div>
+    <>
+      <ToolStructuredData
+        name="অনলাইন ইমেজ স্টুডিও ও রিসাইজার"
+        description="চাকরি, ভিসা, ও শিক্ষা প্রতিষ্ঠানের আবেদনের জন্য ছবি নির্দিষ্ট পিক্সেল ও কেবি মাপে ক্রপ ও রিসাইজ করার টুল।"
+        url="https://totthobox.com/tools/image-resizer"
+        applicationCategory="DesignApplication"
+        featureList={[
+          "ছবি ক্রপ, রোটেট ও ফ্লিপ করার সুবিধা",
+          "পিক্সেল বা পার্সেন্টেজ অনুযায়ী রিসাইজ",
+          "কেবি সাইজ অপটিমাইজেশন ও কোয়ালিটি কন্ট্রোল",
+          "WebP, JPG ও PNG ফরম্যাটে তাৎক্ষণিক ডাউনলোড",
+        ]}
+      />
+      <div className="max-w-2xl mx-auto px-4 py-6 sm:py-8">
+        <ImageResizer />
+      </div>
+    </>
   );
 }

@@ -1,4 +1,6 @@
 "use client";
+import { FavoriteButton } from "@/components/tools/QuickFavorites";
+import { ShareToolButton } from "@/components/tools/ToolActions";
 
 import { useState, useMemo, useEffect } from "react";
 
@@ -285,10 +287,21 @@ export default function PercentageCalculator() {
     return (
     <section className="w-full space-y-8">
       {/* Header */}
-      <header className="space-y-2 text-center">
-        <span className="inline-block px-3 py-1 text-xs rounded-full bg-zinc-400/10 text-zinc-600 dark:text-zinc-400">
-          বিনামূল্যে · রেজিস্ট্রেশন লাগবে না
-        </span>
+      <header className="space-y-3 text-center">
+        <div className="flex items-center justify-center gap-2">
+          <span className="inline-flex items-center px-3 py-1 text-xs rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 font-medium">
+            বিনামূল্যে · তাৎক্ষণিক ফলাফল
+          </span>
+          <FavoriteButton
+            tool={{
+              id: "percentage-calculator",
+              title: "পার্সেন্টেজ ক্যালকুলেটর",
+              path: "/tools/percentage-calculator",
+              category: "টুলস",
+            }}
+          />
+          <ShareToolButton title="পার্সেন্টেজ ক্যালকুলেটর — সহজ বাংলায় শতকরা হিসাব" />
+        </div>
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
           পার্সেন্টেজ ক্যালকুলেটর
         </h1>
@@ -299,16 +312,16 @@ export default function PercentageCalculator() {
       </header>
 
       {/* Tabs */}
-      <div className="overflow-x-auto pb-1 scrollbar-hide">
-        <div className="flex gap-1.5 min-w-max">
+      <div className="overflow-x-auto pb-1 scrollbar-none">
+        <div className="flex gap-1.5 min-w-max p-1 rounded-xl bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200/80 dark:border-zinc-800/80">
           {TABS.map((t) => (
             <button
               key={t.id}
               onClick={() => changeTab(t.id)}
-              className={`px-3 py-2 text-xs sm:text-sm rounded-lg whitespace-nowrap transition ${
+              className={`min-h-[44px] px-3.5 py-2 text-xs sm:text-sm font-medium rounded-lg whitespace-nowrap transition flex items-center justify-center ${
                 tab === t.id
-                  ? "bg-zinc-400/25"
-                  : "bg-zinc-400/10 hover:bg-zinc-400/20"
+                  ? "bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 shadow-xs font-semibold"
+                  : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200"
               }`}
             >
               {t.label}
@@ -341,7 +354,7 @@ export default function PercentageCalculator() {
                   else setPercent(e.target.value);
                 }}
                 placeholder={f.placeholder}
-                className="w-full rounded-xl border border-zinc-400/25 bg-zinc-400/10 px-3 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/30"
+                className="w-full min-h-[44px] rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-800/60 px-3.5 py-2.5 text-base sm:text-sm outline-none transition focus:ring-2 focus:ring-emerald-500/20 text-zinc-900 dark:text-zinc-100"
               />
             </div>
           ))}
@@ -350,7 +363,7 @@ export default function PercentageCalculator() {
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={resetAll}
-            className="px-4 py-2 text-sm rounded-xl bg-zinc-400/10 hover:bg-zinc-400/20 transition"
+            className="min-h-[44px] px-5 py-2.5 text-sm font-medium rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition shadow-xs text-zinc-700 dark:text-zinc-200 flex items-center justify-center"
           >
             মুছে ফেলুন
           </button>
@@ -381,7 +394,7 @@ export default function PercentageCalculator() {
             </div>
             <button
               onClick={copyResult}
-              className="px-4 py-2 text-sm rounded-xl bg-zinc-400/10 hover:bg-zinc-400/20 transition shrink-0"
+              className="min-h-[44px] px-4 py-2 text-sm font-medium rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition shrink-0 flex items-center justify-center shadow-xs text-zinc-700 dark:text-zinc-200"
             >
               {copied ? "কপি হয়েছে!" : "কপি"}
             </button>

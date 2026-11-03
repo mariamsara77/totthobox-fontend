@@ -30,7 +30,13 @@ export default function AdUnit({
   const pushedRef = useRef(false);
   const [adBlocked, setAdBlocked] = useState(false);
 
-  // Default reserved heights to avoid Cumulative Layout Shift (CLS)
+  // If no slotId is configured, NEVER render empty placeholder boxes or borders
+  // (Prevents Google AdSense "Valuable Inventory: Under Construction" rejections)
+  if (!slotId) {
+    return null;
+  }
+
+  // Default reserved heights to avoid Cumulative Layout Shift (CLS) once live ads are loaded
   const defaultMinHeight =
     minHeight ??
     (format === "rectangle"
@@ -46,11 +52,6 @@ export default function AdUnit({
 
     try {
       if (typeof window !== "undefined") {
-        const isClientLoaded = Boolean(
-          (window as unknown as { adsbygoogle?: unknown[] }).adsbygoogle,
-        );
-
-        // If ad slot is mounted and not yet filled
         if (adRef.current && adRef.current.innerHTML === "") {
           const adsbygoogle = ((
             window as unknown as { adsbygoogle?: unknown[] }
@@ -62,10 +63,14 @@ export default function AdUnit({
         }
       }
     } catch {
-      // Gracefully handle adblockers or Google AdSense fill errors without crashing React
+      // Gracefully handle adblockers without crashing React
       setAdBlocked(true);
     }
   }, []);
+
+  if (adBlocked) {
+    return null;
+  }
 
   const styleMinHeight =
     typeof defaultMinHeight === "number"
@@ -78,33 +83,22 @@ export default function AdUnit({
       style={{ minHeight: styleMinHeight }}
       aria-label="বিজ্ঞাপন অংশ"
     >
-      {/* Subtle Ad Badge to strictly comply with AdSense label guidelines */}
       <div className="mb-1 flex items-center justify-center">
         <span className="text-[10px] font-medium uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
           {label}
         </span>
       </div>
 
-      {slotId ? (
-        <ins
-          ref={adRef}
-          className="adsbygoogle block"
-          style={{ display: "block" }}
-          data-ad-client={ADSENSE_CLIENT}
-          data-ad-slot={slotId}
-          data-ad-format={format}
-          data-full-width-responsive={responsive ? "true" : "false"}
-          {...(layoutKey ? { "data-ad-layout-key": layoutKey } : {})}
-        />
-      ) : (
-        /* Placeholder zone when slotId is pending approval or in dev */
-        <div className="flex h-full min-h-[70px] flex-col items-center justify-center text-xs text-zinc-400 dark:text-zinc-500">
-          <span className="font-medium">Totthobox Advertising Zone</span>
-          <span className="text-[10px] opacity-75">
-            নিরাপদ ও প্রাসঙ্গিক বিজ্ঞাপন প্রদর্শনের জন্য সংরক্ষিত
-          </span>
-        </div>
-      )}
+      <ins
+        ref={adRef}
+        className="adsbygoogle block"
+        style={{ display: "block" }}
+        data-ad-client={ADSENSE_CLIENT}
+        data-ad-slot={slotId}
+        data-ad-format={format}
+        data-full-width-responsive={responsive ? "true" : "false"}
+        {...(layoutKey ? { "data-ad-layout-key": layoutKey } : {})}
+      />
     </div>
   );
 }

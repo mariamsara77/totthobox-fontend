@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { CountryGrid } from "@/components/international/CountryGrid";
+import ToolStructuredData from "@/components/seo/ToolStructuredData";
 
 import {
   getAllCountries,
@@ -206,6 +207,19 @@ export default async function InternationalAllCountryPage({
   }
 
   return (
+    <>
+      <ToolStructuredData
+        name="বিশ্বের সকল দেশের তালিকা ও তথ্য ডিরেক্টরি"
+        description="পৃথিবীর বিভিন্ন দেশের রাজধানী, জনসংখ্যা, আয়তন, ভাষা, মুদ্রা ও আন্তর্জাতিক কোডের সম্পূর্ণ এনসাইক্লোপিডিয়া।"
+        url="https://totthobox.com/international/all-country"
+        applicationCategory="ReferenceApplication"
+        featureList={[
+          "বিশ্বের ২৫০+ দেশের বিস্তারিত প্রোফাইল",
+          "রাজধানী, জনসংখ্যা ও ভৌগোলিক আয়তন ফিল্টার",
+          "অঞ্চলভিত্তিক মহাদেশীয় বিভাজন",
+          "জাতীয় পতাকা ও ডায়ালিং কোড রেফারেন্স",
+        ]}
+      />
     <section className="mx-auto max-w-2xl space-y-8 px-4 py-8 sm:px-6">
       <header className="text-center">
         <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
@@ -258,5 +272,6 @@ export default async function InternationalAllCountryPage({
         </div>
       )}
     </section>
+    </>
   );
 }

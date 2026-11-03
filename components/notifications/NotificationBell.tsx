@@ -15,7 +15,7 @@ export function NotificationBell({ count, onClick, className = "" }: Props) {
       onClick={onClick}
       aria-label="Notifications"
       className={
-        "relative flex items-center gap-2 rounded-xl p-2 transition-colors hover:bg-zinc-400/25 " +
+        "relative flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl p-2 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 " +
         className
       }
     >

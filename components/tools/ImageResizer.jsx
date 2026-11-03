@@ -1,4 +1,6 @@
 "use client";
+import { FavoriteButton } from "@/components/tools/QuickFavorites";
+import { ShareToolButton } from "@/components/tools/ToolActions";
 
 import { useState, useRef, useCallback, useEffect } from "react";
 
@@ -476,9 +478,20 @@ export default function ImageResizer() {
         {/* Header */}
 <div className="flex items-start justify-between gap-4">
   <div className="space-y-1">
-    <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-      ইমেজ স্টুডিও
-    </h1>
+    <div className="flex items-center gap-2">
+      <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+        ইমেজ স্টুডিও
+      </h1>
+      <FavoriteButton
+        tool={{
+          id: "image-resizer",
+          title: "ইমেজ স্টুডিও",
+          path: "/tools/image-resizer",
+          category: "টুলস",
+        }}
+      />
+      <ShareToolButton title="অনলাইন ইমেজ স্টুডিও ও রিসাইজার - Totthobox" />
+    </div>
     <p className="text-sm text-zinc-600 dark:text-zinc-400">
       ক্রপ · রিসাইজ · কম্প্রেস · ফরম্যাট কনভার্ট
     </p>

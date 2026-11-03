@@ -7,7 +7,6 @@ import {
   Cpu,
   PhoneCall,
   MapPin,
-  Globe,
   BookOpen,
   ShieldAlert,
   Newspaper,
@@ -18,7 +17,7 @@ import {
   HeartHandshake,
 } from "lucide-react";
 import UserAnalytics from "@/components/UserAnalytics";
-import AdUnit from "@/components/AdUnit";
+import { QuickFavoritesBar } from "@/components/tools/QuickFavorites";
 
 export const metadata: Metadata = {
   title: "তথ্যবক্স — প্রয়োজনীয় সব তথ্য ও ডিজিটাল সেবা এক জায়গায়",
@@ -95,13 +94,6 @@ const services = [
     color: "text-teal-500",
   },
   {
-    href: "/international/all-country",
-    icon: Globe,
-    label: "বিশ্বকোষ",
-    details: "বিশ্বের সকল দেশ, পতাকা, মুদ্রা ও রাজধানী।",
-    color: "text-sky-500",
-  },
-  {
     href: "/islam/basic",
     icon: BookOpen,
     label: "ইসলামিক জ্ঞান",
@@ -143,7 +135,7 @@ export default function HomePage() {
 
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-tight text-zinc-900 dark:text-zinc-50 max-w-4xl mx-auto">
           প্রয়োজনীয় সব তথ্য ও সেবা <br className="hidden sm:inline" />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-sky-500 to-emerald-500 dark:from-indigo-400 dark:via-sky-400 dark:to-emerald-400">
+          <span className="text-transparent bg-clip-text bg-gradient-to- from-indigo-600 via-sky-500 to-emerald-500 dark:from-indigo-400 dark:via-sky-400 dark:to-emerald-400">
             এক প্ল্যাটফর্মে
           </span>
         </h1>
@@ -157,13 +149,20 @@ export default function HomePage() {
         <div className="pt-1">
           <UserAnalytics />
         </div>
+
+        <div className="pt-2 max-w-4xl mx-auto text-left">
+          <QuickFavoritesBar />
+        </div>
       </section>
 
       {/* Main Services Grid */}
       <section className="space-y-6" aria-labelledby="services-title">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-zinc-200 dark:border-zinc-800 pb-4">
           <div>
-            <h2 id="services-title" className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+            <h2
+              id="services-title"
+              className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100"
+            >
               মূল সেবাসমূহ
             </h2>
             <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
@@ -181,10 +180,12 @@ export default function HomePage() {
                 key={index}
                 href={service.href}
                 prefetch={false}
-                className="group relative flex flex-col items-center justify-between p-4 sm:p-5 text-center rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/70 dark:bg-zinc-800/40 hover:bg-white dark:hover:bg-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 shadow-xs hover:shadow-lg transition-all duration-200 hover:-translate-y-1"
+                className="group relative flex flex-col items-center justify-between p-4 sm:p-5 text-center rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-400/10 hover:bg-white dark:hover:bg-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 shadow-xs hover:shadow-lg transition-all duration-200 hover:-translate-y-1"
               >
                 <div className="w-full flex flex-col items-center">
-                  <div className={`mb-3.5 p-3 rounded-2xl bg-white dark:bg-zinc-900 shadow-xs transition-transform duration-200 group-hover:scale-110 ${service.color}`}>
+                  <div
+                    className={`mb-3.5 p-3 rounded-2xl bg-white dark:bg-zinc-900 shadow-xs transition-transform duration-200 group-hover:scale-110 ${service.color}`}
+                  >
                     <Icon className="w-8 h-8 sm:w-9 sm:h-9 stroke-[1.75]" />
                   </div>
 
@@ -206,14 +207,6 @@ export default function HomePage() {
           })}
         </div>
       </section>
-
-      {/* CLS-Protected Ad Unit Placement (Google AdSense Compliant) */}
-      <AdUnit
-        format="auto"
-        className="max-w-4xl"
-        minHeight={100}
-        label="বিজ্ঞাপন / ADVERTISEMENT"
-      />
 
       {/* Value Proposition Highlights */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 pt-4">
@@ -264,8 +257,8 @@ export default function HomePage() {
             তথ্যবক্স (Totthobox) — আপনার নির্ভরযোগ্য ডিজিটাল সঙ্গী
           </h2>
           <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-            দৈনন্দিন জীবনের তথ্য খোঁজা থেকে শুরু করে প্রয়োজনীয় গাণিতিক ও ডিজিটাল
-            টুলসের ব্যবহারকে সহজ ও সাবলীল করতে Totthobox তৈরি হয়েছে।
+            দৈনন্দিন জীবনের তথ্য খোঁজা থেকে শুরু করে প্রয়োজনীয় গাণিতিক ও
+            ডিজিটাল টুলসের ব্যবহারকে সহজ ও সাবলীল করতে Totthobox তৈরি হয়েছে।
           </p>
         </div>
 
@@ -311,10 +304,10 @@ export default function HomePage() {
               কেন লক্ষাধিক মানুষ Totthobox বেছে নিচ্ছেন?
             </h3>
             <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              আমরা তথ্যের স্বচ্ছতা এবং সহজ ব্যবহারযোগ্যতাকে সর্বোচ্চ গুরুত্ব দিয়ে
-              থাকি। বিভ্রান্তিকর তথ্য ও অতিরিক্ত বিজ্ঞাপনের ভিড়ে Totthobox একটি
-              পরিচ্ছন্ন, বিজ্ঞাপন-নিয়ন্ত্রিত ও দ্রুতগতির পরিবেশ নিশ্চিত করে—যা
-              স্মার্টফোন এবং পিসিতে সমানভাবে স্বাচ্ছন্দ্যময়।
+              আমরা তথ্যের স্বচ্ছতা এবং সহজ ব্যবহারযোগ্যতাকে সর্বোচ্চ গুরুত্ব
+              দিয়ে থাকি। বিভ্রান্তিকর তথ্য ও অতিরিক্ত বিজ্ঞাপনের ভিড়ে
+              Totthobox একটি পরিচ্ছন্ন, বিজ্ঞাপন-নিয়ন্ত্রিত ও দ্রুতগতির পরিবেশ
+              নিশ্চিত করে—যা স্মার্টফোন এবং পিসিতে সমানভাবে স্বাচ্ছন্দ্যময়।
             </p>
             <div className="pt-2">
               <Link

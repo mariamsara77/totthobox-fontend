@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import QRGenerator from "@/components/tools/QRGenerator";
+import ToolStructuredData from "@/components/seo/ToolStructuredData";
 
 export const metadata: Metadata = {
   title:
@@ -32,8 +33,22 @@ export const metadata: Metadata = {
 
 export default function QRGeneratorPage() {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
-      <QRGenerator />
-    </div>
+    <>
+      <ToolStructuredData
+        name="প্রফেশনাল QR কোড জেনারেটর"
+        description="টেক্সট, ইউআরএল, ওয়াইফাই, ভিকার্ড ও ফোন নম্বরের কাস্টমাইজড কিউআর কোড জেনারেটর।"
+        url="https://totthobox.com/tools/qrcode-generator"
+        applicationCategory="DesignApplication"
+        featureList={[
+          "টেক্সট, ইউআরএল, ওয়াইফাই নেটওয়ার্ক, ইমেইল ও ভিকার্ড সাপোর্ট",
+          "ডট স্টাইল, কর্নার ও ফ্রেম কাস্টমাইজেশন",
+          "হাই-রেজোলিউশন PNG, SVG ও JPEG ফরম্যাটে ডাউনলোড",
+          "লোগো আপলোড ও ব্রান্ডিং সুবিধা",
+        ]}
+      />
+      <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
+        <QRGenerator />
+      </div>
+    </>
   );
 }

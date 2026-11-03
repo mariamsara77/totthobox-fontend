@@ -1,4 +1,5 @@
 import React from "react";
+import { QuickFavoritesBar } from "@/components/tools/QuickFavorites";
 import Link from "next/link";
 import { Metadata } from "next";
 import {
@@ -108,6 +109,10 @@ export default function ServicesPage() {
   return (
     <div className="max-w-7xl mx-auto p-4 lg:px-8 space-y-8 py-8">
       {/* Header */}
+      <div className="max-w-4xl mx-auto">
+        <QuickFavoritesBar />
+      </div>
+
       <header className="text-center space-y-4">
         <h1 className="text-3xl font-bold text-zinc-900 dark:text-white tracking-tight">
           মূল সেবা
@@ -120,8 +125,8 @@ export default function ServicesPage() {
 
       {/* Service introduction */}
       <div className="w-full">
-        <div className="border border-zinc-400/25 rounded-2xl p-4 text-center">
-          <p className="">
+        <div className="border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-4 text-center bg-zinc-50/50 dark:bg-zinc-800/30 text-zinc-700 dark:text-zinc-300">
+          <p>
             প্রয়োজনীয় সেবাগুলো নিচের তালিকা থেকে সরাসরি ব্যবহার করুন।
           </p>
         </div>
@@ -133,14 +138,14 @@ export default function ServicesPage() {
           সকল সেবা
         </h2>
 
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+        <div className="grid grid-cols-1 min-[360px]:grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
           {services.map((service, index) => {
             const Icon = service.icon;
             return (
               <Link
                 key={index}
                 href={service.href}
-                className="relative flex flex-col items-center h-full p-4 text-center transition-all duration-200 border border-transparent group rounded-3xl bg-zinc-400/10 border-zinc-400/25"
+                className="relative flex flex-col items-center justify-between h-full p-4 text-center transition-all duration-200 border border-zinc-200/80 dark:border-zinc-800/80 group rounded-2xl sm:rounded-3xl bg-zinc-50 dark:bg-zinc-800/50 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:-translate-y-1 shadow-xs min-h-[140px]"
               >
                 <div className="mb-4 transition-transform duration-200 transform group-hover:scale-110 text-zinc-900 dark:text-white">
                   <Icon className="w-12 h-12 stroke-[1.5]" />

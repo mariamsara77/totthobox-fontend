@@ -1,4 +1,6 @@
 "use client";
+import { FavoriteButton } from "@/components/tools/QuickFavorites";
+import { ShareToolButton } from "@/components/tools/ToolActions";
 
 import { useState, useMemo, useCallback } from "react";
 
@@ -102,7 +104,21 @@ export default function WordCounter() {
   return (
     <section className="w-full space-y-8">
       {/* Header */}
-      <header className="space-y-2 text-center">
+      <header className="space-y-3 text-center">
+        <div className="flex items-center justify-center gap-2">
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+            রিয়েল-টাইম অ্যানালাইসিস
+          </span>
+          <FavoriteButton
+            tool={{
+              id: "word-counter",
+              title: "ওয়ার্ড কাউন্টার",
+              path: "/tools/word-and-character-counter",
+              category: "টুলস",
+            }}
+          />
+          <ShareToolButton title="ওয়ার্ড অ্যান্ড ক্যারেক্টার কাউন্টার - শব্দ, অক্ষর ও লাইন হিসাব" />
+        </div>
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
           ওয়ার্ড অ্যান্ড ক্যারেক্টার কাউন্টার
         </h1>
@@ -123,7 +139,7 @@ export default function WordCounter() {
               onChange={(e) => setText(e.target.value)}
               rows={8}
               placeholder="আপনার টেক্সট এখানে লিখুন..."
-              className="min-h-[160px] w-full resize-y rounded-xl bg-zinc-400/10 p-3 font-mono text-sm outline-none"
+              className="min-h-[160px] w-full resize-y rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-800/60 p-3.5 font-mono text-sm outline-none transition focus:ring-2 focus:ring-emerald-500/20 text-zinc-900 dark:text-zinc-100"
             />
           </div>
 
@@ -132,46 +148,46 @@ export default function WordCounter() {
             <button
               onClick={toUpperCase}
               disabled={!stats.hasText}
-              className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-400/20 disabled:opacity-40 disabled:cursor-not-allowed transition"
+              className="min-h-[38px] px-3.5 py-2 text-xs sm:text-sm font-medium rounded-lg border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-100/70 dark:bg-zinc-800/70 hover:bg-zinc-200/70 dark:hover:bg-zinc-700/70 disabled:opacity-40 disabled:cursor-not-allowed transition flex items-center justify-center text-zinc-700 dark:text-zinc-300"
             >
               বড় হাতের অক্ষর
             </button>
             <button
               onClick={toLowerCase}
               disabled={!stats.hasText}
-              className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-400/20 disabled:opacity-40 disabled:cursor-not-allowed transition"
+              className="min-h-[38px] px-3.5 py-2 text-xs sm:text-sm font-medium rounded-lg border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-100/70 dark:bg-zinc-800/70 hover:bg-zinc-200/70 dark:hover:bg-zinc-700/70 disabled:opacity-40 disabled:cursor-not-allowed transition flex items-center justify-center text-zinc-700 dark:text-zinc-300"
             >
               ছোট হাতের অক্ষর
             </button>
             <button
               onClick={toSentenceCase}
               disabled={!stats.hasText}
-              className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-400/20 disabled:opacity-40 disabled:cursor-not-allowed transition"
+              className="min-h-[38px] px-3.5 py-2 text-xs sm:text-sm font-medium rounded-lg border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-100/70 dark:bg-zinc-800/70 hover:bg-zinc-200/70 dark:hover:bg-zinc-700/70 disabled:opacity-40 disabled:cursor-not-allowed transition flex items-center justify-center text-zinc-700 dark:text-zinc-300"
             >
               বাক্যের ধরন
             </button>
             <button
               onClick={toTitleCase}
               disabled={!stats.hasText}
-              className="px-3 py-1.5 text-xs rounded-lg bg-zinc-400/10 hover:bg-zinc-400/20 disabled:opacity-40 disabled:cursor-not-allowed transition"
+              className="min-h-[38px] px-3.5 py-2 text-xs sm:text-sm font-medium rounded-lg border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-100/70 dark:bg-zinc-800/70 hover:bg-zinc-200/70 dark:hover:bg-zinc-700/70 disabled:opacity-40 disabled:cursor-not-allowed transition flex items-center justify-center text-zinc-700 dark:text-zinc-300"
             >
               শিরোনামের ধরন
             </button>
           </div>
 
           {/* Actions */}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2.5">
             <button
               onClick={copyText}
               disabled={!stats.hasText}
-              className="px-4 py-2 text-sm rounded-xl bg-zinc-400/10 hover:bg-zinc-400/20 disabled:opacity-40 disabled:cursor-not-allowed transition"
+              className="min-h-[44px] px-5 py-2.5 text-sm font-medium rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-xs flex items-center justify-center text-zinc-800 dark:text-zinc-200"
             >
               {copied ? "কপি হয়েছে!" : "কপি করুন"}
             </button>
             <button
               onClick={resetText}
               disabled={!stats.hasText}
-              className="px-4 py-2 text-sm rounded-xl bg-zinc-400/10 hover:bg-zinc-400/20 disabled:opacity-40 disabled:cursor-not-allowed transition"
+              className="min-h-[44px] px-5 py-2.5 text-sm font-medium rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-xs flex items-center justify-center text-zinc-800 dark:text-zinc-200"
             >
               রিসেট করুন
             </button>

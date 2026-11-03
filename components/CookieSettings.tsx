@@ -54,7 +54,7 @@ export default function CookieSettings() {
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-1.5 rounded-full border border-zinc-300 dark:border-zinc-700 bg-white/80 dark:bg-zinc-800/80 px-3 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300 shadow-xs transition hover:border-zinc-400 hover:text-zinc-900 dark:hover:border-zinc-600 dark:hover:text-zinc-100"
+        className="flex min-h-[44px] items-center gap-1.5 rounded-full border border-zinc-300 dark:border-zinc-700 bg-white/80 dark:bg-zinc-800/80 px-3.5 py-2 text-xs font-medium text-zinc-700 dark:text-zinc-300 shadow-xs transition hover:border-zinc-400 hover:text-zinc-900 dark:hover:border-zinc-600 dark:hover:text-zinc-100"
       >
         <RxSwitch className="h-3.5 w-3.5 opacity-70" />
         কুকি সেটিংস

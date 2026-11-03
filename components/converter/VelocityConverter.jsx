@@ -63,7 +63,7 @@ export default function VelocityConverter() {
   <div className="space-y-2">
     <label className="text-sm font-medium text-zinc-600 dark:text-zinc-400">যে ইউনিট থেকে (From)</label>
     <div className="flex">
-      <select value={inputUnit} onChange={(e) => setInputUnit(e.target.value)} className="w-[42%] appearance-none rounded-l-xl rounded-r-none bg-zinc-400/10 px-3 py-3.5 outline-none border-r border-zinc-400/20 hover:bg-zinc-400/20 transition text-sm">
+      <select value={inputUnit} onChange={(e) => setInputUnit(e.target.value)} className="w-[42%] truncate appearance-none rounded-l-xl rounded-r-none bg-zinc-400/10 px-3 py-3.5 outline-none border-r border-zinc-400/20 hover:bg-zinc-400/20 transition text-sm">
         {unitOptions.map((unit) => (<option key={unit.value} value={unit.value}>{unit.label}</option>))}
       </select>
       <input type="number" value={inputValue} onChange={(e) => setInputValue(e.target.value)} placeholder="মান লিখুন" className="w-[58%] rounded-r-xl rounded-l-none bg-zinc-400/10 px-3 py-3.5 outline-none hover:bg-zinc-400/20 transition" />
@@ -79,7 +79,7 @@ export default function VelocityConverter() {
   <div className="space-y-2">
     <label className="text-sm font-medium text-zinc-600 dark:text-zinc-400">যে ইউনিটে রূপান্তর (To)</label>
     <div className="flex">
-      <select value={outputUnit} onChange={(e) => setOutputUnit(e.target.value)} className="w-[42%] appearance-none rounded-l-xl rounded-r-none bg-zinc-400/10 px-3 py-3.5 outline-none border-r border-zinc-400/20 hover:bg-zinc-400/20 transition text-sm">
+      <select value={outputUnit} onChange={(e) => setOutputUnit(e.target.value)} className="w-[42%] truncate appearance-none rounded-l-xl rounded-r-none bg-zinc-400/10 px-3 py-3.5 outline-none border-r border-zinc-400/20 hover:bg-zinc-400/20 transition text-sm">
         {unitOptions.map((unit) => (<option key={unit.value} value={unit.value}>{unit.label}</option>))}
       </select>
       <input type="text" value={outputValue} readOnly placeholder="ফলাফল" className="w-[58%] rounded-r-xl rounded-l-none bg-zinc-400/10 px-3 py-3.5 outline-none cursor-default" />
