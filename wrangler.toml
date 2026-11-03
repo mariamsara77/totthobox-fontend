@@ -1,0 +1,38 @@
+[vars]
+# ==========================================
+# Web Push Notification Keys
+# ==========================================
+NEXT_PUBLIC_VAPID_PUBLIC_KEY = "BBXFXNIJfoxxN-BC24pweOIBTZIHEmR9_XbbRyuqGyncTQnzKmhm65R4HGaZPYrdoLfkimilv3U4he7CK0_paBU"
+VAPID_PRIVATE_KEY = "sprfiiVmBZ9iwSwYn7oCs2AQYz09lN2zAo15whlJ11Q"
+
+# ==========================================
+# Frontend Site Configuration
+# ==========================================
+NEXT_PUBLIC_SITE_URL = "https://totthobox.com"
+
+# ==========================================
+# Backend API Endpoints (Laravel)
+# ==========================================
+NEXT_PUBLIC_API_BASE_URL = "https://admin.totthobox.com"
+LARAVEL_API_URL = "https://admin.totthobox.com/api"
+NEXT_PUBLIC_API_URL = "https://admin.totthobox.com/api"
+NEXT_PUBLIC_BACKEND_URL = "https://admin.totthobox.com"
+
+# ==========================================
+# Realtime / Websocket (Laravel Reverb)
+# ==========================================
+NEXT_PUBLIC_REVERB_APP_KEY = "fskmtikyq6lljenrsw7o"
+NEXT_PUBLIC_REVERB_HOST = "admin.totthobox.com"
+NEXT_PUBLIC_REVERB_PORT = "443"
+NEXT_PUBLIC_REVERB_SCHEME = "https"
+
+# ==========================================
+# Authentication & OAuth Credentials
+# ==========================================
+NEXT_PUBLIC_GOOGLE_CLIENT_ID = "129938701615-cha7gkblba1g3gm6jn5vdvtp78kc5gq1.apps.googleusercontent.com"
+NEXT_PUBLIC_GOOGLE_REDIRECT_URI = "https://totthobox.com"
+
+# ==========================================
+# Google AdSense
+# ==========================================
+NEXT_PUBLIC_ADSENSE_ID = "ca-pub-9522604367420521"
