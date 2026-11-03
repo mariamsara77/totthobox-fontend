@@ -1,9 +1,18 @@
+name = "totthobox-fontend"
+compatibility_date = "2026-11-03"
+compatibility_flags = ["nodejs_compat"]
+
+# Build output ফোল্ডার (Next.js static export হলে সাধারণত "out")
+[assets]
+directory = "./out"
+not_found_handling = "single-page-application"
+
 [vars]
 # ==========================================
 # Web Push Notification Keys
 # ==========================================
 NEXT_PUBLIC_VAPID_PUBLIC_KEY = "BBXFXNIJfoxxN-BC24pweOIBTZIHEmR9_XbbRyuqGyncTQnzKmhm65R4HGaZPYrdoLfkimilv3U4he7CK0_paBU"
-VAPID_PRIVATE_KEY = "sprfiiVmBZ9iwSwYn7oCs2AQYz09lN2zAo15whlJ11Q"
+# VAPID_PRIVATE_KEY এখানে রাখবেন না — Cloudflare Secrets এ রাখুন
 
 # ==========================================
 # Frontend Site Configuration
