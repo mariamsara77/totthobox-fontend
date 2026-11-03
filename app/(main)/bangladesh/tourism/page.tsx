@@ -52,36 +52,24 @@ type TourismPageResponse = {
   };
 };
 
+const EMPTY_TOURISM: TourismPageResponse = {
+  data: [],
+  meta: { current_page: 1, per_page: 12, total: 0, last_page: 1, has_more: false },
+};
+
 async function getInitialTourism(): Promise<TourismPageResponse> {
-  const params = new URLSearchParams({
-    page: "1",
-    per_page: "12",
-  });
-
-  const response = await fetch(
-    API_BASE + "/api/tourism-bd?" + params.toString(),
-    {
-      next: {
-        revalidate: 3600,
-        tags: ["tourism-list"],
-      },
-    },
-  );
-
-  if (!response.ok) {
-    return {
-      data: [],
-      meta: {
-        current_page: 1,
-        per_page: 12,
-        total: 0,
-        last_page: 1,
-        has_more: false,
-      },
-    };
+  try {
+    const params = new URLSearchParams({ page: "1", per_page: "12" });
+    const response = await fetch(
+      API_BASE + "/api/tourism-bd?" + params.toString(),
+      { next: { revalidate: 3600, tags: ["tourism-list"] } },
+    );
+    if (!response.ok) return EMPTY_TOURISM;
+    return response.json();
+  } catch (e) {
+    console.error("[tourism] Failed to load initial data:", e);
+    return EMPTY_TOURISM;
   }
-
-  return response.json();
 }
 
 export default async function TourismPage() {

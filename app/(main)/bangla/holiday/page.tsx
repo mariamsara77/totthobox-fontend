@@ -5,12 +5,17 @@ import HolidaysClient from './HolidaysClient';
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
 async function getInitialData() {
-  const response = await fetch(
-    `${API_BASE}/api/holidays?page=1&per_page=15`,
-    { next: { revalidate: 3600, tags: ["holidays-list"] } },
-  );
-  if (!response.ok) throw new Error("Failed to load initial holidays data");
-  return response.json();
+  try {
+    const response = await fetch(
+      `${API_BASE}/api/holidays?page=1&per_page=15`,
+      { next: { revalidate: 3600, tags: ["holidays-list"] } },
+    );
+    if (!response.ok) return null;
+    return response.json();
+  } catch (e) {
+    console.error("[holidays] Failed to load initial data:", e);
+    return null;
+  }
 }
 
 export const metadata: Metadata = {

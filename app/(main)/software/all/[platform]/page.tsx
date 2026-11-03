@@ -51,8 +51,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (platformTotal === 0) {
     return {
-      title: "সফটওয়্যার প্ল্যাটফর্ম পাওয়া যায়নি | তথ্যবক্স",
-      description: "অনুরোধ করা সফটওয়্যার প্ল্যাটফর্মের তথ্য পাওয়া যায়নি।",
+      title: "সফটওয়্যার প্ল্যাটফর্ম পাওয়া যায়নি | তথ্যবক্স",
+      description: "অনুরোধ করা সফটওয়্যার প্ল্যাটফর্মের তথ্য পাওয়া যায়নি।",
       robots: {
         index: false,
         follow: false,
@@ -62,7 +62,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const title = `${platformName} Software & Apps | তথ্যবক্স`;
 
-  const description = `${platformName} প্ল্যাটফর্মের সফটওয়্যার ও অ্যাপ সম্পর্কে তথ্য, ফিচার, সিস্টেম রিকোয়ারমেন্ট এবং অফিসিয়াল সোর্স দেখুন।`;
+  const description = `${platformName} প্ল্যাটফর্মের সফটওয়্যার ও অ্যাপ সম্পর্কে তথ্য, ফিচার, সিস্টেম রিকোয়ারমেন্ট এবং অফিসিয়াল সোর্স দেখুন।`;
 
   const canonical = `https://totthobox.com/software/all/${encodeURIComponent(
     platformName,
@@ -95,12 +95,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 async function getInitialData(platform: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
-  const response = await fetch(`${baseUrl}/api/apps?platform=${encodeURIComponent(platform)}&page=1&per_page=12`, {
-    next: { revalidate: 3600, tags: [`software:${platform}`] },
-  });
-  if (!response.ok) throw new Error("Failed to load initial software data");
-  return response.json();
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+    const response = await fetch(
+      `${baseUrl}/api/apps?platform=${encodeURIComponent(platform)}&page=1&per_page=12`,
+      { next: { revalidate: 3600, tags: [`software:${platform}`] } },
+    );
+    if (!response.ok) return null;
+    return response.json();
+  } catch (e) {
+    console.error("[software:platform] Failed to load initial data:", e);
+    return null;
+  }
 }
 
 export default async function PlatformSoftwarePage({ params }: Props) {

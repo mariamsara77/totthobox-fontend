@@ -5,12 +5,17 @@ import HistoryClient from "./HistoryClient";
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
 async function getInitialData() {
-  const response = await fetch(
-    `${API_BASE}/api/history-bd?page=1&per_page=10`,
-    { next: { revalidate: 3600, tags: ["history-bd-list"] } },
-  );
-  if (!response.ok) throw new Error("Failed to load initial history-bd data");
-  return response.json();
+  try {
+    const response = await fetch(
+      `${API_BASE}/api/history-bd?page=1&per_page=10`,
+      { next: { revalidate: 3600, tags: ["history-bd-list"] } },
+    );
+    if (!response.ok) return null;
+    return response.json();
+  } catch (e) {
+    console.error("[history] Failed to load initial data:", e);
+    return null;
+  }
 }
 
 export const metadata: Metadata = {
