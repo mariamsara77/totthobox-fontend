@@ -143,20 +143,35 @@ async function fetchSlugs(
   options: {
     includeItem?: (item: unknown) => boolean;
     revalidateSeconds?: number;
+    maxPages?: number;
+    timeoutMs?: number;
   } = {},
 ): Promise<string[]> {
-  const { includeItem, revalidateSeconds = 86400 } = options;
+  const {
+    includeItem,
+    revalidateSeconds = 86400,
+    maxPages = 20,
+    timeoutMs = 8000,
+  } = options;
   const slugs: string[] = [];
   const seen = new Set<string>();
   const perPage = 50;
 
-  for (let page = 1; page <= 1000; page += 1) {
+  for (let page = 1; page <= maxPages; page += 1) {
     try {
       const separator = endpoint.includes("?") ? "&" : "?";
-      const response = await fetch(
-        `${API_BASE}${endpoint}${separator}per_page=${perPage}&page=${page}`,
-        { next: { revalidate: revalidateSeconds } },
-      );
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+      let response: Response;
+      try {
+        response = await fetch(
+          `${API_BASE}${endpoint}${separator}per_page=${perPage}&page=${page}`,
+          { next: { revalidate: revalidateSeconds }, signal: controller.signal },
+        );
+      } finally {
+        clearTimeout(timer);
+      }
 
       if (!response.ok) break;
 

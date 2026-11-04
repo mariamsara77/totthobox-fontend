@@ -141,10 +141,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-5RFHKJJJ');`}
         </Script>
 
-        {/* Official Google AdSense script - non-blocking after interactive */}
-        <Script
-          id="google-adsense"
-          strategy="afterInteractive"
+        {/* Official Google AdSense script */}
+        <script
+          async
           src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_ID}`}
           crossOrigin="anonymous"
         />
