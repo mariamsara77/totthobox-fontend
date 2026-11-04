@@ -19,7 +19,7 @@ export default function Navbar() {
           <Link
             href="/"
             aria-label="Totthobox Home"
-            className="flex min-h-[44px] items-center gap-2 text-lg sm:text-xl font-bold text-zinc-900 dark:text-zinc-100"
+            className="flex min-h-11 items-center gap-2 text-lg sm:text-xl font-bold text-zinc-900 dark:text-zinc-100"
           >
             <BrandIcon className="h-7 w-7 sm:h-8 sm:w-8" />
             <span className="inline-block">Totthobox</span>
@@ -29,16 +29,14 @@ export default function Navbar() {
         <div className="flex items-center gap-1 sm:gap-2">
           <SearchTrigger />
 
-          {isLoggedIn && (
-            <button
-              type="button"
-              onClick={openSettingsModal}
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl p-2 text-zinc-700 dark:text-zinc-300 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
-              aria-label="সেটিংস মেনু খুলুন"
-            >
-              <Settings className="h-5 w-5" aria-hidden="true" />
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={openSettingsModal}
+            className="flex min-h-11 items-center justify-center rounded-xl p-2 text-zinc-700 dark:text-zinc-300 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            aria-label="সেটিংস মেনু খুলুন"
+          >
+            <Settings className="h-5 w-5" aria-hidden="true" />
+          </button>
 
           <ProfileMenu />
         </div>
