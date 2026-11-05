@@ -168,8 +168,8 @@ export function NotificationModal({ open, onClose, onCountChange }: Props) {
 
         const items = res.data || [];
         setNotifications((prev) => (append ? [...prev, ...items] : items));
-        setTotalCount(res.meta.total);
-        setHasMore(res.meta.has_more);
+        setTotalCount(res.meta?.total ?? items.length);
+        setHasMore(Boolean(res.meta?.has_more));
         setPage(pageNum);
       } catch (e) {
         if (reqId === requestIdRef.current) {

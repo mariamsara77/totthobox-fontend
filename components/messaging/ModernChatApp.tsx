@@ -516,10 +516,10 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
     isNearBottomRef.current = true;
     try {
       const [state] = await Promise.all([
-        getBlockStatus(userSlug).catch(() => ({ blocked: false })),
+        getBlockStatus(userSlug).catch(() => ({ blocked: false, is_blocked: false })),
         loadMessages(userSlug, 1, false),
       ]);
-      setBlocked(Boolean(state?.blocked ?? state?.is_blocked));
+      setBlocked(Boolean(state?.blocked ?? (state as any)?.is_blocked));
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "চ্যাট লোড করা যায়নি");
     }

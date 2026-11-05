@@ -9,18 +9,23 @@ export async function POST(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const token = await getAuthToken();
-  if (!token) {
-    return NextResponse.json({ message: "Unauthenticated." }, { status: 401 });
+  const headers = { "Cache-Control": "private, no-store, no-cache, must-revalidate" };
+  try {
+    const token = await getAuthToken();
+    if (!token) {
+      return NextResponse.json({ success: false, message: "Unauthenticated." }, { status: 200, headers });
+    }
+
+    const { id } = await params;
+
+    const res = await laravelFetch(`/notifications/${id}/read`, {
+      method: "POST",
+      token,
+    });
+
+    const data = await res.json().catch(() => ({ success: true }));
+    return NextResponse.json(data, { status: 200, headers });
+  } catch {
+    return NextResponse.json({ success: false }, { status: 200, headers });
   }
-
-  const { id } = await params;
-
-  const res = await laravelFetch(`/notifications/${id}/read`, {
-    method: "POST",
-    token,
-  });
-
-  const data = await res.json().catch(() => ({}));
-  return NextResponse.json(data, { status: res.status });
 }
