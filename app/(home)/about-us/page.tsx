@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import AboutUsClient from "./AboutUs"; // নিচের client component
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   title: "আমাদের সম্পর্কে (About Us)",
   description:

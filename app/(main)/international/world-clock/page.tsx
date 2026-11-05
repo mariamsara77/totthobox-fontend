@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import WorldClockClient from "./WorldClockClient";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
 
+export const revalidate = 1800;
+
 export const metadata: Metadata = {
   title: "বিশ্ব ঘড়ি ও আন্তর্জাতিক টাইমজোন কনভার্টার | World Clock & Timezone",
   description:

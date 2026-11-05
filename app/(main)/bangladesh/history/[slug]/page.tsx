@@ -1,21 +1,24 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { cache } from "react";
+
+export const revalidate = 1800;
 import HistoryShowClient from "./HistoryShowClient";
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
-async function getHistory(slug: string) {
+const getHistory = cache(async function getHistory(slug: string) {
   const base =
     process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
   const res = await fetch(`${base}/api/history-bd/${slug}`, {
-    next: { revalidate: 3600 },
+    next: { revalidate: 1800 },
   });
   if (!res.ok) return null;
   const json = await res.json();
   return json.data;
-}
+});
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;

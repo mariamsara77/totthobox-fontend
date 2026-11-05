@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import MediaConverter from "@/components/converter/MediaConverter";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/converter/media" },
   title: "Free Online Media Converter | MP4, MP3, WAV, MKV, AAC & More",

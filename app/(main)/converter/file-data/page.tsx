@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import DataConverter from "@/components/converter/DataConverter";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/converter/file-data" },
   title: "Free Online Data Format Converter | JSON, XML, YAML, CSV",

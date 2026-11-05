@@ -22,6 +22,7 @@ export type NotificationsResponse = {
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const res = await fetch(path, {
+    cache: "no-store",
     ...options,
     headers: {
       Accept: "application/json",

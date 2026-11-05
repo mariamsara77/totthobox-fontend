@@ -5,8 +5,8 @@ const SITE_URL = "https://totthobox.com";
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
-// Rebuild the sitemap at most hourly instead of querying every dataset on every request.
-export const revalidate = 3600;
+// Rebuild the sitemap at most daily instead of querying every dataset on every request.
+export const revalidate = 86400;
 
 const publicRoutes = [
   "/",
@@ -205,7 +205,7 @@ async function fetchNewsSources(): Promise<Array<{ key: string }>> {
 
   for (const endpoint of endpoints) {
     try {
-      const response = await fetch(`${API_BASE}${endpoint}`, { next: { revalidate: 3600 } });
+      const response = await fetch(`${API_BASE}${endpoint}`, { next: { revalidate: 86400 } });
       if (!response.ok) continue;
       const json = await response.json();
       const data = json?.data ?? json;
@@ -264,7 +264,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     fetchSlugs("/api/people"),
     fetchSlugs("/api/apps", { includeItem: hasSoftwareContent }),
     fetchNewsSources(),
-    fetchSlugs("/api/news", { revalidateSeconds: 3600 }),
+    fetchSlugs("/api/news", { revalidateSeconds: 86400 }),
   ]);
 
   const dynamicEntries: MetadataRoute.Sitemap = [

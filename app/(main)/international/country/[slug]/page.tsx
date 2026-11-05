@@ -14,6 +14,8 @@ import { notFound } from "next/navigation";
 import { AiFillDollarCircle } from "react-icons/ai";
 import { IoMdArrowDropdown } from "react-icons/io";
 
+export const revalidate = 1800;
+
 type Props = {
   params: Promise<{ slug: string }>;
 };

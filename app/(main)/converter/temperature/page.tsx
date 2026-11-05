@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import TemperatureConverter from "@/components/converter/TemperatureConverter";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/converter/temperature" },
   title: "অনলাইন তাপমাত্রা রূপান্তরকারী - °C, °F, Kelvin কনভার্টার",

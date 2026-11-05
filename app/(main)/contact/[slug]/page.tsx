@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import ContactClient from "./ContactClient";
 
+export const revalidate = 1800;
+
 type Props = {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ search?: string }>;
@@ -10,7 +12,7 @@ async function getCategory(slug: string) {
   const base =
     process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
   const res = await fetch(`${base}/api/contacts/categories/${slug}`, {
-    next: { revalidate: 3600 },
+    next: { revalidate: 1800 },
   });
   if (!res.ok) return null;
   const json = await res.json();

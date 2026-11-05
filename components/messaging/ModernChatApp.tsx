@@ -25,6 +25,7 @@ import MediaGallery from "@/components/MediaGallery";
 import {
   ChatMessage,
   ChatUser,
+  normalizeMessage,
   deleteMessage,
   editMessage,
   getBlockStatus,
@@ -351,6 +352,9 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
   );
   const [jumping, setJumping] = useState(false);
   const [otherTyping, setOtherTyping] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -468,22 +472,37 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
     el.style.height = `${Math.min(el.scrollHeight, 128)}px`;
   }, [draft]);
 
-  const loadMessages = async (slug: string) => {
-    setLoadingMessages(true);
+  const loadMessages = async (slug: string, requestedPage = 1, append = false) => {
+    if (requestedPage === 1) {
+      setLoadingMessages(true);
+    } else {
+      setLoadingMore(true);
+    }
     try {
-      const data = await getMessages(slug, 1, 30);
-      setMessages(data.data.slice().reverse());
-      requestAnimationFrame(() => scrollToBottom("auto"));
+      const data = await getMessages(slug, requestedPage, 30);
+      const incoming = data.data || [];
+      if (append) {
+        setMessages((current) => [...incoming.slice().reverse(), ...current]);
+      } else {
+        setMessages(incoming.slice().reverse());
+        requestAnimationFrame(() => scrollToBottom("auto"));
+      }
+      setPage(requestedPage);
+      setHasMore(Boolean(data.next_page_url || (data.last_page && requestedPage < data.last_page)));
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "মেসেজ লোড করা যায়নি");
     } finally {
       setLoadingMessages(false);
+      setLoadingMore(false);
     }
   };
 
   const selectUser = async (user: ChatUser) => {
-    if (!user.slug) {
-      toast.error("এই ব্যবহারকারীর বৈধ slug পাওয়া যায়নি");
+    if (!user.slug && !user.id) {
+      toast.error("এই ব্যবহারকারীকে পাওয়া যায়নি");
       return;
     }
+    const userSlug = user.slug || String(user.id);
     setSelected(user);
     setMobileChat(true);
     setMenuOpen(false);
@@ -492,13 +511,15 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
     setEditing(null);
     setOtherTyping(false);
     setMessages([]);
+    setPage(1);
+    setHasMore(false);
     isNearBottomRef.current = true;
     try {
       const [state] = await Promise.all([
-        getBlockStatus(user.slug),
-        loadMessages(user.slug),
+        getBlockStatus(userSlug).catch(() => ({ blocked: false })),
+        loadMessages(userSlug, 1, false),
       ]);
-      setBlocked(Boolean(state.blocked ?? state.is_blocked));
+      setBlocked(Boolean(state?.blocked ?? state?.is_blocked));
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "চ্যাট লোড করা যায়নি");
     }
@@ -529,6 +550,10 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
     };
   }, [targetSlug, users]);
 
+  // Selected user ref to prevent stale closure in Echo listeners
+  const selectedRef = useRef<ChatUser | null>(null);
+  selectedRef.current = selected;
+
   // ========== LIVE CHAT (Laravel Echo) ==========
   useEffect(() => {
     if (!me?.id) return;
@@ -536,14 +561,18 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
     const echo = getEcho();
     if (!echo) return;
 
-    const channel = echo.private(`chat.${me.id}`);
+    const chatChannel = echo.private(`chat.${me.id}`);
+    const userChannel = echo.private(`user.${me.id}`);
 
-    channel.listen(".MessageSent", (payload: any) => {
-      const msg = payload.message || payload;
+    const handleIncomingMessage = (payload: any) => {
+      const raw = payload.message || payload.data || payload;
+      if (!raw || !raw.id) return;
+      const msg = normalizeMessage(raw);
 
+      const activeUser = selectedRef.current;
       if (
-        selected &&
-        (msg.sender_id === selected.id || msg.receiver_id === selected.id)
+        activeUser &&
+        (msg.sender_id === activeUser.id || msg.receiver_id === activeUser.id)
       ) {
         setMessages((prev) => {
           if (prev.some((m) => m.id === msg.id)) return prev;
@@ -556,24 +585,62 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
       getChatUsers()
         .then(setUsers)
         .catch(() => undefined);
-    });
+    };
 
-    channel.listenForWhisper("typing", (e: any) => {
-      if (!selected || e?.user_id !== selected.id) return;
+    const handleTyping = (e: any) => {
+      const activeUser = selectedRef.current;
+      if (!activeUser || e?.user_id !== activeUser.id) return;
       setOtherTyping(true);
       if (typingClearRef.current) clearTimeout(typingClearRef.current);
       typingClearRef.current = setTimeout(() => setOtherTyping(false), 2500);
-    });
+    };
 
-    channel.error((error: any) => {
-      console.error("Echo channel error:", error);
+    chatChannel.listen(".MessageSent", handleIncomingMessage);
+    chatChannel.listen("MessageSent", handleIncomingMessage);
+    chatChannel.listenForWhisper("typing", handleTyping);
+
+    userChannel.listen(".MessageSent", handleIncomingMessage);
+    userChannel.listen("MessageSent", handleIncomingMessage);
+
+    chatChannel.error((error: any) => {
+      console.warn("Echo chat channel error:", error);
     });
 
     return () => {
-      channel.stopListening(".MessageSent");
-      channel.stopListeningForWhisper("typing");
+      chatChannel.stopListening(".MessageSent");
+      chatChannel.stopListening("MessageSent");
+      chatChannel.stopListeningForWhisper("typing");
+
+      userChannel.stopListening(".MessageSent");
+      userChannel.stopListening("MessageSent");
     };
-  }, [me?.id, selected?.id]);
+  }, [me?.id]);
+
+  // Polling fallback every 10s when tab is visible
+  useEffect(() => {
+    if (!selected) return;
+    const interval = setInterval(() => {
+      if (typeof document !== "undefined" && document.visibilityState === "visible") {
+        const slug = selected.slug || String(selected.id);
+        getMessages(slug, 1, 30)
+          .then((data) => {
+            if (data.data?.length) {
+              setMessages((prev) => {
+                const existingIds = new Set(prev.map((m) => m.id));
+                const newItems = data.data.filter((m) => !existingIds.has(m.id));
+                if (newItems.length > 0) {
+                  return [...prev, ...newItems.reverse()];
+                }
+                return prev;
+              });
+            }
+          })
+          .catch(() => undefined);
+      }
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, [selected?.id, selected?.slug]);
 
   // draft change → typing whisper (throttled)
   useEffect(() => {
@@ -660,7 +727,9 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
       setFile(null);
       setReplyTo(null);
       isNearBottomRef.current = true;
+      requestAnimationFrame(() => scrollToBottom("smooth"));
       toast.success("মেসেজ পাঠানো হয়েছে");
+      getChatUsers().then(setUsers).catch(() => undefined);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "মেসেজ পাঠানো যায়নি");
     } finally {
@@ -826,7 +895,7 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
       <div className="grid h-full overflow-hidden md:grid-cols-[minmax(280px,340px)_minmax(0,1fr)]">
         {/* Sidebar */}
         <aside
-          className={`${mobileChat ? "hidden md:flex" : "flex"} h-screen flex-col bg-zinc-400/10`}
+          className={`${mobileChat ? "hidden md:flex" : "flex"} h-full min-h-0 flex-col bg-zinc-400/10`}
         >
           <div className="shrink-0 p-4">
             <div>
@@ -903,7 +972,7 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
 
         {/* Main Chat Area */}
         <main
-          className={`${mobileChat ? "flex" : "hidden md:flex"} min-h-0 min-w-0 flex-col`}
+          className={`${mobileChat ? "flex" : "hidden md:flex"} h-full min-h-0 min-w-0 flex-col`}
         >
           {selected ? (
             <>
@@ -982,6 +1051,19 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
                 }}
               >
                 <div className="flex flex-col gap-3">
+                  {hasMore && (
+                    <div className="flex justify-center py-2">
+                      <button
+                        type="button"
+                        disabled={loadingMore}
+                        onClick={() => void loadMessages(selected.slug || String(selected.id), page + 1, true)}
+                        className="inline-flex items-center gap-1.5 rounded-full bg-zinc-400/15 px-4 py-1.5 text-xs font-medium opacity-80 hover:bg-zinc-400/25 disabled:opacity-40"
+                      >
+                        {loadingMore && <Loader2 className="size-3 animate-spin" />}
+                        <span>পুরোনো মেসেজ দেখুন</span>
+                      </button>
+                    </div>
+                  )}
                   {loadingMessages ? (
                     <div className="flex flex-1 flex-col gap-4 justify-end">
                       <div className="flex items-end gap-2 max-w-[70%]">

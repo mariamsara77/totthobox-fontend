@@ -19,6 +19,8 @@ import {
 import UserAnalytics from "@/components/UserAnalytics";
 import { QuickFavoritesBar } from "@/components/tools/QuickFavorites";
 
+export const revalidate = 1800;
+
 export const metadata: Metadata = {
   title: "তথ্যবক্স — প্রয়োজনীয় সব তথ্য ও ডিজিটাল সেবা এক জায়গায়",
   description:

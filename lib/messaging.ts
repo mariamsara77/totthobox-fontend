@@ -67,10 +67,12 @@ export interface UserSearchResponse {
 }
 
 function normalizeUser(user: ChatUser): ChatUser {
+  if (!user) return user;
   return { ...user, avatar: user.avatar || user.avatar_url || user.profile_photo_url || null };
 }
 
-function normalizeMessage(message: ChatMessage): ChatMessage {
+export function normalizeMessage(message: ChatMessage): ChatMessage {
+  if (!message) return message;
   return {
     ...message,
     sender: message.sender ? normalizeUser(message.sender) : message.sender,
@@ -80,8 +82,9 @@ function normalizeMessage(message: ChatMessage): ChatMessage {
 }
 
 export async function getChatUsers() {
-  const users = await apiFetch<ChatUser[]>("/messages/users");
-  return (Array.isArray(users) ? users : []).map(normalizeUser);
+  const users = await apiFetch<any>("/messages/users");
+  const rawList = Array.isArray(users) ? users : Array.isArray(users?.data) ? users.data : [];
+  return rawList.map(normalizeUser);
 }
 
 export async function searchUsers(search = "") {
@@ -91,13 +94,21 @@ export async function searchUsers(search = "") {
 }
 
 export async function getOnlineUsers() {
-  const users = await apiFetch<ChatUser[]>("/messages/online");
-  return (Array.isArray(users) ? users : []).map(normalizeUser);
+  const users = await apiFetch<any>("/messages/online");
+  const rawList = Array.isArray(users) ? users : Array.isArray(users?.data) ? users.data : [];
+  return rawList.map(normalizeUser);
 }
 
-export async function getMessages(userSlug: string, page = 1, perPage = 30) {
-  const payload = await apiFetch<PaginatedMessages>(`/messages/${encodeURIComponent(userSlug)}?page=${page}&per_page=${perPage}`);
-  return { ...payload, data: Array.isArray(payload.data) ? payload.data.map(normalizeMessage) : [] };
+export async function getMessages(userSlug: string, page = 1, perPage = 30): Promise<PaginatedMessages> {
+  const payload = await apiFetch<any>(`/messages/${encodeURIComponent(userSlug)}?page=${page}&per_page=${perPage}`);
+  const rawList = Array.isArray(payload) ? payload : Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.messages) ? payload.messages : [];
+  return {
+    ...payload,
+    data: rawList.map(normalizeMessage),
+    current_page: payload?.current_page ?? page,
+    last_page: payload?.last_page,
+    next_page_url: payload?.next_page_url,
+  };
 }
 
 export async function sendMessage(userId: number, message: string, attachment?: File | null, parentId?: number | null) {
@@ -106,7 +117,9 @@ export async function sendMessage(userId: number, message: string, attachment?: 
   if (message.trim()) form.append("message", message.trim());
   if (parentId) form.append("parent_id", String(parentId));
   if (attachment) form.append("attachment", attachment);
-  return normalizeMessage(await apiFetch<ChatMessage>("/messages", { method: "POST", body: form }));
+  const res = await apiFetch<any>("/messages", { method: "POST", body: form });
+  const rawMsg = res?.data || res?.message_data || res;
+  return normalizeMessage(rawMsg);
 }
 
 export async function markMessagesAsRead(userSlug: string) {
@@ -114,7 +127,9 @@ export async function markMessagesAsRead(userSlug: string) {
 }
 
 export async function editMessage(messageId: number, message: string) {
-  return normalizeMessage(await apiFetch<ChatMessage>(`/messages/${messageId}`, { method: "PUT", body: JSON.stringify({ message: message.trim() }) }));
+  const res = await apiFetch<any>(`/messages/${messageId}`, { method: "PUT", body: JSON.stringify({ message: message.trim() }) });
+  const rawMsg = res?.data || res?.message || res;
+  return normalizeMessage(rawMsg);
 }
 
 export async function deleteMessage(messageId: number) {
@@ -130,7 +145,7 @@ export async function toggleBlock(userSlug: string) {
 }
 
 export async function getUserProfileBySlug(slug: string) {
-  const response = await apiFetch<UserProfileResponse>(`/users/${encodeURIComponent(slug)}/profile`);
+  const response = await apiFetch<any>(`/users/${encodeURIComponent(slug)}/profile`);
   if (response.data?.profile) response.data.profile = normalizeUser(response.data.profile);
   if (response.profile) response.profile = normalizeUser(response.profile);
   return response;

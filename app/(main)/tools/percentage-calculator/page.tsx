@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import PercentageCalculator from "@/components/tools/PercentageCalculator";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   title: "পার্সেন্টেজ ক্যালকুলেটর — সহজ বাংলায় শতকরা হিসাব | তথ্যবক্স",
   description:

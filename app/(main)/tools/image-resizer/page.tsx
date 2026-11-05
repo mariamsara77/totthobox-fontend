@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import ImageResizer from "@/components/tools/ImageResizer";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   title: "ছবি রিসাইজ, ক্রপ ও সাইজ কমানোর অনলাইন টুল | Image Resizer | তথ্যবক্স",
   description:

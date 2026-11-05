@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import NumberToWordConverter from "./NumberToWordConverter";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/converter/number-to-word" },
   title: "সংখ্যা থেকে শব্দ রূপান্তরকারী | Number to Word Converter Bangla",

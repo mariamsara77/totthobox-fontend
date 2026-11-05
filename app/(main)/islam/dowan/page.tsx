@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import DowaClient from "./dowaClient";
 
+export const revalidate = 1800;
+
 export const metadata: Metadata = {
   title: "দোয়া সংগ্রহ | দৈনন্দিন জীবনের প্রয়োজনীয় দোয়া ও আমল | তথ্যবক্স",
   description:

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import CryptoForexClient from "./CryptoForexClient";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: "লাইভ ক্রিপ্টো ও ফরেক্স রেট কনভার্টার | Live Crypto & Forex Converter",
   description:

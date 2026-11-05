@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import ZodiacCalculator from "@/components/tools/ZodiacCalculator";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   title: "স্মার্ট রাশিফল ক্যালকুলেটর - সঠিক রাশি ও রাশির মিল জানুন | তথ্যবক্স",
   description:

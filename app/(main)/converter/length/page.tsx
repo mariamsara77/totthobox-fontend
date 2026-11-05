@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 // কম্পোনেন্টের সঠিক পাথ দিন
 import LengthConverter from "@/components/converter/LengthConverter";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/converter/length" },
   title: "অনলাইন দৈর্ঘ্য রূপান্তরকারী - মিটার, কিমি, মাইল, ফুট, ইঞ্চি কনভার্টার",

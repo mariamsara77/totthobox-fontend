@@ -23,7 +23,7 @@ export async function fetcher<T>(
     },
     // Next.js ক্যাশিং: API ডাউন থাকলেও সার্ভার ক্যাশ থেকে ডেটা রেন্ডার করবে
     next: {
-      revalidate: revalidate ?? 3600, // ডিফল্ট ১ ঘণ্টা ক্যাশ থাকবে
+      revalidate: revalidate ?? 1800, // ডিফল্ট ৩০ মিনিট ক্যাশ থাকবে
     },
   });
 

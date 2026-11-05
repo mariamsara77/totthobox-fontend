@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import SpeedTestClient from "./SpeedTestClient";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   title: "ইন্টারনেট স্পিড টেস্ট ও পিং চেকার | Live Internet Speed Test",
   description:

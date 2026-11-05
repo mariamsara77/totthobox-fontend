@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import PracticeClient from "@/components/practices/practiceClient";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   title:
     "লেখা প্র্যাকটিস ও ড্রয়িং টুল - হাতের লেখা শেখার সেরা প্ল্যাটফর্ম | তথ্যবক্স",

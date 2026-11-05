@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import DataStorageConverter from "@/components/converter/DataStorageConverter";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/converter/data" },
   title: "অনলাইন ডাটা স্টোরেজ রূপান্তরকারী - MB, GB, TB, PB",

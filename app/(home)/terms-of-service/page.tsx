@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/terms-of-service" },
   title: "ব্যবহারের শর্তাবলি (Terms of Service)",

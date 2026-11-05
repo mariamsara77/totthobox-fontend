@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { cache } from "react";
 
 // Public news content can be served from ISR instead of rendering on every visit.
-export const revalidate = 300;
+export const revalidate = 1800;
 
 // Generate public news routes on first visit, then serve the cached ISR output.
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
@@ -82,7 +82,7 @@ function isoDate(value?: string | null): string | undefined {
 const getNews = cache(async (slug: string): Promise<NewsRecord | null> => {
   try {
     const response = await fetch(`${API_BASE}/api/news/${encodeURIComponent(slug)}`, {
-      next: { revalidate: 300 },
+      next: { revalidate: 1800 },
       headers: { Accept: "application/json" },
     });
     if (response.status === 404 || !response.ok) return null;
@@ -101,7 +101,7 @@ const getNewsSource = cache(async (sourceKey: string): Promise<NewsSource | null
 
   for (const endpoint of endpoints) {
     try {
-      const response = await fetch(endpoint, { next: { revalidate: 300 }, headers: { Accept: "application/json" } });
+      const response = await fetch(endpoint, { next: { revalidate: 1800 }, headers: { Accept: "application/json" } });
       if (!response.ok) continue;
       const result = await response.json();
       const data = result?.data ?? result;

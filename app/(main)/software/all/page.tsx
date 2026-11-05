@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import SoftwareClient from "./SoftwareClient";
 
+export const revalidate = 1800;
+
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
 async function getInitialData() {
   try {
     const response = await fetch(`${API_BASE}/api/apps?page=1&per_page=12`, {
-      next: { revalidate: 3600, tags: ["software-list"] },
+      next: { revalidate: 1800, tags: ["software-list"] },
     });
     if (!response.ok) return null;
     return response.json();

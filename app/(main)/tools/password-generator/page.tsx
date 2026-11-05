@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import PasswordGeneratorClient from "./PasswordGeneratorClient";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   title: "নিরাপদ পাসওয়ার্ড ও হ্যাশ জেনারেটর | Strong Password & Hash Generator",
   description:

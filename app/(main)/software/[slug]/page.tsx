@@ -8,6 +8,8 @@ import InteractiveActions from "./InteractiveActions";
 import CreatorsTooltip from "./CreatorsTooltip";
 import DownloadButton from "./DownloadButton";
 
+export const revalidate = 1800;
+
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
@@ -17,7 +19,7 @@ async function getAppData(slug: string) {
       `${API_BASE_URL}/api/apps/${encodeURIComponent(slug)}`,
       {
         next: {
-          revalidate: 3600,
+          revalidate: 1800,
         },
       },
     );
@@ -48,7 +50,7 @@ async function getAppCreators(appId: number) {
       `${API_BASE_URL}/api/apps/${appId}/creators`,
       {
         next: {
-          revalidate: 3600,
+          revalidate: 1800,
         },
       },
     );

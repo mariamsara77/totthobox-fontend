@@ -96,6 +96,8 @@ export async function GET() {
       {
         headers: {
           "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+          "CDN-Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+          "Cloudflare-CDN-Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
         },
       }
     );
@@ -111,6 +113,8 @@ export async function GET() {
       {
         headers: {
           "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+          "CDN-Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+          "Cloudflare-CDN-Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
         },
       }
     );

@@ -1,7 +1,10 @@
 import type { Metadata } from 'next';
+import { cache } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+
+export const revalidate = 1800;
 
 interface ContentItem {
     type_label: string;
@@ -36,11 +39,11 @@ interface UserProfileData {
     };
 }
 
-async function getProfileData(slug: string): Promise<UserProfileData | null> {
+const getProfileData = cache(async function getProfileData(slug: string): Promise<UserProfileData | null> {
     try {
         const url = `${process.env.NEXT_PUBLIC_API_BASE_URL || 'https://admin.totthobox.com'}/api/users/${slug}/profile`;
 
-        const res = await fetch(url, { cache: 'no-store' });
+        const res = await fetch(url, { next: { revalidate: 1800 } });
         console.log('Status:', res.status);      // ← status দেখুন
 
         if (!res.ok) {
@@ -56,7 +59,7 @@ async function getProfileData(slug: string): Promise<UserProfileData | null> {
         console.error('Fetch error:', error);
         return null;
     }
-}
+});
 
 const SITE_URL = "https://totthobox.com";
 const FALLBACK_SOCIAL_IMAGE = `${SITE_URL}/og-image.png`;

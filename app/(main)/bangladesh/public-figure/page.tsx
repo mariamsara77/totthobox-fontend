@@ -8,7 +8,7 @@ async function getInitialData() {
   try {
     const response = await fetch(
       `${API_BASE}/api/people?page=1&per_page=10`,
-      { next: { revalidate: 3600, tags: ["people-list"] } },
+      { next: { revalidate: 1800, tags: ["people-list"] } },
     );
     if (!response.ok) return null;
     return response.json();
@@ -17,6 +17,8 @@ async function getInitialData() {
     return null;
   }
 }
+
+export const revalidate = 1800;
 
 export const metadata: Metadata = {
   title: "প্রোফাইল আর্কাইভ: বিশিষ্ট ব্যক্তিবর্গের জীবনী ও কর্মজীবন | তথ্যবক্স",

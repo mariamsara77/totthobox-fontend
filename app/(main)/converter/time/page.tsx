@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import TimeConverter from "@/components/converter/TimeConverter";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/converter/time" },
   title: "অনলাইন সময় রূপান্তরকারী - সেকেন্ড, মিনিট, ঘণ্টা, দিন",

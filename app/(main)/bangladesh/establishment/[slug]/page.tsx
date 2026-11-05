@@ -5,6 +5,8 @@ import { cache } from "react";
 import EstablishmentShowClient from "./EstablishmentShowClient";
 import type { Establishment } from "@/types/establishment";
 
+export const revalidate = 1800;
+
 type Props = {
   params: Promise<{
     slug: string;
@@ -104,7 +106,7 @@ const getEstablishment = cache(
         `${API_BASE_URL}/api/establishment-bd/${encodeURIComponent(slug)}`,
         {
           next: {
-            revalidate: 300,
+            revalidate: 1800,
             tags: [`establishment:${slug}`],
           },
         },

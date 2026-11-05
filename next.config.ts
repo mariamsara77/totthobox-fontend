@@ -106,19 +106,27 @@ const nextConfig: NextConfig = {
         ],
       })),
 
-      // Public routes only. Vercel can serve a fresh cached representation
+      // Public routes only. Cloudflare Edge / Vercel can serve a fresh cached representation
       // while revalidating stale content in the background.
       ...publicPageSources.map((source) => ({
         source,
         headers: [
           {
+            key: "Cache-Control",
+            value: "public, s-maxage=3600, stale-while-revalidate=86400",
+          },
+          {
             key: "CDN-Cache-Control",
+            value: "public, s-maxage=3600, stale-while-revalidate=86400",
+          },
+          {
+            key: "Cloudflare-CDN-Cache-Control",
             value: "public, s-maxage=3600, stale-while-revalidate=86400",
           },
         ],
       })),
 
-      // News has a shorter freshness window than stable informational pages.
+      // News headline pages: 30 minutes (1800s) fresh window with 24-hour background revalidation.
       ...[
         "/news/headlines",
         "/news/headlines/:slug",
@@ -127,8 +135,16 @@ const nextConfig: NextConfig = {
         source,
         headers: [
           {
+            key: "Cache-Control",
+            value: "public, s-maxage=1800, stale-while-revalidate=86400",
+          },
+          {
             key: "CDN-Cache-Control",
-            value: "public, s-maxage=300, stale-while-revalidate=600",
+            value: "public, s-maxage=1800, stale-while-revalidate=86400",
+          },
+          {
+            key: "Cloudflare-CDN-Cache-Control",
+            value: "public, s-maxage=1800, stale-while-revalidate=86400",
           },
         ],
       })),
@@ -136,16 +152,132 @@ const nextConfig: NextConfig = {
         source: "/sitemap.xml",
         headers: [
           {
+            key: "Cache-Control",
+            value: "public, s-maxage=86400, stale-while-revalidate=43200",
+          },
+          {
             key: "CDN-Cache-Control",
-            value: "public, s-maxage=3600, stale-while-revalidate=86400",
+            value: "public, s-maxage=86400, stale-while-revalidate=43200",
+          },
+          {
+            key: "Cloudflare-CDN-Cache-Control",
+            value: "public, s-maxage=86400, stale-while-revalidate=43200",
+          },
+        ],
+      },
+      {
+        source: "/robots.txt",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, s-maxage=86400, stale-while-revalidate=43200",
+          },
+          {
+            key: "CDN-Cache-Control",
+            value: "public, s-maxage=86400, stale-while-revalidate=43200",
+          },
+          {
+            key: "Cloudflare-CDN-Cache-Control",
+            value: "public, s-maxage=86400, stale-while-revalidate=43200",
+          },
+        ],
+      },
+      {
+        source: "/ads.txt",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=86400, s-maxage=86400, stale-while-revalidate=43200",
+          },
+          {
+            key: "CDN-Cache-Control",
+            value: "public, s-maxage=86400, stale-while-revalidate=43200",
+          },
+          {
+            key: "Cloudflare-CDN-Cache-Control",
+            value: "public, s-maxage=86400, stale-while-revalidate=43200",
           },
         ],
       },
 
-      // Private pages and APIs must never be shared-cached.
+      // Cacheable Public API routes - edge cached with stale-while-revalidate
+      {
+        source: "/api/search",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, s-maxage=1800, stale-while-revalidate=86400",
+          },
+          {
+            key: "CDN-Cache-Control",
+            value: "public, s-maxage=1800, stale-while-revalidate=86400",
+          },
+          {
+            key: "Cloudflare-CDN-Cache-Control",
+            value: "public, s-maxage=1800, stale-while-revalidate=86400",
+          },
+        ],
+      },
+      {
+        source: "/api/search/meta",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, s-maxage=1800, stale-while-revalidate=86400",
+          },
+          {
+            key: "CDN-Cache-Control",
+            value: "public, s-maxage=1800, stale-while-revalidate=86400",
+          },
+          {
+            key: "Cloudflare-CDN-Cache-Control",
+            value: "public, s-maxage=1800, stale-while-revalidate=86400",
+          },
+        ],
+      },
+      {
+        source: "/api/international/countries",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, s-maxage=86400, stale-while-revalidate=604800",
+          },
+          {
+            key: "CDN-Cache-Control",
+            value: "public, s-maxage=86400, stale-while-revalidate=604800",
+          },
+          {
+            key: "Cloudflare-CDN-Cache-Control",
+            value: "public, s-maxage=86400, stale-while-revalidate=604800",
+          },
+        ],
+      },
+      {
+        source: "/api/crypto-forex",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, s-maxage=60, stale-while-revalidate=300",
+          },
+          {
+            key: "CDN-Cache-Control",
+            value: "public, s-maxage=60, stale-while-revalidate=300",
+          },
+          {
+            key: "Cloudflare-CDN-Cache-Control",
+            value: "public, s-maxage=60, stale-while-revalidate=300",
+          },
+        ],
+      },
+
+      // Private pages and authenticated APIs must never be shared-cached.
       ...[
-        "/api/:path*",
         "/api/auth/:path*",
+        "/api/backend/:path*",
+        "/api/broadcasting/:path*",
+        "/api/notifications/:path*",
+        "/api/tracking/:path*",
+        "/api/geo",
         "/auth/:path*",
         "/login",
         "/register",
@@ -172,6 +304,7 @@ const nextConfig: NextConfig = {
           },
           { key: "CDN-Cache-Control", value: "no-store" },
           { key: "Vercel-CDN-Cache-Control", value: "no-store" },
+          { key: "Cloudflare-CDN-Cache-Control", value: "no-store" },
         ],
       })),
     ];

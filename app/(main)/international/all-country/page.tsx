@@ -4,12 +4,15 @@ import { CountryGrid } from "@/components/international/CountryGrid";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
 
 import {
+
   getAllCountries,
   getCountryPage,
   getCountryRegions,
   getCountryStats,
   type CountrySort,
 } from "@/lib/international/countries";
+
+export const revalidate = 86400;
 
 type SearchParams = {
   search?: string;

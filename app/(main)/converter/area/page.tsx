@@ -3,6 +3,8 @@ export const dynamic = 'force-dynamic';
 import type { Metadata } from "next";
 import AreaConverter from "@/components/converter/AreaConverter";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/converter/area" },
   title: "অনলাইন ক্ষেত্রফল রূপান্তরকারী - Square Meter, Foot, Acre, Hectare",

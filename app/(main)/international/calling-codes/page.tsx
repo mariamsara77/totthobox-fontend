@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import CallingCodesClient from "./CallingCodesClient";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   title: "আন্তর্জাতিক ডায়ালিং কোড ডিরেক্টরি | International Calling Codes",
   description:

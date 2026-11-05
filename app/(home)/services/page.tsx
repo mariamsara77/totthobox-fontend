@@ -3,6 +3,7 @@ import { QuickFavoritesBar } from "@/components/tools/QuickFavorites";
 import Link from "next/link";
 import { Metadata } from "next";
 import {
+
   CalendarDays,
   ArrowRightLeft,
   Wrench,
@@ -15,6 +16,8 @@ import {
   TriangleAlert,
   Sparkles,
 } from "lucide-react";
+
+export const revalidate = 86400;
 
 // SEO Metadata
 export const metadata: Metadata = {

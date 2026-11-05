@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import VolumeConverter from "@/components/converter/VolumeConverter";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/converter/volume" },
   title: "অনলাইন আয়তন রূপান্তরকারী - লিটার, CFT, CC, গ্যালন কনভার্টার",

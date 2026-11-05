@@ -8,7 +8,7 @@ async function getInitialData() {
   try {
     const response = await fetch(
       `${API_BASE}/api/establishment-bd?page=1&per_page=10`,
-      { next: { revalidate: 3600, tags: ["establishment-bd-list"] } },
+      { next: { revalidate: 1800, tags: ["establishment-bd-list"] } },
     );
     if (!response.ok) return null;
     return response.json();
@@ -17,6 +17,8 @@ async function getInitialData() {
     return null;
   }
 }
+
+export const revalidate = 1800;
 
 export const metadata: Metadata = {
   title: "বাংলাদেশের সকল গুরুত্বপূর্ণ স্থাপনা ও প্রতিষ্ঠান | তথ্যবক্স",

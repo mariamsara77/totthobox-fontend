@@ -108,7 +108,7 @@ export default function NewsHeadlines({
     const controller = new AbortController();
     fetch(`${API_BASE}/api/news/sources`, {
       signal: controller.signal,
-      cache: "no-store",
+      cache: "default",
     })
       .then(async (res) => {
         if (!res.ok) throw new Error("সংবাদমাধ্যমের তালিকা লোড করা যায়নি।");
@@ -164,7 +164,7 @@ export default function NewsHeadlines({
 
     fetch(`${API_BASE}/api/news?${params.toString()}`, {
       signal: controller.signal,
-      cache: "no-store",
+      cache: "default",
       headers: { Accept: "application/json" },
     })
       .then(async (res) => {

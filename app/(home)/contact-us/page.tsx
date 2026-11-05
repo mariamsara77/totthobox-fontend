@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import ContactClient from "./ContactClient";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/contact-us" },
   title: "যোগাযোগ করুন (Contact Us)",

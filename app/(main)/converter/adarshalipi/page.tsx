@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import AdorshoLipiConverter from "./AdorshoLipiConverter";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/converter/adarshalipi" },
   title: "উভয়মুখী আদর্শলিপি কনভার্টার - ইউনিকোড ⇄ ANSI",

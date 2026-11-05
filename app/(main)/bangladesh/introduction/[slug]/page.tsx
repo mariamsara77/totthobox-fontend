@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
+import { cache } from "react";
 import { notFound } from "next/navigation";
 import IntroductionShowClient from "./IntroductionShowClient";
+
+export const revalidate = 1800;
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -15,20 +18,20 @@ type IntroMeta = {
   image_url?: string;
 };
 
-async function getIntro(slug: string): Promise<IntroMeta | null> {
+const getIntro = cache(async function getIntro(slug: string): Promise<IntroMeta | null> {
   const base =
     process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
   const res = await fetch(
     `${base}/api/intro-bd/${encodeURIComponent(slug)}`,
-    { next: { revalidate: 3600 } },
+    { next: { revalidate: 1800 } },
   );
 
   if (!res.ok) return null;
 
   const json = await res.json();
   return json?.data ?? null;
-}
+});
 
 function getPlainText(value?: string): string {
   return (value || "")

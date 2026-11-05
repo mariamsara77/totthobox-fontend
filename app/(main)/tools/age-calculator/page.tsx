@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import AgeCalculator from "@/components/tools/AgeCalculator";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   title: "স্মার্ট এজ ক্যালকুলেটর - সঠিক বয়স ও বয়সের পার্থক্য হিসাব | তথ্যবক্স",
   description:

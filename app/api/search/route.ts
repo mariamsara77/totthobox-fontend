@@ -2,6 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 
 const BACKEND_URL = process.env.BACKEND_URL || "https://admin.totthobox.com";
 
+export const revalidate = 1800;
+
+const CACHE_HEADERS = {
+  "Cache-Control": "public, s-maxage=1800, stale-while-revalidate=86400",
+  "CDN-Cache-Control": "public, s-maxage=1800, stale-while-revalidate=86400",
+  "Cloudflare-CDN-Cache-Control": "public, s-maxage=1800, stale-while-revalidate=86400",
+};
+
 export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams.get("q")?.trim() || "";
   const limit = Math.min(
@@ -10,12 +18,15 @@ export async function GET(req: NextRequest) {
   );
 
   if (q.length < 2) {
-    return NextResponse.json({
-      items: [],
-      scope: null,
-      hasMore: false,
-      total: 0,
-    });
+    return NextResponse.json(
+      {
+        items: [],
+        scope: null,
+        hasMore: false,
+        total: 0,
+      },
+      { headers: CACHE_HEADERS },
+    );
   }
 
   try {
@@ -23,7 +34,7 @@ export async function GET(req: NextRequest) {
       `${BACKEND_URL}/api/search?q=${encodeURIComponent(q)}&limit=${limit}`,
       {
         headers: { Accept: "application/json" },
-        next: { revalidate: 0 },
+        next: { revalidate: 1800 },
       },
     );
 
@@ -33,12 +44,15 @@ export async function GET(req: NextRequest) {
 
     const data = await res.json();
 
-    return NextResponse.json({
-      items: Array.isArray(data.items) ? data.items : [],
-      scope: data.scope ?? null,
-      hasMore: Boolean(data.hasMore),
-      total: Number(data.total) || 0,
-    });
+    return NextResponse.json(
+      {
+        items: Array.isArray(data.items) ? data.items : [],
+        scope: data.scope ?? null,
+        hasMore: Boolean(data.hasMore),
+        total: Number(data.total) || 0,
+      },
+      { headers: CACHE_HEADERS },
+    );
   } catch (err) {
     console.error("[search/route]", err);
     return NextResponse.json(

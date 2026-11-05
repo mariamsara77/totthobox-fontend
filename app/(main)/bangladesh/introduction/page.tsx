@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import IntroductionClient from "./IntroductionClient";
 
+export const revalidate = 1800;
+
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
 async function getInitialData() {
   try {
     const response = await fetch(`${API_BASE}/api/intro-bd`, {
-      next: { revalidate: 3600, tags: ["introduction-list"] },
+      next: { revalidate: 1800, tags: ["introduction-list"] },
     });
     if (!response.ok) return null;
     return response.json();

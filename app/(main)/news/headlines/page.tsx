@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import NewsHeadlines from "@/components/news/NewsHeadlines";
 
+export const revalidate = 1800;
+
 export const metadata: Metadata = {
   title: "সংবাদ শিরোনাম",
   description: "বাংলা ও ইংরেজি সংবাদমাধ্যমের সর্বশেষ শিরোনাম এক জায়গায় দেখুন।",

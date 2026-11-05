@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import VelocityConverter from "@/components/converter/VelocityConverter";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/converter/speed" },
   title: "অনলাইন গতিবেগ রূপান্তরকারী - m/s, km/h, mph, Knots",

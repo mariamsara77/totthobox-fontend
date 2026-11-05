@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
+import { cache } from "react";
 import { notFound } from "next/navigation";
 import DowaShowClient from "./dowaShowClient";
 
-async function getItem(slug: string) {
+export const revalidate = 1800;
+
+const getItem = cache(async function getItem(slug: string) {
   const baseUrl =
     process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
   if (!baseUrl) return null;
@@ -10,7 +13,7 @@ async function getItem(slug: string) {
   try {
     const res = await fetch(`${baseUrl}/api/islam/dowan/${slug}`, {
       headers: { Accept: "application/json" },
-      next: { revalidate: 3600 },
+      next: { revalidate: 1800 },
     });
     if (!res.ok) return null;
 
@@ -22,7 +25,7 @@ async function getItem(slug: string) {
   } catch {
     return null;
   }
-}
+});
 
 export async function generateMetadata({
   params,

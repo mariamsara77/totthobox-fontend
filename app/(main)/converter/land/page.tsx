@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import LandAreaConverter from "@/components/converter/LandAreaConverter";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/converter/land" },
   title: "জমি পরিমাপ ক্যালকুলেটর - শতাংশ, কাঠা, বিঘা কনভার্টার",

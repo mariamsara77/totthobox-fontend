@@ -1,4 +1,7 @@
 import { Metadata } from "next";
+import { cache } from "react";
+
+export const revalidate = 1800;
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -10,10 +13,10 @@ import MediaGallery from "@/components/MediaGallery";
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
-async function getHolidayData(slug: string) {
+const getHolidayData = cache(async function getHolidayData(slug: string) {
   try {
     const res = await fetch(`${API_BASE_URL}/api/holidays/${slug}`, {
-      next: { revalidate: 3600 }, // ১ ঘণ্টা ক্যাশ
+      next: { revalidate: 1800 },
     });
 
     if (!res.ok) return null;
@@ -31,7 +34,7 @@ async function getHolidayData(slug: string) {
     console.error("Error fetching holiday:", error);
     return null;
   }
-}
+});
 
 export async function generateMetadata({
   params,

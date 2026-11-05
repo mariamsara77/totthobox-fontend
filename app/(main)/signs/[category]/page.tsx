@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import SignListClient from "./signListClient";
 
+export const revalidate = 1800;
+
 type Props = { params: Promise<{ category: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

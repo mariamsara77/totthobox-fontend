@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import QRGenerator from "@/components/tools/QRGenerator";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   title:
     "QR কোড জেনারেটর — ফ্রি অ্যাডভান্সড অনলাইন QR Code Generator | তথ্যবক্স",

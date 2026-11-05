@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import BasicIslamClient from "./basicislamClient";
 
+export const revalidate = 1800;
+
 export const metadata: Metadata = {
   title: "ইসলামের মৌলিক জ্ঞান | ঈমান, নামাজ, যাকাত, হজ, রোজা | তথ্যবক্স",
   description:

@@ -1,3 +1,5 @@
+import { getEcho } from "@/lib/echo";
+
 export class ApiError extends Error {
   status: number;
   errors?: Record<string, string[]>;
@@ -14,12 +16,22 @@ export async function apiFetch<T = any>(path: string, init: RequestInit = {}): P
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
   const isFormData = init.body instanceof FormData;
 
+  const extraHeaders: Record<string, string> = {};
+  try {
+    const echo = getEcho();
+    const socketId = echo?.socketId();
+    if (socketId) {
+      extraHeaders["X-Socket-ID"] = socketId;
+    }
+  } catch {}
+
   const res = await fetch(`/api/backend${normalizedPath}`, {
     cache: "no-store",
     ...init,
     headers: {
       Accept: "application/json",
       ...(isFormData ? {} : { "Content-Type": "application/json" }),
+      ...extraHeaders,
       ...init.headers,
     },
   });

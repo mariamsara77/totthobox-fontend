@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
+import { cache } from "react";
 import { notFound } from "next/navigation";
 import TourismShowClient from "./TourismShowClient";
+
+export const revalidate = 1800;
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -15,7 +18,7 @@ type TourismMeta = {
   image_url?: string;
 };
 
-async function getTourism(slug: string): Promise<TourismMeta | null> {
+const getTourism = cache(async function getTourism(slug: string): Promise<TourismMeta | null> {
   const base =
     process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
@@ -23,7 +26,7 @@ async function getTourism(slug: string): Promise<TourismMeta | null> {
     `${base}/api/tourism-bd/${encodeURIComponent(slug)}`,
     {
       next: {
-        revalidate: 3600,
+        revalidate: 1800,
         tags: [`tourism:${slug}`],
       },
     },
@@ -33,7 +36,7 @@ async function getTourism(slug: string): Promise<TourismMeta | null> {
 
   const json = await res.json();
   return json?.data ?? null;
-}
+});
 
 function getPlainText(value?: string): string {
   return (value || "")

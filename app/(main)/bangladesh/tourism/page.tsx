@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import TourismClient from "./TourismClient";
 
+export const revalidate = 1800;
+
 export const metadata: Metadata = {
   title: "বাংলাদেশের সকল পর্যটন কেন্দ্র ও ভ্রমণ গাইড | তথ্যবক্স",
   description:
@@ -62,7 +64,7 @@ async function getInitialTourism(): Promise<TourismPageResponse> {
     const params = new URLSearchParams({ page: "1", per_page: "12" });
     const response = await fetch(
       API_BASE + "/api/tourism-bd?" + params.toString(),
-      { next: { revalidate: 3600, tags: ["tourism-list"] } },
+      { next: { revalidate: 1800, tags: ["tourism-list"] } },
     );
     if (!response.ok) return EMPTY_TOURISM;
     return response.json();

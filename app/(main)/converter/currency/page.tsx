@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import CurrencyConverter from "@/components/converter/CurrencyConverter";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/converter/currency" },
   title: "লাইভ কারেন্সি কনভার্টার - টাকার সর্বশেষ রেট জানুন",

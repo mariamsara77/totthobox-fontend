@@ -82,6 +82,8 @@ async function handleRequest(request: NextRequest) {
       status: 200,
       headers: {
         "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=604800",
+        "CDN-Cache-Control": "public, s-maxage=86400, stale-while-revalidate=604800",
+        "Cloudflare-CDN-Cache-Control": "public, s-maxage=86400, stale-while-revalidate=604800",
         "X-Content-Type-Options": "nosniff",
         Vary: "Accept",
       },
@@ -120,6 +122,8 @@ export async function HEAD() {
     headers: {
       Allow: "GET, POST, HEAD, OPTIONS",
       "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=604800",
+      "CDN-Cache-Control": "public, s-maxage=86400, stale-while-revalidate=604800",
+      "Cloudflare-CDN-Cache-Control": "public, s-maxage=86400, stale-while-revalidate=604800",
     },
   });
 }

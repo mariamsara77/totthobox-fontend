@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
+
   ShieldAlert,
   Calculator,
   PhoneCall,
@@ -12,6 +13,8 @@ import {
   Mail,
   ExternalLink,
 } from "lucide-react";
+
+export const revalidate = 86400;
 
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/disclaimer" },

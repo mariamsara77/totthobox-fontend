@@ -8,7 +8,7 @@ async function getInitialData() {
   try {
     const response = await fetch(
       `${API_BASE}/api/history-bd?page=1&per_page=10`,
-      { next: { revalidate: 3600, tags: ["history-bd-list"] } },
+      { next: { revalidate: 1800, tags: ["history-bd-list"] } },
     );
     if (!response.ok) return null;
     return response.json();

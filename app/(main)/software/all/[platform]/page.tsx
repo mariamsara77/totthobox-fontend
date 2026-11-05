@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import SoftwareClient from "../SoftwareClient";
 
+export const revalidate = 1800;
+
 type Props = {
   params: Promise<{
     platform: string;
@@ -21,7 +23,7 @@ async function getPlatformTotal(platform: string): Promise<number | null> {
       `${baseUrl}/api/apps?platform=${encodeURIComponent(platform)}&per_page=1&page=1`,
       {
         next: {
-          revalidate: 3600,
+          revalidate: 1800,
         },
       },
     );
@@ -99,7 +101,7 @@ async function getInitialData(platform: string) {
     const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
     const response = await fetch(
       `${baseUrl}/api/apps?platform=${encodeURIComponent(platform)}&page=1&per_page=12`,
-      { next: { revalidate: 3600, tags: [`software:${platform}`] } },
+      { next: { revalidate: 1800, tags: [`software:${platform}`] } },
     );
     if (!response.ok) return null;
     return response.json();

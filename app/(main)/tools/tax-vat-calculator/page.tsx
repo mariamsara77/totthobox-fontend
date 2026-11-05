@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import TaxVatClient from "./TaxVatClient";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   title: "বাংলাদেশ আয়কর ও ভ্যাট ক্যালকুলেটর (NBR Tax & VAT) | তথ্যবক্স",
   description:

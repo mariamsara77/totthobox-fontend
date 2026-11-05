@@ -1,3 +1,5 @@
+import { cache } from "react";
+
 export type Currency = { code: string; name: string; symbol: string };
 
 export type Neighbor = {
@@ -166,7 +168,7 @@ export function generateFaqs(c: Country) {
   return faqs;
 }
 
-export async function getAllCountries(): Promise<Country[]> {
+export const getAllCountries = cache(async function getAllCountries(): Promise<Country[]> {
   try {
     const [mainRes, popRes, contRes] = await Promise.all([
       fetch('https://raw.githubusercontent.com/mledoze/countries/master/dist/countries.json', {
@@ -325,9 +327,9 @@ export async function getAllCountries(): Promise<Country[]> {
   } catch {
     return [];
   }
-}
+});
 
-export async function getCountry(slug: string) {
+export const getCountry = cache(async function getCountry(slug: string) {
   const all = await getAllCountries();
   const found = all.find((c) => c.slug === slug);
 
@@ -356,4 +358,4 @@ export async function getCountry(slug: string) {
     }));
 
   return { country: found, neighbors, popular: [] };
-}
+});

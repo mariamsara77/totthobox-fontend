@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import EnergyConverter from "@/components/converter/EnergyConverter";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/converter/energy" },
   title: "অনলাইন এনার্জি রূপান্তরকারী - Joule, Calorie, kWh",

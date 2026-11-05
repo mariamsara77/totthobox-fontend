@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import ImageConverter from "@/components/tools/AdvancedImageConverter";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   title: "Free Online Image Converter | JPG, PNG, WEBP, SVG, GIF, AVIF, BMP, ICO",
   description:

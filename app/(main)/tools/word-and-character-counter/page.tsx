@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import WordCounter from "@/components/tools/WordCounter";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   title:
     "ওয়ার্ড অ্যান্ড ক্যারেক্টার কাউন্টার - শব্দ, অক্ষর ও লাইন হিসাব | তথ্যবক্স",

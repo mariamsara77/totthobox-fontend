@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
+import { cache } from "react";
 import { notFound } from "next/navigation";
 import SignShowClient from "./signShowClient";
+
+export const revalidate = 1800;
 
 type Props = {
   params: Promise<{ category: string; sign: string }>;
 };
 
-async function getItem(category: string, sign: string) {
+const getItem = cache(async function getItem(category: string, sign: string) {
   const baseUrl =
     process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
   if (!baseUrl) return null;
@@ -14,7 +17,7 @@ async function getItem(category: string, sign: string) {
   try {
     const res = await fetch(`${baseUrl}/api/signs/${category}/${sign}`, {
       headers: { Accept: "application/json" },
-      next: { revalidate: 3600 },
+      next: { revalidate: 1800 },
     });
     if (!res.ok) return null;
     const json = await res.json();
@@ -22,7 +25,7 @@ async function getItem(category: string, sign: string) {
   } catch {
     return null;
   }
-}
+});
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category, sign } = await params;
