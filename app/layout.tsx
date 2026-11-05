@@ -160,7 +160,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       </head>
       <body
         suppressHydrationWarning
-        className="antialiased bg-white dark:bg-zinc-800"
+        className="antialiased bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
       >
         <noscript>
           <iframe

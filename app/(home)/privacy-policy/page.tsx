@@ -17,17 +17,26 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: "গোপনীয়তা নীতি | Totthobox",
-    description: "Totthobox-এর গোপনীয়তা নীতি, কুকিজ, ব্যক্তিগত তথ্যের ব্যবহার এবং তথ্য সুরক্ষা সম্পর্কে জানুন।",
+    description:
+      "Totthobox-এর গোপনীয়তা নীতি, কুকিজ, ব্যক্তিগত তথ্যের ব্যবহার এবং তথ্য সুরক্ষা সম্পর্কে জানুন।",
     url: "https://totthobox.com/privacy-policy",
     siteName: "Totthobox",
     type: "website",
     locale: "bn_BD",
-    images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
+    images: [
+      {
+        url: "https://totthobox.com/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Totthobox",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "গোপনীয়তা নীতি | Totthobox",
-    description: "Totthobox-এর গোপনীয়তা নীতি, কুকিজ, ব্যক্তিগত তথ্যের ব্যবহার এবং তথ্য সুরক্ষা সম্পর্কে জানুন।",
+    description:
+      "Totthobox-এর গোপনীয়তা নীতি, কুকিজ, ব্যক্তিগত তথ্যের ব্যবহার এবং তথ্য সুরক্ষা সম্পর্কে জানুন।",
     images: [{ url: "https://totthobox.com/og-image.png", alt: "Totthobox" }],
   },
 };
@@ -41,7 +50,7 @@ export default function PrivacyPolicyPage() {
 
   return (
     <section>
-      <div className="max-w-2xl mx-auto space-y-4 py-6">
+      <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12 space-y-8">
         {/* Header */}
         <div className="text-center mb-16">
           <h1 className="text-3xl font-bold mb-4">

@@ -38,7 +38,7 @@ export default function TermsPage() {
 
   return (
     <section>
-      <div className="max-w-2xl mx-auto space-y-8 py-6">
+      <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12 space-y-8">
         {/* Header */}
         <div className="text-center space-y-4">
           <h1 className="text-3xl font-bold">ব্যবহারের শর্তাবলি</h1>

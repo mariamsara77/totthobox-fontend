@@ -111,7 +111,7 @@ export default function ContactClient() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-10 px-4 py-8">
+    <div className="max-w-3xl mx-auto space-y-10 px-4 py-8 sm:py-12">
       {/* Header */}
       <header className="text-center space-y-3">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight">

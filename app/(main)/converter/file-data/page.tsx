@@ -34,7 +34,7 @@ export const metadata: Metadata = {
 
 export default function DataConverterPage() {
   return (
-      <div className="mx-auto max-w-2xl p-4">
+      <div className="max-w-2xl mx-auto px-4 py-6 sm:py-8">
         <DataConverter />
       </div>
   );

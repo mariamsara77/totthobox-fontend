@@ -141,7 +141,7 @@ export default function AboutUsClient() {
   }, []);
 
   return (
-    <div className="max-w-3xl mx-auto space-y-14 px-4 py-8">
+    <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12 space-y-12">
       {/* Hero */}
       <header className="text-center space-y-5">
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">

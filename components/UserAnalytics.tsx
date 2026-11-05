@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 
 const FALLBACK_TOTAL_USERS = "113.29k";
-const ANALYTICS_URL =
-  "https://admin.totthobox.com/api/analytics/user-count";
+const ANALYTICS_URL = "https://admin.totthobox.com/api/analytics/user-count";
 
 type AnalyticsResponse = {
   status?: unknown;
@@ -67,7 +66,6 @@ export default function UserAnalytics() {
         <p className="text-sm">
           প্ল্যাটফর্মটি ব্যবহার করেছেন{" "}
           <span className="text-base font-semibold">{totalUsers}+</span>{" "}
-          জন মানুষ
         </p>
       </div>
     </div>
