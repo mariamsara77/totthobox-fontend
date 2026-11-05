@@ -616,30 +616,45 @@ export default function ModernChatApp({ targetSlug }: { targetSlug?: string }) {
     };
   }, [me?.id]);
 
-  // Polling fallback every 10s when tab is visible
+  // Polling fallback every 30s when tab is visible
   useEffect(() => {
     if (!selected) return;
-    const interval = setInterval(() => {
-      if (typeof document !== "undefined" && document.visibilityState === "visible") {
-        const slug = selected.slug || String(selected.id);
-        getMessages(slug, 1, 30)
-          .then((data) => {
-            if (data.data?.length) {
-              setMessages((prev) => {
-                const existingIds = new Set(prev.map((m) => m.id));
-                const newItems = data.data.filter((m) => !existingIds.has(m.id));
-                if (newItems.length > 0) {
-                  return [...prev, ...newItems.reverse()];
-                }
-                return prev;
-              });
-            }
-          })
-          .catch(() => undefined);
-      }
-    }, 10000);
 
-    return () => clearInterval(interval);
+    const pollMessages = () => {
+      if (typeof document !== "undefined" && document.visibilityState !== "visible") {
+        return;
+      }
+      const slug = selected.slug || String(selected.id);
+      getMessages(slug, 1, 30)
+        .then((data) => {
+          if (data.data?.length) {
+            setMessages((prev) => {
+              const existingIds = new Set(prev.map((m) => m.id));
+              const newItems = data.data.filter((m) => !existingIds.has(m.id));
+              if (newItems.length > 0) {
+                return [...prev, ...newItems.reverse()];
+              }
+              return prev;
+            });
+          }
+        })
+        .catch(() => undefined);
+    };
+
+    const interval = setInterval(pollMessages, 30000);
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        pollMessages();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, [selected?.id, selected?.slug]);
 
   // draft change → typing whisper (throttled)

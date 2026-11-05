@@ -64,11 +64,19 @@ export async function apiFetch<T = any>(path: string, init: RequestInit = {}): P
 
   const fullUrl = `${baseUrl}/api/backend${normalizedPath}`;
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+  if (init.signal) {
+    init.signal.addEventListener("abort", () => controller.abort(), { once: true });
+  }
+
   try {
     const res = await fetch(fullUrl, {
       cache: "no-store",
       ...init,
       headers: cleanHeaders,
+      signal: controller.signal,
     });
 
     const contentType = res.headers.get("content-type") || "";
@@ -93,5 +101,7 @@ export async function apiFetch<T = any>(path: string, init: RequestInit = {}): P
   } catch (error) {
     console.warn("apiFetch edge network error:", error);
     return { success: false, data: [] } as T;
+  } finally {
+    clearTimeout(timeoutId);
   }
 }

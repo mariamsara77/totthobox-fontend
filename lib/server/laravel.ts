@@ -12,10 +12,11 @@ function getApiUrl(): string {
 interface LaravelFetchInit extends Omit<RequestInit, "headers"> {
   token?: string | null;
   headers?: Record<string, string | undefined | null>;
+  timeoutMs?: number;
 }
 
 export async function laravelFetch(path: string, init: LaravelFetchInit = {}): Promise<Response> {
-  const { token, headers, ...rest } = init;
+  const { token, headers, timeoutMs = 9000, ...rest } = init;
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
   const isFormData = rest.body instanceof FormData;
 
@@ -39,11 +40,23 @@ export async function laravelFetch(path: string, init: LaravelFetchInit = {}): P
     }
   }
 
-  return fetch(`${getApiUrl()}${normalizedPath}`, {
-    ...rest,
-    cache: "no-store",
-    headers: cleanHeaders,
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  if (rest.signal) {
+    rest.signal.addEventListener("abort", () => controller.abort(), { once: true });
+  }
+
+  try {
+    return await fetch(`${getApiUrl()}${normalizedPath}`, {
+      ...rest,
+      cache: "no-store",
+      headers: cleanHeaders,
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
 
 export async function laravelJson<T = any>(

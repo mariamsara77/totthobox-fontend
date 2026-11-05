@@ -34,6 +34,41 @@ export default function LiveNotificationSync() {
   const { user, isLoggedIn } = useAuth();
   const { setUnreadCount } = useNotificationModal();
 
+  // Background polling for unread count (every 30 seconds)
+  // Completely pauses when document tab is hidden or inactive
+  useEffect(() => {
+    if (!user?.id || !isLoggedIn) return;
+
+    const syncCount = () => {
+      if (typeof document !== "undefined" && document.visibilityState !== "visible") {
+        return;
+      }
+      void getUnreadCount()
+        .then(setUnreadCount)
+        .catch(() => undefined);
+    };
+
+    // Initial sync
+    syncCount();
+
+    // 30 seconds polling interval
+    const interval = setInterval(syncCount, 30000);
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        syncCount();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [user?.id, isLoggedIn, setUnreadCount]);
+
+  // Echo websocket sync
   useEffect(() => {
     if (!user?.id || !isLoggedIn) return;
 
@@ -50,7 +85,10 @@ export default function LiveNotificationSync() {
 
           const channel = echo.private("user." + user.id);
           const refresh = () => {
-            void getUnreadCount()
+            if (typeof document !== "undefined" && document.visibilityState !== "visible") {
+              return;
+            }
+            void getUnreadCount(true)
               .then(setUnreadCount)
               .catch(() => undefined);
           };

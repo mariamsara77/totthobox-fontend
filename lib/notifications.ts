@@ -21,6 +21,13 @@ export type NotificationsResponse = {
 };
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+  if (options.signal) {
+    options.signal.addEventListener("abort", () => controller.abort(), { once: true });
+  }
+
   try {
     const baseUrl =
       typeof window !== "undefined"
@@ -51,6 +58,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
       cache: "no-store",
       ...options,
       headers: cleanHeaders,
+      signal: controller.signal,
     });
 
     const json = await res.json().catch(() => ({}));
@@ -58,6 +66,8 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   } catch (e) {
     console.warn("Notifications request error:", e);
     return {} as T;
+  } finally {
+    clearTimeout(timeoutId);
   }
 }
 
@@ -103,15 +113,38 @@ export async function getNotifications(
   }
 }
 
-export async function getUnreadCount(): Promise<number> {
-  try {
-    const data = await request<any>("/api/notifications/unread-count");
-    if (typeof data?.count === "number") return data.count;
-    if (typeof data?.data?.count === "number") return data.data.count;
-    return 0;
-  } catch {
-    return 0;
+let unreadCountPromise: Promise<number> | null = null;
+let lastUnreadFetchTime = 0;
+let cachedUnreadCount = 0;
+
+export async function getUnreadCount(force = false): Promise<number> {
+  const now = Date.now();
+  // Client-side cache: throttle to 10 seconds unless forced or tab switched
+  if (!force && now - lastUnreadFetchTime < 10000) {
+    return cachedUnreadCount;
   }
+
+  if (unreadCountPromise) {
+    return unreadCountPromise;
+  }
+
+  unreadCountPromise = (async () => {
+    try {
+      const data = await request<any>("/api/notifications/unread-count");
+      let count = 0;
+      if (typeof data?.count === "number") count = data.count;
+      else if (typeof data?.data?.count === "number") count = data.data.count;
+      cachedUnreadCount = count;
+      lastUnreadFetchTime = Date.now();
+      return count;
+    } catch {
+      return cachedUnreadCount;
+    } finally {
+      unreadCountPromise = null;
+    }
+  })();
+
+  return unreadCountPromise;
 }
 
 export async function markNotificationRead(id: string) {

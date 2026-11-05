@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { Bell } from "lucide-react";
 
 interface Props {
@@ -8,7 +9,11 @@ interface Props {
   className?: string;
 }
 
-export function NotificationBell({ count, onClick, className = "" }: Props) {
+export const NotificationBell = React.memo(function NotificationBell({
+  count,
+  onClick,
+  className = "",
+}: Props) {
   return (
     <button
       type="button"
@@ -27,4 +32,4 @@ export function NotificationBell({ count, onClick, className = "" }: Props) {
       )}
     </button>
   );
-}
+});
