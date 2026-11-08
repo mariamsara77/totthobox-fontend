@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Eye, EyeOff, X, UserRound, ChevronDown } from "lucide-react";
 import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
+import GithubLoginButton from "@/components/auth/GithubLoginButton";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import {
@@ -312,6 +313,7 @@ export default function LoginContent() {
 
       {/* ── Google Login ───────────────────────────────────────────────── */}
       <GoogleLoginButton />
+      <GithubLoginButton />
 
       {/* ── Email login (collapsible) ──────────────────────────────────── */}
       {!emailExpanded ? (
@@ -361,9 +363,7 @@ export default function LoginContent() {
                 onChange={handleChange}
                 placeholder="ইমেইল অ্যাড্রেস"
                 className={`w-full rounded-full border border-zinc-400/25 bg-zinc-400/10 px-4 py-2.5 outline-none transition focus:ring-2 focus:ring-zinc-400/10 ${
-                  errors.email
-                    ? "border-red-500"
-                    : "focus:border-zinc-400/50"
+                  errors.email ? "border-red-500" : "focus:border-zinc-400/50"
                 }`}
               />
               {errors.email && (

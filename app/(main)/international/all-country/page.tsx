@@ -4,7 +4,6 @@ import { CountryGrid } from "@/components/international/CountryGrid";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
 
 import {
-
   getAllCountries,
   getCountryPage,
   getCountryRegions,
@@ -12,7 +11,8 @@ import {
   type CountrySort,
 } from "@/lib/international/countries";
 
-export const revalidate = 86400;
+export const revalidate = 2592000;
+export const dynamicParams = true;
 
 type SearchParams = {
   search?: string;
@@ -223,58 +223,58 @@ export default async function InternationalAllCountryPage({
           "জাতীয় পতাকা ও ডায়ালিং কোড রেফারেন্স",
         ]}
       />
-    <section className="mx-auto max-w-2xl space-y-8 px-4 py-8 sm:px-6">
-      <header className="text-center">
-        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-          {title}
-        </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-zinc-600 dark:text-zinc-400">
-          {description}
-        </p>
-      </header>
-
-      {/* Only show on clean first page — gives AdSense real content */}
-      {!search && !region && page === 1 && (
-        <div className="rounded-2xl border border-zinc-200/60 bg-zinc-50/80 p-6 dark:border-zinc-700/50 dark:bg-zinc-400/10">
-          <h2 className="text-xl font-semibold">বিশ্বের দেশগুলোর তথ্য</h2>
-          <p className="mt-3 text-sm leading-7 text-zinc-600 dark:text-zinc-400">
-            এই তালিকায় বিশ্বের বিভিন্ন দেশের নাম, রাজধানী, জনসংখ্যা, আয়তন,
-            অঞ্চল, আন্তর্জাতিক কোড এবং অন্যান্য সাধারণ তথ্য দ্রুত খুঁজে দেখা
-            যায়। দেশ অনুসন্ধান, অঞ্চল নির্বাচন এবং বিভিন্ন তথ্য অনুযায়ী তালিকা
-            সাজানোর সুবিধাও রয়েছে। Totthobox-এ সব তথ্য এক জায়গায় সাজানো হয়েছে
-            যাতে শিক্ষার্থী, গবেষক ও ভ্রমণ পরিকল্পনাকারীরা সহজেই ব্যবহার করতে
-            পারেন।
+      <section className="mx-auto max-w-2xl space-y-8 px-4 py-8 sm:px-6">
+        <header className="text-center">
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            {title}
+          </h1>
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-zinc-600 dark:text-zinc-400">
+            {description}
           </p>
-        </div>
-      )}
+        </header>
 
-      <CountryGrid
-        initialCountries={pageResult.countries}
-        initialPage={pageResult.page}
-        initialTotal={pageResult.total}
-        initialTotalPages={pageResult.totalPages}
-        initialHasMore={pageResult.hasMore}
-        stats={stats}
-        regions={regions}
-        initialSearch={search}
-        initialRegion={region}
-        initialSort={sort}
-      />
+        {/* Only show on clean first page — gives AdSense real content */}
+        {!search && !region && page === 1 && (
+          <div className="rounded-2xl border border-zinc-200/60 bg-zinc-50/80 p-6 dark:border-zinc-700/50 dark:bg-zinc-400/10">
+            <h2 className="text-xl font-semibold">বিশ্বের দেশগুলোর তথ্য</h2>
+            <p className="mt-3 text-sm leading-7 text-zinc-600 dark:text-zinc-400">
+              এই তালিকায় বিশ্বের বিভিন্ন দেশের নাম, রাজধানী, জনসংখ্যা, আয়তন,
+              অঞ্চল, আন্তর্জাতিক কোড এবং অন্যান্য সাধারণ তথ্য দ্রুত খুঁজে দেখা
+              যায়। দেশ অনুসন্ধান, অঞ্চল নির্বাচন এবং বিভিন্ন তথ্য অনুযায়ী তালিকা
+              সাজানোর সুবিধাও রয়েছে। Totthobox-এ সব তথ্য এক জায়গায় সাজানো হয়েছে
+              যাতে শিক্ষার্থী, গবেষক ও ভ্রমণ পরিকল্পনাকারীরা সহজেই ব্যবহার করতে
+              পারেন।
+            </p>
+          </div>
+        )}
 
-      {!search && !region && page === 1 && (
-        <div className="rounded-2xl border border-zinc-200/60 bg-zinc-50/80 p-6 dark:border-zinc-700/50 dark:bg-zinc-400/10">
-          <h2 className="text-xl font-semibold">
-            দেশভিত্তিক তথ্য কেন কাজে লাগে?
-          </h2>
-          <p className="mt-3 text-sm leading-7 text-zinc-600 dark:text-zinc-400">
-            দেশগুলোর রাজধানী, জনসংখ্যা, আয়তন, অঞ্চল এবং আন্তর্জাতিক কোড সাধারণ
-            জ্ঞান, শিক্ষামূলক গবেষণা এবং ভ্রমণ পরিকল্পনায় কাজে লাগতে পারে।
-            Totthobox-এ এসব তথ্য সহজে খুঁজে দেখার জন্য দেশভিত্তিক তালিকাটি
-            সাজানো হয়েছে। প্রতিটি দেশের বিস্তারিত পাতায় আরও তথ্য পাওয়া যায়।
-          </p>
-        </div>
-      )}
-    </section>
+        <CountryGrid
+          initialCountries={pageResult.countries}
+          initialPage={pageResult.page}
+          initialTotal={pageResult.total}
+          initialTotalPages={pageResult.totalPages}
+          initialHasMore={pageResult.hasMore}
+          stats={stats}
+          regions={regions}
+          initialSearch={search}
+          initialRegion={region}
+          initialSort={sort}
+        />
+
+        {!search && !region && page === 1 && (
+          <div className="rounded-2xl border border-zinc-200/60 bg-zinc-50/80 p-6 dark:border-zinc-700/50 dark:bg-zinc-400/10">
+            <h2 className="text-xl font-semibold">
+              দেশভিত্তিক তথ্য কেন কাজে লাগে?
+            </h2>
+            <p className="mt-3 text-sm leading-7 text-zinc-600 dark:text-zinc-400">
+              দেশগুলোর রাজধানী, জনসংখ্যা, আয়তন, অঞ্চল এবং আন্তর্জাতিক কোড সাধারণ
+              জ্ঞান, শিক্ষামূলক গবেষণা এবং ভ্রমণ পরিকল্পনায় কাজে লাগতে পারে।
+              Totthobox-এ এসব তথ্য সহজে খুঁজে দেখার জন্য দেশভিত্তিক তালিকাটি
+              সাজানো হয়েছে। প্রতিটি দেশের বিস্তারিত পাতায় আরও তথ্য পাওয়া যায়।
+            </p>
+          </div>
+        )}
+      </section>
     </>
   );
 }

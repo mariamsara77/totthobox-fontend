@@ -7,6 +7,7 @@ import { Eye, EyeOff, Loader2, ShieldCheck, X } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
+import GithubLoginButton from "@/components/auth/GithubLoginButton";
 import BrandIcon from "../BrandIcon";
 
 type LoginModalProps = {
@@ -209,6 +210,7 @@ export default function LoginModal({
 
             <div className="space-y-4 px-4 py-4 sm:px-5 sm:py-5">
               <GoogleLoginButton onLoginSuccess={onLoginSuccess} />
+              <GithubLoginButton onLoginSuccess={onLoginSuccess} />
 
               <div className="flex items-center gap-3">
                 <div className="h-px flex-1 bg-zinc-400/20" />

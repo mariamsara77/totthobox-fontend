@@ -171,16 +171,16 @@ export function generateFaqs(c: Country) {
 export const getAllCountries = cache(async function getAllCountries(): Promise<Country[]> {
   try {
     const [mainRes, popRes, contRes] = await Promise.all([
-      fetch('https://raw.githubusercontent.com/mledoze/countries/master/dist/countries.json', {
-        next: { revalidate: 2592000 },
-      }),
-      fetch('https://raw.githubusercontent.com/samayo/country-json/master/src/country-by-population.json', {
-        next: { revalidate: 2592000 },
-      }),
-      fetch('https://raw.githubusercontent.com/samayo/country-json/master/src/country-by-continent.json', {
-        next: { revalidate: 2592000 },
-      }),
-    ]);
+  fetch('https://raw.githubusercontent.com/mledoze/countries/master/dist/countries.json', {
+    cache: 'force-cache', // চিরতরে ক্যাশ হয়ে থাকবে, যতক্ষণ না রি-বিল্ড বা ট্যাগ রিভ্যালিডেট করা হয়
+  }),
+  fetch('https://raw.githubusercontent.com/samayo/country-json/master/src/country-by-population.json', {
+    cache: 'force-cache',
+  }),
+  fetch('https://raw.githubusercontent.com/samayo/country-json/master/src/country-by-continent.json', {
+    cache: 'force-cache',
+  }),
+]);
 
     if (!mainRes.ok) return [];
 
