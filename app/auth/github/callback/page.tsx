@@ -39,7 +39,7 @@ function GithubCallbackContent() {
     }
 
     // Backend-এ code পাঠিয়ে access_token নেওয়া
-    fetch("/api/auth/github/callback", {
+    fetch("/api/v1/auth/github/callback", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
