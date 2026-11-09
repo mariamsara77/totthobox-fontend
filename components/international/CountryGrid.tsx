@@ -173,21 +173,19 @@ export function CountryGrid({
       const requestId = ++requestIdRef.current;
 
       try {
-        const response = await fetch("/api/international/countries", {
-          method: "POST",
+        const queryParams = new URLSearchParams({
+          page: String(nextPage),
+          perPage: String(PER_PAGE),
+        });
+        if (searchRef.current.trim()) queryParams.set("search", searchRef.current.trim());
+        if (regionRef.current.trim()) queryParams.set("region", regionRef.current.trim());
+        if (sortRef.current && sortRef.current !== "name") queryParams.set("sort", sortRef.current);
+
+        const response = await fetch(`/api/international/countries?${queryParams.toString()}`, {
+          method: "GET",
           headers: {
             Accept: "application/json",
-            "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            page: nextPage,
-            perPage: PER_PAGE,
-            search: searchRef.current.trim(),
-            region: regionRef.current.trim(),
-            sort: sortRef.current,
-          }),
-          cache: "no-store",
-          credentials: "same-origin",
         });
 
         if (!response.ok) {

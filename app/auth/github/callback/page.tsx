@@ -1,11 +1,12 @@
 "use client";
 
-import { Suspense, useEffect, useRef } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 function GithubCallbackContent() {
   const searchParams = useSearchParams();
   const processedRef = useRef(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (processedRef.current) return;
@@ -13,80 +14,90 @@ function GithubCallbackContent() {
 
     const code = searchParams.get("code");
     const error = searchParams.get("error");
+    const errorDescription = searchParams.get("error_description");
+
+    const notifyOpenerAndClose = (type: "github-auth-success" | "github-auth-error", payload: Record<string, unknown>) => {
+      if (window.opener) {
+        window.opener.postMessage({ type, ...payload }, window.location.origin);
+        setTimeout(() => {
+          window.close();
+        }, 100);
+      } else {
+        if (type === "github-auth-success") {
+          window.location.href = "/";
+        } else {
+          setErrorMessage((payload.message as string) || "GitHub লগইন ব্যর্থ হয়েছে।");
+          setTimeout(() => {
+            window.location.href = "/login";
+          }, 2000);
+        }
+      }
+    };
 
     if (error) {
-      window.opener?.postMessage(
-        {
-          type: "github-auth-error",
-          message: "GitHub লগইন বাতিল হয়েছে",
-        },
-        window.location.origin,
-      );
-      window.close();
+      notifyOpenerAndClose("github-auth-error", {
+        message: errorDescription || "GitHub লগইন বাতিল হয়েছে বা অনুমোদন দেওয়া হয়নি।",
+      });
       return;
     }
 
     if (!code) {
-      window.opener?.postMessage(
-        {
-          type: "github-auth-error",
-          message: "GitHub authentication code পাওয়া যায়নি",
-        },
-        window.location.origin,
-      );
-      window.close();
+      notifyOpenerAndClose("github-auth-error", {
+        message: "GitHub authentication code পাওয়া যায়নি।",
+      });
       return;
     }
 
-    // Backend-এ code পাঠিয়ে access_token নেওয়া
-    fetch("/api/v1/auth/github/callback", {
+    // Call Next.js API to exchange code with GitHub and login with Laravel backend
+    fetch("/api/auth/github", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
+      credentials: "include",
       body: JSON.stringify({ code }),
     })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.access_token) {
-          window.opener?.postMessage(
-            {
-              type: "github-auth-success",
-              access_token: data.access_token,
-            },
-            window.location.origin,
-          );
+      .then(async (res) => {
+        const data = await res.json().catch(() => null);
+
+        if (res.ok && (data?.user || data?.success)) {
+          notifyOpenerAndClose("github-auth-success", {
+            user: data?.user,
+            access_token: data?.access_token,
+          });
         } else {
-          window.opener?.postMessage(
-            {
-              type: "github-auth-error",
-              message: data.message || "GitHub লগইন ব্যর্থ হয়েছে",
-            },
-            window.location.origin,
-          );
+          notifyOpenerAndClose("github-auth-error", {
+            message: data?.message || "GitHub লগইন সম্পন্ন করা যায়নি।",
+          });
         }
-        window.close();
       })
-      .catch(() => {
-        window.opener?.postMessage(
-          {
-            type: "github-auth-error",
-            message: "কিছু সমস্যা হয়েছে। আবার চেষ্টা করুন।",
-          },
-          window.location.origin,
-        );
-        window.close();
+      .catch((err) => {
+        notifyOpenerAndClose("github-auth-error", {
+          message: err instanceof Error ? err.message : "সার্ভারে সংযোগে সমস্যা হয়েছে। আবার চেষ্টা করুন।",
+        });
       });
   }, [searchParams]);
 
   return (
-    <div className="flex h-screen items-center justify-center bg-white dark:bg-zinc-950">
-      <div className="text-center">
-        <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-zinc-400 border-t-transparent" />
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
-          GitHub দিয়ে লগইন হচ্ছে...
-        </p>
+    <div className="flex h-screen items-center justify-center bg-white dark:bg-zinc-950 p-4">
+      <div className="text-center max-w-sm">
+        {errorMessage ? (
+          <div className="text-red-500 space-y-2">
+            <p className="font-medium">{errorMessage}</p>
+            <p className="text-xs text-zinc-500">লগইন পেজে ফিরিয়ে নেওয়া হচ্ছে...</p>
+          </div>
+        ) : (
+          <>
+            <div className="mx-auto mb-4 h-9 w-9 animate-spin rounded-full border-2 border-zinc-400 border-t-transparent" />
+            <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              GitHub দিয়ে লগইন সম্পন্ন হচ্ছে...
+            </p>
+            <p className="mt-1 text-xs text-zinc-500">
+              অনুগ্রহ করে অপেক্ষা করুন, এই উইন্ডোটি স্বয়ংক্রিয়ভাবে বন্ধ হয়ে যাবে।
+            </p>
+          </>
+        )}
       </div>
     </div>
   );
@@ -96,7 +107,7 @@ export default function GithubCallbackPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex h-screen items-center justify-center">
+        <div className="flex h-screen items-center justify-center bg-white dark:bg-zinc-950">
           <p className="text-sm text-zinc-500">লোড হচ্ছে...</p>
         </div>
       }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
+  getAllCountries,
   getCountry,
   generateOverview,
   generateFaqs,
@@ -14,7 +15,16 @@ import { notFound } from "next/navigation";
 import { AiFillDollarCircle } from "react-icons/ai";
 import { IoMdArrowDropdown } from "react-icons/io";
 
-export const revalidate = 1800;
+export const revalidate = 86400;
+
+export async function generateStaticParams() {
+  try {
+    const countries = await getAllCountries();
+    return countries.map((c) => ({ slug: c.slug }));
+  } catch {
+    return [];
+  }
+}
 
 type Props = {
   params: Promise<{ slug: string }>;

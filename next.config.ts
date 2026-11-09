@@ -23,12 +23,15 @@ const publicPageSources = [
   "/tools/:path*",
   "/software/:path*",
   "/signs/:path*",
-  "/contact/police",
+  "/contact/:path*",
+  "/news",
+  "/users/:slug",
 ];
 
 const nextConfig: NextConfig = {
   turbopack: {},
   images: {
+    formats: ["image/avif", "image/webp"],
     remotePatterns: [
       { protocol: "https", hostname: "totthobox.com" },
       { protocol: "https", hostname: "admin.totthobox.com" },
@@ -106,22 +109,21 @@ const nextConfig: NextConfig = {
         ],
       })),
 
-      // Public routes only. Cloudflare Edge / Vercel can serve a fresh cached representation
-      // while revalidating stale content in the background.
+      // Public routes: Cloudflare Edge caches for 24h+ and serves instantaneously with 0ms worker CPU.
       ...publicPageSources.map((source) => ({
         source,
         headers: [
           {
             key: "Cache-Control",
-            value: "public, s-maxage=3600, stale-while-revalidate=86400",
+            value: "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800",
           },
           {
             key: "CDN-Cache-Control",
-            value: "public, s-maxage=3600, stale-while-revalidate=86400",
+            value: "public, s-maxage=86400, stale-while-revalidate=604800",
           },
           {
             key: "Cloudflare-CDN-Cache-Control",
-            value: "public, s-maxage=3600, stale-while-revalidate=86400",
+            value: "public, s-maxage=86400, stale-while-revalidate=604800",
           },
         ],
       })),
@@ -321,7 +323,7 @@ const nextConfig: NextConfig = {
 // Cache only known public, query-free document routes. This explicit allowlist
 // keeps authentication, account, admin, API, and unknown routes out of the service-worker HTML cache.
 const publicDocumentPath =
-  /^\/(?:$|about-us(?:\/|$)|contact-us(?:\/|$)|services(?:\/|$)|privacy-policy(?:\/|$)|terms-of-service(?:\/|$)|bangla(?:\/|$)|bangladesh(?:\/|$)|international(?:\/|$)|islam(?:\/|$)|converter(?:\/|$)|pdf-editor(?:\/|$)|tools(?:\/|$)|software(?:\/|$)|signs(?:\/|$)|contact\/police(?:\/|$)|news\/headlines(?:\/|$))/i;
+  /^\/(?:$|about-us(?:\/|$)|contact-us(?:\/|$)|services(?:\/|$)|privacy-policy(?:\/|$)|terms-of-service(?:\/|$)|disclaimer(?:\/|$)|bangla(?:\/|$)|bangladesh(?:\/|$)|international(?:\/|$)|islam(?:\/|$)|converter(?:\/|$)|pdf-editor(?:\/|$)|tools(?:\/|$)|software(?:\/|$)|signs(?:\/|$)|contact(?:\/|$)|news(?:\/|$)|users(?:\/|$))/i;
 
 const publicDocumentCaching: RuntimeCaching = {
   handler: "CacheFirst",

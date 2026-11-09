@@ -61,6 +61,7 @@ const publicRoutes = [
   "/signs/all",
   "/contact/police",
   "/news/headlines",
+  "/news",
 ];
 
 function hasSoftwareContent(item: unknown): boolean {

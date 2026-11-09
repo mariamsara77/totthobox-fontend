@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import HistoryClient from "./HistoryClient";
 
+export const revalidate = 1800;
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 

@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import clsx from "clsx";
 import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
+import GithubLoginButton from "@/components/auth/GithubLoginButton";
 import { getMailProviderUrl } from "@/lib/email-provider";
 
 type FieldErrors = Record<string, string>;
@@ -420,7 +421,10 @@ export default function RegisterContent() {
             <span className="mx-4 text-sm opacity-50">অথবা</span>
             <hr className="grow border-zinc-400/25" />
           </div>
-          <GoogleLoginButton />
+          <div className="space-y-3">
+            <GoogleLoginButton />
+            <GithubLoginButton />
+          </div>
           <p className="text-center text-sm opacity-50 mt-8">
             অ্যাকাউন্ট আছে?{" "}
             <Link
