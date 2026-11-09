@@ -203,7 +203,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         login,
         loginWithRefresh,
         logout,
-        mutateUser: () => fetchUser(true),
+        mutateUser: () => {
+          // Always clear the sessionStorage cache before a forced re-fetch
+          // so stale data never blocks the fresh /api/auth/me response.
+          clearStoredAuth();
+          return fetchUser(true);
+        },
       }}
     >
       {children}

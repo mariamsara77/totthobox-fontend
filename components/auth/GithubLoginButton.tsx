@@ -14,25 +14,30 @@ export default function GithubLoginButton({ onLoginSuccess }: Props) {
   const [error, setError] = useState<string | null>(null);
   const popupRef = useRef<Window | null>(null);
   const pollTimerRef = useRef<NodeJS.Timeout | null>(null);
+  // Track whether we already handled a message so the poll-close branch
+  // doesn't reset loading after a successful auth.
+  const handledRef = useRef(false);
 
   const cleanup = () => {
     if (pollTimerRef.current) {
       clearInterval(pollTimerRef.current);
       pollTimerRef.current = null;
     }
-    if (popupRef.current && !popupRef.current.closed) {
-      popupRef.current.close();
-    }
+    // Don't force-close the popup — it closes itself via window.close()
     popupRef.current = null;
   };
 
   useEffect(() => {
-    return () => cleanup();
+    return () => {
+      if (pollTimerRef.current) clearInterval(pollTimerRef.current);
+      if (popupRef.current && !popupRef.current.closed) popupRef.current.close();
+    };
   }, []);
 
   const handleGithubLogin = () => {
     setLoading(true);
     setError(null);
+    handledRef.current = false;
     cleanup();
 
     const clientId =
@@ -64,50 +69,71 @@ export default function GithubLoginButton({ onLoginSuccess }: Props) {
       if (event.origin !== window.location.origin) return;
 
       if (event.data?.type === "github-auth-success") {
+        handledRef.current = true;
         window.removeEventListener("message", handleMessage);
         cleanup();
 
         try {
-          // If token exchange was done in callback, mutate user directly
-          if (!event.data?.user && event.data?.access_token) {
-            const res = await fetch("/api/auth/github", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              credentials: "include",
-              body: JSON.stringify({ access_token: event.data.access_token }),
-            });
-            if (!res.ok) {
-              const data = await res.json().catch(() => null);
-              throw new Error(data?.message || "GitHub লগইন সম্পন্ন করা যায়নি");
-            }
+          // The callback popup sends us the GitHub code and closes itself.
+          // We exchange it here (parent window) so cookies are committed
+          // in the same window context before we call mutateUser().
+          if (!event.data?.code) {
+            throw new Error(
+              "GitHub authorization code পাওয়া যায়নি। আবার চেষ্টা করুন।",
+            );
           }
 
+          const res = await fetch("/api/auth/github", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ code: event.data.code }),
+          });
+
+          if (!res.ok) {
+            const data = await res.json().catch(() => null);
+            throw new Error(
+              data?.message || "GitHub লগইন সম্পন্ন করা যায়নি। আবার চেষ্টা করুন।",
+            );
+          }
+
+          // Cookies are now set in this window — safe to fetch the user
           await mutateUser();
           await onLoginSuccess?.();
         } catch (err) {
-          setError(err instanceof Error ? err.message : "GitHub লগইন সম্পন্ন করতে সমস্যা হয়েছে");
+          setError(
+            err instanceof Error
+              ? err.message
+              : "GitHub লগইন সম্পন্ন করতে সমস্যা হয়েছে",
+          );
         } finally {
           setLoading(false);
         }
       }
 
       if (event.data?.type === "github-auth-error") {
+        handledRef.current = true;
         window.removeEventListener("message", handleMessage);
         cleanup();
-        setError(event.data.message || "GitHub সাইন ইন বাতিল হয়েছে বা ব্যর্থ হয়েছে।");
+        setError(
+          event.data.message || "GitHub সাইন ইন বাতিল হয়েছে বা ব্যর্থ হয়েছে।",
+        );
         setLoading(false);
       }
     };
 
     window.addEventListener("message", handleMessage);
 
-    // Watch if user closes popup without completing auth
+    // Watch if user closes popup without completing auth (no message received)
     pollTimerRef.current = setInterval(() => {
       if (popup && popup.closed) {
         clearInterval(pollTimerRef.current!);
         pollTimerRef.current = null;
         window.removeEventListener("message", handleMessage);
-        setLoading(false);
+        // Only reset loading if we haven't handled a success/error message yet
+        if (!handledRef.current) {
+          setLoading(false);
+        }
       }
     }, 800);
   };
@@ -123,7 +149,12 @@ export default function GithubLoginButton({ onLoginSuccess }: Props) {
         {loading ? (
           <div className="h-5 w-5 animate-spin rounded-full border-2 border-zinc-500 border-t-transparent" />
         ) : (
-          <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <svg
+            className="h-5 w-5"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
             <path
               fillRule="evenodd"
               d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"

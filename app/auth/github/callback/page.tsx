@@ -16,17 +16,21 @@ function GithubCallbackContent() {
     const error = searchParams.get("error");
     const errorDescription = searchParams.get("error_description");
 
-    const notifyOpenerAndClose = (type: "github-auth-success" | "github-auth-error", payload: Record<string, unknown>) => {
+    const notifyOpenerAndClose = (
+      type: "github-auth-success" | "github-auth-error",
+      payload: Record<string, unknown>,
+    ) => {
       if (window.opener) {
         window.opener.postMessage({ type, ...payload }, window.location.origin);
-        setTimeout(() => {
-          window.close();
-        }, 100);
+        // Close immediately after postMessage — parent window handles token exchange
+        window.close();
       } else {
         if (type === "github-auth-success") {
           window.location.href = "/";
         } else {
-          setErrorMessage((payload.message as string) || "GitHub লগইন ব্যর্থ হয়েছে।");
+          setErrorMessage(
+            (payload.message as string) || "GitHub লগইন ব্যর্থ হয়েছে।",
+          );
           setTimeout(() => {
             window.location.href = "/login";
           }, 2000);
@@ -36,7 +40,9 @@ function GithubCallbackContent() {
 
     if (error) {
       notifyOpenerAndClose("github-auth-error", {
-        message: errorDescription || "GitHub লগইন বাতিল হয়েছে বা অনুমোদন দেওয়া হয়নি।",
+        message:
+          errorDescription ||
+          "GitHub লগইন বাতিল হয়েছে বা অনুমোদন দেওয়া হয়নি।",
       });
       return;
     }
@@ -48,35 +54,10 @@ function GithubCallbackContent() {
       return;
     }
 
-    // Call Next.js API to exchange code with GitHub and login with Laravel backend
-    fetch("/api/auth/github", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({ code }),
-    })
-      .then(async (res) => {
-        const data = await res.json().catch(() => null);
-
-        if (res.ok && (data?.user || data?.success)) {
-          notifyOpenerAndClose("github-auth-success", {
-            user: data?.user,
-            access_token: data?.access_token,
-          });
-        } else {
-          notifyOpenerAndClose("github-auth-error", {
-            message: data?.message || "GitHub লগইন সম্পন্ন করা যায়নি।",
-          });
-        }
-      })
-      .catch((err) => {
-        notifyOpenerAndClose("github-auth-error", {
-          message: err instanceof Error ? err.message : "সার্ভারে সংযোগে সমস্যা হয়েছে। আবার চেষ্টা করুন।",
-        });
-      });
+    // Send the code to the parent window; it handles the token exchange and
+    // sets the auth cookies — avoids popup-close timing races where Set-Cookie
+    // headers from a closing popup may not be committed before the parent reads them.
+    notifyOpenerAndClose("github-auth-success", { code });
   }, [searchParams]);
 
   return (
@@ -85,7 +66,7 @@ function GithubCallbackContent() {
         {errorMessage ? (
           <div className="text-red-500 space-y-2">
             <p className="font-medium">{errorMessage}</p>
-            <p className="text-xs text-zinc-500">লগইন পেজে ফিরিয়ে নেওয়া হচ্ছে...</p>
+            <p className="text-xs text-zinc-500">লগইন পেজে ফিরিয়ে নেওয়া হচ্ছে...</p>
           </div>
         ) : (
           <>
