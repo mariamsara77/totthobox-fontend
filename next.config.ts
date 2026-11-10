@@ -29,6 +29,8 @@ const publicPageSources = [
 ];
 
 const nextConfig: NextConfig = {
+  compress: true,
+  poweredByHeader: false,
   turbopack: {},
   images: {
     formats: ["image/avif", "image/webp"],
@@ -128,7 +130,7 @@ const nextConfig: NextConfig = {
         ],
       })),
 
-      // News headline pages: 30 minutes (1800s) fresh window with 24-hour background revalidation.
+      // News headline pages: 1 hour (3600s) fresh window with 24-hour background revalidation.
       ...[
         "/news/headlines",
         "/news/headlines/:slug",
@@ -138,15 +140,15 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: "Cache-Control",
-            value: "public, s-maxage=1800, stale-while-revalidate=86400",
+            value: "public, s-maxage=3600, stale-while-revalidate=86400",
           },
           {
             key: "CDN-Cache-Control",
-            value: "public, s-maxage=1800, stale-while-revalidate=86400",
+            value: "public, s-maxage=3600, stale-while-revalidate=86400",
           },
           {
             key: "Cloudflare-CDN-Cache-Control",
-            value: "public, s-maxage=1800, stale-while-revalidate=86400",
+            value: "public, s-maxage=3600, stale-while-revalidate=86400",
           },
         ],
       })),

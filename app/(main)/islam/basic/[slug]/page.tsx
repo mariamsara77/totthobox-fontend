@@ -2,30 +2,24 @@ import type { Metadata } from "next";
 import { cache } from "react";
 import { notFound } from "next/navigation";
 import BasicIslamShowClient from "./basicislamShowClient";
+import { fetchApi } from "@/lib/api/fetcher";
+import { getSlugsForPath } from "@/lib/api/slugs";
+import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
 
-export const revalidate = 1800;
+export const revalidate = 86400;
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  return await getSlugsForPath("/api/islam/basic");
+}
 
 const getItem = cache(async function getItem(slug: string) {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
-  if (!baseUrl) return null;
+  const json = await fetchApi<any>(`/api/islam/basic/${slug}`, {
+    revalidate: CACHE_TTL.STATIC_CONTENT,
+    tags: [CACHE_TAGS.ISLAM_BASIC, `islam-basic:${slug}`],
+  });
 
-  try {
-    const res = await fetch(`${baseUrl}/api/islam/basic/${slug}`, {
-      headers: { Accept: "application/json" },
-      next: { revalidate: 1800 },
-    });
-
-    if (!res.ok) return null;
-
-    const contentType = res.headers.get("content-type");
-    if (!contentType?.includes("application/json")) return null;
-
-    const json = await res.json();
-    return json.success ? json.data : null;
-  } catch {
-    return null;
-  }
+  return json?.success ? json.data : null;
 });
 
 export async function generateMetadata({

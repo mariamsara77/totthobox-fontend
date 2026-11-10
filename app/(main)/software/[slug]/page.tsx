@@ -7,64 +7,40 @@ import { Home, Eye, ArrowLeft, Puzzle } from "lucide-react";
 import InteractiveActions from "./InteractiveActions";
 import CreatorsTooltip from "./CreatorsTooltip";
 import DownloadButton from "./DownloadButton";
+import { fetchApi } from "@/lib/api/fetcher";
+import { getSlugsForPath } from "@/lib/api/slugs";
+import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
 
-export const revalidate = 1800;
+export const revalidate = 86400;
+export const dynamicParams = true;
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+export async function generateStaticParams() {
+  return await getSlugsForPath("/api/apps");
+}
 
 async function getAppData(slug: string) {
-  try {
-    const res = await fetch(
-      `${API_BASE_URL}/api/apps/${encodeURIComponent(slug)}`,
-      {
-        next: {
-          revalidate: 1800,
-        },
-      },
-    );
+  const json = await fetchApi<any>(`/api/apps/${encodeURIComponent(slug)}`, {
+    revalidate: CACHE_TTL.STATIC_CONTENT,
+    tags: [CACHE_TAGS.SOFTWARE, `software:${slug}`],
+  });
 
-    if (!res.ok) {
-      return null;
-    }
-
-    const json = await res.json();
-
-    if (!json?.data?.name || !json?.data?.slug) {
-      return null;
-    }
-
-    return {
-      app: json.data,
-      seo: json.seo || {},
-    };
-  } catch (error) {
-    console.error("Error fetching app:", error);
+  if (!json?.data?.name || !json?.data?.slug) {
     return null;
   }
+
+  return {
+    app: json.data,
+    seo: json.seo || {},
+  };
 }
 
 async function getAppCreators(appId: number) {
-  try {
-    const res = await fetch(
-      `${API_BASE_URL}/api/apps/${appId}/creators`,
-      {
-        next: {
-          revalidate: 1800,
-        },
-      },
-    );
+  const json = await fetchApi<any>(`/api/apps/${appId}/creators`, {
+    revalidate: CACHE_TTL.STATIC_CONTENT,
+    tags: [CACHE_TAGS.SOFTWARE],
+  });
 
-    if (!res.ok) {
-      return [];
-    }
-
-    const json = await res.json();
-    return Array.isArray(json?.data) ? json.data : [];
-  } catch (error) {
-    console.error("Error fetching app creators:", error);
-    return [];
-  }
+  return Array.isArray(json?.data) ? json.data : [];
 }
 
 function stripHtml(value?: string) {

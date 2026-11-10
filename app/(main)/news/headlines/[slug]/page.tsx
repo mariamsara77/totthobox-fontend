@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { cache } from "react";
 
 // Public news content can be served from ISR instead of rendering on every visit.
-export const revalidate = 1800;
+export const revalidate = 3600;
 
 // Generate public news routes on first visit, then serve the cached ISR output.
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
@@ -148,6 +148,7 @@ export async function generateMetadata({
     return {
       title,
       description,
+      robots: { index: false, follow: false },
       alternates: { canonical },
       openGraph: {
         title: `${title} | Totthobox`,
@@ -184,6 +185,7 @@ export async function generateMetadata({
   return {
     title: item.title,
     description,
+    robots: { index: false, follow: false },
     ...(authorName ? { authors: [{ name: authorName, ...(authorUrl ? { url: authorUrl } : {}) }] } : {}),
     alternates: { canonical },
     openGraph: {

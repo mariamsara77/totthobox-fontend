@@ -2,8 +2,16 @@ import type { Metadata } from "next";
 import { cache } from "react";
 import { notFound } from "next/navigation";
 import TourismShowClient from "./TourismShowClient";
+import { fetchApi } from "@/lib/api/fetcher";
+import { getSlugsForPath } from "@/lib/api/slugs";
+import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
 
-export const revalidate = 1800;
+export const revalidate = 86400;
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  return await getSlugsForPath("/api/tourism-bd");
+}
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -19,22 +27,14 @@ type TourismMeta = {
 };
 
 const getTourism = cache(async function getTourism(slug: string): Promise<TourismMeta | null> {
-  const base =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
-
-  const res = await fetch(
-    `${base}/api/tourism-bd/${encodeURIComponent(slug)}`,
+  const json = await fetchApi<any>(
+    `/api/tourism-bd/${encodeURIComponent(slug)}`,
     {
-      next: {
-        revalidate: 1800,
-        tags: [`tourism:${slug}`],
-      },
+      revalidate: CACHE_TTL.STATIC_CONTENT,
+      tags: [CACHE_TAGS.TOURISM, `tourism:${slug}`],
     },
   );
 
-  if (!res.ok) return null;
-
-  const json = await res.json();
   return json?.data ?? null;
 });
 

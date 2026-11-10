@@ -1,7 +1,25 @@
 import { Metadata } from "next";
+import { Suspense } from "react";
 import ContactClient from "./ContactClient";
+import { fetchApi } from "@/lib/api/fetcher";
+import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
 
-export const revalidate = 1800;
+export const revalidate = 86400;
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  try {
+    const cats = await fetchApi<any[]>("/api/sidebar/contact-categories", {
+      revalidate: CACHE_TTL.STATIC_CONTENT,
+      tags: [CACHE_TAGS.CONTACTS],
+    });
+    return Array.isArray(cats)
+      ? cats.filter((c) => c.slug).map((c) => ({ slug: c.slug }))
+      : [{ slug: "police" }];
+  } catch {
+    return [{ slug: "police" }];
+  }
+}
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -9,35 +27,21 @@ type Props = {
 };
 
 async function getCategory(slug: string) {
-  const base =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
-  try {
-    const res = await fetch(`${base}/api/contacts/categories/${slug}`, {
-      next: { revalidate: 1800 },
-    });
-    if (!res.ok) return null;
-    const json = await res.json();
-    return json.data;
-  } catch {
-    return null;
-  }
+  const json = await fetchApi<any>(`/api/contacts/categories/${slug}`, {
+    revalidate: CACHE_TTL.STATIC_CONTENT,
+    tags: [CACHE_TAGS.CONTACTS, `contacts:${slug}`],
+  });
+  return json?.data ?? null;
 }
 
 async function getInitialContacts(categoryId: number) {
-  const base =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
-  try {
-    const res = await fetch(
-      `${base}/api/contacts?category_id=${categoryId}&page=1&per_page=15`,
-      {
-        next: { revalidate: 1800 },
-      },
-    );
-    if (!res.ok) return null;
-    return await res.json();
-  } catch {
-    return null;
-  }
+  return await fetchApi<any>(
+    `/api/contacts?category_id=${categoryId}&page=1&per_page=15`,
+    {
+      revalidate: CACHE_TTL.STATIC_CONTENT,
+      tags: [CACHE_TAGS.CONTACTS],
+    },
+  );
 }
 
 export async function generateMetadata({
@@ -108,9 +112,17 @@ export default async function ContactPage({ params }: Props) {
   const initialContactsData = await getInitialContacts(category.id);
 
   return (
-    <ContactClient
-      category={category}
-      initialContactsData={initialContactsData}
-    />
+    <Suspense
+      fallback={
+        <div className="max-w-2xl mx-auto p-4 text-center py-20 animate-pulse text-zinc-500">
+          যোগাযোগ তথ্য প্রস্তুত হচ্ছে...
+        </div>
+      }
+    >
+      <ContactClient
+        category={category}
+        initialContactsData={initialContactsData}
+      />
+    </Suspense>
   );
 }

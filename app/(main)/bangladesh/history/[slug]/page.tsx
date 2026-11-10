@@ -1,23 +1,28 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
-
-export const revalidate = 1800;
 import HistoryShowClient from "./HistoryShowClient";
+import { fetchApi } from "@/lib/api/fetcher";
+import { getSlugsForPath } from "@/lib/api/slugs";
+import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
+
+export const revalidate = 86400;
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  return await getSlugsForPath("/api/history-bd");
+}
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
 const getHistory = cache(async function getHistory(slug: string) {
-  const base =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
-  const res = await fetch(`${base}/api/history-bd/${slug}`, {
-    next: { revalidate: 1800 },
+  const json = await fetchApi<any>(`/api/history-bd/${slug}`, {
+    revalidate: CACHE_TTL.STATIC_CONTENT,
+    tags: [CACHE_TAGS.HISTORY, `history:${slug}`],
   });
-  if (!res.ok) return null;
-  const json = await res.json();
-  return json.data;
+  return json?.data || null;
 });
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

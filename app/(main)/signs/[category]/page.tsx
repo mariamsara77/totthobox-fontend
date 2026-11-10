@@ -1,24 +1,37 @@
 import type { Metadata } from "next";
 import SignListClient from "./signListClient";
+import { fetchApi } from "@/lib/api/fetcher";
+import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
 
-export const revalidate = 1800;
+export const revalidate = 86400;
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  try {
+    const cats = await fetchApi<any[]>("/api/sidebar/sign-categories", {
+      revalidate: CACHE_TTL.STATIC_CONTENT,
+      tags: [CACHE_TAGS.SIGNS],
+    });
+    const params = [{ category: "all" }];
+    if (Array.isArray(cats)) {
+      cats.forEach((c) => {
+        if (c.slug) params.push({ category: c.slug });
+      });
+    }
+    return params;
+  } catch {
+    return [{ category: "all" }];
+  }
+}
 
 type Props = { params: Promise<{ category: string }> };
 
 async function getSignCategoryData(categorySlug: string) {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
-  try {
-    const res = await fetch(`${baseUrl}/api/signs/${categorySlug}`, {
-      next: { revalidate: 1800 },
-      headers: { Accept: "application/json" },
-    });
-    if (!res.ok) return null;
-    const json = await res.json();
-    return json.success ? json.data : null;
-  } catch {
-    return null;
-  }
+  const json = await fetchApi<any>(`/api/signs/${categorySlug}`, {
+    revalidate: CACHE_TTL.STATIC_CONTENT,
+    tags: [CACHE_TAGS.SIGNS, `signs:${categorySlug}`],
+  });
+  return json?.success ? json.data : null;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

@@ -1,7 +1,5 @@
 import { Metadata } from "next";
 import { cache } from "react";
-
-export const revalidate = 1800;
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -9,31 +7,30 @@ import { Home, Eye, ArrowLeft, ChevronDown, Share2 } from "lucide-react";
 import InteractiveActions from "./InteractiveActions";
 import CreatorsTooltip from "./CreatorsTooltip";
 import MediaGallery from "@/components/MediaGallery";
+import { fetchApi } from "@/lib/api/fetcher";
+import { getSlugsForPath } from "@/lib/api/slugs";
+import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+export const revalidate = 86400;
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  return await getSlugsForPath("/api/holidays");
+}
 
 const getHolidayData = cache(async function getHolidayData(slug: string) {
-  try {
-    const res = await fetch(`${API_BASE_URL}/api/holidays/${slug}`, {
-      next: { revalidate: 1800 },
-    });
+  const json = await fetchApi<any>(`/api/holidays/${slug}`, {
+    revalidate: CACHE_TTL.STATIC_CONTENT,
+    tags: [CACHE_TAGS.HOLIDAY, `holiday:${slug}`],
+  });
 
-    if (!res.ok) return null;
+  if (!json || !json.success || !json.holiday) return null;
 
-    const json = await res.json();
-
-    if (!json.success || !json.holiday) return null;
-
-    return {
-      holiday: json.holiday,
-      creators: json.creators || [],
-      seo: json.seo || {},
-    };
-  } catch (error) {
-    console.error("Error fetching holiday:", error);
-    return null;
-  }
+  return {
+    holiday: json.holiday,
+    creators: json.creators || [],
+    seo: json.seo || {},
+  };
 });
 
 export async function generateMetadata({
@@ -53,12 +50,24 @@ export async function generateMetadata({
   const { holiday, seo } = data;
 
   return {
-    title: seo.title || `${holiday.title} | ছুটির ক্যালেন্ডার`,
-    description: seo.description || holiday.title,
-    keywords: seo.keywords,
+    title: seo.title || `${holiday.title} | ছুটির ক্যালেন্ডার | তথ্যবক্স`,
+    description: seo.description || `${holiday.title} - বাংলাদেশ সরকারের ছুটির তারিখ, তাৎপর্য ও বিস্তারিত বিবরণ।`,
+    alternates: {
+      canonical: `https://totthobox.com/bangla/holiday/${encodeURIComponent(slug)}`,
+    },
     openGraph: {
-      title: seo.title || holiday.title,
-      description: seo.description,
+      title: seo.title || `${holiday.title} | ছুটির ক্যালেন্ডার`,
+      description: seo.description || holiday.title,
+      url: `https://totthobox.com/bangla/holiday/${encodeURIComponent(slug)}`,
+      siteName: "Totthobox",
+      type: "article",
+      locale: "bn_BD",
+      images: holiday.image_url ? [{ url: holiday.image_url }] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: seo.title || `${holiday.title} | ছুটির ক্যালেন্ডার`,
+      description: seo.description || holiday.title,
       images: holiday.image_url ? [{ url: holiday.image_url }] : [],
     },
   };

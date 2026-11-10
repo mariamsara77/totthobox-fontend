@@ -1,9 +1,17 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
-
-export const revalidate = 1800;
 import PersonShowClient from "./PersonShowClient";
+import { fetchApi } from "@/lib/api/fetcher";
+import { getSlugsForPath } from "@/lib/api/slugs";
+import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
+
+export const revalidate = 86400;
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  return await getSlugsForPath("/api/people");
+}
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -21,17 +29,14 @@ type PersonMeta = {
 };
 
 const getPerson = cache(async function getPerson(slug: string): Promise<PersonMeta | null> {
-  const base =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
-
-  const res = await fetch(
-    `${base}/api/people/${encodeURIComponent(slug)}`,
-    { next: { revalidate: 1800 } },
+  const json = await fetchApi<any>(
+    `/api/people/${encodeURIComponent(slug)}`,
+    {
+      revalidate: CACHE_TTL.STATIC_CONTENT,
+      tags: [CACHE_TAGS.PUBLIC_FIGURE, `public-figure:${slug}`],
+    },
   );
 
-  if (!res.ok) return null;
-
-  const json = await res.json();
   return json?.data ?? null;
 });
 

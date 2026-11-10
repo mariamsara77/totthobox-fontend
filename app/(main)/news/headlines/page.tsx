@@ -2,12 +2,16 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import NewsHeadlines from "@/components/news/NewsHeadlines";
 
-export const revalidate = 1800;
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "সংবাদ শিরোনাম",
+  title: "সংবাদ শিরোনাম | Totthobox",
   description: "বাংলা ও ইংরেজি সংবাদমাধ্যমের সর্বশেষ শিরোনাম এক জায়গায় দেখুন।",
-  alternates: { canonical: "/news/headlines" },
+  alternates: { canonical: "https://totthobox.com/news/headlines" },
+  robots: {
+    index: false,
+    follow: false,
+  },
   openGraph: {
     title: "সংবাদ শিরোনাম | Totthobox",
     description: "বিভিন্ন সংবাদমাধ্যমের সর্বশেষ শিরোনাম এক জায়গায়।",

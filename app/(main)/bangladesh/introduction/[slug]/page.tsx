@@ -2,8 +2,16 @@ import type { Metadata } from "next";
 import { cache } from "react";
 import { notFound } from "next/navigation";
 import IntroductionShowClient from "./IntroductionShowClient";
+import { fetchApi } from "@/lib/api/fetcher";
+import { getSlugsForPath } from "@/lib/api/slugs";
+import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
 
-export const revalidate = 1800;
+export const revalidate = 86400;
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  return await getSlugsForPath("/api/intro-bd");
+}
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -19,17 +27,14 @@ type IntroMeta = {
 };
 
 const getIntro = cache(async function getIntro(slug: string): Promise<IntroMeta | null> {
-  const base =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
-
-  const res = await fetch(
-    `${base}/api/intro-bd/${encodeURIComponent(slug)}`,
-    { next: { revalidate: 1800 } },
+  const json = await fetchApi<any>(
+    `/api/intro-bd/${encodeURIComponent(slug)}`,
+    {
+      revalidate: CACHE_TTL.STATIC_CONTENT,
+      tags: [CACHE_TAGS.INTRODUCTION, `introduction:${slug}`],
+    },
   );
 
-  if (!res.ok) return null;
-
-  const json = await res.json();
   return json?.data ?? null;
 });
 

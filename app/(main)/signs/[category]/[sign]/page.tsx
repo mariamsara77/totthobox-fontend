@@ -2,29 +2,40 @@ import type { Metadata } from "next";
 import { cache } from "react";
 import { notFound } from "next/navigation";
 import SignShowClient from "./signShowClient";
+import { fetchApi } from "@/lib/api/fetcher";
+import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
 
-export const revalidate = 1800;
+export const revalidate = 86400;
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  try {
+    const res = await fetchApi<any>("/api/signs/all", {
+      revalidate: CACHE_TTL.STATIC_CONTENT,
+      tags: [CACHE_TAGS.SIGNS],
+    });
+    const items = res?.data?.items || [];
+    return items
+      .filter((item: any) => item.slug && item.category?.slug)
+      .map((item: any) => ({
+        category: item.category.slug,
+        sign: item.slug,
+      }));
+  } catch {
+    return [];
+  }
+}
 
 type Props = {
   params: Promise<{ category: string; sign: string }>;
 };
 
 const getItem = cache(async function getItem(category: string, sign: string) {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
-  if (!baseUrl) return null;
-
-  try {
-    const res = await fetch(`${baseUrl}/api/signs/${category}/${sign}`, {
-      headers: { Accept: "application/json" },
-      next: { revalidate: 1800 },
-    });
-    if (!res.ok) return null;
-    const json = await res.json();
-    return json.success ? json.data : null;
-  } catch {
-    return null;
-  }
+  const json = await fetchApi<any>(`/api/signs/${category}/${sign}`, {
+    revalidate: CACHE_TTL.STATIC_CONTENT,
+    tags: [CACHE_TAGS.SIGNS, `signs:${category}:${sign}`],
+  });
+  return json?.success ? json.data : null;
 });
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

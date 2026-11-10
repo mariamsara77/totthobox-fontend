@@ -4,8 +4,16 @@ import { cache } from "react";
 
 import EstablishmentShowClient from "./EstablishmentShowClient";
 import type { Establishment } from "@/types/establishment";
+import { fetchApi } from "@/lib/api/fetcher";
+import { getSlugsForPath } from "@/lib/api/slugs";
+import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
 
-export const revalidate = 1800;
+export const revalidate = 86400;
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  return await getSlugsForPath("/api/establishment-bd");
+}
 
 type Props = {
   params: Promise<{
@@ -101,29 +109,15 @@ function getAbsoluteImageUrl(
 
 const getEstablishment = cache(
   async (slug: string): Promise<Establishment | null> => {
-    try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/establishment-bd/${encodeURIComponent(slug)}`,
-        {
-          next: {
-            revalidate: 1800,
-            tags: [`establishment:${slug}`],
-          },
-        },
-      );
+    const json = await fetchApi<any>(
+      `/api/establishment-bd/${encodeURIComponent(slug)}`,
+      {
+        revalidate: CACHE_TTL.STATIC_CONTENT,
+        tags: [CACHE_TAGS.ESTABLISHMENT, `establishment:${slug}`],
+      },
+    );
 
-      if (!response.ok) {
-        return null;
-      }
-
-      const json = await response.json();
-
-      return json?.data ?? null;
-    } catch (error) {
-      console.error(`Failed to fetch establishment: ${slug}`, error);
-
-      return null;
-    }
+    return json?.data ?? null;
   },
 );
 
