@@ -7,7 +7,7 @@ import { SiGmail } from "react-icons/si";
 export default function Footer() {
   return (
     <footer className="pwa-safe-bottom mt-12 border-t border-zinc-200/80 dark:border-zinc-800/80 py-8 bg-zinc-50/50 dark:bg-zinc-950/50">
-      <div className="mx-auto flex max-w-3xl flex-col items-center gap-4 px-3 sm:px-4">
+      <div className="mx-auto flex max-w-4xl flex-col items-center gap-4 px-3 sm:px-4">
         <nav
           className="flex flex-wrap justify-center items-center gap-1.5 sm:gap-2"
           aria-label="ফুটার লিংক"
@@ -17,6 +17,12 @@ export default function Footer() {
             className="flex min-h-[44px] items-center rounded-xl px-3 py-2 text-sm text-zinc-600 hover:text-zinc-900 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
           >
             আমাদের সম্পর্কে
+          </Link>
+          <Link
+            href="/editorial-policy"
+            className="flex min-h-[44px] items-center rounded-xl px-3 py-2 text-sm text-zinc-600 hover:text-zinc-900 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
+          >
+            সম্পাদকীয় নীতিমালা
           </Link>
           <Link
             href="/privacy-policy"
@@ -41,6 +47,12 @@ export default function Footer() {
             className="flex min-h-[44px] items-center rounded-xl px-3 py-2 text-sm text-zinc-600 hover:text-zinc-900 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
           >
             যোগাযোগ
+          </Link>
+          <Link
+            href="/sitemap.xml"
+            className="flex min-h-[44px] items-center rounded-xl px-3 py-2 text-sm text-zinc-600 hover:text-zinc-900 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
+          >
+            সাইটম্যাপ
           </Link>
           <div className="flex items-center min-h-[44px]">
             <CookieSettings />

@@ -5,18 +5,9 @@ export const revalidate = 86400;
 
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/privacy-policy" },
-  title: "গোপনীয়তা নীতি (Privacy Policy)",
+  title: "গোপনীয়তা নীতি (Privacy Policy) | তথ্যবক্স",
   description:
     "Totthobox-এর সম্পূর্ণ গোপনীয়তা নীতি। আমরা কীভাবে আপনার ব্যক্তিগত তথ্য, কুকিজ এবং Google AdSense-এর মাধ্যমে তথ্য সংগ্রহ, ব্যবহার ও সুরক্ষা করি তা বিস্তারিত জানুন।",
-  keywords: [
-    "গোপনীয়তা নীতি",
-    "privacy policy",
-    "Totthobox privacy",
-    "Google AdSense privacy",
-    "কুকিজ নীতি",
-    "তথ্য সুরক্ষা",
-    "data protection Bangladesh",
-  ],
   openGraph: {
     title: "গোপনীয়তা নীতি | Totthobox",
     description:
@@ -44,11 +35,7 @@ export const metadata: Metadata = {
 };
 
 export default function PrivacyPolicyPage() {
-  const lastUpdated = new Date().toLocaleDateString("bn-BD", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  const lastUpdated = "১০ নভেম্বর, ২০২৬";
 
   return (
     <section>
@@ -58,322 +45,189 @@ export default function PrivacyPolicyPage() {
           <h1 className="text-3xl font-bold mb-4">
             গোপনীয়তা নীতি (Privacy Policy)
           </h1>
-          <p className="text-base">
-            Totthobox - আপনার ব্যক্তিগত তথ্যের সুরক্ষা আমাদের সর্বোচ্চ
-            অগ্রাধিকার
-          </p>
-          <div className="mt-4 h-px bg-zinc-800" />
-          <p className="mt-4 text-sm text-zinc-400">
-            সর্বশেষ আপডেট: {lastUpdated}
-          </p>
+          <p className="text-zinc-500 text-sm">সর্বশেষ আপডেট: {lastUpdated}</p>
         </div>
 
-        {/* Introduction */}
-        <section className="space-y-4">
-          <h2 className="text-xl">ভূমিকা</h2>
+        {/* Intro */}
+        <div className="space-y-4">
           <p className="leading-relaxed">
-            <strong>Totthobox</strong>-এ আপনাকে স্বাগতম। আমরা (
-            <a
-              href="https://totthobox.com"
-              className="text-indigo-600 hover:underline"
-            >
-              totthobox.com
+            তথ্যবক্স (<strong>Totthobox</strong>)-এ আপনার গোপনীয়তা রক্ষা করা
+            আমাদের সর্বোচ্চ অগ্রাধিকার। এই গোপনীয়তা নীতিতে আমরা ব্যাখ্যা করেছি
+            যে আপনি যখন আমাদের ওয়েবসাইট (
+            <a href="https://totthobox.com" className="text-indigo-600 dark:text-indigo-400 hover:underline">
+              https://totthobox.com
             </a>
-            ) আমাদের ব্যবহারকারীদের গোপনীয়তা রক্ষায় পুরোপুরি প্রতিশ্রুতিবদ্ধ।
-            এই গোপনীয়তা নীতিতে আমরা ব্যাখ্যা করেছি যে আমরা কী ধরনের তথ্য সংগ্রহ
-            করি, কীভাবে তা ব্যবহার করি, কাকে শেয়ার করি এবং কীভাবে আপনার তথ্য
-            সুরক্ষিত রাখি।
+            ) ব্যবহার করেন, তখন আমরা কী ধরণের তথ্য সংগ্রহ করি, কীভাবে তা ব্যবহার
+            ও সংরক্ষণ করি এবং আপনার অধিকারসমূহ কী কী।
           </p>
           <p className="leading-relaxed">
-            আমাদের ওয়েবসাইট বা যেকোনো সেবা ব্যবহার করার মাধ্যমে আপনি এই
-            গোপনীয়তা নীতির সাথে একমত পোষণ করছেন। যদি আপনি এই নীতির কোনো অংশের
-            সাথে একমত না হন, তাহলে অনুগ্রহ করে আমাদের সেবা ব্যবহার করবেন না।
+            আমাদের ওয়েবসাইট ব্যবহারের মাধ্যমে আপনি এই গোপনীয়তা নীতির শর্তাবলীতে
+            সম্মতি জানাচ্ছেন। যদি আপনি কোনো শর্তের সাথে একমত না হন, তবে অনুগ্রহ
+            করে আমাদের সেবা ব্যবহার থেকে বিরত থাকুন।
           </p>
-        </section>
-
-        {/* Services Overview */}
-        <div className="p-6 rounded-xl bg-zinc-400/10">
-          <h3 className="mb-4 text-indigo-600">আমাদের মূল সেবাসমূহ</h3>
-          <p className="mb-5">
-            Totthobox আপনার দৈনন্দিন প্রয়োজনীয় তথ্য, টুলস ও ডিজিটাল সেবা এক
-            জায়গায় প্রদান করে। আমাদের প্রধান সেবাগুলো হলো:
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {[
-              "বাংলা ক্যালেন্ডার",
-              "কনভার্টার টুলস",
-              "বিভিন্ন ইউটিলিটি টুলস",
-              "সফটওয়্যার পরিচিতি",
-              "জরুরি সেবা ও হেল্পলাইন",
-              "বাংলাদেশ বিষয়ক তথ্য",
-              "বিশ্বকোষ",
-              "ইসলামিক বিষয়বস্তু",
-              "শিশুশিক্ষা",
-              "স্বাস্থ্য ও ট্রাফিক সংকেত",
-              "সর্বশেষ সংবাদ",
-              "Totthobox AI চ্যাটবট",
-            ].map((item) => (
-              <div key={item} className="flex items-start gap-2">
-                <span className="text-green-500 mt-0.5">✓</span>
-                <span>{item}</span>
-              </div>
-            ))}
-          </div>
         </div>
 
-        {/* Tools */}
-        <div className="p-6 rounded-xl border">
-          <h3 className="mb-4">টুলস ও কনভার্টারসমূহ</h3>
-          <p className="mb-2">ইউটিলিটি টুলস:</p>
-          <div className="flex flex-wrap gap-2 mb-5">
-            {[
-              "Image Resizer",
-              "Age Calculator",
-              "Word & Character Counter",
-              "Zodiac (রাশি) Calculator",
-              "Percentage Calculator",
-              "QR Code Generator",
-            ].map((t) => (
-              <span
-                key={t}
-                className="px-2.5 py-1 text-sm rounded-full bg-zinc-400/10"
-              >
-                {t}
-              </span>
-            ))}
-          </div>
-          <p className="mb-2">কনভার্টারসমূহ:</p>
-          <div className="flex flex-wrap gap-2">
-            {[
-              "Number to Word",
-              "অদর্শলিপি কনভার্টার",
-              "Image Converter",
-              "Documents Converter",
-              "Media Converter",
-              "Data File Converter",
-              "মুদ্রা কনভার্টার",
-              "দৈর্ঘ্য কনভার্টার",
-              "ওজন কনভার্টার",
-              "পরিমাণ কনভার্টার",
-            ].map((t) => (
-              <span
-                key={t}
-                className="px-2.5 py-1 text-sm rounded-full bg-zinc-400/10"
-              >
-                {t}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* 1. Information We Collect */}
+        {/* Section 1 */}
         <section className="space-y-4">
-          <h2 className="text-xl">১. আমরা কী ধরনের তথ্য সংগ্রহ করি</h2>
-
-          <h3 className="mt-4">ক. আপনার দেওয়া তথ্য</h3>
-          <p>
-            আপনি যখন যোগাযোগ ফর্ম পূরণ করেন, Totthobox AI ব্যবহার করেন বা কোনো
-            ফিডব্যাক দেন, তখন আমরা নিম্নলিখিত তথ্য সংগ্রহ করতে পারি:
-          </p>
-          <ul className="list-disc ml-6 space-y-1.5">
-            <li>নাম</li>
-            <li>ইমেইল ঠিকানা</li>
-            <li>মোবাইল নম্বর (যদি প্রদান করা হয়)</li>
-            <li>বার্তা বা মন্তব্য</li>
-          </ul>
-
-          <h3 className="mt-4">খ. স্বয়ংক্রিয়ভাবে সংগৃহীত তথ্য</h3>
-          <p>
-            আপনি আমাদের সাইট ভিজিট করলে আমরা নিম্নলিখিত তথ্য স্বয়ংক্রিয়ভাবে
-            সংগ্রহ করতে পারি:
-          </p>
-          <ul className="list-disc ml-6 space-y-1.5">
-            <li>আইপি ঠিকানা</li>
-            <li>ব্রাউজারের ধরন ও ভার্সন</li>
-            <li>ডিভাইসের তথ্য (মোবাইল/ডেস্কটপ)</li>
-            <li>অপারেটিং সিস্টেম</li>
-            <li>রেফারার ইউআরএল</li>
-            <li>ভিজিটের সময় ও পৃষ্ঠা দেখার তথ্য</li>
-          </ul>
-
-          <h3 className="mt-4">গ. কুকিজ এবং ট্র্যাকিং প্রযুক্তি</h3>
-          <p>
-            আমরা এবং আমাদের তৃতীয় পক্ষের অংশীদাররা (যেমন Google) কুকিজ, ওয়েব
-            বীকন এবং অনুরূপ প্রযুক্তি ব্যবহার করি। কুকিজ হলো ছোট টেক্সট ফাইল যা
-            আপনার ডিভাইসে সংরক্ষিত হয়। এগুলো সাইটের কার্যকারিতা উন্নত করতে,
-            ব্যবহারকারীর অভিজ্ঞতা ব্যক্তিগত করতে এবং বিজ্ঞাপন দেখাতে সাহায্য
-            করে।
-          </p>
+          <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">১. আমরা কী তথ্য সংগ্রহ করি</h2>
+          <div className="space-y-3">
+            <div>
+              <h3 className="font-semibold text-zinc-800 dark:text-zinc-200">
+                ক. স্বয়ংক্রিয়ভাবে সংগৃহীত তথ্য:
+              </h3>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+                আপনি যখন সাইট ভিজিট করেন, তখন আপনার ব্রাউজার ও ডিভাইস থেকে কিছু
+                তথ্য স্বয়ংক্রিয়ভাবে সংরক্ষিত হতে পারে — যেমন IP অ্যাড্রেস,
+                ব্রাউজারের ধরন, অপারেটিং সিস্টেম, রেফারেল URL, ভিজিটের সময় এবং
+                পৃষ্ঠা পরিদর্শনের পরিসংখ্যান।
+              </p>
+            </div>
+            <div>
+              <h3 className="font-semibold text-zinc-800 dark:text-zinc-200">
+                খ. আপনার প্রদানকৃত তথ্য:
+              </h3>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+                রেজিস্ট্রেশন বা যোগাযোগের সময় আপনার নাম, ইমেইল অ্যাড্রেস এবং
+                মেসেজের বিবরণ।
+              </p>
+            </div>
+            <div>
+              <h3 className="font-semibold text-zinc-800 dark:text-zinc-200">
+                গ. টুলস ব্যবহারের ডেটা:
+              </h3>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+                কনভার্টার, ক্যালকুলেটর, ইমেজ রিসাইজার বা পিডিএফ এডিটর ব্যবহারের
+                সময় আপনার ইনপুট সম্পূর্ণ ব্রাউজারে প্রসেস হয়। আমরা আপনার ব্যক্তিগত
+                ফাইল বা গণনার ইনপুট আমাদের সার্ভারে সংরক্ষণ করি না।
+              </p>
+            </div>
+          </div>
         </section>
 
-        {/* 2-10 sections (same content as original) */}
+        {/* Section 2 */}
         <section className="space-y-4">
-          <h2 className="text-xl">২. তথ্য কীভাবে ব্যবহার করি</h2>
-          <p>আমরা সংগৃহীত তথ্য নিম্নলিখিত উদ্দেশ্যে ব্যবহার করি:</p>
-          <ul className="list-disc ml-6 space-y-1.5">
-            <li>আমাদের সেবা পরিচালনা ও উন্নত করা</li>
-            <li>ব্যবহারকারীর অভিজ্ঞতা ব্যক্তিগত করা</li>
-            <li>Totthobox AI এবং অন্যান্য টুলসের কার্যকারিতা নিশ্চিত করা</li>
-            <li>আপনার প্রশ্নের উত্তর দেওয়া এবং সাপোর্ট প্রদান</li>
-            <li>সাইটের নিরাপত্তা বজায় রাখা এবং প্রতারণা প্রতিরোধ</li>
-            <li>আইনগত বাধ্যবাধকতা পূরণ</li>
-            <li>বিজ্ঞাপন প্রদর্শন ও বিশ্লেষণ (Google AdSense সহ)</li>
+          <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">২. তথ্য কীভাবে ব্যবহার করি</h2>
+          <ul className="list-disc ml-6 space-y-1.5 text-sm text-zinc-600 dark:text-zinc-400">
+            <li>আমাদের ডিজিটাল টুলস ও সেবাসমূহ পরিচালনা ও উন্নত করা</li>
+            <li>ব্যবহারকারীর অভিজ্ঞতা ব্যক্তিগত ও সহজ করা</li>
+            <li>আপনার অনুসন্ধানের উত্তর প্রদান ও কারিগরি সাপোর্ট দেওয়া</li>
+            <li>সাইটের নিরাপত্তা রক্ষা এবং অপব্যবহার/স্প্যাম প্রতিরোধ</li>
+            <li>আইনগত বাধ্যবাধকতা পালন</li>
+            <li>বিজ্ঞাপন প্রদর্শন ও কর্মক্ষমতা বিশ্লেষণ (Google AdSense সহ)</li>
           </ul>
         </section>
 
+        {/* Section 3: AdSense & Third-Party Vendors */}
         <section className="space-y-4">
-          <h2 className="text-xl">
-            ৩. Google AdSense এবং তৃতীয় পক্ষের বিজ্ঞাপন
+          <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
+            ৩. Google AdSense, বিজ্ঞাপন ও তৃতীয় পক্ষের ভেন্ডর
           </h2>
-          <p>
-            আমাদের ওয়েবসাইটে <strong>Google AdSense</strong> এর মাধ্যমে তৃতীয়
-            পক্ষের বিজ্ঞাপন প্রদর্শিত হয়। Google এবং অন্যান্য বিজ্ঞাপন অংশীদাররা
-            কুকিজ ব্যবহার করে আপনার আগের ভিজিটের ভিত্তিতে বিজ্ঞাপন দেখাতে পারে।
+          <p className="text-sm sm:text-base leading-relaxed text-zinc-600 dark:text-zinc-400">
+            আমাদের ওয়েবসাইটে পরিচালন ব্যয় নির্বাহের লক্ষ্যে <strong>Google AdSense</strong> এবং অন্যান্য অনুমোদিত তৃতীয় পক্ষের বিজ্ঞাপন অংশীদারদের মাধ্যমে বিজ্ঞাপন প্রদর্শিত হতে পারে।
           </p>
-          <p>
-            Google AdSense কুকিজ ব্যবহার করে আপনার আগ্রহ অনুযায়ী বিজ্ঞাপন দেখায়।
-            আপনি চাইলে{" "}
-            <a
-              href="https://www.google.com/settings/ads"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-indigo-600 hover:underline"
-            >
-              Google Ads Settings
-            </a>{" "}
-            থেকে ব্যক্তিগতকৃত বিজ্ঞাপন নিয়ন্ত্রণ করতে পারেন।
-          </p>
-          <p>
-            তৃতীয় পক্ষের বিজ্ঞাপনদাতারা তাদের নিজস্ব গোপনীয়তা নীতি অনুসরণ করে।
-            আমরা তাদের তথ্য সংগ্রহের পদ্ধতির জন্য দায়ী নই। বিস্তারিত জানতে
-            Google-এর গোপনীয়তা নীতি দেখুন:{" "}
-            <a
-              href="https://policies.google.com/privacy"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-indigo-600 hover:underline"
-            >
-              https://policies.google.com/privacy
-            </a>
-          </p>
-        </section>
-
-        <section className="space-y-4">
-          <h2 className="text-xl">৪. কুকিজ নীতি</h2>
-          <p>আমরা নিম্নলিখিত ধরনের কুকিজ ব্যবহার করি:</p>
-          <ul className="list-disc ml-6 space-y-1.5">
+          <ul className="list-disc ml-6 space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
             <li>
-              <strong>প্রয়োজনীয় কুকিজ:</strong> সাইটের মৌলিক কার্যকারিতার জন্য
+              Google সহ তৃতীয় পক্ষের ভেন্ডররা ব্যবহারকারীর পূর্ববর্তী ভিজিটের ওপর ভিত্তি করে প্রাসঙ্গিক বিজ্ঞাপন প্রদর্শনের জন্য কুকিজ (যেমন- DoubleClick DART কুকি) ব্যবহার করে।
             </li>
             <li>
-              <strong>অ্যানালিটিক্স কুকিজ:</strong> সাইটের ব্যবহার বিশ্লেষণের
-              জন্য (যেমন Google Analytics)
+              Google কীভাবে অংশীদার সাইট বা অ্যাপে তথ্য ব্যবহার করে, তা জানতে অনুগ্রহ করে অফিসিয়াল নির্দেশিকা পড়ুন:{" "}
+              <a
+                href="https://policies.google.com/technologies/partner-sites"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
+              >
+                How Google uses information from sites or apps that use our services
+              </a>.
             </li>
             <li>
-              <strong>বিজ্ঞাপন কুকিজ:</strong> প্রাসঙ্গিক বিজ্ঞাপন দেখানোর জন্য
-              (Google AdSense)
+              ব্যবহারকারীরা চাইলে যেকোনো সময়{" "}
+              <a
+                href="https://adssettings.google.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
+              >
+                Google Ads Settings (https://adssettings.google.com)
+              </a>{" "}
+              ভিজিট করে ব্যক্তিগতকৃত বিজ্ঞাপন (Personalized Ads) বন্ধ বা অপ্ট-আউট (Opt-out) করতে পারেন।
             </li>
-          </ul>
-          <p className="mt-3">
-            আপনি আপনার ব্রাউজার সেটিংস থেকে কুকিজ নিয়ন্ত্রণ বা মুছে ফেলতে পারেন।
-            তবে কিছু কুকিজ বন্ধ করলে সাইটের কিছু ফিচার সঠিকভাবে কাজ নাও করতে
-            পারে।
-          </p>
-        </section>
-
-        <section className="space-y-4">
-          <h2 className="text-xl">৫. তথ্য শেয়ারিং</h2>
-          <p>
-            আমরা আপনার ব্যক্তিগত তথ্য বিক্রি বা ভাড়া দিই না। তবে নিম্নলিখিত
-            ক্ষেত্রে তথ্য শেয়ার করা হতে পারে:
-          </p>
-          <ul className="list-disc ml-6 space-y-1.5">
             <li>
-              সেবা প্রদানকারীদের সাথে (হোস্টিং, অ্যানালিটিক্স, ইমেইল সার্ভিস)
+              এছাড়া আন্তর্জাতিকভাবে তৃতীয় পক্ষের কুকিজ অপ্ট-আউট করতে ভিজিট করতে পারেন{" "}
+              <a
+                href="https://www.aboutads.info/choices/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-indigo-600 dark:text-indigo-400 hover:underline"
+              >
+                aboutads.info
+              </a>{" "}
+              অথবা ইউরোপীয় ইউনিয়নভুক্ত ব্যবহারকারীদের জন্য{" "}
+              <a
+                href="https://www.youronlinechoices.eu/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-indigo-600 dark:text-indigo-400 hover:underline"
+              >
+                youronlinechoices.eu
+              </a>.
             </li>
-            <li>আইনি বাধ্যবাধকতা পূরণের জন্য</li>
-            <li>সাইটের নিরাপত্তা ও প্রতারণা প্রতিরোধের প্রয়োজনে</li>
-            <li>আপনার সম্মতিতে</li>
           </ul>
         </section>
 
+        {/* Section 4: Cookies & Consent */}
         <section className="space-y-4">
-          <h2 className="text-xl">৬. তথ্যের নিরাপত্তা</h2>
-          <p>
-            আমরা আপনার ব্যক্তিগত তথ্য সুরক্ষিত রাখতে যুক্তিসঙ্গত প্রযুক্তিগত ও
-            সাংগঠনিক ব্যবস্থা গ্রহণ করি। তবে ইন্টারনেটের মাধ্যমে কোনো তথ্য
-            প্রেরণ ১০০% নিরাপদ নয় বলে আমরা সম্পূর্ণ নিরাপত্তার নিশ্চয়তা দিতে
-            পারি না।
-          </p>
-        </section>
-
-        <section className="space-y-4">
-          <h2 className="text-xl">৭. শিশুদের গোপনীয়তা</h2>
-          <p>
-            আমাদের সেবা ১৩ বছরের কম বয়সী শিশুদের জন্য নির্দিষ্টভাবে তৈরি নয়।
-            আমরা জেনেশুনে ১৩ বছরের কম বয়সী কোনো শিশুর ব্যক্তিগত তথ্য সংগ্রহ করি
-            না। যদি আপনি মনে করেন কোনো শিশুর তথ্য আমাদের কাছে আছে, তাহলে অনুগ্রহ
-            করে আমাদের সাথে যোগাযোগ করুন, আমরা তা অবিলম্বে মুছে ফেলব।
-          </p>
-        </section>
-
-        <section className="space-y-4">
-          <h2 className="text-xl">৮. আপনার অধিকার</h2>
-          <p>আপনার নিম্নলিখিত অধিকার রয়েছে:</p>
-          <ul className="list-disc ml-6 space-y-1.5">
-            <li>আপনার সম্পর্কে আমাদের কাছে থাকা তথ্য জানার অধিকার</li>
-            <li>ভুল তথ্য সংশোধনের অনুরোধ করার অধিকার</li>
-            <li>আপনার তথ্য মুছে ফেলার অনুরোধ করার অধিকার</li>
-            <li>কুকিজ এবং ব্যক্তিগতকৃত বিজ্ঞাপন নিয়ন্ত্রণ করার অধিকার</li>
+          <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">৪. কুকিজ ও সম্মতি ব্যবস্থাপনা (Consent Policy)</h2>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">আমরা নিম্নলিখিত ধরনের কুকিজ ব্যবহার করি:</p>
+          <ul className="list-disc ml-6 space-y-1.5 text-sm text-zinc-600 dark:text-zinc-400">
+            <li>
+              <strong>প্রয়োজনীয় কুকিজ (Essential Cookies):</strong> সাইটের মৌলিক কার্যকারিতা, থিম পছন্দ (ডার্ক/লাইট মোড) ও নিরাপত্তার জন্য অপরিহার্য।
+            </li>
+            <li>
+              <strong>অ্যানালিটিক্স কুকিজ (Analytics Cookies):</strong> ট্রাফিক সোর্স ও কোন পৃষ্ঠাগুলো বেশি জনপ্রিয় তা বুঝতে সাহায্য করে।
+            </li>
+            <li>
+              <strong>বিজ্ঞাপন কুকিজ (Advertising Cookies):</strong> প্রাসঙ্গিক বিজ্ঞাপন প্রদর্শন এবং বিজ্ঞাপন পুনরাবৃত্তি নিয়ন্ত্রণের জন্য বিজ্ঞাপন অংশীদারদের দ্বারা ব্যবহৃত।
+            </li>
           </ul>
-          <p className="mt-3">
-            এই অধিকারগুলো প্রয়োগ করতে চাইলে আমাদের সাথে যোগাযোগ করুন।
+          <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400 mt-2">
+            EEA, UK ও সুইজারল্যান্ডের মতো অঞ্চলের ব্যবহারকারীদের জন্য প্রযোজ্য ক্ষেত্রে Google-প্রত্যয়িত কনসেন্ট ম্যানেজমেন্ট প্ল্যাটফর্ম (CMP) এর মাধ্যমে সম্মতি গ্রহণ করা হয়। আপনি আপনার ব্রাউজার সেটিংস থেকে যেকোনো সময় কুকিজ ব্লক বা মুছে ফেলতে পারেন।
           </p>
         </section>
 
+        {/* Section 5 */}
         <section className="space-y-4">
-          <h2 className="text-xl">৯. তৃতীয় পক্ষের লিঙ্ক</h2>
-          <p>
-            আমাদের সাইটে জরুরি সেবা, সংবাদমাধ্যম, সরকারি ওয়েবসাইট বা অন্যান্য
-            বহিঃস্থ লিঙ্ক থাকতে পারে। এই সাইটগুলোর নিজস্ব গোপনীয়তা নীতি রয়েছে।
-            আমরা সেই সাইটগুলোর বিষয়বস্তু বা গোপনীয়তা অনুশীলনের জন্য দায়ী নই।
+          <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">৫. তথ্য প্রকাশ ও শেয়ারিং</h2>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            আমরা কখনোই ব্যবহারকারীর ব্যক্তিগত তথ্য কোনো বাণিজ্যিক উদ্দেশ্যে তৃতীয় পক্ষের কাছে বিক্রয় বা ভাড়া দিই না। শুধুমাত্র আইনি বাধ্যবাধকতা পূরণে কিংবা সাইটের সুরক্ষার প্রয়োজনে প্রযোজ্য আইনানুযায়ী ব্যবস্থা গ্রহণ করা হতে পারে।
           </p>
         </section>
 
+        {/* Section 6 */}
         <section className="space-y-4">
-          <h2 className="text-xl">১০. নীতির পরিবর্তন</h2>
-          <p>
-            আমরা সময় সময় এই গোপনীয়তা নীতি আপডেট করতে পারি। কোনো পরিবর্তন হলে
-            আমরা এই পৃষ্ঠায় নতুন তারিখ উল্লেখ করব। নিয়মিত এই পৃষ্ঠা দেখার
-            পরামর্শ দিচ্ছি। পরিবর্তনের পরও সাইট ব্যবহার অব্যাহত রাখলে আপনি
-            আপডেটকৃত নীতির সাথে একমত বলে গণ্য হবেন।
-          </p>
+          <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">৬. ব্যবহারকারীর অধিকার (User Rights)</h2>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">আমাদের প্ল্যাটফর্মে আপনার নিম্নলিখিত অধিকার রয়েছে:</p>
+          <ul className="list-disc ml-6 space-y-1.5 text-sm text-zinc-600 dark:text-zinc-400">
+            <li>আপনার সংরক্ষিত তথ্য পর্যালোচনা বা সংশোধন করার অধিকার</li>
+            <li>আপনার রেজিস্টার্ড অ্যাকাউন্ট বা ব্যক্তিগত তথ্য মুছে ফেলার অনুরোধের অধিকার</li>
+            <li>ব্যক্তিগতকৃত বিজ্ঞাপন ও ট্র্যাকিং অপ্ট-আউট করার অধিকার</li>
+          </ul>
         </section>
 
-        <div className="h-px bg-zinc-800 my-10" />
-
-        {/* Contact */}
-        <div className="bg-zinc-400/10 p-8 rounded-2xl text-center space-y-4">
-          <h3 className="text-lg">যোগাযোগ</h3>
-          <p>
-            এই গোপনীয়তা নীতি সম্পর্কে কোনো প্রশ্ন, অভিযোগ বা অনুরোধ থাকলে
-            নির্দ্বিধায় আমাদের সাথে যোগাযোগ করুন।
+        {/* Contact Box */}
+        <div className="bg-zinc-50 dark:bg-zinc-800/40 p-6 sm:p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 text-center space-y-3">
+          <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">গোপনীয়তা বিষয়ক যোগাযোগ</h3>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400 max-w-lg mx-auto">
+            গোপনীয়তা নীতি সম্পর্কে কোনো জিজ্ঞাসা বা আপনার ডেটা সংক্রান্ত অনুরোধ থাকলে আমাদের প্রাইভেসি অফিসারের সাথে যোগাযোগ করুন।
           </p>
           <div className="pt-2">
             <Link
               href="/contact-us"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 hover:opacity-90 transition text-sm"
             >
-              📧 সাপোর্ট সেন্টারে মেসেজ দিন
+              যোগাযোগ পাতা দেখুন &rarr;
             </Link>
           </div>
-        </div>
-
-        <div className="pt-8 text-center text-zinc-400 text-sm">
-          <p>
-            এই গোপনীয়তা নীতি Totthobox ওয়েবসাইট এবং এর সকল সাবডোমেইনের জন্য
-            প্রযোজ্য।
-          </p>
         </div>
       </div>
     </section>

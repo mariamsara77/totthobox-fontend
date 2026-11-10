@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
-
   ShieldAlert,
   Calculator,
   PhoneCall,
@@ -12,24 +11,16 @@ import {
   CheckCircle2,
   Mail,
   ExternalLink,
+  Coins,
 } from "lucide-react";
 
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/disclaimer" },
-  title: "দায়মুক্তি ও নীতিমালা (Disclaimer)",
+  title: "দায়মুক্তি ও তথ্য নীতিমালা (Disclaimer) | তথ্যবক্স",
   description:
     "Totthobox-এর সম্পূর্ণ দায়মুক্তি ও নীতিমালা। প্ল্যাটফর্মের তথ্য, ক্যালকুলেটর, কনভার্টার, জরুরি সেবা এবং তৃতীয় পক্ষের বিষয়বস্তুর সঠিকতা, সীমাবদ্ধতা ও ব্যবহারের নিয়ম সম্পর্কে জানুন।",
-  keywords: [
-    "দায়মুক্তি",
-    "disclaimer",
-    "Totthobox disclaimer",
-    "তথ্যবক্স দায়মুক্তি",
-    "তথ্যের সঠিকতা",
-    "বিজ্ঞাপন নীতিমালা",
-    "লিগ্যাল নোটিশ",
-  ],
   openGraph: {
     title: "দায়মুক্তি ও নীতিমালা (Disclaimer) | Totthobox",
     description:
@@ -57,11 +48,7 @@ export const metadata: Metadata = {
 };
 
 export default function DisclaimerPage() {
-  const lastUpdated = new Date().toLocaleDateString("bn-BD", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  const lastUpdated = "১০ নভেম্বর, ২০২৬";
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 sm:py-12">
@@ -129,7 +116,10 @@ export default function DisclaimerPage() {
             কোড জেনারেটর—প্রচলিত গাণিতিক সূত্র ও সূত্রের মানদণ্ডের ওপর ভিত্তি
             করে ফলাফল প্রদর্শন করে।
           </p>
-          <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
+          <ul className="list-disc pl-5 space-y-2 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
+            <li>
+              <strong>আয়কর ও ভ্যাট ক্যালকুলেটর (Tax & VAT Calculator):</strong> এটি কেবল সাধারণ সচেতনতা ও প্রাথমিক খসড়া হিসাবের জন্য আনুমানিক ফলাফল প্রদান করে। জাতীয় রাজস্ব বোর্ড (NBR)-এর কর আইন, এসআরও বা করদাতার ব্যক্তিগত প্রযোজ্য রেয়াত ও বিনিয়োগ ভাতার কারণে প্রকৃত করদায় ভিন্ন হতে পারে। চূড়ান্ত কর নির্ধারণের জন্য সংশ্লিষ্ট কর আইনজীবী, চার্টার্ড অ্যাকাউন্ট্যান্ট বা আয়কর সার্কেলের সাথে পরামর্শ করুন।
+            </li>
             <li>
               <strong>মুদ্রা কনভার্টার (Currency Converter):</strong> প্রদর্শিত
               মুদ্রার হার আনুমানিক ও আন্তর্জাতিক বাজারভিত্তিক। ব্যাংকিং লেনদেন,
@@ -283,7 +273,7 @@ export default function DisclaimerPage() {
           </div>
           <p>
             Totthobox-এর কনটেন্ট কোনোভাবেই আইনি (Legal), চিকিৎসা (Medical) কিংবা
-            পেশাদার আর্থিক (Financial) পরামর্শের বিকল্প নয়। যেকোনো গুরুত্বপূর্ণ
+            পেশাদার আর্থিক ও কর (Financial/Tax) পরামর্শের বিকল্প নয়। যেকোনো গুরুত্বপূর্ণ
             সিদ্ধান্ত গ্রহণের পূর্বে উপযুক্ত পেশাজীবীর সরাসরি পরামর্শ গ্রহণ করা
             আবশ্যক।
           </p>
