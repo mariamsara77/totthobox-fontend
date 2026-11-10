@@ -65,4 +65,4 @@
 ---
 
 ## NEXT STEP
-Execute Phase 1 tasks: `public/ads.txt`, `app/layout.tsx` keywords removal, `/editorial-policy`, `/privacy-policy`, `/about-us`, `/contact-us`, `/disclaimer`, `components/Footer.tsx`.
+Execute Phase 3: Thin-guard utility (<300 words -> noindex), noindex on `/news/headlines*` routes, verify private/auth/settings routes `noindex, nofollow`, and update `sitemap.ts` & `robots.ts` to exclude noindex URLs.
