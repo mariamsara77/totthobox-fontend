@@ -303,7 +303,7 @@ export default function HomePage() {
 
           <div className="space-y-3">
             <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
-              কেন লক্ষাধিক মানুষ Totthobox বেছে নিচ্ছেন?
+              কেন Totthobox আপনার দৈনন্দিন বিশ্বস্ত সঙ্গী?
             </h3>
             <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
               আমরা তথ্যের স্বচ্ছতা এবং সহজ ব্যবহারযোগ্যতাকে সর্বোচ্চ গুরুত্ব

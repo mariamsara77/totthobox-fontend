@@ -11,12 +11,33 @@ type Props = {
 async function getCategory(slug: string) {
   const base =
     process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
-  const res = await fetch(`${base}/api/contacts/categories/${slug}`, {
-    next: { revalidate: 1800 },
-  });
-  if (!res.ok) return null;
-  const json = await res.json();
-  return json.data;
+  try {
+    const res = await fetch(`${base}/api/contacts/categories/${slug}`, {
+      next: { revalidate: 1800 },
+    });
+    if (!res.ok) return null;
+    const json = await res.json();
+    return json.data;
+  } catch {
+    return null;
+  }
+}
+
+async function getInitialContacts(categoryId: number) {
+  const base =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+  try {
+    const res = await fetch(
+      `${base}/api/contacts?category_id=${categoryId}&page=1&per_page=15`,
+      {
+        next: { revalidate: 1800 },
+      },
+    );
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
 }
 
 export async function generateMetadata({
@@ -39,22 +60,18 @@ export async function generateMetadata({
 
   let title: string;
   let description: string;
-  let keywords: string;
 
   if (searchTerm) {
     title = `"${searchTerm}" — ${catName} নম্বর | তথ্যবক্স`;
     description = `"${searchTerm}" সম্পর্কিত ${catName} যোগাযোগ নম্বর ও ঠিকানা।`;
-    keywords = `${searchTerm}, ${catName}, জরুরী নম্বর, হেল্পলাইন, তথ্যবক্স`;
   } else {
     title = `জরুরী ${catName} ফোন নম্বর সারা বাংলাদেশ | তথ্যবক্স`;
     description = `সারাদেশের গুরুত্বপূর্ণ ${catName} যোগাযোগ নম্বর ও ঠিকানা। বিভাগ, জেলা, থানা দিয়ে খুঁজুন।`;
-    keywords = `${catName}, ${catName} নম্বর, জরুরী সেবা, হেল্পলাইন, বাংলাদেশ, তথ্যবক্স`;
   }
 
   return {
     title,
     description,
-    keywords,
     openGraph: {
       title,
       description,
@@ -88,5 +105,12 @@ export default async function ContactPage({ params }: Props) {
     );
   }
 
-  return <ContactClient category={category} />;
+  const initialContactsData = await getInitialContacts(category.id);
+
+  return (
+    <ContactClient
+      category={category}
+      initialContactsData={initialContactsData}
+    />
+  );
 }

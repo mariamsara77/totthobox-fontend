@@ -42,20 +42,31 @@ interface Category {
 
 export default function SignListClient({
   categorySlug,
+  initialData,
 }: {
   categorySlug: string;
+  initialData?: {
+    items?: SignItem[];
+    creators?: Creator[];
+    category?: Category | null;
+  } | null;
 }) {
   const isAll = categorySlug === "all";
-  const [items, setItems] = useState<SignItem[]>([]);
-  const [creators, setCreators] = useState<Creator[]>([]);
-  const [category, setCategory] = useState<Category | null>(null);
+  const [items, setItems] = useState<SignItem[]>(initialData?.items || []);
+  const [creators, setCreators] = useState<Creator[]>(
+    initialData?.creators || [],
+  );
+  const [category, setCategory] = useState<Category | null>(
+    initialData?.category || null,
+  );
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialData);
   const [error, setError] = useState<string | null>(null);
   const [showCreators, setShowCreators] = useState(false);
 
   const creatorsRef = useRef<HTMLDivElement>(null);
+  const isInitialMount = useRef(true);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -78,6 +89,13 @@ export default function SignListClient({
   }, [search]);
 
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      if (initialData && !debouncedSearch) {
+        return;
+      }
+    }
+
     const fetchData = async () => {
       setLoading(true);
       setError(null);

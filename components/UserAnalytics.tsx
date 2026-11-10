@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-const FALLBACK_TOTAL_USERS = "113.29k";
 const ANALYTICS_URL = "https://admin.totthobox.com/api/analytics/user-count";
 
 type AnalyticsResponse = {
@@ -24,7 +23,7 @@ function isAnalyticsResponse(value: unknown): value is AnalyticsResponse {
 }
 
 export default function UserAnalytics() {
-  const [totalUsers, setTotalUsers] = useState(FALLBACK_TOTAL_USERS);
+  const [totalUsers, setTotalUsers] = useState<string | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -47,7 +46,7 @@ export default function UserAnalytics() {
           setTotalUsers(total);
         }
       } catch {
-        // Keep the existing fallback when the public analytics endpoint is unavailable.
+        // Do not render fabricated numbers if the endpoint is unreachable
       }
     };
 
@@ -58,14 +57,20 @@ export default function UserAnalytics() {
 
   return (
     <div className="flex items-center justify-center py-2">
-      <div className="flex items-center gap-4 rounded-full border border-zinc-400/25 px-4 py-2">
+      <div className="flex items-center gap-3 rounded-full border border-zinc-400/25 px-4 py-2 text-zinc-700 dark:text-zinc-300">
         <span className="relative flex">
-          <span className="absolute h-full w-full animate-ping rounded-full bg-zinc-700 opacity-75" />
-          <span className="relative size-2 rounded-full bg-zinc-400/10 dark:bg-zinc-100" />
+          <span className="absolute h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
+          <span className="relative size-2 rounded-full bg-emerald-500" />
         </span>
         <p className="text-sm">
-          প্ল্যাটফর্মটি ব্যবহার করেছেন{" "}
-          <span className="text-base font-semibold">{totalUsers}+</span>{" "}
+          {totalUsers ? (
+            <>
+              প্ল্যাটফর্মটি সক্রিয়ভাবে ব্যবহৃত হয়েছে{" "}
+              <span className="text-base font-semibold">{totalUsers}+</span> বার
+            </>
+          ) : (
+            <span>দৈনন্দিন তথ্য ও হিসাবের নির্ভরযোগ্য উন্মুক্ত পোর্টাল</span>
+          )}
         </p>
       </div>
     </div>

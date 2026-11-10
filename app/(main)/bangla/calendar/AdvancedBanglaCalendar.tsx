@@ -46,7 +46,11 @@ const getHijriDate = (date: Date): string => {
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-export default function AdvancedBanglaCalendar() {
+type Props = {
+  initialHolidays?: any;
+};
+
+export default function AdvancedBanglaCalendar({ initialHolidays }: Props = {}) {
   const [todayDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [viewDate, setViewDate] = useState(new Date());
@@ -75,7 +79,10 @@ export default function AdvancedBanglaCalendar() {
   const { data: apiResponse } = useSWR(
     `${apiUrl}/api/holidays-calendar?year=${viewDate.getFullYear()}`,
     fetcher,
-    { revalidateOnFocus: false },
+    {
+      fallbackData: initialHolidays,
+      revalidateOnFocus: false,
+    },
   );
 
   const allHolidays = useMemo(() => {

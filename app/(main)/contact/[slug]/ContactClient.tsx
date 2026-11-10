@@ -44,9 +44,13 @@ type Contact = {
 
 type Props = {
   category: Category;
+  initialContactsData?: any;
 };
 
-export default function ContactClient({ category }: Props) {
+export default function ContactClient({
+  category,
+  initialContactsData,
+}: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -134,6 +138,7 @@ export default function ContactClient({ category }: Props) {
     getKey,
     fetcher,
     {
+      fallbackData: initialContactsData ? [initialContactsData] : undefined,
       revalidateFirstPage: false,
       revalidateOnFocus: false,
     },

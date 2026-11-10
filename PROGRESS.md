@@ -15,13 +15,13 @@
 - [x] Git commit `phase-1: trust and compliance files`
 
 ### Phase 2: Fake Claims & Client-Only Rendering Fix
-- [ ] Remove `113.29k+` fallback and `লক্ষাধিক মানুষ` claim from Home & `UserAnalytics`
-- [ ] Remove hardcoded stats (110k, 12.5k, etc.) from `AboutUs`
-- [ ] SSR initial contacts in `/contact/[slug]`
-- [ ] SSR initial signs list in `/signs/[category]`
-- [ ] SSR current holidays and editorial guide in `/bangla/calendar`
-- [ ] Run `npm run lint` & `npm run build` for Phase 2
-- [ ] Git commit `phase-2: fake claims removal and server-side rendering fixes`
+- [x] Remove `113.29k+` fallback and `লক্ষাধিক মানুষ` claim from Home & `UserAnalytics`
+- [x] Remove hardcoded stats (110k, 12.5k, etc.) from `AboutUs`
+- [x] SSR initial contacts in `/contact/[slug]`
+- [x] SSR initial signs list in `/signs/[category]`
+- [x] SSR current holidays and editorial guide in `/bangla/calendar`
+- [x] Run `npm run lint` & `npm run build` for Phase 2
+- [x] Git commit `phase-2: fake claims removal and server-side rendering fixes`
 
 ### Phase 3: Indexing Control
 - [ ] Thin-guard utility (`<300` words -> `noindex`)
