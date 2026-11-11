@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import TaxVatClient from "./TaxVatClient";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
 import ToolGuide from "@/components/ToolGuide";
+import AuthorReviewerBlock from "@/components/AuthorReviewerBlock";
+import Disclaimer from "@/components/Disclaimer";
 import { taxVatCalculatorContent } from "@/lib/content/tools/tax-vat-calculator";
 
 export const revalidate = 86400;
@@ -10,15 +12,6 @@ export const metadata: Metadata = {
   title: "বাংলাদেশ আয়কর ও ভ্যাট ক্যালকুলেটর (NBR Tax & VAT) | তথ্যবক্স",
   description:
     "সর্বশেষ এনবিআর আয়কর স্ল্যাব ও নিয়ম অনুযায়ী ব্যক্তিগত আয়কর, বিনিয়োগ কর রেয়াত এবং পণ্য বা সেবার ভ্যাট (VAT) সহজে ও নির্ভুলভাবে হিসাব করুন।",
-  keywords: [
-    "tax calculator bd",
-    "income tax calculator bangladesh",
-    "আয়কর ক্যালকুলেটর",
-    "ভ্যাট হিসাব",
-    "vat calculator bd",
-    "nbr tax rate 2024-2025",
-    "কর রেয়াত",
-  ],
   alternates: { canonical: "https://totthobox.com/tools/tax-vat-calculator" },
   openGraph: {
     title: "বাংলাদেশ আয়কর ও ভ্যাট ক্যালকুলেটর | Totthobox",
@@ -52,8 +45,12 @@ export default function TaxVatPage() {
           "ভ্যাট এক্সক্লুসিভ ও ইনক্লুসিভ ক্যালকুলেটর",
         ]}
       />
-      <div className="max-w-2xl mx-auto px-4 py-6 sm:py-8">
-        <TaxVatClient />
+      <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-8">
+        <div className="max-w-2xl mx-auto">
+          <TaxVatClient />
+        </div>
+        <Disclaimer type="tax" />
+        <AuthorReviewerBlock category="tax" />
         <ToolGuide content={taxVatCalculatorContent} />
       </div>
     </>

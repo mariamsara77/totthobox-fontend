@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import BasicIslamClient from "./basicislamClient";
 import EditorialSection from "@/components/EditorialSection";
+import AuthorReviewerBlock from "@/components/AuthorReviewerBlock";
+import Disclaimer from "@/components/Disclaimer";
 import { islamBasicArticle } from "@/lib/content/sections/islam-basic";
 import { fetchApi } from "@/lib/api/fetcher";
 import { CACHE_TAGS } from "@/lib/cache-config";
@@ -44,6 +46,8 @@ export default async function BasicIslamPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-8">
       <BasicIslamClient initialData={initialData} />
+      <Disclaimer type="islamic" />
+      <AuthorReviewerBlock category="islamic" />
       <EditorialSection article={islamBasicArticle} />
     </div>
   );

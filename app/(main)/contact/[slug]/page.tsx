@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { Suspense } from "react";
 import ContactClient from "./ContactClient";
+import Disclaimer from "@/components/Disclaimer";
 import { fetchApi } from "@/lib/api/fetcher";
 import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
 
@@ -119,10 +120,15 @@ export default async function ContactPage({ params }: Props) {
         </div>
       }
     >
-      <ContactClient
-        category={category}
-        initialContactsData={initialContactsData}
-      />
+      <div className="space-y-6">
+        <ContactClient
+          category={category}
+          initialContactsData={initialContactsData}
+        />
+        <div className="max-w-4xl mx-auto px-4 pb-8">
+          <Disclaimer type={slug === "emergency" ? "emergency" : "general"} />
+        </div>
+      </div>
     </Suspense>
   );
 }
