@@ -35,7 +35,7 @@ export const metadata: Metadata = {
 };
 
 export default function PrivacyPolicyPage() {
-  const lastUpdated = "১০ নভেম্বর, ২০২৬";
+  const lastUpdated = "১১ নভেম্বর, ২০২৬";
 
   return (
     <section>
@@ -127,7 +127,7 @@ export default function PrivacyPolicyPage() {
           </p>
           <ul className="list-disc ml-6 space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
             <li>
-              Google সহ তৃতীয় পক্ষের ভেন্ডররা ব্যবহারকারীর পূর্ববর্তী ভিজিটের ওপর ভিত্তি করে প্রাসঙ্গিক বিজ্ঞাপন প্রদর্শনের জন্য কুকিজ (যেমন- DoubleClick DART কুকি) ব্যবহার করে।
+              Google ও অন্যান্য বিজ্ঞাপন অংশীদাররা তাদের নিজস্ব প্রযুক্তি ও সম্মতি-সংক্রান্ত সেটিংস অনুযায়ী কুকি বা অনুরূপ প্রযুক্তি ব্যবহার করতে পারে।
             </li>
             <li>
               Google কীভাবে অংশীদার সাইট বা অ্যাপে তথ্য ব্যবহার করে, তা জানতে অনুগ্রহ করে অফিসিয়াল নির্দেশিকা পড়ুন:{" "}
@@ -223,7 +223,7 @@ export default function PrivacyPolicyPage() {
         <div className="bg-zinc-50 dark:bg-zinc-800/40 p-6 sm:p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 text-center space-y-3">
           <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">গোপনীয়তা বিষয়ক যোগাযোগ</h3>
           <p className="text-sm text-zinc-600 dark:text-zinc-400 max-w-lg mx-auto">
-            গোপনীয়তা নীতি সম্পর্কে কোনো জিজ্ঞাসা বা আপনার ডেটা সংক্রান্ত অনুরোধ থাকলে আমাদের প্রাইভেসি অফিসারের সাথে যোগাযোগ করুন।
+            গোপনীয়তা নীতি সম্পর্কে কোনো জিজ্ঞাসা বা আপনার ডেটা সংক্রান্ত অনুরোধ থাকলে Totthobox-এর যোগাযোগ দলের সাথে যোগাযোগ করুন।
           </p>
           <div className="pt-2">
             <Link
