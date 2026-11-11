@@ -1,2 +1,2 @@
-# Totthobox Official Google AdSense ads.txt
-google.com, pub-9522604367420521, DIRECT, f08c47fec0942fa0
+# Totthobox Google AdSense seller entry is generated at build time from NEXT_PUBLIC_ADSENSE_CLIENT.
+# Do not hard-code publisher IDs in this tracked source file.
