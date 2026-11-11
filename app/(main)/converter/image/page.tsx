@@ -1,44 +1,46 @@
 import type { Metadata } from "next";
 import ImageConverter from "@/components/tools/AdvancedImageConverter";
+import ToolGuide from "@/components/ToolGuide";
+import { imageConverterGuide } from "@/lib/content/converters/image";
 
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
-  title: "Free Online Image Converter | JPG, PNG, WEBP, SVG, GIF, AVIF, BMP, ICO",
+  alternates: { canonical: "https://totthobox.com/converter/image" },
+  title: "অনলাইন ইমেজ কনভার্টার - JPG, PNG, WebP, SVG, AVIF, ICO | Totthobox",
   description:
-    "Convert image files online fast, free, and securely. Easily convert JPG, PNG, WebP, GIF, SVG, BMP, AVIF, and ICO to any format. No upload required — everything runs in your browser. 100% private & free.",
+    "ব্রাউজারে দ্রুত ও নিরাপদে ছবি কনভার্ট করুন। JPG, PNG, WebP, GIF, SVG, AVIF ও ICO ফরম্যাট সমর্থন। ১০০% ফ্রি ও প্রাইভেট ইমেজ কনভার্সন গাইড।",
   openGraph: {
-    title: "Free Online Image Converter | JPG, PNG, WEBP, SVG, AVIF & More",
-    description:
-      "Convert images instantly in your browser. No uploads, no limits, completely free and private.",
+    title: "অনলাইন ইমেজ কনভার্টার - JPG, PNG, WebP, SVG, AVIF | Totthobox",
+    description: "ব্রাউজারে নিরাপদে ছবি রূপান্তর, ক্রপ ও কালার অ্যাডজাস্টমেন্ট করার ফ্রি টুল।",
     url: "https://totthobox.com/converter/image",
     type: "website",
+    siteName: "Totthobox",
+    locale: "bn_BD",
     images: [
       {
         url: "https://totthobox.com/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Image Converter Tool",
+        alt: "Totthobox Image Converter",
       },
     ],
-    siteName: "Totthobox",
-    locale: "bn_BD",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Free Online Image Converter",
-    description: "Convert JPG, PNG, WebP, AVIF, SVG & more instantly in your browser. Private & free.",
+    title: "অনলাইন ইমেজ কনভার্টার - JPG, PNG, WebP | Totthobox",
+    description: "ব্রাউজারে নিরাপদে ছবি রূপান্তর ও অপ্টিমাইজেশন করুন।",
     images: [{ url: "https://totthobox.com/og-image.png", alt: "Totthobox" }],
-  },
-  alternates: {
-    canonical: "https://totthobox.com/converter/image"
   },
 };
 
 export default function ImageConverterPage() {
   return (
-    <main className=" max-w-2xl mx-auto px-4 py-10 sm:px-6 lg:px-8">
-      <ImageConverter />
-    </main>
+    <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-12">
+      <div className="max-w-3xl mx-auto">
+        <ImageConverter />
+      </div>
+      <ToolGuide guide={imageConverterGuide} />
+    </div>
   );
 }
