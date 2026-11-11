@@ -1,13 +1,14 @@
 "use client";
 
-import DeferredAdSense from "./DeferredAdSense";
 import AdUnit from "./AdUnit";
 
-export { AdUnit, DeferredAdSense };
+export { AdUnit };
 
 export default function Adsense(props: React.ComponentProps<typeof AdUnit>) {
-  if (props.slotId || props.format) {
-    return <AdUnit {...props} />;
+  // Legacy callers must opt in explicitly; a missing slot never loads AdSense.
+  if (!props.enabled || !props.eligible || !props.slotId || !props.clientId) {
+    return null;
   }
-  return <DeferredAdSense />;
+
+  return <AdUnit {...props} />;
 }
