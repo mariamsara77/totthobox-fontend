@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 };
 
 // TODO(owner): add verified author/reviewer details and page-specific source citations when supplied.
-export default TaxVatPage() {
+export default async function TaxVatPage() {
   return (
     <>
       <ToolStructuredData
