@@ -15,6 +15,7 @@ interface AdUnitProps {
   className?: string;
   minHeight?: number | string;
   label?: string;
+  placement?: string;
 }
 
 declare global {
@@ -45,6 +46,7 @@ export default function AdUnit({
   className = "",
   minHeight,
   label = "বিজ্ঞাপন",
+  placement,
 }: AdUnitProps) {
   const adRef = useRef<HTMLModElement | null>(null);
   const pushedRef = useRef(false);
@@ -95,6 +97,7 @@ export default function AdUnit({
       className={`relative mx-auto my-6 w-full overflow-hidden rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-2 text-center dark:border-zinc-800/80 dark:bg-zinc-900/40 ${className}`}
       style={{ minHeight: styleMinHeight }}
       aria-label="বিজ্ঞাপন অংশ"
+      data-placement={placement}
     >
       <div className="mb-1 flex items-center justify-center">
         <span className="text-[10px] font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
