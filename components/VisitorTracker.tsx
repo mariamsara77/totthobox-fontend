@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { getTracker, trackPageView, startNavigation } from "@/lib/tracker";
+import { setTrackingConsent, trackPageView, startNavigation } from "@/lib/tracker";
 
 function hasAnalyticsConsent(): boolean {
   try {
@@ -198,15 +198,11 @@ export default function VisitorTracker() {
   }, []);
 
   useEffect(() => {
-    const tracker = getTracker();
-    tracker.setEnabled(analyticsEnabled);
+    setTrackingConsent(analyticsEnabled);
 
-    if (analyticsEnabled) {
-      tracker.init();
-      if (pathname) {
-        const timer = window.setTimeout(() => trackPageView(pathname), 120);
-        return () => window.clearTimeout(timer);
-      }
+    if (analyticsEnabled && pathname) {
+      const timer = window.setTimeout(() => trackPageView(pathname), 120);
+      return () => window.clearTimeout(timer);
     }
   }, [analyticsEnabled, pathname]);
 
