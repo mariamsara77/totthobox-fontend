@@ -64,11 +64,11 @@
 - [x] Git commit `phase-6: rich content depth for tools and converters`
 
 ### Phase 7: Trust, Authorship & YMYL Safety
-- [x] Transparent editorial team byline; no invented reviewer names, credentials or default update dates
-- [x] Reference links on History, Islamic basics, dua and Tax/VAT editorial guides
-- [x] Islamic disclaimers and references on individual dua/basic-Islam pages
+- [ ] TODO(owner): supply actual author/editor names, approved bios, reviewer identities and verified credentials; byline component remains hidden until supplied
+- [ ] TODO(owner): provide or approve page-specific primary source links and citation notes for History, Islamic basics, dua and Tax/VAT
+- [x] General Islamic caution/disclaimer retained; exact sources remain TODO(owner) and are not displayed until supplied
 - [x] Cookie Policy and Copyright/DMCA contact-guidance pages linked from the public footer
-- [ ] Owner to supply real named reviewers/credentials and record-level primary references
+- [ ] TODO(owner): supply real named reviewers/credentials and record-level primary references
 - [ ] Verify the published contact mailbox and legal wording
 - [ ] Software source attribution and emergency/health record-level references still require owner/backend review
 
