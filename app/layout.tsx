@@ -8,7 +8,6 @@ import DeferredVisitorTracker from "@/components/DeferredVisitorTracker";
 import InstallPWA from "@/components/InstallPWA";
 import NetworkStatus from "@/components/NetworkStatus";
 import SiteStructuredData from "@/components/seo/SiteStructuredData";
-import DeferredAdSense from "@/components/DeferredAdSense";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -139,7 +138,6 @@ export default function RootLayout({
         <TagManager />
         <NetworkStatus />
         <AppProviders>{children}</AppProviders>
-        <DeferredAdSense enabled={ADSENSE_ENABLED} clientId={ADSENSE_CLIENT} />
         <DeferredVisitorTracker />
         <InstallPWA />
         <GoogleTranslate />
