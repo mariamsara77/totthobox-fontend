@@ -59,11 +59,13 @@ export async function generateMetadata({
   const isThin = isThinContent(extractRecordText(item, ["bangla_name", "arabic_text", "bangla_text", "bangla_meaning", "bangla_fojilot"]), 300);
   const title = `${item.bangla_name} - আরবি, উচ্চারণ, অর্থ ও আমল | দোয়া সংগ্রহ | তথ্যবক্স`;
   const sourceDescription = cleanMeaning || cleanText || cleanFojilot;
-  const description = sourceDescription
-    ? sourceDescription.length > 160
-      ? `${sourceDescription.slice(0, 157).trimEnd()}...`
-      : sourceDescription
-    : undefined;
+  const descriptionText =
+    sourceDescription ||
+    `${item.bangla_name || slug} দোয়ার আরবি পাঠ, বাংলা উচ্চারণ, অর্থ ও আমলের তথ্য।`;
+  const description =
+    descriptionText.length > 160
+      ? `${descriptionText.slice(0, 157).trimEnd()}...`
+      : descriptionText;
   const canonical = `https://totthobox.com/islam/dowan/${encodeURIComponent(item.slug || slug)}`;
 
   return {
