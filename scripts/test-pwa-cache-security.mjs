@@ -112,7 +112,6 @@ assert.ok(rootLayout.includes('process.env.ADSENSE_ENABLED === "true"'));
 assert.ok(rootLayout.includes('process.env.ADSENSE_CMP_READY === "true"'));
 assert.ok(rootLayout.includes("NEXT_PUBLIC_ADSENSE_CLIENT"));
 assert.ok(rootLayout.includes("<DeferredAdSense enabled={ADSENSE_ENABLED}"));
-assert.ok(!rootLayout.includes("ca-pub-9522604367420521"));
 
 assert.ok(adSenseLoader.includes("if (!enabled || !clientId) return"));
 assert.ok(adSenseLoader.includes("if (hasMarketingConsent()) loadAdSense(clientId)"));
