@@ -26,6 +26,9 @@ export default function AuthorReviewerBlock({
 }: AuthorReviewerBlockProps) {
   const profile = getEditorialProfile(category);
 
+  // Hide the byline until the owner supplies verified author identity and bio.
+  if (!profile.name.trim() || !profile.bio.trim()) return null;
+
   return (
     <aside
       className={`my-8 space-y-3 rounded-2xl border border-zinc-200/90 bg-zinc-50/60 p-5 text-xs text-zinc-700 dark:border-zinc-800/90 dark:bg-zinc-900/40 dark:text-zinc-300 sm:text-sm ${className}`}
