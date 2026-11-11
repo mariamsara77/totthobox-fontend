@@ -133,7 +133,7 @@ export default function ToolGuide({ content, guide, className = "" }: ToolGuideP
           )}
         </div>
 
-        <div className="space-y-3 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
+        <div className="space-y-3 text-base leading-relaxed text-zinc-700 dark:text-zinc-300">
           {introduction.map((paragraph, idx) => (
             <p key={idx}>{paragraph}</p>
           ))}
