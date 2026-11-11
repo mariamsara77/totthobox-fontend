@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { cache } from "react";
 import { notFound } from "next/navigation";
 import DowaShowClient from "./dowaShowClient";
+import AuthorReviewerBlock from "@/components/AuthorReviewerBlock";
+import Disclaimer from "@/components/Disclaimer";
 import { fetchApi } from "@/lib/api/fetcher";
 import { getSlugsForPath } from "@/lib/api/slugs";
 import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
@@ -101,5 +103,26 @@ export default async function DowaShowPage({
   const data = await getItem(slug);
   if (!data) notFound();
 
-  return <DowaShowClient initialData={data} slug={slug} />;
+  return (
+    <>
+      <DowaShowClient initialData={data} slug={slug} />
+      <div className="mx-auto max-w-4xl space-y-4 px-4">
+        <Disclaimer type="islamic" />
+        <AuthorReviewerBlock
+          category="islamic"
+          sources={[
+            {
+              name: "Quran.com — কুরআন পাঠ ও অধ্যয়ন",
+              url: "https://quran.com/",
+            },
+            {
+              name: "Sunnah.com — হাদিস সংগ্রহ",
+              url: "https://sunnah.com/",
+              note: "প্রতিটি দোয়ার উৎস, হাদিস নম্বর ও মান মূল সংগ্রহ থেকে যাচাই করুন।",
+            },
+          ]}
+        />
+      </div>
+    </>
+  );
 }
