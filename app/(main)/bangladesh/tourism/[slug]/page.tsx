@@ -70,9 +70,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const cleanDescription = getPlainText(item.description);
   const isThin = isThinContent(extractRecordText(item), 300);
   const title = `${item.title} | বাংলাদেশের পর্যটন কেন্দ্র | তথ্যবক্স`;
-  const description = cleanDescription
-    ? getMetaDescription(item.title, item.description)
-    : undefined;
+  const contentDescription = extractRecordText(item)
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\\s+/g, " ")
+    .trim();
+  const descriptionSource =
+    (cleanDescription ? getMetaDescription(item.title, item.description) : "") ||
+    contentDescription ||
+    `${item.title} — বাংলাদেশের পর্যটন কেন্দ্র, অবস্থান ও দর্শনীয় তথ্য।`;
+  const description =
+    descriptionSource.length > 160
+      ? `${descriptionSource.slice(0, 157).trimEnd()}...`
+      : descriptionSource;
   const canonical = `https://totthobox.com/bangladesh/tourism/${encodeURIComponent(item.slug)}`;
 
   return {

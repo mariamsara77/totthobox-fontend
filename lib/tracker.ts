@@ -29,6 +29,7 @@ class VisitorTracker {
   private readonly sessionId: string;
   private readonly systemPayload: TrackPayload;
   private initialized = false;
+  private enabled = false;
   private lastPageView = "";
   private lastPageViewTime = 0;
   private navigationStart = 0;
@@ -127,7 +128,7 @@ class VisitorTracker {
   }
 
   private send(url: string, data: TrackingEventPayload): void {
-    if (typeof navigator === "undefined") return;
+    if (!this.enabled || typeof navigator === "undefined") return;
 
     if (!navigator.onLine) {
       this.queueOffline(url, data);
@@ -159,7 +160,16 @@ class VisitorTracker {
     window.setTimeout(fn, 100);
   }
 
+  public setEnabled(enabled: boolean): void {
+    this.enabled = enabled;
+    if (!enabled) {
+      // Discard queued analytics immediately when a visitor withdraws consent.
+      this.storage("tracking_queue", JSON.stringify([]));
+    }
+  }
+
   public startNavigation(): void {
+    if (!this.enabled) return;
     this.navigationStart = performance.now();
     this.isNavigating = true;
   }
@@ -169,6 +179,7 @@ class VisitorTracker {
     action: string,
     payload: TrackPayload = {},
   ): void {
+    if (!this.enabled) return;
     this.scheduleSend(() => {
       this.send(`${API_BASE}/tracking/event`, {
         category,
@@ -181,7 +192,7 @@ class VisitorTracker {
   }
 
   public trackPageView(path?: string, routeName?: string): void {
-    if (typeof window === "undefined") return;
+    if (!this.enabled || typeof window === "undefined") return;
 
     const currentPath = path || window.location.pathname;
     const now = Date.now();
@@ -247,6 +258,7 @@ class VisitorTracker {
   }
 
   public flushOfflineQueue(): void {
+    if (!this.enabled) return;
     try {
       const raw = this.storage("tracking_queue");
       if (!raw) return;
@@ -281,7 +293,7 @@ class VisitorTracker {
   }
 
   public init(): void {
-    if (this.initialized || typeof window === "undefined") return;
+    if (!this.enabled || this.initialized || typeof window === "undefined") return;
     this.initialized = true;
 
     if (!this.storage("hw_tracked", undefined, true)) {
@@ -337,18 +349,31 @@ export function getTracker(): VisitorTracker {
   return trackerInstance;
 }
 
+export function setTrackingConsent(enabled: boolean): void {
+  if (!enabled) {
+    trackerInstance?.setEnabled(false);
+    return;
+  }
+
+  const tracker = getTracker();
+  tracker.setEnabled(true);
+  tracker.init();
+}
+
 export function track(
   category: string,
   action: string,
   payload?: TrackPayload,
 ): void {
-  getTracker().trackEvent(category, action, payload);
+  // Do not create visitor/session identifiers unless analytics consent enabled
+  // and the consent-aware VisitorTracker has initialized the singleton.
+  trackerInstance?.trackEvent(category, action, payload);
 }
 
 export function trackPageView(path?: string, routeName?: string): void {
-  getTracker().trackPageView(path, routeName);
+  trackerInstance?.trackPageView(path, routeName);
 }
 
 export function startNavigation(): void {
-  getTracker().startNavigation();
+  trackerInstance?.startNavigation();
 }

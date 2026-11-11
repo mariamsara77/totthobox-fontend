@@ -1,2 +1,2 @@
-# Totthobox Official Google AdSense ads.txt
-google.com, pub-9522604367420521, DIRECT, f08c47fec0942fa0
+# Totthobox Google AdSense seller information
+# AdSense seller entry is omitted unless ADSENSE_ENABLED, ADSENSE_CMP_READY and a valid NEXT_PUBLIC_ADSENSE_CLIENT are configured.

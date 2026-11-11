@@ -53,6 +53,11 @@ export interface ToolGuideData {
   faqs: FAQItem[];
   relatedTools?: RelatedLink[];
   relatedLinks?: RelatedLink[];
+  sources?: {
+    name: string;
+    url: string;
+    note?: string;
+  }[];
   disclaimer?: string;
 }
 
@@ -78,6 +83,7 @@ export default function ToolGuide({ content, guide, className = "" }: ToolGuideP
     faqs,
     relatedTools,
     relatedLinks,
+    sources,
     disclaimer,
   } = guideData;
 
@@ -127,7 +133,7 @@ export default function ToolGuide({ content, guide, className = "" }: ToolGuideP
           )}
         </div>
 
-        <div className="space-y-3 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
+        <div className="space-y-3 text-base leading-relaxed text-zinc-700 dark:text-zinc-300">
           {introduction.map((paragraph, idx) => (
             <p key={idx}>{paragraph}</p>
           ))}
@@ -278,6 +284,37 @@ export default function ToolGuide({ content, guide, className = "" }: ToolGuideP
               </details>
             ))}
           </div>
+        </section>
+      )}
+
+      {/* Sources */}
+      {sources && sources.length > 0 && (
+        <section className="space-y-3 border-t border-zinc-200/60 pt-4 dark:border-zinc-800/60">
+          <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
+            তথ্যসূত্র ও আরও পড়ুন
+          </h3>
+          <ul className="space-y-2 text-sm text-zinc-700 dark:text-zinc-300">
+            {sources.map((source) => (
+              <li key={source.url}>
+                <a
+                  href={source.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-indigo-700 underline underline-offset-2 hover:text-indigo-600 dark:text-indigo-400"
+                >
+                  {source.name}
+                </a>
+                {source.note && (
+                  <p className="mt-0.5 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
+                    {source.note}
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            এখানে সাধারণ রেফারেন্স দেওয়া হয়েছে; নির্দিষ্ট কর-হার বা বিধানের ক্ষেত্রে সংশ্লিষ্ট অর্থ আইন ও সর্বশেষ সরকারি নির্দেশনা আলাদাভাবে যাচাই করুন।
+          </p>
         </section>
       )}
 

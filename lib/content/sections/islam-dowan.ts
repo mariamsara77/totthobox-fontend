@@ -54,6 +54,7 @@ export const islamDowanArticle: EditorialArticle = {
     }
   ],
   disclaimer: "সকল দোয়া ও ফজিলত পবিত্র কুরআন এবং সিহাহ সিত্তাহ (বুখারি, মুসলিম, তিরমিজি, আবু দাউদ প্রমুখ) এর সহিহ হাদিস অনুসারে সংকলিত। উচ্চারণগত ভুলের ঝুঁকি এড়াতে মূল আরবি পাঠের প্রতি মনোযোগী হওয়া কাম্য।",
+  // TODO(owner): supply page-specific primary source names, URLs and citation notes.
   relatedLinks: [
     {
       title: "ইসলামের মৌলিক জ্ঞান ও আরকান",

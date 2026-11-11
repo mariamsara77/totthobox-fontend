@@ -17,6 +17,11 @@ export interface EditorialArticle {
     answer: string;
   }[];
   disclaimer?: string;
+  sources?: {
+    name: string;
+    url: string;
+    note?: string;
+  }[];
   relatedLinks?: {
     title: string;
     href: string;
@@ -30,7 +35,7 @@ interface EditorialSectionProps {
 }
 
 export default function EditorialSection({ article, className = "" }: EditorialSectionProps) {
-  const { title, badge, subtitle, introduction, sections, faqs, disclaimer, relatedLinks } = article;
+  const { title, badge, subtitle, introduction, sections, faqs, disclaimer, sources, relatedLinks } = article;
 
   const faqSchema =
     faqs && faqs.length > 0
@@ -76,7 +81,7 @@ export default function EditorialSection({ article, className = "" }: EditorialS
           )}
         </div>
 
-        <div className="space-y-3 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
+        <div className="space-y-3 text-base leading-relaxed text-zinc-700 dark:text-zinc-300">
           {introduction.map((paragraph, idx) => (
             <p key={idx}>{paragraph}</p>
           ))}
@@ -89,13 +94,13 @@ export default function EditorialSection({ article, className = "" }: EditorialS
           <h3 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-zinc-100">
             {sec.heading}
           </h3>
-          <div className="space-y-2.5 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
+          <div className="space-y-2.5 text-base leading-relaxed text-zinc-700 dark:text-zinc-300">
             {sec.paragraphs.map((p, pIdx) => (
               <p key={pIdx}>{p}</p>
             ))}
           </div>
           {sec.bullets && sec.bullets.length > 0 && (
-            <ul className="space-y-1.5 pt-1 text-xs sm:text-sm text-zinc-700 dark:text-zinc-300">
+            <ul className="space-y-1.5 pt-1 text-sm sm:text-base text-zinc-700 dark:text-zinc-300">
               {sec.bullets.map((bullet, bIdx) => (
                 <li key={bIdx} className="flex items-start gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-2 shrink-0" />
@@ -131,6 +136,37 @@ export default function EditorialSection({ article, className = "" }: EditorialS
               </details>
             ))}
           </div>
+        </section>
+      )}
+
+      {/* Sources */}
+      {sources && sources.length > 0 && (
+        <section className="space-y-3 border-t border-zinc-200/60 pt-4 dark:border-zinc-800/60">
+          <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
+            তথ্যসূত্র ও আরও পড়ুন
+          </h3>
+          <ul className="space-y-2 text-sm text-zinc-700 dark:text-zinc-300">
+            {sources.map((source) => (
+              <li key={source.url}>
+                <a
+                  href={source.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-indigo-700 underline underline-offset-2 hover:text-indigo-600 dark:text-indigo-400"
+                >
+                  {source.name}
+                </a>
+                {source.note && (
+                  <p className="mt-0.5 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
+                    {source.note}
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            সূত্রের সাধারণ তালিকা দেওয়া হয়েছে; প্রতিটি তথ্য বা দাবির পাশে নির্দিষ্ট নথি-রেফারেন্স যোগ করার কাজ সম্পাদকীয়ভাবে যাচাই করা প্রয়োজন।
+          </p>
         </section>
       )}
 

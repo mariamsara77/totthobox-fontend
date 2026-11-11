@@ -28,6 +28,14 @@ export const metadata: Metadata = {
 export default function PdfEditorPage() {
   return (
     <main className="container mx-auto px-4 py-6">
+      <header className="mx-auto mb-5 w-full max-w-4xl">
+        <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+          ফ্রি অনলাইন PDF এডিটর
+        </h1>
+        <p className="mt-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+          ব্রাউজারে PDF খুলুন, পৃষ্ঠা দেখুন এবং উপলভ্য সম্পাদনা সরঞ্জাম ব্যবহার করুন।
+        </p>
+      </header>
       <PdfEditor />
     </main>
   );

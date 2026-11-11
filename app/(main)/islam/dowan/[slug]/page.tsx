@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { cache } from "react";
 import { notFound } from "next/navigation";
 import DowaShowClient from "./dowaShowClient";
+import Disclaimer from "@/components/Disclaimer";
 import { fetchApi } from "@/lib/api/fetcher";
 import { getSlugsForPath } from "@/lib/api/slugs";
 import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
@@ -58,11 +59,13 @@ export async function generateMetadata({
   const isThin = isThinContent(extractRecordText(item, ["bangla_name", "arabic_text", "bangla_text", "bangla_meaning", "bangla_fojilot"]), 300);
   const title = `${item.bangla_name} - আরবি, উচ্চারণ, অর্থ ও আমল | দোয়া সংগ্রহ | তথ্যবক্স`;
   const sourceDescription = cleanMeaning || cleanText || cleanFojilot;
-  const description = sourceDescription
-    ? sourceDescription.length > 160
-      ? `${sourceDescription.slice(0, 157).trimEnd()}...`
-      : sourceDescription
-    : undefined;
+  const descriptionText =
+    sourceDescription ||
+    `${item.bangla_name || slug} দোয়ার আরবি পাঠ, বাংলা উচ্চারণ, অর্থ ও আমলের তথ্য।`;
+  const description =
+    descriptionText.length > 160
+      ? `${descriptionText.slice(0, 157).trimEnd()}...`
+      : descriptionText;
   const canonical = `https://totthobox.com/islam/dowan/${encodeURIComponent(item.slug || slug)}`;
 
   return {
@@ -101,5 +104,13 @@ export default async function DowaShowPage({
   const data = await getItem(slug);
   if (!data) notFound();
 
-  return <DowaShowClient initialData={data} slug={slug} />;
+  return (
+    <>
+      <DowaShowClient initialData={data} slug={slug} />
+      <div className="mx-auto max-w-4xl space-y-4 px-4">
+        <Disclaimer type="islamic" />
+        {/* TODO(owner): add verified author/reviewer details and exact citations for each dua. */}
+      </div>
+    </>
+  );
 }

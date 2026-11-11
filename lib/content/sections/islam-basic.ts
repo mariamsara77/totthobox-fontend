@@ -55,6 +55,7 @@ export const islamBasicArticle: EditorialArticle = {
     }
   ],
   disclaimer: "ইসলামিক বিধান ও তথ্যাবলী পবিত্র কুরআন, সহিহ হাদিস এবং প্রতিষ্ঠিত ফিকহি মূলনীতি থেকে সংকলিত। সুনির্দিষ্ট পারিবারিক বা ব্যক্তিগত ফতোয়ার জন্য স্থানীয় নির্ভরযোগ্য ইসলামি গবেষক বা মুফতিগণের সাথে পরামর্শ করুন।",
+  // TODO(owner): supply page-specific primary source names, URLs and citation notes.
   relatedLinks: [
     {
       title: "প্রতিদিনের মাসনুন দোয়া ও মোনাজাত",

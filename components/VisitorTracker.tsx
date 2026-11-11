@@ -1,14 +1,26 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { getTracker, trackPageView, startNavigation } from "@/lib/tracker";
+import { setTrackingConsent, trackPageView, startNavigation } from "@/lib/tracker";
+
+function hasAnalyticsConsent(): boolean {
+  try {
+    const raw = window.localStorage.getItem("cookie_consent");
+    if (!raw) return false;
+    const saved = JSON.parse(raw) as Record<string, unknown>;
+    return saved.analytics === true;
+  } catch {
+    return false;
+  }
+}
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "https://admin.totthobox.com/api";
 
 export default function VisitorTracker() {
   const pathname = usePathname();
+  const [analyticsEnabled, setAnalyticsEnabled] = useState(false);
 
   const lastSynced = useRef<{
     isPwa: boolean | null;
@@ -45,7 +57,7 @@ export default function VisitorTracker() {
   // Sync to Backend
   // ==========================================
   const syncPwaStatus = async (force = false) => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || !hasAnalyticsConsent()) return;
     if (isSyncing.current) return;
 
     const isPWA = getIsPwa();
@@ -176,20 +188,23 @@ export default function VisitorTracker() {
     return () => clearTimeout(t);
   }, [pathname]);
 
-  // ==========================================
-  // Existing tracker logic
-  // ==========================================
+  // Optional first-party analytics only starts after an explicit analytics choice.
   useEffect(() => {
-    getTracker().init();
+    const syncConsent = () => setAnalyticsEnabled(hasAnalyticsConsent());
+    syncConsent();
+    window.addEventListener("totthobox:consent-updated", syncConsent);
+    return () =>
+      window.removeEventListener("totthobox:consent-updated", syncConsent);
   }, []);
 
   useEffect(() => {
-    if (!pathname) return;
-    const timer = window.setTimeout(() => {
-      trackPageView(pathname);
-    }, 120);
-    return () => window.clearTimeout(timer);
-  }, [pathname]);
+    setTrackingConsent(analyticsEnabled);
+
+    if (analyticsEnabled && pathname) {
+      const timer = window.setTimeout(() => trackPageView(pathname), 120);
+      return () => window.clearTimeout(timer);
+    }
+  }, [analyticsEnabled, pathname]);
 
   useEffect(() => {
     const onClick = (event: MouseEvent) => {

@@ -64,16 +64,21 @@
 - [x] Git commit `phase-6: rich content depth for tools and converters`
 
 ### Phase 7: Trust, Authorship & YMYL Safety
-- [ ] Author/reviewer block on content pages (`config/editorial.ts` fallback)
-- [ ] Sources section on Islamic, Tax, Health, Emergency, and History pages
-- [ ] Reusable `<Disclaimer type="...">` component (tax, islamic, health, emergency, general)
-- [ ] Software official download links only disclaimer & verification
-- [ ] Git commit `phase-7: trust authorship and ymyl disclaimers`
+- [ ] TODO(owner): supply actual author/editor names, approved bios, reviewer identities and verified credentials; byline component remains hidden until supplied
+- [ ] TODO(owner): provide or approve page-specific primary source links and citation notes for History, Islamic basics, dua and Tax/VAT
+- [x] General Islamic caution/disclaimer retained; exact sources remain TODO(owner) and are not displayed until supplied
+- [x] Cookie Policy and Copyright/DMCA contact-guidance pages linked from the public footer
+- [ ] TODO(owner): supply real named reviewers/credentials and record-level primary references
+- [ ] Verify the published contact mailbox and legal wording
+- [ ] Software source attribution and emergency/health record-level references still require owner/backend review
 
 ### Phase 8: Ad Slots & Compliance
-- [ ] Single `<AdSlot>` component (guarded by `NEXT_PUBLIC_ADS_ENABLED=false`, thin-page guard, max 3 slots, no CLS)
-- [ ] Place AdSlots only on verified slot candidates
-- [ ] Git commit `phase-8: ad slots compliance and inventory protection`
+- [x] Environment-gated AdSense script and publisher meta (no fallback publisher ID)
+- [x] Consent-gated AdSense/GA4/GTM and first-party visitor analytics
+- [x] Server-side `<AdSlot>` eligibility guard: article/guide only, 500+ publisher words, no search/filter/private/error/tool pages
+- [ ] No ad slot IDs or page placements were found; add placements only after real slot IDs and page-level editorial approval
+- [ ] Install and verify a Google-certified CMP with IAB TCF for EEA/UK/Switzerland before setting `ADSENSE_CMP_READY=true`
+- [ ] Git commit and preview verification required before enabling production ads
 
 ### Phase 9: Performance Optimization
 - [ ] Audit `next/image` width/height and priority on LCP
@@ -82,21 +87,24 @@
 - [ ] Git commit `phase-9: performance and Core Web Vitals optimizations`
 
 ### Phase 10: Structured Data & Linking
-- [ ] Visual breadcrumbs + `BreadcrumbList` schema
-- [ ] Organization & WebSite schema on homepage; Article & WebApplication on inner pages
-- [ ] Git commit `phase-10: json-ld schemas and internal navigation`
+- [x] Organization & WebSite JSON-LD already present in the root layout
+- [x] Existing detail-page BreadcrumbList and Tool WebApplication schema retained
+- [x] Existing news detail NewsArticle schema retained
+- [ ] Visual breadcrumbs and schema coverage still need a route-by-route validation
+- [ ] Article/VideoObject coverage only where the matching publisher-owned content exists
 
 ### Phase 11: Final Verification & Audit
-- [ ] Verification script `scripts/audit-pages.mjs`
-- [ ] Run cache warm script and audit
-- [ ] Generate `AUDIT_REPORT.md`, `AUDIT_RESULTS.md`, `PERFORMANCE_REPORT.md`
-- [ ] Git commit `phase-11: final verification and audit report`
+- [x] CI includes lint, explicit TypeScript check, production build and PWA cache-security test
+- [ ] CI must pass on the Pull Request before merge approval
+- [ ] Run cache warm script and route-level live audit in Preview
+- [ ] Generate final AdSense, SEO and Core Web Vitals reports after Preview review
+- [ ] Test 320 / 375 / 768 / 1024 / 1440 px and keyboard/screen-reader flows
 
 ---
 
 ## NEXT STEP
-Execute Phase 7: Trust, Authorship & YMYL Safety
-1. Create `config/editorial.ts` with verified editorial board members and reviewers.
-2. Build reusable `<AuthorReviewerBlock>` and `<Disclaimer type="...">` components.
-3. Attach sources and verification blocks to Islamic, Tax, Emergency, and History pages.
-4. Run `npm run lint` and `npm run build` after Phase 7.
+1. Review CI results and the Vercel Preview before considering merge.
+2. Install and verify a Google-certified CMP with IAB TCF, then wire its signals into the consent gate before enabling AdSense.
+3. Confirm real editorial contacts, named reviewers/credentials, record-level sources, formal copyright-agent details and channel/content rights.
+4. Complete browser checks for 320 / 375 / 768 / 1024 / 1440 px, keyboard navigation and real-user Core Web Vitals.
+5. Keep Phase 9 and the remaining Phase 10/11 checks open until measured and reported.

@@ -61,10 +61,10 @@ export default function EditorialPolicyPage() {
         <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 max-w-3xl leading-relaxed">
           তথ্যবক্স (Totthobox) একটি নিরপেক্ষ ও উন্মুক্ত তথ্যভাণ্ডার ও ডিজিটাল টুলস সেবা। 
           ব্যবহারকারীদের কাছে নির্ভুল, হালনাগাদ ও প্রাসঙ্গিক তথ্য পৌঁছে দেওয়াই আমাদের মূল অঙ্গীকার। 
-          আমাদের প্রতিটি কন্টেন্ট তৈরি, যাচাইকরণ এবং প্রকাশের জন্য যে নীতি ও মানদণ্ড অনুসরণ করা হয়, তা নিচে স্পষ্ট করা হলো।
+          কনটেন্ট প্রস্তুতি, উৎস যাচাই, সংশোধন এবং প্রকাশের ক্ষেত্রে আমরা যে নীতিগুলো অনুসরণ করার লক্ষ্য রাখি, তা নিচে ব্যাখ্যা করা হলো।
         </p>
         <p className="text-xs text-zinc-500">
-          সর্বশেষ সংস্করণ: ১০ নভেম্বর, ২০২৬ · সম্পাদকীয় পর্ষদ কর্তৃক অনুমোদিত
+          সংস্করণ: ১১ নভেম্বর, ২০২৬
         </p>
       </header>
 
@@ -82,7 +82,7 @@ export default function EditorialPolicyPage() {
           তথ্যবক্সের মূল উদ্দেশ্য হলো দৈনন্দিন জীবনের জটিল গাণিতিক হিসাব, সরকারি ও প্রাতিষ্ঠানিক তথ্য, 
           আইনি ও জরুরি নম্বর এবং শিক্ষামূলক বিষয়াবলিকে সহজ ও সাবলীল বাংলায় সবার সামনে উপস্থাপন করা। 
           আমরা কোনো ধরণের ক্লিকবেট, অসত্য চটকদার খবর বা বিভ্রান্তিকর তথ্য প্রচার করি না। 
-          প্রতিটি তথ্যের পেছনে প্রমাণযোগ্য যৌক্তিকতা এবং দায়িত্বশীলতা নিশ্চিত করা হয়।
+          যেখানে সম্ভব, তথ্যের সঙ্গে নির্ভরযোগ্য উৎস ও সীমাবদ্ধতা যুক্ত করা হয়। কোনো তথ্যের উৎস বা যাচাই অসম্পূর্ণ থাকলে সেটিকে নিশ্চিত সত্য হিসেবে উপস্থাপন করা উচিত নয়।
         </p>
       </section>
 
@@ -97,7 +97,7 @@ export default function EditorialPolicyPage() {
           </h2>
         </div>
         <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-          তথ্যবক্সে প্রকাশিত যেকোনো তথ্য অবশ্যই বিশ্বস্ত এবং প্রামাণিক প্রাথমিক উৎস থেকে সংগ্রহ করা হয়:
+          তথ্যের ধরন অনুযায়ী আমরা প্রাথমিক সরকারি নথি, সংশ্লিষ্ট প্রতিষ্ঠানের ওয়েবসাইট, স্বীকৃত গ্রন্থ বা নির্ভরযোগ্য রেফারেন্স ব্যবহার করতে অগ্রাধিকার দিই। সব বিদ্যমান রেকর্ডে এখনো পৃথক উৎস-লিংক যুক্ত হয়নি; উৎস অনুপস্থিত থাকলে তা সম্পাদকীয়ভাবে পূরণ করতে হবে:
         </p>
         <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 text-sm text-zinc-700 dark:text-zinc-300">
           <li className="flex items-start gap-2.5 p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/20">
@@ -130,11 +130,11 @@ export default function EditorialPolicyPage() {
           </h2>
         </div>
         <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-          ওয়েবসাইটে প্রকাশের পূর্বে প্রতিটি ক্যালকুলেটর অ্যালগরিদম ও তথ্যভিত্তিক নিবন্ধ কমপক্ষে দুই স্তরের যাচাইকরণ প্রক্রিয়ার মধ্য দিয়ে যায়:
+          যাচাইয়ের গভীরতা কনটেন্ট ও উপলব্ধ উৎসের ওপর নির্ভর করে। নতুন বা সংশোধিত কনটেন্টে প্রযোজ্য ক্ষেত্রে নিচের ধাপগুলো ব্যবহার করা উচিত; এই নীতি প্রকাশিত প্রতিটি পুরোনো রেকর্ডে দুই স্তরের যাচাই সম্পন্ন হয়েছে—এমন নিশ্চয়তা দেয় না:
         </p>
         <ol className="list-decimal list-inside space-y-2 text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed pl-1">
-          <li><strong>গাণিতিক নির্ভুলতা পরীক্ষা:</strong> সকল ইউনিট কনভার্টার ও ট্যাক্স ক্যালকুলেটরের ফর্মুলা আন্তর্জাতিক বা সরকারি স্বীকৃত সমীকরণ অনুযায়ী একাধিক নমুনায় ম্যানুয়ালি ক্রস-চেক করা হয়।</li>
-          <li><strong>সম্পাদকীয় পর্যালোচনা:</strong> ভাষা ও পরিভাষার শুদ্ধতা এবং তথ্যের স্পষ্টতা নিশ্চিত করেন দায়িত্বপ্রাপ্ত সম্পাদক।</li>
+          <li><strong>গাণিতিক নির্ভুলতা পরীক্ষা:</strong> কনভার্টার ও ক্যালকুলেটরের সূত্রগুলো প্রামাণিক একক/সূত্রের সঙ্গে মিলিয়ে টেস্ট-কেসে যাচাই করা উচিত। সব টুলের জন্য পরীক্ষার রেকর্ড এখনো প্রকাশিত নেই।</li>
+          <li><strong>সম্পাদকীয় পর্যালোচনা:</strong> ভাষা, পরিভাষা ও তথ্যের স্পষ্টতা যাচাই করা উচিত। কোনো নির্দিষ্ট বিশেষজ্ঞের পর্যালোচনা দাবি করা হলে তার নাম ও যোগ্যতা সংশ্লিষ্ট পাতায় উল্লেখ করতে হবে।</li>
           <li><strong>সীমাবদ্ধতার স্পষ্ট ঘোষণা:</strong> যেসব তথ্য পরিবর্তনশীল বা আনুমানিক (যেমন- লাইভ কারেন্সি রেট বা জটিল আয়কর হিসাব), সেগুলোতে স্পষ্ট সতর্কতা ও ডিসক্লেইমার যুক্ত করা থাকে।</li>
         </ol>
       </section>
@@ -150,12 +150,12 @@ export default function EditorialPolicyPage() {
           </h2>
         </div>
         <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-          আমরা ভুল সংশোধনে কোনো ধরণের বিলম্ব বা দ্বিধাবোধ করি না। যদি কোনো তথ্য বা হিসাবে অসঙ্গতি ধরা পড়ে:
+          কোনো তথ্য বা হিসাবে অসঙ্গতির অভিযোগ পেলে আমরা সেটি পর্যালোচনার জন্য গ্রহণ করি। প্রয়োজনীয় উৎস ও যাচাইয়ের পর সংশোধন বা ব্যাখ্যা প্রকাশ করা হয়:
         </p>
         <ul className="list-disc list-inside space-y-2 text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed pl-1">
-          <li>আমরা ২৪ ঘণ্টার মধ্যে সত্যতা যাচাই করে দ্রুততম সময়ে তা সংশোধন করি।</li>
+          <li>যাচাইয়ের জন্য নির্দিষ্ট ২৪ ঘণ্টার নিশ্চয়তা দেওয়া হয় না; বিষয়টির জটিলতা ও প্রয়োজনীয় উৎস পাওয়ার ওপর সময় নির্ভর করে।</li>
           <li>গুরুত্বপূর্ণ কোনো তথ্য পরিবর্তন করা হলে সংশ্লিষ্ট পৃষ্ঠায় &ldquo;সর্বশেষ আপডেট&rdquo; তারিখ উল্লেখ করা হয়।</li>
-          <li>ব্যবহারকারীরা কোনো তথ্য ভুল মনে করলে সরাসরি আমাদের সম্পাদকীয় ঠিকানায় সংশোধনী পাঠাতে পারেন।</li>
+          <li>ব্যবহারকারীরা ভুল বা অসম্পূর্ণ তথ্যের নির্দিষ্ট URL উল্লেখ করে যোগাযোগ ফর্ম বা admin@totthobox.com-এ সংশোধনের অনুরোধ পাঠাতে পারেন।</li>
         </ul>
       </section>
 
@@ -170,7 +170,7 @@ export default function EditorialPolicyPage() {
           </h2>
         </div>
         <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-          তথ্যবক্স পরিচালন ব্যয় নির্বাহের জন্য অনুমোদিত বিজ্ঞাপন নেটওয়ার্কের (যেমন- Google AdSense) মাধ্যমে বিজ্ঞাপন প্রদর্শন করে থাকে। তবে:
+          বিজ্ঞাপন নেটওয়ার্ক অনুমোদিত ও প্রয়োজনীয় consent configuration সম্পন্ন থাকলে Totthobox-এ বিজ্ঞাপন প্রদর্শিত হতে পারে। বিজ্ঞাপন চালু থাকলে:
         </p>
         <ul className="list-disc list-inside space-y-2 text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed pl-1">
           <li>বিজ্ঞাপন কখনোই আমাদের সম্পাদকীয় সিদ্ধান্ত, বিষয় নির্বাচন বা তথ্যের নিরপেক্ষতাকে প্রভাবিত করে না।</li>
@@ -193,7 +193,7 @@ export default function EditorialPolicyPage() {
           আমাদের সাইটের কোনো তথ্যে অসঙ্গতি দেখলে বা নতুন কোনো তথ্য সংযোজনের প্রস্তাব দিতে চাইলে নিচের তথ্যে আমাদের সাথে যোগাযোগ করার বিনীত অনুরোধ রইল:
         </p>
         <div className="space-y-1.5 text-sm">
-          <p><strong>ইমেইল:</strong> <a href="mailto:editorial@totthobox.com" className="text-indigo-600 dark:text-indigo-400 hover:underline">editorial@totthobox.com</a> অথবা <a href="mailto:support@totthobox.com" className="text-indigo-600 dark:text-indigo-400 hover:underline">support@totthobox.com</a></p>
+          <p><strong>ইমেইল:</strong> <a href="mailto:admin@totthobox.com" className="text-indigo-600 dark:text-indigo-400 hover:underline">admin@totthobox.com</a></p>
           <p><strong>সরাসরি ফর্ম:</strong> <Link href="/contact-us" className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium">আমাদের যোগাযোগ পাতায় যান &rarr;</Link></p>
         </div>
       </section>

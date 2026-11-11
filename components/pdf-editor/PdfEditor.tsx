@@ -50,9 +50,9 @@ export default function PdfEditor() {
     return (
       <div className="flex min-h-[75vh] flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-400/25 bg-zinc-400/10 p-6 text-center sm:p-12">
         <Upload className="size-12 text-zinc-400 mb-5" />
-        <h1 className="mb-2 text-lg font-semibold tracking-tight sm:text-xl">
+        <h2 className="mb-2 text-lg font-semibold tracking-tight sm:text-xl">
           পিডিএফ সম্পাদক
-        </h1>
+        </h2>
         <p className="mb-8 max-w-md text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
           লেখা, হাইলাইট, আঁকা, স্বাক্ষর, ঘোরানো ও ডাউনলোড করুন
         </p>

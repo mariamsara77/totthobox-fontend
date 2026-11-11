@@ -2,7 +2,7 @@
 
 > **Domain:** https://totthobox.com  
 > **Backend API:** https://admin.totthobox.com  
-> **AdSense Publisher ID:** `ca-pub-9522604367420521`  
+> **AdSense Publisher ID:** supplied only through `NEXT_PUBLIC_ADSENSE_CLIENT` at build time  
 > **Framework:** Next.js 16.3.3 (App Router), React 19.2.8  
 > **Audit Objective:** Resolve Google AdSense "Low Value Content" / policy rejection, ensure 100% server-side rendered initial HTML, add 600–1200 words of authentic Bangla editorial content and FAQs to tools and data pages, enforce strict YMYL disclaimers & editorial trust, eliminate thin pages from indexing, and protect ad inventory.
 
@@ -134,8 +134,8 @@ The following routes currently fetch primary page content on the client side wit
 
 1. **Global AdSense Integration**:
    - Root layout (`app/layout.tsx`) contains:
-     - `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9522604367420521" crossOrigin="anonymous" />`
-     - Meta tag `"google-adsense-account": "ca-pub-9522604367420521"`.
+     - `The AdSense script is enabled only from NEXT_PUBLIC_ADSENSE_CLIENT after env and CMP readiness checks.`
+     - The account meta tag is emitted only when the environment and CMP readiness flags are enabled.
    - **Compliance Status:** The script and verification tags must be preserved intact.
 2. **Current Ad Units (`components/AdUnit.tsx`)**:
    - Currently guards empty slot IDs (`if (!slotId) return null;`) to avoid empty box rejections.

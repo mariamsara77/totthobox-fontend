@@ -59,13 +59,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const cleanDescription = getPlainText(intro.description);
+  const contentDescription = extractRecordText(intro)
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
   const isThin = isThinContent(extractRecordText(intro), 300);
   const title = `${intro.title} | বাংলাদেশের পরিচিতি | তথ্যবক্স`;
-  const description = cleanDescription
-    ? cleanDescription.length > 160
-      ? `${cleanDescription.slice(0, 157).trimEnd()}...`
-      : cleanDescription
-    : undefined;
+  const descriptionSource =
+    cleanDescription ||
+    contentDescription ||
+    `${intro.title} — বাংলাদেশের পরিচিতি ও প্রাসঙ্গিক তথ্য।`;
+  const description =
+    descriptionSource.length > 160
+      ? `${descriptionSource.slice(0, 157).trimEnd()}...`
+      : descriptionSource;
   const canonical = `https://totthobox.com/bangladesh/introduction/${encodeURIComponent(intro.slug)}`;
 
   return {

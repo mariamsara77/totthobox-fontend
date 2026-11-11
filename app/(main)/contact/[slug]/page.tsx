@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { Suspense } from "react";
+import { notFound } from "next/navigation";
 import ContactClient from "./ContactClient";
 import Disclaimer from "@/components/Disclaimer";
 import { fetchApi } from "@/lib/api/fetcher";
@@ -102,12 +103,7 @@ export default async function ContactPage({ params }: Props) {
   const category = await getCategory(slug);
 
   if (!category) {
-    return (
-      <div className="max-w-2xl mx-auto p-4 text-center py-20">
-        <p className="text-base font-medium">ক্যাটাগরি পাওয়া যায়নি</p>
-        <p className="text-sm text-zinc-500 mt-1">অন্য ক্যাটাগরি চেষ্টা করুন</p>
-      </div>
-    );
+    notFound();
   }
 
   const initialContactsData = await getInitialContacts(category.id);

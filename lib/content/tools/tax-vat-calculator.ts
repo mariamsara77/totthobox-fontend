@@ -94,6 +94,7 @@ export const taxVatCalculatorContent: ToolGuideData = {
       answer: "জীবন বীমার কিস্তি, অনুমোদিত ডিপিএস, পেনশন স্কিম বা ট্রেজারি বন্ডে বিনিয়োগ করলে প্রযোজ্য রেয়াতের সমপরিমাণ টাকা সরাসরি প্রদেয় কর থেকে বাদ দেওয়া হয়।",
     },
   ],
+  // TODO(owner): supply page-specific primary source names, URLs and citation notes.
   relatedTools: [
     {
       title: "শতকরা (পার্সেন্টেজ) ক্যালকুলেটর",

@@ -89,9 +89,10 @@ export async function generateMetadata({
 
   const appDescription = stripHtml(app.description);
   const isThin = isThinContent(extractRecordText(app), 300);
-  const description = appDescription
-    ? makeMetaDescription(appDescription)
-    : undefined;
+  const description =
+    appDescription
+      ? makeMetaDescription(appDescription)
+      : `${app.name} সফটওয়্যারের বৈশিষ্ট্য, ব্যবহার, সংস্করণ ও অফিসিয়াল উৎসের তথ্য জানুন।`;
 
   const canonical = `https://totthobox.com/software/${encodeURIComponent(
     app.slug,

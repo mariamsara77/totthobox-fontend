@@ -54,6 +54,7 @@ export const bangladeshHistoryArticle: EditorialArticle = {
     }
   ],
   disclaimer: "ঐতিহাসিক তথ্যসমূহ জাতীয় আর্কাইভস, স্বাধীনতা যুদ্ধের দলিলপত্র এবং প্রতিষ্ঠিত ঐতিহাসিক গবেষকদের প্রামাণিক সূত্র থেকে সংকলিত। গবেষণামূলক তথ্য নিয়মিত যাচাই ও হালনাগাদ করা হয়।",
+  // TODO(owner): supply page-specific primary source names, URLs and citation notes.
   relatedLinks: [
     {
       title: "বাংলাদেশের গুরুত্বপূর্ণ স্থাপনাসমূহ",

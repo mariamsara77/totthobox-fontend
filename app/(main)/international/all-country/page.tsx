@@ -114,11 +114,15 @@ export async function generateMetadata({
     };
   }
 
-  if (region) {
+  if (region || sort !== "name") {
     return {
-      title: `${region} অঞ্চলের দেশসমূহ — রাজধানী ও তথ্য | ${SITE_NAME}`,
+      title: region
+        ? `${region} অঞ্চলের দেশসমূহ — রাজধানী ও তথ্য | ${SITE_NAME}`
+        : `বাছাই করা দেশের তালিকা — ${SITE_NAME}`,
 
-      description: `${region} অঞ্চলের দেশের রাজধানী, জনসংখ্যা, আয়তন ও আন্তর্জাতিক তথ্য — ${SITE_NAME}।`,
+      description: region
+        ? `${region} অঞ্চলের দেশের রাজধানী, জনসংখ্যা, আয়তন ও আন্তর্জাতিক তথ্য — ${SITE_NAME}।`
+        : `নির্বাচিত ক্রমে দেশগুলোর রাজধানী, জনসংখ্যা ও আয়তনের তালিকা — ${SITE_NAME}।`,
 
       robots: {
         index: false,
@@ -140,7 +144,9 @@ export async function generateMetadata({
     title,
 
     description:
-      "পৃথিবীর বিভিন্ন দেশের রাজধানী, জনসংখ্যা, আয়তন, ভাষা ও আন্তর্জাতিক কোডসহ গুরুত্বপূর্ণ তথ্য — Totthobox।",
+      page > 1
+        ? `বিশ্বের সব দেশের তালিকার ${page} নম্বর পৃষ্ঠায় রাজধানী, জনসংখ্যা, আয়তন ও আন্তর্জাতিক কোডসহ দেশভিত্তিক তথ্য — Totthobox।`
+        : "পৃথিবীর বিভিন্ন দেশের রাজধানী, জনসংখ্যা, আয়তন, ভাষা ও আন্তর্জাতিক কোডসহ গুরুত্বপূর্ণ তথ্য — Totthobox।",
 
     robots: {
       index: true,

@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getAllCountries } from "@/lib/countries";
+import { extractRecordText, isThinContent } from "@/lib/seo/word-count";
 
 const SITE_URL = "https://totthobox.com";
 const API_BASE =
@@ -12,6 +13,8 @@ const publicRoutes = [
   "/",
   "/about-us",
   "/editorial-policy",
+  "/cookie-policy",
+  "/copyright-policy",
   "/contact-us",
   "/services",
   "/privacy-policy",
@@ -64,7 +67,6 @@ const publicRoutes = [
   "/signs/trafik-sain",
   "/signs/agun",
   "/contact/police",
-  "/news",
 ];
 
 function hasSoftwareContent(item: unknown): boolean {
@@ -79,6 +81,10 @@ function hasSoftwareContent(item: unknown): boolean {
     .replace(/<[^>]*>/g, "")
     .replace(/\s+/g, "")
     .trim().length > 0;
+}
+
+function hasIndexableContent(item: unknown): boolean {
+  return !isThinContent(extractRecordText(item), 300);
 }
 
 async function fetchPlatforms(): Promise<string[]> {
@@ -225,15 +231,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ] = await Promise.all([
     getAllCountries(),
     fetchPlatforms(),
-    fetchSlugs("/api/holidays"),
-    fetchSlugs("/api/intro-bd"),
-    fetchSlugs("/api/history-bd"),
-    fetchSlugs("/api/tourism-bd"),
-    fetchSlugs("/api/establishment-bd"),
-    fetchSlugs("/api/islam/basic"),
-    fetchSlugs("/api/islam/dowan"),
-    fetchSlugs("/api/people"),
-    fetchSlugs("/api/apps", { includeItem: hasSoftwareContent }),
+    fetchSlugs("/api/holidays", { includeItem: hasIndexableContent }),
+    fetchSlugs("/api/intro-bd", { includeItem: hasIndexableContent }),
+    fetchSlugs("/api/history-bd", { includeItem: hasIndexableContent }),
+    fetchSlugs("/api/tourism-bd", { includeItem: hasIndexableContent }),
+    fetchSlugs("/api/establishment-bd", { includeItem: hasIndexableContent }),
+    fetchSlugs("/api/islam/basic", { includeItem: hasIndexableContent }),
+    fetchSlugs("/api/islam/dowan", { includeItem: hasIndexableContent }),
+    fetchSlugs("/api/people", { includeItem: hasIndexableContent }),
+    fetchSlugs("/api/apps", {
+      includeItem: (item) =>
+        hasSoftwareContent(item) && hasIndexableContent(item),
+    }),
   ]);
 
   const dynamicEntries: MetadataRoute.Sitemap = [

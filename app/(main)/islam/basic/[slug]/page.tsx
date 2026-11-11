@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { cache } from "react";
 import { notFound } from "next/navigation";
 import BasicIslamShowClient from "./basicislamShowClient";
+import Disclaimer from "@/components/Disclaimer";
 import { fetchApi } from "@/lib/api/fetcher";
 import { getSlugsForPath } from "@/lib/api/slugs";
 import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
@@ -45,11 +46,13 @@ export async function generateMetadata({
     .trim();
   const isThin = isThinContent(extractRecordText(item), 300);
   const title = `${item.title} | ইসলামের মৌলিক জ্ঞান | তথ্যবক্স`;
-  const description = cleanDescription
-    ? cleanDescription.length > 160
-      ? `${cleanDescription.slice(0, 157).trimEnd()}...`
-      : cleanDescription
-    : undefined;
+  const descriptionSource =
+    cleanDescription ||
+    `${item.title} — ইসলামের মৌলিক জ্ঞান, ব্যাখ্যা ও প্রাসঙ্গিক তথ্য।`;
+  const description =
+    descriptionSource.length > 160
+      ? `${descriptionSource.slice(0, 157).trimEnd()}...`
+      : descriptionSource;
   const canonical = `https://totthobox.com/islam/basic/${encodeURIComponent(item.slug || slug)}`;
 
   return {
@@ -89,5 +92,13 @@ export default async function BasicIslamShowPage({
 
   if (!data) notFound();
 
-  return <BasicIslamShowClient initialData={data} slug={slug} />;
+  return (
+    <>
+      <BasicIslamShowClient initialData={data} slug={slug} />
+      <div className="mx-auto max-w-4xl space-y-4 px-4">
+        <Disclaimer type="islamic" />
+        {/* TODO(owner): add verified author/reviewer details and exact Quran/hadith citations. */}
+      </div>
+    </>
+  );
 }

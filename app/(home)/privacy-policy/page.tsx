@@ -35,7 +35,7 @@ export const metadata: Metadata = {
 };
 
 export default function PrivacyPolicyPage() {
-  const lastUpdated = "১০ নভেম্বর, ২০২৬";
+  const lastUpdated = "১১ নভেম্বর, ২০২৬";
 
   return (
     <section>
@@ -127,7 +127,7 @@ export default function PrivacyPolicyPage() {
           </p>
           <ul className="list-disc ml-6 space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
             <li>
-              Google সহ তৃতীয় পক্ষের ভেন্ডররা ব্যবহারকারীর পূর্ববর্তী ভিজিটের ওপর ভিত্তি করে প্রাসঙ্গিক বিজ্ঞাপন প্রদর্শনের জন্য কুকিজ (যেমন- DoubleClick DART কুকি) ব্যবহার করে।
+              Google ও অন্যান্য বিজ্ঞাপন অংশীদাররা তাদের নিজস্ব প্রযুক্তি ও সম্মতি-সংক্রান্ত সেটিংস অনুযায়ী কুকি বা অনুরূপ প্রযুক্তি ব্যবহার করতে পারে।
             </li>
             <li>
               Google কীভাবে অংশীদার সাইট বা অ্যাপে তথ্য ব্যবহার করে, তা জানতে অনুগ্রহ করে অফিসিয়াল নির্দেশিকা পড়ুন:{" "}
@@ -191,7 +191,12 @@ export default function PrivacyPolicyPage() {
             </li>
           </ul>
           <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400 mt-2">
-            EEA, UK ও সুইজারল্যান্ডের মতো অঞ্চলের ব্যবহারকারীদের জন্য প্রযোজ্য ক্ষেত্রে Google-প্রত্যয়িত কনসেন্ট ম্যানেজমেন্ট প্ল্যাটফর্ম (CMP) এর মাধ্যমে সম্মতি গ্রহণ করা হয়। আপনি আপনার ব্রাউজার সেটিংস থেকে যেকোনো সময় কুকিজ ব্লক বা মুছে ফেলতে পারেন।
+            বর্তমান Totthobox কুকি সেটিংস প্যানেল ঐচ্ছিক analytics ও marketing script চালু করার আগে আপনার পছন্দ সংরক্ষণ করে। তবে এই প্যানেল নিজে Google-certified CMP বা IAB TCF integration নয়। EEA, UK ও সুইজারল্যান্ডের জন্য প্রয়োজনীয় Google-certified CMP/TCF integration আলাদাভাবে স্থাপন ও যাচাই না হওয়া পর্যন্ত AdSense production flag বন্ধ রাখতে হবে। কুকি সম্পর্কে বিস্তারিত জানতে আমাদের কুকি নীতি পড়ুন।
+          </p>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            <Link href="/cookie-policy" className="font-medium text-indigo-600 underline dark:text-indigo-400">
+              কুকি নীতি ও আপনার পছন্দ ব্যবস্থাপনা
+            </Link>
           </p>
         </section>
 
@@ -218,7 +223,7 @@ export default function PrivacyPolicyPage() {
         <div className="bg-zinc-50 dark:bg-zinc-800/40 p-6 sm:p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 text-center space-y-3">
           <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">গোপনীয়তা বিষয়ক যোগাযোগ</h3>
           <p className="text-sm text-zinc-600 dark:text-zinc-400 max-w-lg mx-auto">
-            গোপনীয়তা নীতি সম্পর্কে কোনো জিজ্ঞাসা বা আপনার ডেটা সংক্রান্ত অনুরোধ থাকলে আমাদের প্রাইভেসি অফিসারের সাথে যোগাযোগ করুন।
+            গোপনীয়তা নীতি সম্পর্কে কোনো জিজ্ঞাসা বা আপনার ডেটা সংক্রান্ত অনুরোধ থাকলে Totthobox-এর যোগাযোগ দলের সাথে যোগাযোগ করুন।
           </p>
           <div className="pt-2">
             <Link
