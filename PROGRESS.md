@@ -103,8 +103,8 @@
 ---
 
 ## NEXT STEP
-Execute Phase 7: Trust, Authorship & YMYL Safety
-1. Create `config/editorial.ts` with verified editorial board members and reviewers.
-2. Build reusable `<AuthorReviewerBlock>` and `<Disclaimer type="...">` components.
-3. Attach sources and verification blocks to Islamic, Tax, Emergency, and History pages.
-4. Run `npm run lint` and `npm run build` after Phase 7.
+1. Review CI results and the Vercel Preview before considering merge.
+2. Install and verify a Google-certified CMP with IAB TCF, then wire its signals into the consent gate before enabling AdSense.
+3. Confirm real editorial contacts, named reviewers/credentials, record-level sources, formal copyright-agent details and channel/content rights.
+4. Complete browser checks for 320 / 375 / 768 / 1024 / 1440 px, keyboard navigation and real-user Core Web Vitals.
+5. Keep Phase 9 and the remaining Phase 10/11 checks open until measured and reported.
