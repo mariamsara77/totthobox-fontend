@@ -59,7 +59,7 @@ export default function AdSlot({
       minHeight={minHeight}
       className={className}
       label="বিজ্ঞাপন"
-      data-placement={placement}
+      placement={placement}
     />
   );
 }
