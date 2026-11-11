@@ -349,6 +349,17 @@ export function getTracker(): VisitorTracker {
   return trackerInstance;
 }
 
+export function setTrackingConsent(enabled: boolean): void {
+  if (!enabled) {
+    trackerInstance?.setEnabled(false);
+    return;
+  }
+
+  const tracker = getTracker();
+  tracker.setEnabled(true);
+  tracker.init();
+}
+
 export function track(
   category: string,
   action: string,
