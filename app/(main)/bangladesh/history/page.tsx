@@ -48,7 +48,7 @@ export const metadata: Metadata = {
 };
 
 // TODO(owner): add verified author/reviewer details and page-specific source citations when supplied.
-export default HistoryPage() {
+export default async function HistoryPage() {
   const initialData = await getInitialData();
   return (
     <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-8">
