@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import WordCounter from "@/components/tools/WordCounter";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
+import ToolGuide from "@/components/ToolGuide";
+import { wordCounterContent } from "@/lib/content/tools/word-counter";
 
 export const revalidate = 86400;
 
@@ -50,6 +52,7 @@ export default function WordCounterPage() {
       />
       <div className="max-w-2xl mx-auto px-4 py-6 sm:py-8">
         <WordCounter />
+        <ToolGuide content={wordCounterContent} />
       </div>
     </>
   );

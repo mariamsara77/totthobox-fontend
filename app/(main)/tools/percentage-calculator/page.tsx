@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import PercentageCalculator from "@/components/tools/PercentageCalculator";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
+import ToolGuide from "@/components/ToolGuide";
+import { percentageCalculatorContent } from "@/lib/content/tools/percentage-calculator";
 
 export const revalidate = 86400;
 
@@ -48,6 +50,7 @@ export default function PercentageCalculatorPage() {
       />
       <div className="max-w-2xl mx-auto px-4 py-6 sm:py-8">
         <PercentageCalculator />
+        <ToolGuide content={percentageCalculatorContent} />
       </div>
     </>
   );

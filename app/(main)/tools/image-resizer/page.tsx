@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import ImageResizer from "@/components/tools/ImageResizer";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
+import ToolGuide from "@/components/ToolGuide";
+import { imageResizerContent } from "@/lib/content/tools/image-resizer";
 
 export const revalidate = 86400;
 
@@ -49,6 +51,7 @@ export default function ImageResizerPage() {
       />
       <div className="max-w-2xl mx-auto px-4 py-6 sm:py-8">
         <ImageResizer />
+        <ToolGuide content={imageResizerContent} />
       </div>
     </>
   );

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import TaxVatClient from "./TaxVatClient";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
+import ToolGuide from "@/components/ToolGuide";
+import { taxVatCalculatorContent } from "@/lib/content/tools/tax-vat-calculator";
 
 export const revalidate = 86400;
 
@@ -52,6 +54,7 @@ export default function TaxVatPage() {
       />
       <div className="max-w-2xl mx-auto px-4 py-6 sm:py-8">
         <TaxVatClient />
+        <ToolGuide content={taxVatCalculatorContent} />
       </div>
     </>
   );
