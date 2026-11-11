@@ -2,7 +2,7 @@
 
 > **Domain:** https://totthobox.com  
 > **Backend API:** https://admin.totthobox.com  
-> **AdSense Publisher ID:** `ca-pub-9522604367420521`  
+> **AdSense Publisher ID:** supplied only through `NEXT_PUBLIC_ADSENSE_CLIENT` at build time  
 > **Framework:** Next.js 16.3.3 (App Router), React 19.2.8  
 > **Audit Objective:** Resolve Google AdSense "Low Value Content" / policy rejection, ensure 100% server-side rendered initial HTML, add 600–1200 words of authentic Bangla editorial content and FAQs to tools and data pages, enforce strict YMYL disclaimers & editorial trust, eliminate thin pages from indexing, and protect ad inventory.
 
