@@ -354,13 +354,15 @@ export function track(
   action: string,
   payload?: TrackPayload,
 ): void {
-  getTracker().trackEvent(category, action, payload);
+  // Do not create visitor/session identifiers unless analytics consent enabled
+  // and the consent-aware VisitorTracker has initialized the singleton.
+  trackerInstance?.trackEvent(category, action, payload);
 }
 
 export function trackPageView(path?: string, routeName?: string): void {
-  getTracker().trackPageView(path, routeName);
+  trackerInstance?.trackPageView(path, routeName);
 }
 
 export function startNavigation(): void {
-  getTracker().startNavigation();
+  trackerInstance?.startNavigation();
 }
