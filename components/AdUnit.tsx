@@ -65,7 +65,12 @@ export default function AdUnit({
   }, []);
 
   useEffect(() => {
-    if (!canRender || !marketingConsent || pushedRef.current) return;
+    if (!canRender) return;
+    if (!marketingConsent) {
+      pushedRef.current = false;
+      return;
+    }
+    if (pushedRef.current) return;
     if (!adRef.current || adRef.current.innerHTML !== "") return;
 
     try {
@@ -77,7 +82,7 @@ export default function AdUnit({
     }
   }, [canRender, marketingConsent]);
 
-  if (!canRender || !marketingConsent || adBlocked) return null;
+  if (!canRender || adBlocked) return null;
 
   const reservedHeight =
     minHeight ??
@@ -104,16 +109,18 @@ export default function AdUnit({
           {label}
         </span>
       </div>
-      <ins
-        ref={adRef}
-        className="adsbygoogle block"
-        style={{ display: "block" }}
-        data-ad-client={clientId}
-        data-ad-slot={slotId}
-        data-ad-format={format}
-        data-full-width-responsive={responsive ? "true" : "false"}
-        {...(layoutKey ? { "data-ad-layout-key": layoutKey } : {})}
-      />
+      {marketingConsent && (
+        <ins
+          ref={adRef}
+          className="adsbygoogle block"
+          style={{ display: "block" }}
+          data-ad-client={clientId}
+          data-ad-slot={slotId}
+          data-ad-format={format}
+          data-full-width-responsive={responsive ? "true" : "false"}
+          {...(layoutKey ? { "data-ad-layout-key": layoutKey } : {})}
+        />
+      )}
     </div>
   );
 }
