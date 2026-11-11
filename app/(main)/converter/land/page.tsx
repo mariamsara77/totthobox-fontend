@@ -1,30 +1,40 @@
 import type { Metadata } from "next";
 import LandAreaConverter from "@/components/converter/LandAreaConverter";
+import ToolGuide from "@/components/ToolGuide";
+import { landConverterGuide } from "@/lib/content/converters/land";
 
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/converter/land" },
-  title: "জমি পরিমাপ ক্যালকুলেটর - শতাংশ, কাঠা, বিঘা কনভার্টার",
+  title: "জমি পরিমাপ ক্যালকুলেটর - শতাংশ, কাঠা, বিঘা কনভার্টার | Totthobox",
   description:
-    "সহজেই শতাংশ, কাঠা, বিঘা, স্কয়ার ফিট ও একর কনভার্ট করুন। Totthobox-এর নিখুঁত Land Area Converter (বাংলাদেশ স্ট্যান্ডার্ড)।",
+    "সহজেই শতাংশ, কাঠা, বিঘা, স্কয়ার ফিট ও একর কনভার্ট করুন। Totthobox-এর নিখুঁত Land Area Converter ও বিস্তারিত ভূমি পরিমাপ নির্দেশিকা।",
   openGraph: {
     title: "জমি পরিমাপ ক্যালকুলেটর - শতাংশ, কাঠা, বিঘা কনভার্টার | Totthobox",
     description:
-      "সহজেই শতাংশ, কাঠা, বিঘা, স্কয়ার ফিট ও একর কনভার্ট করুন। Totthobox-এর নিখুঁত Land Area Converter (বাংলাদেশ স্ট্যান্ডার্ড)।",
+      "সহজেই শতাংশ, কাঠা, বিঘা, স্কয়ার ফিট ও একর কনভার্ট করুন। Totthobox-এর নিখুঁত Land Area Converter ও বিস্তারিত ভূমি পরিমাপ নির্দেশিকা।",
     type: "website",
     locale: "bn_BD",
     siteName: "Totthobox",
     url: "https://totthobox.com/converter/land",
     images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
   },
-  twitter: { card: "summary_large_image", title: "জমি পরিমাপ ক্যালকুলেটর - শতাংশ, কাঠা, বিঘা কনভার্টার | Totthobox", description: "সহজেই শতাংশ, কাঠা, বিঘা, স্কয়ার ফিট ও একর কনভার্ট করুন। Totthobox-এর নিখুঁত Land Area Converter (বাংলাদেশ স্ট্যান্ডার্ড)।", images: [{ url: "https://totthobox.com/og-image.png", alt: "Totthobox" }] },
+  twitter: {
+    card: "summary_large_image",
+    title: "জমি পরিমাপ ক্যালকুলেটর - শতাংশ, কাঠা, বিঘা কনভার্টার | Totthobox",
+    description: "সহজেই শতাংশ, কাঠা, বিঘা, স্কয়ার ফিট ও একর কনভার্ট করুন। Totthobox-এর নিখুঁত Land Area Converter ও বিস্তারিত ভূমি পরিমাপ নির্দেশিকা।",
+    images: [{ url: "https://totthobox.com/og-image.png", alt: "Totthobox" }],
+  },
 };
 
 export default function LandAreaConverterPage() {
   return (
-    <div className="max-w-2xl mx-auto px-4 py-6 sm:py-8">
-      <LandAreaConverter />
+    <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-12">
+      <div className="max-w-2xl mx-auto">
+        <LandAreaConverter />
+      </div>
+      <ToolGuide guide={landConverterGuide} />
     </div>
   );
 }
