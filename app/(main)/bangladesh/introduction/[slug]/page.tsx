@@ -61,7 +61,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const cleanDescription = getPlainText(intro.description);
   const contentDescription = extractRecordText(intro)
     .replace(/<[^>]+>/g, " ")
-    .replace(/\\s+/g, " ")
+    .replace(/\s+/g, " ")
     .trim();
   const isThin = isThinContent(extractRecordText(intro), 300);
   const title = `${intro.title} | বাংলাদেশের পরিচিতি | তথ্যবক্স`;
