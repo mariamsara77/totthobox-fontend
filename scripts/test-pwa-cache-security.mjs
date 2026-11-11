@@ -118,8 +118,9 @@ assert.ok(adSenseLoader.includes("if (!enabled || !clientId) return"));
 assert.ok(adSenseLoader.includes("if (hasMarketingConsent()) loadAdSense(clientId)"));
 assert.ok(adSenseLoader.includes("pagead2.googlesyndication.com"));
 
-assert.ok(tagManager.includes("if (analytics) loadGoogleAnalytics();"));
 assert.ok(tagManager.includes("if (analytics) {"));
+assert.ok(tagManager.includes("loadGoogleAnalytics();"));
+assert.ok(tagManager.includes("loadGoogleTagManager();"));
 assert.ok(!tagManager.includes("if (analytics || marketing) loadGoogleTagManager();"));
 assert.ok(tagManager.includes('analytics_storage: analytics ? "granted" : "denied"'));
 
