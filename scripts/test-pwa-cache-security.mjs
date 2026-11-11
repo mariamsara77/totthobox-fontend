@@ -111,10 +111,12 @@ assert.equal(deleted.length, 14);
 assert.ok(rootLayout.includes('process.env.ADSENSE_ENABLED === "true"'));
 assert.ok(rootLayout.includes('process.env.ADSENSE_CMP_READY === "true"'));
 assert.ok(rootLayout.includes("NEXT_PUBLIC_ADSENSE_CLIENT"));
-assert.ok(rootLayout.includes("<DeferredAdSense enabled={ADSENSE_ENABLED}"));
+assert.ok(!rootLayout.includes("DeferredAdSense"));
+assert.ok(!rootLayout.includes("adsbygoogle.js"));
 
 assert.ok(adSenseLoader.includes("if (!enabled || !clientId) return"));
-assert.ok(adSenseLoader.includes("if (hasMarketingConsent()) loadAdSense(clientId)"));
+assert.ok(adSenseLoader.includes("export function loadAdSense(clientId?: string)"));
+assert.ok(adSenseLoader.includes("pagead2.googlesyndication.com"));
 assert.ok(adSenseLoader.includes("pagead2.googlesyndication.com"));
 
 assert.ok(tagManager.includes("if (analytics) {"));
@@ -125,6 +127,7 @@ assert.ok(tagManager.includes('analytics_storage: analytics ? "granted" : "denie
 
 assert.ok(adUnit.includes("if (!canRender || adBlocked) return null;"));
 assert.ok(adUnit.includes("{marketingConsent && ("));
+assert.ok(adUnit.includes("loadAdSense(clientId);"));
 
 process.stdout.write("PWA cache-security checks passed.\n");
 
