@@ -117,6 +117,13 @@ assert.ok(!rootLayout.includes("adsbygoogle.js"));
 
 assert.ok(adSenseLoader.includes("export function loadAdSense(clientId?: string)"));
 assert.ok(adSenseLoader.includes("pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client="));
+assert.ok(adUnit.includes("loadAdSense(clientId);"));
+assert.ok(adUnit.includes("if (!canRender) return;"));
+assert.ok(adUnit.includes("if (!marketingConsent) {"));
+assert.ok(adSlot.includes('new Set<PublicAdPageType>(["article", "guide"])'));
+assert.ok(adSlot.includes("contentWords >= 500"));
+assert.ok(adSlot.includes('process.env.ADSENSE_ENABLED === "true"'));
+assert.ok(adSlot.includes('process.env.ADSENSE_CMP_READY === "true"'));
 
 assert.ok(tagManager.includes("if (analytics) {"));
 assert.ok(tagManager.includes("loadGoogleAnalytics();"));
@@ -127,12 +134,6 @@ assert.ok(tagManager.includes('analytics_storage: analytics ? "granted" : "denie
 assert.ok(adUnit.includes("if (!canRender || adBlocked) return null;"));
 assert.ok(adUnit.includes("{marketingConsent && ("));
 assert.ok(adUnit.includes("loadAdSense(clientId);"));
-assert.ok(adUnit.includes("if (!canRender) return;"));
-assert.ok(adUnit.includes("if (!marketingConsent) {"));
-assert.ok(adSlot.includes('new Set<PublicAdPageType>(["article", "guide"])'));
-assert.ok(adSlot.includes("contentWords >= 500"));
-assert.ok(adSlot.includes('process.env.ADSENSE_ENABLED === "true"'));
-assert.ok(adSlot.includes('process.env.ADSENSE_CMP_READY === "true"'));
 
 process.stdout.write("PWA cache-security checks passed.\n");
 
