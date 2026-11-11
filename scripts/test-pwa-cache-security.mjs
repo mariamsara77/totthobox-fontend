@@ -128,4 +128,62 @@ assert.ok(adUnit.includes("{marketingConsent && ("));
 
 process.stdout.write("PWA cache-security checks passed.\n");
 
+const adsTxtDir = await mkdtemp(join(tmpdir(), "totthobox-ads-txt-"));
+const adsTxtOutput = join(adsTxtDir, "ads.txt");
+const generatorPath = fileURLToPath(
+  new URL("./generate-ads-txt.mjs", import.meta.url),
+);
+const realPublisherId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT?.trim() ?? "";
+
+async function runAdsTxtGenerator(overrides) {
+  const result = spawnSync(process.execPath, [generatorPath, adsTxtOutput], {
+    encoding: "utf8",
+    env: { ...process.env, ...overrides },
+  });
+  assert.equal(
+    result.status,
+    0,
+    result.stderr || result.stdout || "ads.txt generator failed",
+  );
+  return readFile(adsTxtOutput, "utf8");
+}
+
+try {
+  const disabledAdsTxt = await runAdsTxtGenerator({
+    ADSENSE_ENABLED: "false",
+    ADSENSE_CMP_READY: "true",
+    NEXT_PUBLIC_ADSENSE_CLIENT: realPublisherId,
+  });
+  assert.doesNotMatch(disabledAdsTxt, /google\.com, pub-/);
+
+  const cmpNotReadyAdsTxt = await runAdsTxtGenerator({
+    ADSENSE_ENABLED: "true",
+    ADSENSE_CMP_READY: "false",
+    NEXT_PUBLIC_ADSENSE_CLIENT: realPublisherId,
+  });
+  assert.doesNotMatch(cmpNotReadyAdsTxt, /google\.com, pub-/);
+
+  const missingPublisherAdsTxt = await runAdsTxtGenerator({
+    ADSENSE_ENABLED: "true",
+    ADSENSE_CMP_READY: "true",
+    NEXT_PUBLIC_ADSENSE_CLIENT: "",
+  });
+  assert.doesNotMatch(missingPublisherAdsTxt, /google\.com, pub-/);
+
+  if (/^ca-pub-\d{16}$/.test(realPublisherId)) {
+    const enabledAdsTxt = await runAdsTxtGenerator({
+      ADSENSE_ENABLED: "true",
+      ADSENSE_CMP_READY: "true",
+      NEXT_PUBLIC_ADSENSE_CLIENT: realPublisherId,
+    });
+    const expectedSellerLine =
+      "google.com, pub-" +
+      realPublisherId.slice("ca-pub-".length) +
+      ", DIRECT, f08c47fec0942fa0";
+    assert.ok(enabledAdsTxt.includes(expectedSellerLine));
+  }
+} finally {
+  await rm(adsTxtDir, { recursive: true, force: true });
+}
+
 process.stdout.write("AdSense env and ads.txt checks passed.\n");
