@@ -1,18 +1,20 @@
 import type { Metadata } from "next";
 import CurrencyConverter from "@/components/converter/CurrencyConverter";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
+import ToolGuide from "@/components/ToolGuide";
+import { currencyConverterGuide } from "@/lib/content/converters/currency";
 
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/converter/currency" },
-  title: "লাইভ কারেন্সি কনভার্টার - টাকার সর্বশেষ রেট জানুন",
+  title: "লাইভ কারেন্সি কনভার্টার - টাকার সর্বশেষ রেট জানুন | Totthobox",
   description:
-    "ডলার, ইউরো, রিয়ালসহ বিশ্বের যেকোনো দেশের মুদ্রাকে বাংলাদেশি টাকায় কনভার্ট করুন। Totthobox-এ পান রিয়েল-টাইম এক্সচেঞ্জ রেট এবং নির্ভুল হিসাব।",
+    "ডলার, ইউরো, রিয়ালসহ বিশ্বের যেকোনো দেশের মুদ্রাকে বাংলাদেশি টাকায় কনভার্ট করুন। Totthobox-এ পান রিয়েল-টাইম এক্সচেঞ্জ রেট এবং পূর্ণাঙ্গ কারেন্সি গাইড।",
   openGraph: {
     title: "লাইভ কারেন্সি কনভার্টার - টাকার সর্বশেষ রেট জানুন | Totthobox",
     description:
-      "ডলার, ইউরো, রিয়ালসহ বিশ্বের যেকোনো দেশের মুদ্রাকে বাংলাদেশি টাকায় কনভার্ট করুন। Totthobox-এ পান রিয়েল-টাইম এক্সচেঞ্জ রেট এবং নির্ভুল হিসাব।",
+      "ডলার, ইউরো, রিয়ালসহ বিশ্বের যেকোনো দেশের মুদ্রাকে বাংলাদেশি টাকায় কনভার্ট করুন। Totthobox-এ পান রিয়েল-টাইম এক্সচেঞ্জ রেট এবং পূর্ণাঙ্গ কারেন্সি গাইড।",
     type: "website",
     locale: "bn_BD",
     siteName: "Totthobox",
@@ -23,7 +25,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "লাইভ কারেন্সি কনভার্টার - টাকার সর্বশেষ রেট জানুন | Totthobox",
     description:
-      "ডলার, ইউরো, রিয়ালসহ বিশ্বের যেকোনো দেশের মুদ্রাকে বাংলাদেশি টাকায় কনভার্ট করুন। Totthobox-এ পান রিয়েল-টাইম এক্সচেঞ্জ রেট এবং নির্ভুল হিসাব।",
+      "ডলার, ইউরো, রিয়ালসহ বিশ্বের যেকোনো দেশের মুদ্রাকে বাংলাদেশি টাকায় কনভার্ট করুন। Totthobox-এ পান রিয়েল-টাইম এক্সচেঞ্জ রেট এবং পূর্ণাঙ্গ কারেন্সি গাইড।",
     images: [{ url: "https://totthobox.com/og-image.png", alt: "Totthobox" }],
   },
 };
@@ -43,8 +45,11 @@ export default function CurrencyConverterPage() {
           "স্বয়ংক্রিয় লাইভ রেট আপডেট",
         ]}
       />
-      <div className="max-w-2xl mx-auto px-4 py-6 sm:py-8">
-        <CurrencyConverter />
+      <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-12">
+        <div className="max-w-2xl mx-auto">
+          <CurrencyConverter />
+        </div>
+        <ToolGuide guide={currencyConverterGuide} />
       </div>
     </>
   );

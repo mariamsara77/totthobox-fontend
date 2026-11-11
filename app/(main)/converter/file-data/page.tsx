@@ -1,21 +1,23 @@
 import type { Metadata } from "next";
 import DataConverter from "@/components/converter/DataConverter";
+import ToolGuide from "@/components/ToolGuide";
+import { fileDataConverterGuide } from "@/lib/content/converters/file-data";
 
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
   alternates: { canonical: "https://totthobox.com/converter/file-data" },
-  title: "Free Online Data Format Converter | JSON, XML, YAML, CSV",
+  title: "ফাইল ডাটা ফরম্যাট কনভার্টার - JSON, XML, YAML, CSV | Totthobox",
   description:
-    "Convert your JSON, XML, YAML, and CSV files or raw text data instantly and securely online. Free developer tool for data format transformation.",
+    "সহজেই JSON, XML, YAML এবং CSV ফাইল বা টেক্সট ডাটা কনভার্ট করুন। সম্পূর্ণ ব্রাউজার-সাইড সুরক্ষিত ও ফ্রি ডাটা ট্রান্সফর্মেশন টুল।",
   openGraph: {
-    title: "Free Online Data Format Converter | Totthobox",
+    title: "ফাইল ডাটা ফরম্যাট কনভার্টার - JSON, XML, YAML, CSV | Totthobox",
     description:
-      "Convert JSON, XML, YAML, and CSV files or raw text data online with this free data format converter.",
+      "সহজেই JSON, XML, YAML এবং CSV ফাইল বা টেক্সট ডাটা কনভার্ট করুন। সম্পূর্ণ ব্রাউজার-সাইড সুরক্ষিত ও ফ্রি ডাটা ট্রান্সফর্মেশন টুল।",
     url: "https://totthobox.com/converter/file-data",
     siteName: "Totthobox",
     type: "website",
-    locale: "en_US",
+    locale: "bn_BD",
     images: [
       {
         url: "https://totthobox.com/og-image.png",
@@ -27,17 +29,20 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Free Online Data Format Converter | Totthobox",
+    title: "ফাইল ডাটা ফরম্যাট কনভার্টার - JSON, XML, YAML, CSV | Totthobox",
     description:
-      "Convert JSON, XML, YAML, and CSV files or raw text data online with this free data format converter.",
+      "সহজেই JSON, XML, YAML এবং CSV ফাইল বা টেক্সট ডাটা কনভার্ট করুন। সম্পূর্ণ ব্রাউজার-সাইড সুরক্ষিত ও ফ্রি ডাটা ট্রান্সফর্মেশন টুল।",
     images: [{ url: "https://totthobox.com/og-image.png", alt: "Totthobox" }],
   },
 };
 
 export default function DataConverterPage() {
   return (
-      <div className="max-w-2xl mx-auto px-4 py-6 sm:py-8">
+    <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-12">
+      <div className="max-w-3xl mx-auto">
         <DataConverter />
       </div>
+      <ToolGuide guide={fileDataConverterGuide} />
+    </div>
   );
 }
