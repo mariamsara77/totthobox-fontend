@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import SoftwareClient from "./SoftwareClient";
 import EditorialSection from "@/components/EditorialSection";
+import AuthorReviewerBlock from "@/components/AuthorReviewerBlock";
 import Disclaimer from "@/components/Disclaimer";
 import { softwareArticle } from "@/lib/content/sections/software";
 
@@ -51,13 +52,13 @@ export const metadata: Metadata = {
   },
 };
 
-// TODO(owner): add verified author/reviewer details and page-specific source citations when supplied.
 export default async function SoftwarePage() {
   const initialData = await getInitialData();
   return (
     <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-8">
       <SoftwareClient platform="" initialData={initialData} />
       <Disclaimer type="software" />
+      <AuthorReviewerBlock category="software" />
       <EditorialSection article={softwareArticle} />
     </div>
   );
