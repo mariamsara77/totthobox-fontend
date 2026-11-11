@@ -81,7 +81,7 @@ export default function EditorialSection({ article, className = "" }: EditorialS
           )}
         </div>
 
-        <div className="space-y-3 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
+        <div className="space-y-3 text-base leading-relaxed text-zinc-700 dark:text-zinc-300">
           {introduction.map((paragraph, idx) => (
             <p key={idx}>{paragraph}</p>
           ))}
@@ -94,13 +94,13 @@ export default function EditorialSection({ article, className = "" }: EditorialS
           <h3 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-zinc-100">
             {sec.heading}
           </h3>
-          <div className="space-y-2.5 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
+          <div className="space-y-2.5 text-base leading-relaxed text-zinc-700 dark:text-zinc-300">
             {sec.paragraphs.map((p, pIdx) => (
               <p key={pIdx}>{p}</p>
             ))}
           </div>
           {sec.bullets && sec.bullets.length > 0 && (
-            <ul className="space-y-1.5 pt-1 text-xs sm:text-sm text-zinc-700 dark:text-zinc-300">
+            <ul className="space-y-1.5 pt-1 text-sm sm:text-base text-zinc-700 dark:text-zinc-300">
               {sec.bullets.map((bullet, bIdx) => (
                 <li key={bIdx} className="flex items-start gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-2 shrink-0" />
