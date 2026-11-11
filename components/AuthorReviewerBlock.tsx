@@ -8,6 +8,11 @@ interface AuthorReviewerBlockProps {
   lastUpdated?: string;
   reviewerName?: string;
   reviewerRole?: string;
+  sources?: {
+    name: string;
+    url: string;
+    note?: string;
+  }[];
   className?: string;
 }
 
@@ -16,6 +21,7 @@ export default function AuthorReviewerBlock({
   lastUpdated,
   reviewerName,
   reviewerRole,
+  sources,
   className = "",
 }: AuthorReviewerBlockProps) {
   const profile = getEditorialProfile(category);
@@ -51,6 +57,36 @@ export default function AuthorReviewerBlock({
       <p className="text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">
         {profile.bio}
       </p>
+
+      {sources && sources.length > 0 && (
+        <section className="border-t border-zinc-200/70 pt-3 dark:border-zinc-800/70">
+          <h3 className="font-semibold text-zinc-800 dark:text-zinc-200">
+            তথ্যসূত্র
+          </h3>
+          <ul className="mt-2 space-y-1.5">
+            {sources.map((source) => (
+              <li key={source.url}>
+                <a
+                  href={source.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-indigo-700 underline underline-offset-2 hover:text-indigo-600 dark:text-indigo-400"
+                >
+                  {source.name}
+                </a>
+                {source.note && (
+                  <p className="mt-0.5 text-[11px] leading-relaxed text-zinc-500 dark:text-zinc-400">
+                    {source.note}
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-2 text-[11px] text-zinc-500 dark:text-zinc-400">
+            এগুলো সাধারণ রেফারেন্স; নির্দিষ্ট দাবি বা হাদিসের জন্য মূল নথি/বর্ণনা আলাদাভাবে যাচাই করুন।
+          </p>
+        </section>
+      )}
 
       {reviewerName && (
         <div className="border-t border-zinc-200/70 pt-3 dark:border-zinc-800/70">
