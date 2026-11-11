@@ -328,10 +328,12 @@ export default function HistoryClient({ initialData }: { initialData: any }) {
         )}
       </section>
 
-<InfiniteScrollTrigger
+      <InfiniteScrollTrigger
         hasMore={hasMore}
         isLoading={isValidating}
         onLoadMore={loadMore}
+        basePath="/bangladesh/history"
+        currentPage={size}
       />
 
       {/* SEO + AdSense Content Block */}

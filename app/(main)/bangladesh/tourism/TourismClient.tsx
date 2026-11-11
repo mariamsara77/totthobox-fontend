@@ -105,7 +105,7 @@ export default function TourismClient({
     return API_BASE + "/api/tourism-bd?" + p.toString();
   };
 
-  const { data, setSize, isValidating, error } =
+  const { data, size, setSize, isValidating, error } =
     useSWRInfinite(getKey, fetcher, {
       fallbackData: [initialData],
       revalidateFirstPage: false,
@@ -322,10 +322,12 @@ export default function TourismClient({
         )}
       </section>
 
-<InfiniteScrollTrigger
+      <InfiniteScrollTrigger
         hasMore={hasMore}
         isLoading={isValidating}
         onLoadMore={loadMore}
+        basePath="/bangladesh/tourism"
+        currentPage={size}
       />
 
       {/* SEO Content Block - AdSense friendly */}

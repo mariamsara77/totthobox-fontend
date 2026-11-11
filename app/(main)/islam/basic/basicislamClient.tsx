@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import {
   Search,
@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { FaUserPen } from "react-icons/fa6";
 import { TbRosetteDiscountCheckFilled } from "react-icons/tb";
+import InfiniteScrollTrigger from "@/components/InfiniteScrollTrigger";
 
 interface MediaItem {
   id: number;
@@ -41,19 +42,32 @@ interface Creator {
   last_active_bn: string;
 }
 
-export default function BasicIslamClient() {
-  const [items, setItems] = useState<BasicIslamItem[]>([]);
-  const [creators, setCreators] = useState<Creator[]>([]);
+interface BasicIslamClientProps {
+  initialData?: any;
+}
+
+export default function BasicIslamClient({ initialData }: BasicIslamClientProps) {
+  const initialItems: BasicIslamItem[] =
+    initialData?.data?.items || (Array.isArray(initialData?.data) ? initialData.data : []);
+  const initialCreators: Creator[] = initialData?.data?.creators || [];
+
+  const [items, setItems] = useState<BasicIslamItem[]>(initialItems);
+  const [creators, setCreators] = useState<Creator[]>(initialCreators);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(
+    initialData?.data?.has_more ?? (initialItems.length >= 12)
+  );
   const [error, setError] = useState<string | null>(null);
   const [showCreators, setShowCreators] = useState(false);
   const [creatorsLoading, setCreatorsLoading] = useState(false);
 
   const creatorsRef = useRef<HTMLDivElement>(null);
 
-  // Click outside
+  // Click outside creators popup
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -69,31 +83,32 @@ export default function BasicIslamClient() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showCreators]);
 
-  // Debounce search
+  // Debounce search input
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(search), 400);
     return () => clearTimeout(t);
   }, [search]);
 
-  // Fetch items
+  // Fetch when search changes
   useEffect(() => {
-    const fetchData = async () => {
+    if (!debouncedSearch) {
+      setItems(initialItems);
+      setPage(1);
+      setHasMore(initialData?.data?.has_more ?? (initialItems.length >= 12));
+      return;
+    }
+
+    const fetchSearch = async () => {
       setLoading(true);
       setError(null);
 
       try {
         const baseUrl =
           process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
-
-        const url = `${baseUrl}/api/islam/basic${
-          debouncedSearch
-            ? `?search=${encodeURIComponent(debouncedSearch)}`
-            : ""
-        }`;
+        const url = `${baseUrl}/api/islam/basic?search=${encodeURIComponent(debouncedSearch)}&page=1&per_page=12`;
 
         const res = await fetch(url, {
           headers: { Accept: "application/json" },
-          cache: "no-store",
         });
 
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -101,16 +116,14 @@ export default function BasicIslamClient() {
         const json = await res.json();
 
         if (json.success) {
-          setItems(json.data?.items || []);
-          // creators শুধু প্রথম লোডে সেট করো (search এ নয়)
-          if (!debouncedSearch && json.data?.creators) {
-            setCreators(json.data.creators);
-          }
+          const fetchedItems = json.data?.items || (Array.isArray(json.data) ? json.data : []);
+          setItems(fetchedItems);
+          setPage(1);
+          setHasMore(json.data?.has_more ?? (fetchedItems.length >= 12));
         } else {
           throw new Error(json.message || "ডেটা লোড করতে ব্যর্থ");
         }
       } catch (e: any) {
-        console.error(e);
         setError(e.message || "ডেটা লোড করতে সমস্যা হয়েছে");
         setItems([]);
       } finally {
@@ -118,8 +131,46 @@ export default function BasicIslamClient() {
       }
     };
 
-    fetchData();
-  }, [debouncedSearch]);
+    fetchSearch();
+  }, [debouncedSearch, initialItems, initialData]);
+
+  // Load more pages
+  const handleLoadMore = useCallback(async () => {
+    if (isLoadingMore || !hasMore) return;
+    setIsLoadingMore(true);
+
+    try {
+      const nextPage = page + 1;
+      const baseUrl =
+        process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+
+      const query = new URLSearchParams({
+        page: String(nextPage),
+        per_page: "12",
+      });
+      if (debouncedSearch) query.set("search", debouncedSearch);
+
+      const res = await fetch(`${baseUrl}/api/islam/basic?${query.toString()}`, {
+        headers: { Accept: "application/json" },
+      });
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      const json = await res.json();
+      if (json.success) {
+        const newItems = json.data?.items || (Array.isArray(json.data) ? json.data : []);
+        setItems((prev) => [...prev, ...newItems]);
+        setPage(nextPage);
+        setHasMore(json.data?.has_more ?? (newItems.length >= 12));
+      } else {
+        setHasMore(false);
+      }
+    } catch (err: any) {
+      console.error("[islam-basic] loadMore error:", err);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  }, [isLoadingMore, hasMore, page, debouncedSearch]);
 
   return (
     <div className="max-w-2xl mx-auto space-y-6 p-4 sm:p-6">
@@ -178,40 +229,31 @@ export default function BasicIslamClient() {
               ) : (
                 creators.map((c) => (
                   <Link key={c.id} href={`/users/${c.slug}`}>
-                    <div className="flex items-start gap-3 p-2 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/25 border border-zinc-400/25 transition">
-                      <div className="relative">
+                    <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-zinc-400/10 transition">
+                      <div className="relative shrink-0">
                         {c.avatar_url ? (
                           <img
                             src={c.avatar_url}
                             alt={c.name}
-                            className="w-12 h-12 rounded-xl object-cover"
+                            className="w-10 h-10 rounded-xl object-cover"
                           />
                         ) : (
-                          <div className="w-12 h-12 rounded-xl bg-zinc-400/15 flex items-center justify-center text-sm font-medium">
-                            {c.name?.charAt(0)}
+                          <div className="w-10 h-10 rounded-xl bg-zinc-400/20 flex items-center justify-center font-bold">
+                            {c.name.charAt(0)}
                           </div>
                         )}
-                        <span
-                          className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white dark:border-zinc-900 ${
-                            c.is_online ? "bg-green-500" : "bg-zinc-400"
-                          }`}
-                        />
+                        {c.is_online && (
+                          <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white dark:border-zinc-950" />
+                        )}
                       </div>
-                      <div className="min-w-0 flex-1">
+                      <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1">
-                          <strong className="truncate text-sm">{c.name}</strong>
+                          <p className="text-sm font-medium truncate">{c.name}</p>
                           {c.email_verified && (
-                            <TbRosetteDiscountCheckFilled className="w-4 h-4 text-blue-600 shrink-0" />
+                            <TbRosetteDiscountCheckFilled className="w-3.5 h-3.5 text-blue-500 shrink-0" />
                           )}
                         </div>
-                        <p className="text-xs opacity-70 truncate">
-                          {c.profession || "কন্টেন্ট কন্ট্রিবিউটর"}
-                        </p>
-                        {c.last_active_bn && (
-                          <p className="text-xs opacity-60 mt-0.5">
-                            সর্বশেষ: {c.last_active_bn}
-                          </p>
-                        )}
+                        <p className="text-xs opacity-70 truncate">{c.profession}</p>
                       </div>
                     </div>
                   </Link>
@@ -357,6 +399,15 @@ export default function BasicIslamClient() {
           ))
         )}
       </section>
+
+      {/* Infinite Scroll Trigger with Crawlable Fallback */}
+      <InfiniteScrollTrigger
+        hasMore={hasMore}
+        isLoading={isLoadingMore}
+        onLoadMore={handleLoadMore}
+        basePath="/islam/basic"
+        currentPage={page}
+      />
 
       {/* About (AdSense + SEO friendly) */}
       <section className="space-y-3 pt-6 border-t border-zinc-400/25">

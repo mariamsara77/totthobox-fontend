@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import DowaClient from "./dowaClient";
+import { fetchApi } from "@/lib/api/fetcher";
+import { CACHE_TAGS } from "@/lib/cache-config";
 
-export const revalidate = 1800;
+export const revalidate = 86400;
 
 export const metadata: Metadata = {
   title: "দোয়া সংগ্রহ | দৈনন্দিন জীবনের প্রয়োজনীয় দোয়া ও আমল | তথ্যবক্স",
@@ -28,6 +30,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function DowaPage() {
-  return <DowaClient />;
+async function getInitialData() {
+  return await fetchApi<any>("/api/islam/dowan?page=1&per_page=12", {
+    revalidate: 86400,
+    tags: [CACHE_TAGS.ISLAM_DOWAN],
+  });
+}
+
+export default async function DowaPage() {
+  const initialData = await getInitialData();
+  return <DowaClient initialData={initialData} />;
 }

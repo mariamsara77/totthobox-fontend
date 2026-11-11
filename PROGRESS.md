@@ -38,12 +38,12 @@
 - [x] Git commit `phase-3: caching architecture and static params generation`
 
 ### Phase 4: Infinite Scroll with SEO-Safe Pagination
-- [ ] Create reusable `<InfiniteList>` component with IntersectionObserver (rootMargin ~600px)
-- [ ] Cached feed route handlers `/api/feed/[type]?page=N` (s-maxage + stale-while-revalidate)
-- [ ] Crawlable `<a href="?page=N">` pagination fallback links with correct canonical
-- [ ] Accessible `aria-live`, keyboard fallback button, no layout shift (reserved skeleton heights)
-- [ ] Run `npm run lint` & `npm run build` for Phase 4
-- [ ] Git commit `phase-4: infinite scroll and crawlable pagination`
+- [x] Create reusable `<InfiniteList>` component with IntersectionObserver (rootMargin ~600px)
+- [x] Cached feed route handlers `/api/feed/[type]?page=N` (s-maxage + stale-while-revalidate)
+- [x] Crawlable `<a href="?page=N">` pagination fallback links with correct canonical
+- [x] Accessible `aria-live`, keyboard fallback button, no layout shift (reserved skeleton heights)
+- [x] Run `npm run lint` & `npm run build` for Phase 4 (0 errors, 600 static pages generated)
+- [x] Git commit `phase-4: infinite scroll and crawlable pagination`
 
 ### Phase 5: Indexing Control & Thin-Page Guard
 - [ ] Bangla-aware word counter helper `lib/seo/word-count.ts`
@@ -93,4 +93,8 @@
 ---
 
 ## NEXT STEP
-Execute Phase 4: Create reusable `<InfiniteList>` component with IntersectionObserver (rootMargin 600px), crawlable pagination links (`?page=N`), and cached feed route handlers (`/api/feed/[type]`).
+Execute Phase 5: Indexing Control & Thin-Page Guard
+1. Create Bangla-aware word counter helper `lib/seo/word-count.ts`
+2. Implement thin-page guard on all `[slug]` pages (< 300 words => `robots: { index: false, follow: true }`)
+3. Enforce `noindex, nofollow` on private/auth/settings/ai/messages routes
+4. Dynamic `app/sitemap.ts` and `app/robots.ts` ensuring clean crawl coverage

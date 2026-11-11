@@ -292,10 +292,12 @@ export default function PeopleClient({ initialData }: { initialData: any }) {
         )}
       </section>
 
-<InfiniteScrollTrigger
+      <InfiniteScrollTrigger
         hasMore={hasMore}
         isLoading={isValidating}
         onLoadMore={loadMore}
+        basePath="/bangladesh/public-figure"
+        currentPage={size}
       />
 
       {/* SEO + AdSense Content Block */}

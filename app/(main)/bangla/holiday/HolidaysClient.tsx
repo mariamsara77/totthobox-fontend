@@ -303,6 +303,8 @@ export default function HolidaysClient({ initialData }: { initialData: any }) {
         hasMore={hasMore}
         isLoading={isValidating}
         onLoadMore={loadMore}
+        basePath="/bangla/holiday"
+        currentPage={size}
       />
       {/* SEO Content */}
       <section className="space-y-4 pt-8 border-t border-zinc-400/25">

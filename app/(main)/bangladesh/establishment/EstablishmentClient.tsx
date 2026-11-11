@@ -313,10 +313,12 @@ export default function EstablishmentClient({ initialData }: { initialData: any 
         )}
       </section>
 
-<InfiniteScrollTrigger
+      <InfiniteScrollTrigger
         hasMore={hasMore}
         isLoading={isValidating}
         onLoadMore={loadMore}
+        basePath="/bangladesh/establishment"
+        currentPage={size}
       />
 
       {/* SEO + AdSense Content Block */}

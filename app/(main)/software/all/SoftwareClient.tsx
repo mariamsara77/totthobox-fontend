@@ -347,11 +347,13 @@ export default function SoftwareClient({ platform = "", initialData }: Props) {
         </section>
       )}
 
-<InfiniteScrollTrigger
+      <InfiniteScrollTrigger
         hasMore={hasMore && !error && !isLoading}
         isLoading={isValidating}
         onLoadMore={loadMore}
         label="আরও সফটওয়্যার লোড হচ্ছে..."
+        basePath={platform ? `/software/${platform.toLowerCase()}` : "/software/all"}
+        currentPage={size}
       />
 
       {/* Informational SEO Content */}
