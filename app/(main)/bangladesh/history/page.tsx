@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import HistoryClient from "./HistoryClient";
 import EditorialSection from "@/components/EditorialSection";
+import AuthorReviewerBlock from "@/components/AuthorReviewerBlock";
 import { bangladeshHistoryArticle } from "@/lib/content/sections/bangladesh-history";
 
 export const revalidate = 1800;
@@ -47,12 +48,12 @@ export const metadata: Metadata = {
   },
 };
 
-// TODO(owner): add verified author/reviewer details and page-specific source citations when supplied.
 export default async function HistoryPage() {
   const initialData = await getInitialData();
   return (
     <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-8">
       <HistoryClient initialData={initialData} />
+      <AuthorReviewerBlock category="history" />
       <EditorialSection article={bangladeshHistoryArticle} />
     </div>
   );
