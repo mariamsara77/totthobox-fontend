@@ -322,13 +322,59 @@ const nextConfig: NextConfig = {
   },
 };
 
-// Cache only known public, query-free document routes. This explicit allowlist
-// keeps authentication, account, admin, API, and unknown routes out of the service-worker HTML cache.
+// Service workers cannot inspect Cookie or Set-Cookie headers. Runtime HTML
+// caching is therefore restricted to known public routes and responses that
+// explicitly opt in with Cache-Control: public and do not vary by identity.
 const publicDocumentPath =
-  /^\/(?:$|about-us(?:\/|$)|contact-us(?:\/|$)|services(?:\/|$)|privacy-policy(?:\/|$)|terms-of-service(?:\/|$)|disclaimer(?:\/|$)|bangla(?:\/|$)|bangladesh(?:\/|$)|international(?:\/|$)|islam(?:\/|$)|converter(?:\/|$)|pdf-editor(?:\/|$)|tools(?:\/|$)|software(?:\/|$)|signs(?:\/|$)|contact(?:\/|$)|news(?:\/|$)|users(?:\/|$))/i;
+  /^\/(?:$|about-us(?:\/|$)|contact-us(?:\/|$)|services(?:\/|$)|privacy-policy(?:\/|$)|cookie-policy(?:\/|$)|copyright-policy(?:\/|$)|editorial-policy(?:\/|$)|terms-of-service(?:\/|$)|disclaimer(?:\/|$)|bangla(?:\/|$)|bangladesh(?:\/|$)|international(?:\/|$)|islam(?:\/|$)|converter(?:\/|$)|pdf-editor(?:\/|$)|tools(?:\/|$)|software(?:\/|$)|signs(?:\/|$)|contact\/police(?:\/|$)|news\/headlines(?:\/|$)|users(?:\/|$))/i;
+
+const publicResponseCacheabilityPlugin = {
+  cacheWillUpdate: async ({
+    request,
+    response,
+  }: {
+    request: Request;
+    response: Response;
+  }): Promise<Response | null> => {
+    if (
+      request.method !== "GET" ||
+      request.credentials === "include" ||
+      request.headers.has("authorization") ||
+      new URL(request.url).origin !== self.location.origin ||
+      request.mode !== "navigate" ||
+      !response ||
+      response.status !== 200 ||
+      response.redirected ||
+      response.type !== "basic" ||
+      !response.headers.get("content-type")?.toLowerCase().includes("text/html")
+    ) {
+      return null;
+    }
+
+    const cacheControl = (response.headers.get("cache-control") ?? "")
+      .split(",")
+      .map((directive) => directive.trim().split("=", 1)[0].toLowerCase());
+    const vary = (response.headers.get("vary") ?? "")
+      .split(",")
+      .map((header) => header.trim().toLowerCase());
+
+    if (
+      !cacheControl.includes("public") ||
+      cacheControl.some((directive) =>
+        ["private", "no-store", "no-cache"].includes(directive),
+      ) ||
+      vary.includes("*") ||
+      vary.some((header) => ["cookie", "authorization"].includes(header))
+    ) {
+      return null;
+    }
+
+    return response;
+  },
+};
 
 const publicDocumentCaching: RuntimeCaching = {
-  handler: "CacheFirst",
+  handler: "NetworkFirst",
   method: "GET",
   urlPattern: ({ request, url }) =>
     request.mode === "navigate" &&
@@ -336,53 +382,65 @@ const publicDocumentCaching: RuntimeCaching = {
     url.search === "" &&
     publicDocumentPath.test(url.pathname),
   options: {
-    cacheName: "public-document-pages-v2",
+    cacheName: "public-document-pages-v3",
+    networkTimeoutSeconds: 4,
     expiration: {
       maxEntries: 80,
       maxAgeSeconds: 30 * 60,
     },
+    plugins: [publicResponseCacheabilityPlugin],
   },
 };
 
-// Reuse optimized and public image/font assets for a week on repeat visits.
-const publicAssetCaching: RuntimeCaching = {
-  handler: "CacheFirst",
+// RSC payloads can contain personalized server-component data and are never
+// stored in the service worker, including router prefetch requests.
+const rscNetworkOnlyCaching: RuntimeCaching = {
+  handler: "NetworkOnly",
   method: "GET",
-  urlPattern: ({ url }) =>
-    url.origin === self.location.origin &&
-    (url.pathname === "/_next/image" ||
-      /\.(?:avif|gif|ico|jpe?g|png|svg|webp|woff2?)$/i.test(url.pathname)),
-  options: {
-    cacheName: "public-image-font-assets-v1",
-    expiration: {
-      maxEntries: 160,
-      maxAgeSeconds: 7 * 24 * 60 * 60,
-    },
-  },
+  urlPattern: ({ request, sameOrigin }) =>
+    sameOrigin &&
+    (request.headers.get("RSC") === "1" ||
+      request.headers.get("Next-Router-Prefetch") === "1" ||
+      request.headers.get("Accept")?.includes("text/x-component") === true),
 };
 
 const apiNetworkOnlyCaching: RuntimeCaching = {
   handler: "NetworkOnly",
   method: "GET",
-  options: {
-    cacheName: "api-network-only",
-  },
-  urlPattern: /^https?:\/\/[^/]+\/api(?:\/|$)/i,
+  urlPattern: ({ url }) => /^\/api(?:\/|$)/i.test(url.pathname),
+};
+
+const nonPublicNavigationNetworkOnlyCaching: RuntimeCaching = {
+  handler: "NetworkOnly",
+  method: "GET",
+  urlPattern: ({ request, url }) =>
+    request.mode === "navigate" &&
+    url.origin === self.location.origin &&
+    (url.search !== "" || !publicDocumentPath.test(url.pathname)),
 };
 
 const withPWA = withPWAInit({
   dest: "public",
   disable: isDev,
-  cacheOnFrontEndNav: true,
-  aggressiveFrontEndNavCaching: true,
+  // These helper caches write responses outside Workbox cacheability plugins.
+  cacheOnFrontEndNav: false,
+  aggressiveFrontEndNavCaching: false,
+  cacheStartUrl: false,
+  dynamicStartUrl: false,
   reloadOnOnline: true,
-  extendDefaultRuntimeCaching: true,
+  extendDefaultRuntimeCaching: false,
   fallbacks: {
     document: "/offline",
   },
   workboxOptions: {
-    // Custom routes run before defaults: cache safe public pages, never API responses.
-    runtimeCaching: [publicDocumentCaching, publicAssetCaching, apiNetworkOnlyCaching],
+    importScripts: ["/sw-cache-cleanup.js"],
+    cleanupOutdatedCaches: true,
+    runtimeCaching: [
+      publicDocumentCaching,
+      rscNetworkOnlyCaching,
+      apiNetworkOnlyCaching,
+      nonPublicNavigationNetworkOnlyCaching,
+    ],
   },
 });
 
