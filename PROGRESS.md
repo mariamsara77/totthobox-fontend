@@ -64,16 +64,21 @@
 - [x] Git commit `phase-6: rich content depth for tools and converters`
 
 ### Phase 7: Trust, Authorship & YMYL Safety
-- [ ] Author/reviewer block on content pages (`config/editorial.ts` fallback)
-- [ ] Sources section on Islamic, Tax, Health, Emergency, and History pages
-- [ ] Reusable `<Disclaimer type="...">` component (tax, islamic, health, emergency, general)
-- [ ] Software official download links only disclaimer & verification
-- [ ] Git commit `phase-7: trust authorship and ymyl disclaimers`
+- [x] Transparent editorial team byline; no invented reviewer names, credentials or default update dates
+- [x] Reference links on History, Islamic basics, dua and Tax/VAT editorial guides
+- [x] Islamic disclaimers and references on individual dua/basic-Islam pages
+- [x] Cookie Policy and Copyright/DMCA contact-guidance pages linked from the public footer
+- [ ] Owner to supply real named reviewers/credentials and record-level primary references
+- [ ] Verify the published contact mailbox and legal wording
+- [ ] Software source attribution and emergency/health record-level references still require owner/backend review
 
 ### Phase 8: Ad Slots & Compliance
-- [ ] Single `<AdSlot>` component (guarded by `NEXT_PUBLIC_ADS_ENABLED=false`, thin-page guard, max 3 slots, no CLS)
-- [ ] Place AdSlots only on verified slot candidates
-- [ ] Git commit `phase-8: ad slots compliance and inventory protection`
+- [x] Environment-gated AdSense script and publisher meta (no fallback publisher ID)
+- [x] Consent-gated AdSense/GA4/GTM and first-party visitor analytics
+- [x] Server-side `<AdSlot>` eligibility guard: article/guide only, 500+ publisher words, no search/filter/private/error/tool pages
+- [ ] No ad slot IDs or page placements were found; add placements only after real slot IDs and page-level editorial approval
+- [ ] Install and verify a Google-certified CMP with IAB TCF for EEA/UK/Switzerland before setting `ADSENSE_CMP_READY=true`
+- [ ] Git commit and preview verification required before enabling production ads
 
 ### Phase 9: Performance Optimization
 - [ ] Audit `next/image` width/height and priority on LCP
@@ -82,15 +87,18 @@
 - [ ] Git commit `phase-9: performance and Core Web Vitals optimizations`
 
 ### Phase 10: Structured Data & Linking
-- [ ] Visual breadcrumbs + `BreadcrumbList` schema
-- [ ] Organization & WebSite schema on homepage; Article & WebApplication on inner pages
-- [ ] Git commit `phase-10: json-ld schemas and internal navigation`
+- [x] Organization & WebSite JSON-LD already present in the root layout
+- [x] Existing detail-page BreadcrumbList and Tool WebApplication schema retained
+- [x] Existing news detail NewsArticle schema retained
+- [ ] Visual breadcrumbs and schema coverage still need a route-by-route validation
+- [ ] Article/VideoObject coverage only where the matching publisher-owned content exists
 
 ### Phase 11: Final Verification & Audit
-- [ ] Verification script `scripts/audit-pages.mjs`
-- [ ] Run cache warm script and audit
-- [ ] Generate `AUDIT_REPORT.md`, `AUDIT_RESULTS.md`, `PERFORMANCE_REPORT.md`
-- [ ] Git commit `phase-11: final verification and audit report`
+- [x] CI includes lint, explicit TypeScript check, production build and PWA cache-security test
+- [ ] CI must pass on the Pull Request before merge approval
+- [ ] Run cache warm script and route-level live audit in Preview
+- [ ] Generate final AdSense, SEO and Core Web Vitals reports after Preview review
+- [ ] Test 320 / 375 / 768 / 1024 / 1440 px and keyboard/screen-reader flows
 
 ---
 
