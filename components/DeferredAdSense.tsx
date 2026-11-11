@@ -6,8 +6,8 @@
 export function loadAdSense(clientId?: string) {
   if (
     typeof document === "undefined" ||
-    !/^ca-pub-\\d{16}$/.test(clientId ?? "") ||
-    document.querySelector("script[data-totthobox-adsense=1]")
+    !/^ca-pub-\d{16}$/.test(clientId ?? "") ||
+    document.querySelector("script[data-totthobox-adsense]")
   ) {
     return;
   }
