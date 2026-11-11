@@ -86,7 +86,7 @@ export default function CookieSettings() {
             </button>
             <button
               type="button"
-              onClick={() => setIsOpen(true)}
+              onClick={() => { setIsOpen(true); setShowBanner(false); }}
               className="min-h-11 rounded-xl border border-zinc-300 px-3 py-2 text-xs font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
             >
               পছন্দ ঠিক করুন
@@ -261,10 +261,10 @@ export default function CookieSettings() {
               <p className="mb-3 text-[11px] text-zinc-500 dark:text-zinc-400">
                 বিস্তারিত জানতে আমাদের{" "}
                 <Link
-                  href="/privacy-policy"
+                  href="/cookie-policy"
                   className="text-indigo-600 dark:text-indigo-400 underline underline-offset-2 transition"
                 >
-                  গোপনীয়তা নীতি
+                  কুকি নীতি
                 </Link>{" "}
                 পড়ুন।
               </p>
