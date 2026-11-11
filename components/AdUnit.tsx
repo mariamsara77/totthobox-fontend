@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { loadAdSense } from "@/components/DeferredAdSense";
 
 type AdFormat = "auto" | "fluid" | "rectangle" | "horizontal" | "vertical";
 
@@ -74,6 +75,8 @@ export default function AdUnit({
     if (!adRef.current || adRef.current.innerHTML !== "") return;
 
     try {
+      // Load only inside an eligible slot after marketing consent.
+      loadAdSense(clientId);
       const adsbygoogle = (window.adsbygoogle = window.adsbygoogle || []);
       adsbygoogle.push({});
       pushedRef.current = true;
