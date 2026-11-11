@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import TaxVatClient from "./TaxVatClient";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
 import ToolGuide from "@/components/ToolGuide";
-import AuthorReviewerBlock from "@/components/AuthorReviewerBlock";
 import Disclaimer from "@/components/Disclaimer";
 import { taxVatCalculatorContent } from "@/lib/content/tools/tax-vat-calculator";
 
@@ -30,7 +29,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function TaxVatPage() {
+// TODO(owner): add verified author/reviewer details and page-specific source citations when supplied.
+export default TaxVatPage() {
   return (
     <>
       <ToolStructuredData
@@ -50,7 +50,6 @@ export default function TaxVatPage() {
           <TaxVatClient />
         </div>
         <Disclaimer type="tax" />
-        <AuthorReviewerBlock category="tax" />
         <ToolGuide content={taxVatCalculatorContent} />
       </div>
     </>
