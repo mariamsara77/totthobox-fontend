@@ -54,18 +54,7 @@ export const bangladeshHistoryArticle: EditorialArticle = {
     }
   ],
   disclaimer: "ঐতিহাসিক তথ্যসমূহ জাতীয় আর্কাইভস, স্বাধীনতা যুদ্ধের দলিলপত্র এবং প্রতিষ্ঠিত ঐতিহাসিক গবেষকদের প্রামাণিক সূত্র থেকে সংকলিত। গবেষণামূলক তথ্য নিয়মিত যাচাই ও হালনাগাদ করা হয়।",
-  sources: [
-    {
-      name: "বাংলাপিডিয়া — বাংলাদেশ",
-      url: "https://en.banglapedia.org/index.php?lang=en&title=Bangladesh",
-      note: "বাংলাদেশের ইতিহাস, ভূগোল ও জাতীয় পরিচিতি সম্পর্কে বিশ্বকোষীয় রেফারেন্স।",
-    },
-    {
-      name: "বাংলাদেশ জাতীয় আরকাইভস — গবেষণা সেবা",
-      url: "https://nanl.gov.bd/pages/static-pages/6922ded2933eb65569e1d9ed",
-      note: "ঐতিহাসিক নথি, মানচিত্র ও গবেষণা উপকরণের সরকারি আর্কাইভ সেবা।",
-    },
-  ],
+  // TODO(owner): supply page-specific primary source names, URLs and citation notes.
   relatedLinks: [
     {
       title: "বাংলাদেশের গুরুত্বপূর্ণ স্থাপনাসমূহ",
