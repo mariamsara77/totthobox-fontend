@@ -19,7 +19,7 @@ interface AdUnitProps {
 
 declare global {
   interface Window {
-    adsbygoogle?: unknown[] & { push: (value: Record<string, unknown>) => number };
+    adsbygoogle?: unknown[];
   }
 }
 
