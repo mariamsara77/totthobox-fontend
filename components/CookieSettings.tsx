@@ -13,6 +13,16 @@ export default function CookieSettings() {
   });
   const [showBanner, setShowBanner] = useState(false);
 
+  const openSettings = () => {
+    setIsOpen(true);
+    setShowBanner(false);
+  };
+
+  const closeSettings = () => {
+    setIsOpen(false);
+    if (!localStorage.getItem("cookie_consent")) setShowBanner(true);
+  };
+
   useEffect(() => {
     const saved = localStorage.getItem("cookie_consent");
     if (!saved) {
@@ -36,7 +46,9 @@ export default function CookieSettings() {
 
   useEffect(() => {
     if (!isOpen) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setIsOpen(false);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeSettings();
+    };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [isOpen]);
@@ -74,7 +86,14 @@ export default function CookieSettings() {
           <p className="mt-1.5 text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">
             প্রয়োজনীয় স্টোরেজ সাইট চালাতে ব্যবহৃত হয়। অ্যানালিটিক্স ও মার্কেটিং
             প্রযুক্তি ঐচ্ছিক; আপনার সিদ্ধান্ত না পাওয়া পর্যন্ত এগুলো চালু হবে না।
-            বিস্তারিত জানতে কুকি নীতি পড়ুন।
+            বিস্তারিত জানতে{" "}
+            <Link
+              href="/cookie-policy"
+              className="font-semibold text-indigo-700 underline underline-offset-2 dark:text-indigo-400"
+            >
+              কুকি নীতি
+            </Link>{" "}
+            পড়ুন।
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
             <button
@@ -86,7 +105,7 @@ export default function CookieSettings() {
             </button>
             <button
               type="button"
-              onClick={() => { setIsOpen(true); setShowBanner(false); }}
+              onClick={openSettings}
               className="min-h-11 rounded-xl border border-zinc-300 px-3 py-2 text-xs font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
             >
               পছন্দ ঠিক করুন
@@ -105,7 +124,7 @@ export default function CookieSettings() {
       {/* Trigger */}
       <button
         type="button"
-        onClick={() => setIsOpen(true)}
+        onClick={openSettings}
         className="flex min-h-[44px] items-center gap-1.5 rounded-full border border-zinc-300 dark:border-zinc-700 bg-white/80 dark:bg-zinc-800/80 px-3.5 py-2 text-xs font-medium text-zinc-700 dark:text-zinc-300 shadow-xs transition hover:border-zinc-400 hover:text-zinc-900 dark:hover:border-zinc-600 dark:hover:text-zinc-100"
       >
         <RxSwitch className="h-3.5 w-3.5 opacity-70" />
@@ -117,7 +136,7 @@ export default function CookieSettings() {
         <div className="fixed bottom-6 right-4 sm:right-6 z-50">
           <div
             className="fixed inset-0 -z-10 bg-black/20 dark:bg-black/50 backdrop-blur-xs"
-            onClick={() => setIsOpen(false)}
+            onClick={closeSettings}
           />
 
           <div
@@ -136,7 +155,7 @@ export default function CookieSettings() {
               </h3>
               <button
                 type="button"
-                onClick={() => setIsOpen(false)}
+                onClick={closeSettings}
                 className="rounded-full p-1.5 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-800 dark:hover:text-zinc-200 transition"
                 aria-label="বন্ধ করুন"
               >
