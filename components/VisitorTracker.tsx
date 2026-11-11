@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { getTracker, trackPageView, startNavigation } from "@/lib/tracker";
-import { useState } from "react";
 
 function hasAnalyticsConsent(): boolean {
   try {
