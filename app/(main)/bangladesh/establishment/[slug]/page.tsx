@@ -7,6 +7,7 @@ import type { Establishment } from "@/types/establishment";
 import { fetchApi } from "@/lib/api/fetcher";
 import { getSlugsForPath } from "@/lib/api/slugs";
 import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
+import { isThinContent, extractRecordText } from "@/lib/seo/word-count";
 
 export const revalidate = 86400;
 export const dynamicParams = true;
@@ -196,11 +197,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     */
 
     robots: {
-      index: stripHtml(item.description || "").length > 0,
+      index: !isThinContent(extractRecordText(item), 300),
       follow: true,
 
       googleBot: {
-        index: true,
+        index: !isThinContent(extractRecordText(item), 300),
         follow: true,
         "max-image-preview": "large",
         "max-video-preview": -1,

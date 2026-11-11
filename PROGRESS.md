@@ -46,12 +46,12 @@
 - [x] Git commit `phase-4: infinite scroll and crawlable pagination`
 
 ### Phase 5: Indexing Control & Thin-Page Guard
-- [ ] Bangla-aware word counter helper `lib/seo/word-count.ts`
-- [ ] Auto `robots: noindex, follow` and ad suppression if content < 300 words
-- [ ] Verify `noindex, nofollow` on private/auth/settings/ai/messages routes
-- [ ] Dynamic `app/sitemap.ts` and `app/robots.ts` excluding noindex pages
-- [ ] Run `npm run lint` & `npm run build` for Phase 5
-- [ ] Git commit `phase-5: indexing control and thin guard`
+- [x] Bangla-aware word counter helper `lib/seo/word-count.ts`
+- [x] Auto `robots: noindex, follow` and ad suppression if content < 300 words
+- [x] Verify `noindex, nofollow` on private/auth/settings/ai/messages routes
+- [x] Dynamic `app/sitemap.ts` and `app/robots.ts` excluding noindex pages
+- [x] Run `npm run lint` & `npm run build` for Phase 5 (0 errors, 600 static pages)
+- [x] Git commit `phase-5: indexing control and thin guard`
 
 ### Phase 6: Content Depth (Tools & Converters)
 - [ ] Reusable `<PageContent>` server layout
@@ -93,8 +93,8 @@
 ---
 
 ## NEXT STEP
-Execute Phase 5: Indexing Control & Thin-Page Guard
-1. Create Bangla-aware word counter helper `lib/seo/word-count.ts`
-2. Implement thin-page guard on all `[slug]` pages (< 300 words => `robots: { index: false, follow: true }`)
-3. Enforce `noindex, nofollow` on private/auth/settings/ai/messages routes
-4. Dynamic `app/sitemap.ts` and `app/robots.ts` ensuring clean crawl coverage
+Execute Phase 6: Content Depth (Tools & Converters)
+1. Create reusable `<PageContent>` and `<EditorialSection>` server layout component
+2. Author 700-1200 words of authentic Bangla guide, 3+ worked examples, 5+ real FAQs, and FAQPage schema for 10 tools and 18 converters (`lib/content/*`)
+3. Add 600+ word editorial wrappers for listing pages
+4. Run duplicate-sentence checker script (< 10% overlap threshold)

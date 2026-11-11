@@ -5,6 +5,7 @@ import BasicIslamShowClient from "./basicislamShowClient";
 import { fetchApi } from "@/lib/api/fetcher";
 import { getSlugsForPath } from "@/lib/api/slugs";
 import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
+import { isThinContent, extractRecordText } from "@/lib/seo/word-count";
 
 export const revalidate = 86400;
 export const dynamicParams = true;
@@ -42,7 +43,7 @@ export async function generateMetadata({
     .replace(/<[^>]+>/g, " ")
     .replace(/\s+/g, " ")
     .trim();
-  const isThinContent = cleanDescription.length < 120;
+  const isThin = isThinContent(extractRecordText(item), 300);
   const title = `${item.title} | ইসলামের মৌলিক জ্ঞান | তথ্যবক্স`;
   const description = cleanDescription
     ? cleanDescription.length > 160
@@ -55,7 +56,7 @@ export async function generateMetadata({
     title,
     description,
     robots: {
-      index: !isThinContent,
+      index: !isThin,
       follow: true,
     },
     openGraph: {

@@ -5,6 +5,7 @@ import TourismShowClient from "./TourismShowClient";
 import { fetchApi } from "@/lib/api/fetcher";
 import { getSlugsForPath } from "@/lib/api/slugs";
 import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
+import { isThinContent, extractRecordText } from "@/lib/seo/word-count";
 
 export const revalidate = 86400;
 export const dynamicParams = true;
@@ -67,7 +68,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const cleanDescription = getPlainText(item.description);
-  const isThinContent = cleanDescription.length < 180;
+  const isThin = isThinContent(extractRecordText(item), 300);
   const title = `${item.title} | বাংলাদেশের পর্যটন কেন্দ্র | তথ্যবক্স`;
   const description = cleanDescription
     ? getMetaDescription(item.title, item.description)
@@ -78,7 +79,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     robots: {
-      index: !isThinContent,
+      index: !isThin,
       follow: true,
     },
     openGraph: {

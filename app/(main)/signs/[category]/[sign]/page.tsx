@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import SignShowClient from "./signShowClient";
 import { fetchApi } from "@/lib/api/fetcher";
 import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
+import { isThinContent, extractRecordText } from "@/lib/seo/word-count";
 
 export const revalidate = 86400;
 export const dynamicParams = true;
@@ -63,11 +64,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     : `${item.name} ট্রাফিক সাইনের অর্থ ও ব্যবহার।`;
   const canonical = `https://totthobox.com/signs/${encodeURIComponent(category)}/${encodeURIComponent(sign)}`;
 
+  const isThin = isThinContent(extractRecordText(item, ["name", "description_plain", "description"]), 300);
+
   return {
     title,
     description,
     robots: {
-      index: cleanDescription.length > 0,
+      index: !isThin,
       follow: true,
     },
     openGraph: {

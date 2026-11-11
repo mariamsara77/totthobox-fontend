@@ -5,6 +5,7 @@ import HistoryShowClient from "./HistoryShowClient";
 import { fetchApi } from "@/lib/api/fetcher";
 import { getSlugsForPath } from "@/lib/api/slugs";
 import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
+import { isThinContent, extractRecordText } from "@/lib/seo/word-count";
 
 export const revalidate = 86400;
 export const dynamicParams = true;
@@ -41,8 +42,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .replace(/\s+/g, " ")
     .trim();
 
-  // Keep genuinely thin records out of search until their existing source content is enriched.
-  const isThinContent = cleanDescription.length < 180;
+  // Keep genuinely thin records (< 300 words) out of search until their existing source content is enriched.
+  const isThin = isThinContent(extractRecordText(item), 300);
 
   const title = `${item.title} | বাংলাদেশের ঐতিহাসিক স্থান | তথ্যবক্স`;
   const description = cleanDescription
@@ -72,7 +73,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       canonical: `https://totthobox.com/bangladesh/history/${encodeURIComponent(item.slug)}`,
     },
     robots: {
-      index: !isThinContent,
+      index: !isThin,
       follow: true,
     },
   };

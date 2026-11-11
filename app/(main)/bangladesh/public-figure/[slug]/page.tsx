@@ -5,6 +5,7 @@ import PersonShowClient from "./PersonShowClient";
 import { fetchApi } from "@/lib/api/fetcher";
 import { getSlugsForPath } from "@/lib/api/slugs";
 import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
+import { isThinContent, extractRecordText } from "@/lib/seo/word-count";
 
 export const revalidate = 86400;
 export const dynamicParams = true;
@@ -61,8 +62,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const cleanBio = getPlainText(person.bio);
   const role = person.current_role?.title?.trim();
-  const historyCount = person.histories?.length ?? 0;
-  const hasUsefulContent = cleanBio.length >= 120 || historyCount > 0;
+  const personText = extractRecordText(person, ["name", "bio"]) + " " + (person.histories || []).map((h) => h.title).join(" ");
+  const isThin = isThinContent(personText, 300);
 
   const title = `${person.name} | প্রোফাইল আর্কাইভ | তথ্যবক্স`;
   const fallbackDescription = role
@@ -79,7 +80,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     robots: {
-      index: hasUsefulContent,
+      index: !isThin,
       follow: true,
     },
     openGraph: {

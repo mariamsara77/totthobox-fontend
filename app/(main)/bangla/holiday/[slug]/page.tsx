@@ -10,6 +10,7 @@ import MediaGallery from "@/components/MediaGallery";
 import { fetchApi } from "@/lib/api/fetcher";
 import { getSlugsForPath } from "@/lib/api/slugs";
 import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
+import { getRobotsForContent, extractRecordText } from "@/lib/seo/word-count";
 
 export const revalidate = 86400;
 export const dynamicParams = true;
@@ -48,10 +49,13 @@ export async function generateMetadata({
     };
 
   const { holiday, seo } = data;
+  const contentText = extractRecordText(holiday);
+  const robots = getRobotsForContent(contentText, 300);
 
   return {
     title: seo.title || `${holiday.title} | ছুটির ক্যালেন্ডার | তথ্যবক্স`,
     description: seo.description || `${holiday.title} - বাংলাদেশ সরকারের ছুটির তারিখ, তাৎপর্য ও বিস্তারিত বিবরণ।`,
+    robots,
     alternates: {
       canonical: `https://totthobox.com/bangla/holiday/${encodeURIComponent(slug)}`,
     },

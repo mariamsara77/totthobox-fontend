@@ -6,6 +6,7 @@ import "highlight.js/styles/github.css";
 
 export const metadata: Metadata = {
   title: "Totthobox AI: আপনার বুদ্ধিমত্তাসম্পন্ন এআই অ্যাসিস্ট্যান্ট",
+  robots: { index: false, follow: false },
 };
 
 export default function AiChatPage() {

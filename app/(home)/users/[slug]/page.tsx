@@ -3,6 +3,7 @@ import { cache } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { isThinContent } from '@/lib/seo/word-count';
 
 export const revalidate = 1800;
 
@@ -100,7 +101,10 @@ export async function generateMetadata({
         };
     }
 
-    const { profile } = data;
+    const { profile, contents } = data;
+    const combinedContent = (profile.bio || "") + " " + (contents || []).map((c) => c.title + " " + c.description).join(" ");
+    const isThin = isThinContent(combinedContent, 300);
+
     const title = `${profile.name} — প্রোফাইল`;
     const description = profileDescription(profile.name, profile.bio);
     const canonical = `${SITE_URL}/users/${encodeURIComponent(profile.slug || slug)}`;
@@ -110,6 +114,10 @@ export async function generateMetadata({
     return {
         title,
         description,
+        robots: {
+            index: !isThin,
+            follow: true,
+        },
         alternates: { canonical },
         openGraph: {
             title: socialTitle,

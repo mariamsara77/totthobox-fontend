@@ -10,6 +10,7 @@ import DownloadButton from "./DownloadButton";
 import { fetchApi } from "@/lib/api/fetcher";
 import { getSlugsForPath } from "@/lib/api/slugs";
 import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
+import { isThinContent, extractRecordText } from "@/lib/seo/word-count";
 
 export const revalidate = 86400;
 export const dynamicParams = true;
@@ -87,7 +88,7 @@ export async function generateMetadata({
     `${app.name}${app.version ? ` v${app.version}` : ""} | তথ্যবক্স`;
 
   const appDescription = stripHtml(app.description);
-  const isThinContent = appDescription.length < 120;
+  const isThin = isThinContent(extractRecordText(app), 300);
   const description = appDescription
     ? makeMetaDescription(appDescription)
     : undefined;
@@ -124,7 +125,7 @@ export async function generateMetadata({
       description,
     },
     robots: {
-      index: !isThinContent,
+      index: !isThin,
       follow: true,
     },
   };

@@ -5,6 +5,7 @@ import DowaShowClient from "./dowaShowClient";
 import { fetchApi } from "@/lib/api/fetcher";
 import { getSlugsForPath } from "@/lib/api/slugs";
 import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
+import { isThinContent, extractRecordText } from "@/lib/seo/word-count";
 
 export const revalidate = 86400;
 export const dynamicParams = true;
@@ -54,9 +55,7 @@ export async function generateMetadata({
     .replace(/<[^>]+>/g, " ")
     .replace(/\s+/g, " ")
     .trim();
-  const contentLength = cleanArabic.length + cleanText.length + cleanMeaning.length + cleanFojilot.length;
-  const hasUsefulContent =
-    contentLength >= 120;
+  const isThin = isThinContent(extractRecordText(item, ["bangla_name", "arabic_text", "bangla_text", "bangla_meaning", "bangla_fojilot"]), 300);
   const title = `${item.bangla_name} - আরবি, উচ্চারণ, অর্থ ও আমল | দোয়া সংগ্রহ | তথ্যবক্স`;
   const sourceDescription = cleanMeaning || cleanText || cleanFojilot;
   const description = sourceDescription
@@ -70,7 +69,7 @@ export async function generateMetadata({
     title,
     description,
     robots: {
-      index: hasUsefulContent,
+      index: !isThin,
       follow: true,
     },
     openGraph: {
