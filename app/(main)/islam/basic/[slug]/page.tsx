@@ -46,11 +46,13 @@ export async function generateMetadata({
     .trim();
   const isThin = isThinContent(extractRecordText(item), 300);
   const title = `${item.title} | ইসলামের মৌলিক জ্ঞান | তথ্যবক্স`;
-  const description = cleanDescription
-    ? cleanDescription.length > 160
-      ? `${cleanDescription.slice(0, 157).trimEnd()}...`
-      : cleanDescription
-    : undefined;
+  const descriptionSource =
+    cleanDescription ||
+    `${item.title} — ইসলামের মৌলিক জ্ঞান, ব্যাখ্যা ও প্রাসঙ্গিক তথ্য।`;
+  const description =
+    descriptionSource.length > 160
+      ? `${descriptionSource.slice(0, 157).trimEnd()}...`
+      : descriptionSource;
   const canonical = `https://totthobox.com/islam/basic/${encodeURIComponent(item.slug || slug)}`;
 
   return {
