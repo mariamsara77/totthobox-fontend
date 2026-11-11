@@ -9,6 +9,10 @@ import { fileURLToPath } from "node:url";
 const config = await readFile("next.config.ts", "utf8");
 const worker = await readFile("public/sw.js", "utf8");
 const cleanupSource = await readFile("public/sw-cache-cleanup.js", "utf8");
+const rootLayout = await readFile("app/layout.tsx", "utf8");
+const tagManager = await readFile("components/partials/TagManager.tsx", "utf8");
+const adSenseLoader = await readFile("components/DeferredAdSense.tsx", "utf8");
+const adUnit = await readFile("components/AdUnit.tsx", "utf8");
 
 assert.match(config, /extendDefaultRuntimeCaching:\s*false/);
 assert.match(config, /cacheOnFrontEndNav:\s*false/);
@@ -103,6 +107,23 @@ assert.equal(cacheNames.has("public-document-pages-v3"), true);
 assert.equal(cacheNames.has("workbox-precache-v2-previous-build"), true);
 assert.equal(cacheNames.has("app-owned-cache"), true);
 assert.equal(deleted.length, 14);
+
+assert.match(rootLayout, /process\\.env\\.ADSENSE_ENABLED === "true"/);
+assert.match(rootLayout, /process\\.env\\.ADSENSE_CMP_READY === "true"/);
+assert.match(rootLayout, /NEXT_PUBLIC_ADSENSE_CLIENT/);
+assert.match(rootLayout, /<DeferredAdSense enabled=\\{ADSENSE_ENABLED\\}/);
+assert.doesNotMatch(rootLayout, /ca-pub-\\d{16}/);
+assert.match(adSenseLoader, /if \\(!enabled \\|\\| !clientId\\) return/);
+assert.match(adSenseLoader, /hasMarketingConsent\\(\\)/);
+assert.match(adSenseLoader, /pagead2\\.googlesyndication\\.com/);
+assert.match(adSenseLoader, /if \\(hasMarketingConsent\\(\\)\\) loadAdSense/);
+assert.match(tagManager, /if \\(analytics\\) loadGoogleAnalytics\\(\\)/);
+assert.match(tagManager, /if \\(analytics\\) \\{/);
+assert.doesNotMatch(tagManager, /if \\(analytics \\|\\| marketing\\) loadGoogleTagManager/);
+assert.match(tagManager, /analytics_storage: analytics \\? "granted" : "denied"/);
+assert.match(adUnit, /if \\(!canRender \\|\\| adBlocked\\) return null/);
+assert.match(adUnit, /marketingConsent \\&\\& \\(/
+
 
 process.stdout.write("PWA cache-security checks passed.\n");
 
