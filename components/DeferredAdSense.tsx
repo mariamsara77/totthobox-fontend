@@ -7,12 +7,21 @@ interface DeferredAdSenseProps {
   clientId?: string;
 }
 
-export function loadAdSense(clientId?: string) {
-  if (typeof document === "undefined" || !/^ca-pub-\d{16}$/.test(clientId ?? "")) {
-    return;
+function hasMarketingConsent(): boolean {
+  try {
+    const raw = window.localStorage.getItem("cookie_consent");
+    if (!raw) return false;
+    const saved = JSON.parse(raw) as Record<string, unknown>;
+    return saved.marketing === true;
+  } catch {
+    return false;
   }
+}
 
+export function loadAdSense(clientId?: string) {
   if (
+    typeof document === "undefined" ||
+    !/^ca-pub-\d{16}$/.test(clientId ?? "") ||
     document.querySelector(
       'script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]',
     )
@@ -34,7 +43,16 @@ export default function DeferredAdSense({
 }: DeferredAdSenseProps) {
   useEffect(() => {
     if (!enabled || !clientId) return;
-    loadAdSense(clientId);
+
+    const syncAdSense = () => {
+      if (hasMarketingConsent()) loadAdSense(clientId);
+    };
+
+    // A consent choice must exist before the advertising script is requested.
+    syncAdSense();
+    window.addEventListener("totthobox:consent-updated", syncAdSense);
+    return () =>
+      window.removeEventListener("totthobox:consent-updated", syncAdSense);
   }, [enabled, clientId]);
 
   return null;
