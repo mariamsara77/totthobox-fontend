@@ -49,17 +49,23 @@ export interface ToolGuideData {
   formulasOrRules?: RuleOrFormula[];
   workedExamples?: WorkedExample[];
   tipsOrMistakes?: string[];
+  commonMistakesAndTips?: string[];
   faqs: FAQItem[];
   relatedTools?: RelatedLink[];
+  relatedLinks?: RelatedLink[];
   disclaimer?: string;
 }
 
 interface ToolGuideProps {
-  content: ToolGuideData;
+  content?: ToolGuideData;
+  guide?: ToolGuideData;
   className?: string;
 }
 
-export default function ToolGuide({ content, className = "" }: ToolGuideProps) {
+export default function ToolGuide({ content, guide, className = "" }: ToolGuideProps) {
+  const guideData = content || guide;
+  if (!guideData) return null;
+
   const {
     title,
     subtitle,
@@ -68,10 +74,15 @@ export default function ToolGuide({ content, className = "" }: ToolGuideProps) {
     formulasOrRules,
     workedExamples,
     tipsOrMistakes,
+    commonMistakesAndTips,
     faqs,
     relatedTools,
+    relatedLinks,
     disclaimer,
-  } = content;
+  } = guideData;
+
+  const activeTips = tipsOrMistakes || commonMistakesAndTips;
+  const activeLinks = relatedTools || relatedLinks;
 
   // Generate FAQPage JSON-LD
   const faqSchema = faqs && faqs.length > 0 ? {
@@ -222,7 +233,7 @@ export default function ToolGuide({ content, className = "" }: ToolGuideProps) {
       )}
 
       {/* Tips and Common Mistakes */}
-      {tipsOrMistakes && tipsOrMistakes.length > 0 && (
+      {activeTips && activeTips.length > 0 && (
         <section className="space-y-3">
           <h3 className="text-lg font-bold flex items-center gap-2 text-zinc-900 dark:text-zinc-100">
             <AlertCircle className="w-5 h-5 text-rose-500 shrink-0" />
@@ -230,7 +241,7 @@ export default function ToolGuide({ content, className = "" }: ToolGuideProps) {
           </h3>
 
           <ul className="space-y-2 text-xs text-zinc-700 dark:text-zinc-300">
-            {tipsOrMistakes.map((tip, idx) => (
+            {activeTips.map((tip, idx) => (
               <li
                 key={idx}
                 className="flex items-start gap-2 p-3 rounded-xl bg-zinc-100/50 dark:bg-zinc-900/30 border border-zinc-200/60 dark:border-zinc-800/60"
@@ -279,14 +290,14 @@ export default function ToolGuide({ content, className = "" }: ToolGuideProps) {
       )}
 
       {/* Related Tools */}
-      {relatedTools && relatedTools.length > 0 && (
+      {activeLinks && activeLinks.length > 0 && (
         <section className="space-y-4 pt-4 border-t border-zinc-200/60 dark:border-zinc-800/60">
           <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
             সম্পর্কিত অন্যান্য টুলস ও কনভার্টার
           </h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {relatedTools.map((tool, idx) => (
+            {activeLinks.map((tool, idx) => (
               <Link
                 key={idx}
                 href={tool.href}
