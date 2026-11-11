@@ -94,6 +94,18 @@ export const taxVatCalculatorContent: ToolGuideData = {
       answer: "জীবন বীমার কিস্তি, অনুমোদিত ডিপিএস, পেনশন স্কিম বা ট্রেজারি বন্ডে বিনিয়োগ করলে প্রযোজ্য রেয়াতের সমপরিমাণ টাকা সরাসরি প্রদেয় কর থেকে বাদ দেওয়া হয়।",
     },
   ],
+  sources: [
+    {
+      name: "জাতীয় রাজস্ব বোর্ড — আয়কর আইন",
+      url: "https://nbr.gov.bd/regulations/acts/income-tax-acts/ban/contents/e-services/vatcalculator/eng",
+      note: "আয়কর আইন ও সংশোধনীর সরকারি তালিকা।",
+    },
+    {
+      name: "জাতীয় রাজস্ব বোর্ড — ভ্যাট ক্যালকুলেটর",
+      url: "https://nbr.gov.bd/e-services/vatcalculator/en",
+      note: "NBR-এর সরকারি ভ্যাট ক্যালকুলেটর; Totthobox ফলাফলকে সরকারি নির্ধারণের বিকল্প হিসেবে ব্যবহার করবেন না।",
+    },
+  ],
   relatedTools: [
     {
       title: "শতকরা (পার্সেন্টেজ) ক্যালকুলেটর",
