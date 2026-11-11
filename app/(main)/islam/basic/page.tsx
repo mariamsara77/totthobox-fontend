@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import BasicIslamClient from "./basicislamClient";
 import EditorialSection from "@/components/EditorialSection";
-import AuthorReviewerBlock from "@/components/AuthorReviewerBlock";
 import Disclaimer from "@/components/Disclaimer";
 import { islamBasicArticle } from "@/lib/content/sections/islam-basic";
 import { fetchApi } from "@/lib/api/fetcher";
@@ -41,13 +40,13 @@ async function getInitialData() {
   });
 }
 
-export default async function BasicIslamPage() {
+// TODO(owner): add verified author/reviewer details and page-specific source citations when supplied.
+export default BasicIslamPage() {
   const initialData = await getInitialData();
   return (
     <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-8">
       <BasicIslamClient initialData={initialData} />
       <Disclaimer type="islamic" />
-      <AuthorReviewerBlock category="islamic" />
       <EditorialSection article={islamBasicArticle} />
     </div>
   );
