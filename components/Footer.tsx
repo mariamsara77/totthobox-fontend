@@ -43,6 +43,18 @@ export default function Footer() {
             দায়মুক্তি (Disclaimer)
           </Link>
           <Link
+            href="/cookie-policy"
+            className="flex min-h-[44px] items-center rounded-xl px-3 py-2 text-sm text-zinc-600 hover:text-zinc-900 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
+          >
+            কুকি নীতি
+          </Link>
+          <Link
+            href="/copyright-policy"
+            className="flex min-h-[44px] items-center rounded-xl px-3 py-2 text-sm text-zinc-600 hover:text-zinc-900 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
+          >
+            কপিরাইট ও DMCA
+          </Link>
+          <Link
             href="/contact-us"
             className="flex min-h-[44px] items-center rounded-xl px-3 py-2 text-sm text-zinc-600 hover:text-zinc-900 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
           >
