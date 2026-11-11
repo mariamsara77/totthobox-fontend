@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import Script from "next/script";
 import { Geist, Geist_Mono, Noto_Sans_Bengali } from "next/font/google";
 import "./globals.css";
 import { AppProviders } from "./providers";
@@ -9,6 +8,7 @@ import DeferredVisitorTracker from "@/components/DeferredVisitorTracker";
 import InstallPWA from "@/components/InstallPWA";
 import NetworkStatus from "@/components/NetworkStatus";
 import SiteStructuredData from "@/components/seo/SiteStructuredData";
+import DeferredAdSense from "@/components/DeferredAdSense";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -121,15 +121,6 @@ export default function RootLayout({
       }
     >
       <head>
-        {ADSENSE_ENABLED && ADSENSE_CLIENT && (
-          <Script
-            id="google-adsense"
-            async
-            strategy="afterInteractive"
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
-            crossOrigin="anonymous"
-          />
-        )}
         <meta name="author" content="Totthobox Team" />
         <meta property="fb:app_id" content="1108131871544005" />
         <meta
@@ -148,6 +139,7 @@ export default function RootLayout({
         <TagManager />
         <NetworkStatus />
         <AppProviders>{children}</AppProviders>
+        <DeferredAdSense enabled={ADSENSE_ENABLED} clientId={ADSENSE_CLIENT} />
         <DeferredVisitorTracker />
         <InstallPWA />
         <GoogleTranslate />
