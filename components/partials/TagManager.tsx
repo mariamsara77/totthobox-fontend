@@ -119,8 +119,12 @@ function applyConsent(preferences: ConsentPreferences | null) {
     ad_personalization: marketing ? "granted" : "denied",
   });
 
-  if (analytics) loadGoogleAnalytics();
-  if (analytics || marketing) loadGoogleTagManager();
+  if (analytics) {
+    loadGoogleAnalytics();
+    // GTM may contain analytics or custom tags; don't execute the container
+    // for marketing-only consent. AdSense loads separately via its own gate.
+    loadGoogleTagManager();
+  }
 }
 
 export default function TagManager() {
