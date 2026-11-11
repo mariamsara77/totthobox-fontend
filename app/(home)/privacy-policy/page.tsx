@@ -191,7 +191,12 @@ export default function PrivacyPolicyPage() {
             </li>
           </ul>
           <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400 mt-2">
-            EEA, UK ও সুইজারল্যান্ডের মতো অঞ্চলের ব্যবহারকারীদের জন্য প্রযোজ্য ক্ষেত্রে Google-প্রত্যয়িত কনসেন্ট ম্যানেজমেন্ট প্ল্যাটফর্ম (CMP) এর মাধ্যমে সম্মতি গ্রহণ করা হয়। আপনি আপনার ব্রাউজার সেটিংস থেকে যেকোনো সময় কুকিজ ব্লক বা মুছে ফেলতে পারেন।
+            বর্তমান Totthobox কুকি সেটিংস প্যানেল ঐচ্ছিক analytics ও marketing script চালু করার আগে আপনার পছন্দ সংরক্ষণ করে। তবে এই প্যানেল নিজে Google-certified CMP বা IAB TCF integration নয়। EEA, UK ও সুইজারল্যান্ডের জন্য প্রয়োজনীয় Google-certified CMP/TCF integration আলাদাভাবে স্থাপন ও যাচাই না হওয়া পর্যন্ত AdSense production flag বন্ধ রাখতে হবে। কুকি সম্পর্কে বিস্তারিত জানতে আমাদের কুকি নীতি পড়ুন।
+          </p>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            <Link href="/cookie-policy" className="font-medium text-indigo-600 underline dark:text-indigo-400">
+              কুকি নীতি ও আপনার পছন্দ ব্যবস্থাপনা
+            </Link>
           </p>
         </section>
 
