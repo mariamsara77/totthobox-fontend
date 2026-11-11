@@ -31,14 +31,14 @@ const notoBengali = Noto_Sans_Bengali({
   display: "swap",
 });
 
-const ADSENSE_ID =
-  process.env.NEXT_PUBLIC_ADSENSE_ID || "ca-pub-9522604367420521";
+const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT?.trim();
+const ADSENSE_ENABLED =
+  process.env.ADSENSE_ENABLED === "true" &&
+  process.env.ADSENSE_CMP_READY === "true" &&
+  /^ca-pub-\d{16}$/.test(ADSENSE_CLIENT ?? "");
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://totthobox.com"),
-  alternates: {
-    canonical: "./",
-  },
   title: {
     default: "Totthobox - প্রয়োজনীয় সকল তথ্য ও সেবা এক জায়গায়",
     template: "%s | Totthobox",
@@ -61,7 +61,7 @@ export const metadata: Metadata = {
       default: "তথ্যবক্স — Totthobox",
       template: "%s | Totthobox",
     },
-    description: "সর্বশেষ খবর ও তথ্যের বিশ্বস্ত ঠিকানা",
+    description: "প্রয়োজনীয় তথ্য ও ডিজিটাল সেবা এক জায়গায়",
     url: "https://totthobox.com",
     siteName: "Totthobox",
     locale: "bn_BD",
@@ -79,7 +79,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "তথ্যবক্স — Totthobox",
-    description: "সর্বশেষ খবর ও তথ্যের বিশ্বস্ত ঠিকানা",
+    description: "প্রয়োজনীয় তথ্য ও ডিজিটাল সেবা এক জায়গায়",
     images: ["/og-image.png"],
   },
   appleWebApp: {
@@ -88,9 +88,9 @@ export const metadata: Metadata = {
     title: "Totthobox",
   },
   formatDetection: { telephone: false },
-  other: {
-    "google-adsense-account": ADSENSE_ID,
-  },
+  ...(ADSENSE_ENABLED && ADSENSE_CLIENT
+    ? { other: { "google-adsense-account": ADSENSE_CLIENT } }
+    : {}),
   verification: {
     google: "1-VsthqfGvXga4zKLbfjBjP6L0UFc-xBQ_aOzn1g9Ps",
   },
@@ -121,21 +121,15 @@ export default function RootLayout({
       }
     >
       <head>
-        <Script id="google-tag-manager" strategy="afterInteractive">
-          {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-5RFHKJJJ');`}
-        </Script>
-
-        {/* Official Google AdSense script */}
-        <script
-          async
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_ID}`}
-          crossOrigin="anonymous"
-        />
-
+        {ADSENSE_ENABLED && ADSENSE_CLIENT && (
+          <Script
+            id="google-adsense"
+            async
+            strategy="afterInteractive"
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+            crossOrigin="anonymous"
+          />
+        )}
         <meta name="author" content="Totthobox Team" />
         <meta property="fb:app_id" content="1108131871544005" />
         <meta
@@ -150,16 +144,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         suppressHydrationWarning
         className="antialiased bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
       >
-        <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-5RFHKJJJ"
-            height="0"
-            width="0"
-            style={{ display: "none", visibility: "hidden" }}
-            title="Google Tag Manager"
-          />
-        </noscript>
-
         <SiteStructuredData />
         <TagManager />
         <NetworkStatus />
