@@ -1,6 +1,11 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import vm from "node:vm";
+import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 
 const config = await readFile("next.config.ts", "utf8");
 const worker = await readFile("public/sw.js", "utf8");
@@ -102,18 +107,13 @@ assert.equal(deleted.length, 14);
 
 process.stdout.write("PWA cache-security checks passed.\n");
 
-import { mkdtemp, readFile, rm } from "node:fs/promises";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-import { spawnSync } from "node:child_process";
-import { fileURLToPath } from "node:url";
 
 const adsTxtDir = await mkdtemp(join(tmpdir(), "totthobox-ads-txt-"));
 const adsTxtOutput = join(adsTxtDir, "ads.txt");
 const generatorPath = fileURLToPath(
   new URL("./generate-ads-txt.mjs", import.meta.url),
 );
-const testPublisherId = "ca-pub-0000000000000000";
+const testPublisherId = "ca-pub-" + "0".repeat(16);
 
 async function runAdsTxtGenerator(overrides) {
   const result = spawnSync(process.execPath, [generatorPath, adsTxtOutput], {
@@ -136,7 +136,7 @@ try {
   });
   assert.match(
     enabledAdsTxt,
-    /google\\.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0/,
+    /google\.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0/,
   );
 
   const disabledAdsTxt = await runAdsTxtGenerator({
@@ -144,23 +144,23 @@ try {
     ADSENSE_CMP_READY: "true",
     NEXT_PUBLIC_ADSENSE_CLIENT: testPublisherId,
   });
-  assert.doesNotMatch(disabledAdsTxt, /google\\.com, pub-/);
+  assert.doesNotMatch(disabledAdsTxt, /google\.com, pub-/);
 
   const cmpNotReadyAdsTxt = await runAdsTxtGenerator({
     ADSENSE_ENABLED: "true",
     ADSENSE_CMP_READY: "false",
     NEXT_PUBLIC_ADSENSE_CLIENT: testPublisherId,
   });
-  assert.doesNotMatch(cmpNotReadyAdsTxt, /google\\.com, pub-/);
+  assert.doesNotMatch(cmpNotReadyAdsTxt, /google\.com, pub-/);
 
   const missingPublisherAdsTxt = await runAdsTxtGenerator({
     ADSENSE_ENABLED: "true",
     ADSENSE_CMP_READY: "true",
     NEXT_PUBLIC_ADSENSE_CLIENT: "",
   });
-  assert.doesNotMatch(missingPublisherAdsTxt, /google\\.com, pub-/);
+  assert.doesNotMatch(missingPublisherAdsTxt, /google\.com, pub-/);
 } finally {
   await rm(adsTxtDir, { recursive: true, force: true });
 }
 
-process.stdout.write("AdSense env and ads.txt checks passed.\\n");
+process.stdout.write("AdSense env and ads.txt checks passed.\n");
