@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import ZodiacCalculator from "@/components/tools/ZodiacCalculator";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
+import ToolGuide from "@/components/ToolGuide";
+import { zodiacCalculatorContent } from "@/lib/content/tools/zodiac-calculator";
 
 export const revalidate = 86400;
 
@@ -49,6 +51,7 @@ export default function ZodiacCalculatorPage() {
       />
       <div className="max-w-2xl mx-auto px-4 py-6 sm:py-8">
         <ZodiacCalculator />
+        <ToolGuide content={zodiacCalculatorContent} />
       </div>
     </>
   );

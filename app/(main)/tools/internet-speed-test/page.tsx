@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import SpeedTestClient from "./SpeedTestClient";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
+import ToolGuide from "@/components/ToolGuide";
+import { internetSpeedTestContent } from "@/lib/content/tools/internet-speed-test";
 
 export const revalidate = 86400;
 
@@ -52,6 +54,7 @@ export default function InternetSpeedTestPage() {
       />
       <div className="max-w-2xl mx-auto px-4 py-6 sm:py-8">
         <SpeedTestClient />
+        <ToolGuide content={internetSpeedTestContent} />
       </div>
     </>
   );

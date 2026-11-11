@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import PracticeClient from "@/components/practices/practiceClient";
+import ToolGuide from "@/components/ToolGuide";
+import { writingPracticeContent } from "@/lib/content/tools/writing-practice";
 
 export const revalidate = 86400;
 
@@ -34,6 +36,9 @@ export default function WritingPracticePage() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8">
       <PracticeClient />
+      <div className="max-w-3xl mx-auto">
+        <ToolGuide content={writingPracticeContent} />
+      </div>
     </div>
   );
 }

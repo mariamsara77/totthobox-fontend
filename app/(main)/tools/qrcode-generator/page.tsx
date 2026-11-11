@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import QRGenerator from "@/components/tools/QRGenerator";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
+import ToolGuide from "@/components/ToolGuide";
+import { qrcodeGeneratorContent } from "@/lib/content/tools/qrcode-generator";
 
 export const revalidate = 86400;
 
@@ -50,6 +52,7 @@ export default function QRGeneratorPage() {
       />
       <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
         <QRGenerator />
+        <ToolGuide content={qrcodeGeneratorContent} />
       </div>
     </>
   );

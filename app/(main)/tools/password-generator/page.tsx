@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import PasswordGeneratorClient from "./PasswordGeneratorClient";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
+import ToolGuide from "@/components/ToolGuide";
+import { passwordGeneratorContent } from "@/lib/content/tools/password-generator";
 
 export const revalidate = 86400;
 
@@ -52,6 +54,7 @@ export default function PasswordGeneratorPage() {
       />
       <div className="max-w-2xl mx-auto px-4 py-6 sm:py-8">
         <PasswordGeneratorClient />
+        <ToolGuide content={passwordGeneratorContent} />
       </div>
     </>
   );
