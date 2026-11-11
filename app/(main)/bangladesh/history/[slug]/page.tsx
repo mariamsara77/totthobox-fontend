@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import HistoryShowClient from "./HistoryShowClient";
-import AuthorReviewerBlock from "@/components/AuthorReviewerBlock";
 import { fetchApi } from "@/lib/api/fetcher";
 import { getSlugsForPath } from "@/lib/api/slugs";
 import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
@@ -88,36 +87,6 @@ export default async function HistoryShowPage({ params }: Props) {
     notFound();
   }
 
-  const updatedAt =
-    typeof item.updated_at === "string" ? new Date(item.updated_at) : null;
-  const lastUpdated =
-    updatedAt && !Number.isNaN(updatedAt.getTime())
-      ? updatedAt.toLocaleDateString("bn-BD", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        })
-      : undefined;
-
-  return (
-    <>
-      <HistoryShowClient history={item} />
-      <div className="mx-auto max-w-4xl px-4">
-        <AuthorReviewerBlock
-          category="history"
-          lastUpdated={lastUpdated}
-          sources={[
-            {
-              name: "বাংলাপিডিয়া — বাংলাদেশ",
-              url: "https://en.banglapedia.org/index.php?lang=en&title=Bangladesh",
-            },
-            {
-              name: "বাংলাদেশ জাতীয় আরকাইভস — গবেষণা সেবা",
-              url: "https://nanl.gov.bd/pages/static-pages/6922ded2933eb65569e1d9ed",
-            },
-          ]}
-        />
-      </div>
-    </>
-  );
+  // TODO(owner): add the actual author/reviewer details and page-specific sources after they are supplied.
+  return <HistoryShowClient history={item} />;
 }
