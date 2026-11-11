@@ -13,6 +13,7 @@ const rootLayout = await readFile("app/layout.tsx", "utf8");
 const tagManager = await readFile("components/partials/TagManager.tsx", "utf8");
 const adSenseLoader = await readFile("components/DeferredAdSense.tsx", "utf8");
 const adUnit = await readFile("components/AdUnit.tsx", "utf8");
+const adSlot = await readFile("components/AdSlot.tsx", "utf8");
 
 assert.match(config, /extendDefaultRuntimeCaching:\s*false/);
 assert.match(config, /cacheOnFrontEndNav:\s*false/);
@@ -114,10 +115,8 @@ assert.ok(rootLayout.includes("NEXT_PUBLIC_ADSENSE_CLIENT"));
 assert.ok(!rootLayout.includes("DeferredAdSense"));
 assert.ok(!rootLayout.includes("adsbygoogle.js"));
 
-assert.ok(adSenseLoader.includes("if (!enabled || !clientId) return"));
 assert.ok(adSenseLoader.includes("export function loadAdSense(clientId?: string)"));
-assert.ok(adSenseLoader.includes("pagead2.googlesyndication.com"));
-assert.ok(adSenseLoader.includes("pagead2.googlesyndication.com"));
+assert.ok(adSenseLoader.includes("pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client="));
 
 assert.ok(tagManager.includes("if (analytics) {"));
 assert.ok(tagManager.includes("loadGoogleAnalytics();"));
@@ -128,6 +127,12 @@ assert.ok(tagManager.includes('analytics_storage: analytics ? "granted" : "denie
 assert.ok(adUnit.includes("if (!canRender || adBlocked) return null;"));
 assert.ok(adUnit.includes("{marketingConsent && ("));
 assert.ok(adUnit.includes("loadAdSense(clientId);"));
+assert.ok(adUnit.includes("if (!canRender) return;"));
+assert.ok(adUnit.includes("if (!marketingConsent) {"));
+assert.ok(adSlot.includes('new Set<PublicAdPageType>(["article", "guide"])'));
+assert.ok(adSlot.includes("contentWords >= 500"));
+assert.ok(adSlot.includes('process.env.ADSENSE_ENABLED === "true"'));
+assert.ok(adSlot.includes('process.env.ADSENSE_CMP_READY === "true"'));
 
 process.stdout.write("PWA cache-security checks passed.\n");
 
