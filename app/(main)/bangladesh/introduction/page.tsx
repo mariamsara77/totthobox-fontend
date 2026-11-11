@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import IntroductionClient from "./IntroductionClient";
+import EditorialSection from "@/components/EditorialSection";
+import { bangladeshIntroductionArticle } from "@/lib/content/sections/bangladesh-introduction";
 
 export const revalidate = 1800;
 
@@ -22,15 +24,6 @@ export const metadata: Metadata = {
   title: "বাংলাদেশের পরিচিতি | বিভাগ, জেলা ও সাধারণ তথ্য | তথ্যবক্স",
   description:
     "বাংলাদেশের সকল বিভাগ, জেলা, ভৌগোলিক অবস্থান, ইতিহাস, সংস্কৃতি ও গুরুত্বপূর্ণ তথ্যসহ সম্পূর্ণ পরিচিতি। সহজে সার্চ ও ক্যাটাগরি অনুসারে খুঁজুন।",
-  keywords: [
-    "বাংলাদেশের পরিচিতি",
-    "বাংলাদেশ তথ্য",
-    "বিভাগ",
-    "জেলা",
-    "বাংলাদেশ পরিচিতি",
-    "বাংলাদেশ ভূগোল",
-    "তথ্যবক্স",
-  ],
   alternates: {
     canonical: "https://totthobox.com/bangladesh/introduction",
   },
@@ -55,5 +48,10 @@ export const metadata: Metadata = {
 
 export default async function IntroductionPage() {
   const initialData = await getInitialData();
-  return <IntroductionClient initialData={initialData} />;
+  return (
+    <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-8">
+      <IntroductionClient initialData={initialData} />
+      <EditorialSection article={bangladeshIntroductionArticle} />
+    </div>
+  );
 }

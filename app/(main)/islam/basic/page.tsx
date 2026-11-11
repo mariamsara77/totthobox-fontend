@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import BasicIslamClient from "./basicislamClient";
+import EditorialSection from "@/components/EditorialSection";
+import { islamBasicArticle } from "@/lib/content/sections/islam-basic";
 import { fetchApi } from "@/lib/api/fetcher";
 import { CACHE_TAGS } from "@/lib/cache-config";
 
@@ -39,5 +41,10 @@ async function getInitialData() {
 
 export default async function BasicIslamPage() {
   const initialData = await getInitialData();
-  return <BasicIslamClient initialData={initialData} />;
+  return (
+    <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-8">
+      <BasicIslamClient initialData={initialData} />
+      <EditorialSection article={islamBasicArticle} />
+    </div>
+  );
 }

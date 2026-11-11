@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import TourismClient from "./TourismClient";
+import EditorialSection from "@/components/EditorialSection";
+import { bangladeshTourismArticle } from "@/lib/content/sections/bangladesh-tourism";
 
 export const revalidate = 1800;
 
@@ -77,5 +79,10 @@ async function getInitialTourism(): Promise<TourismPageResponse> {
 export default async function TourismPage() {
   const initialData = await getInitialTourism();
 
-  return <TourismClient initialData={initialData} />;
+  return (
+    <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-8">
+      <TourismClient initialData={initialData} />
+      <EditorialSection article={bangladeshTourismArticle} />
+    </div>
+  );
 }

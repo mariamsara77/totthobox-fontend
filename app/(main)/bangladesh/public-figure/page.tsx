@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import PeopleClient from "./PeopleClient";
-
+import EditorialSection from "@/components/EditorialSection";
+import { bangladeshPublicFigureArticle } from "@/lib/content/sections/bangladesh-public-figure";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
@@ -50,5 +51,10 @@ export const metadata: Metadata = {
 
 export default async function PublicFigurePage() {
   const initialData = await getInitialData();
-  return <PeopleClient initialData={initialData} />;
+  return (
+    <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-8">
+      <PeopleClient initialData={initialData} />
+      <EditorialSection article={bangladeshPublicFigureArticle} />
+    </div>
+  );
 }

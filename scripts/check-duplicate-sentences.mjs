@@ -9,6 +9,7 @@ const __dirname = path.dirname(__filename);
 const CONTENT_DIRS = [
   path.join(__dirname, "..", "lib", "content", "tools"),
   path.join(__dirname, "..", "lib", "content", "converters"),
+  path.join(__dirname, "..", "lib", "content", "sections"),
 ];
 
 function extractSentences(text) {

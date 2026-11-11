@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import EstablishmentClient from "./EstablishmentClient";
-
+import EditorialSection from "@/components/EditorialSection";
+import { bangladeshEstablishmentArticle } from "@/lib/content/sections/bangladesh-establishment";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
@@ -24,15 +25,6 @@ export const metadata: Metadata = {
   title: "বাংলাদেশের সকল গুরুত্বপূর্ণ স্থাপনা ও প্রতিষ্ঠান | তথ্যবক্স",
   description:
     "বাংলাদেশের ৬৪ জেলার সরকারি-বেসরকারি প্রতিষ্ঠান, ঐতিহাসিক ভবন, শিক্ষা প্রতিষ্ঠান, হাসপাতাল, অফিস ও প্রয়োজনীয় স্থাপনাসমূহের সম্পূর্ণ তালিকা ও বিস্তারিত গাইড।",
-  keywords: [
-    "বাংলাদেশ স্থাপনা",
-    "প্রতিষ্ঠান তালিকা",
-    "সরকারি দপ্তর",
-    "শিক্ষা প্রতিষ্ঠান",
-    "ঐতিহাসিক ভবন",
-    "বাংলাদেশ অফিস",
-    "তথ্যবক্স",
-  ],
   alternates: {
     canonical: "https://totthobox.com/bangladesh/establishment",
   },
@@ -57,5 +49,10 @@ export const metadata: Metadata = {
 
 export default async function EstablishmentPage() {
   const initialData = await getInitialData();
-  return <EstablishmentClient initialData={initialData} />;
+  return (
+    <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-8">
+      <EstablishmentClient initialData={initialData} />
+      <EditorialSection article={bangladeshEstablishmentArticle} />
+    </div>
+  );
 }

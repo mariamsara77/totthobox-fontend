@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import SoftwareClient from "./SoftwareClient";
+import EditorialSection from "@/components/EditorialSection";
+import { softwareArticle } from "@/lib/content/sections/software";
 
 export const revalidate = 1800;
 
@@ -50,5 +52,10 @@ export const metadata: Metadata = {
 
 export default async function SoftwarePage() {
   const initialData = await getInitialData();
-  return <SoftwareClient platform="" initialData={initialData} />;
+  return (
+    <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-8">
+      <SoftwareClient platform="" initialData={initialData} />
+      <EditorialSection article={softwareArticle} />
+    </div>
+  );
 }

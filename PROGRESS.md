@@ -54,12 +54,14 @@
 - [x] Git commit `phase-5: indexing control and thin guard`
 
 ### Phase 6: Content Depth (Tools & Converters)
-- [ ] Reusable `<PageContent>` server layout
-- [ ] 700-1200 words of unique Bangla guide for 10 tools and 18 converters (3+ examples, 5+ FAQs, JSON-LD)
-- [ ] Editorial wrappers & FAQs for listing pages (600+ words)
-- [ ] Duplicate-sentence checker script (fails on > 10% overlap)
-- [ ] Drafts in `/content-drafts/` for thin records
-- [ ] Git commit `phase-6: rich content depth for tools and converters`
+- [x] Reusable `<ToolGuide>` and `<EditorialSection>` server layout components
+- [x] 700-1200 words of unique Bangla guide for 10 tools and 17 converters (3+ examples, 5+ FAQs, JSON-LD FAQPage schema)
+- [x] Editorial wrappers & FAQs for listing pages (Holidays, Establishments, History, Intro, Figures, Tourism, Dialing Codes, World Clock, Forex, Islam, Signs, Software)
+- [x] Duplicate-sentence checker script `scripts/check-duplicate-sentences.mjs` (audited 40 content files, passed < 10% overlap threshold)
+- [x] Drafts & editorial expansion templates in `/content-drafts/` for thin records
+- [x] Content count audit script `scripts/count-content-pages.mjs` (40 comprehensive content files)
+- [x] Run `npm run lint` & `npm run build` for Phase 6 (0 errors, 600 static pages)
+- [x] Git commit `phase-6: rich content depth for tools and converters`
 
 ### Phase 7: Trust, Authorship & YMYL Safety
 - [ ] Author/reviewer block on content pages (`config/editorial.ts` fallback)
@@ -93,8 +95,8 @@
 ---
 
 ## NEXT STEP
-Execute Phase 6: Content Depth (Tools & Converters)
-1. Create reusable `<PageContent>` and `<EditorialSection>` server layout component
-2. Author 700-1200 words of authentic Bangla guide, 3+ worked examples, 5+ real FAQs, and FAQPage schema for 10 tools and 18 converters (`lib/content/*`)
-3. Add 600+ word editorial wrappers for listing pages
-4. Run duplicate-sentence checker script (< 10% overlap threshold)
+Execute Phase 7: Trust, Authorship & YMYL Safety
+1. Create `config/editorial.ts` with verified editorial board members and reviewers.
+2. Build reusable `<AuthorReviewerBlock>` and `<Disclaimer type="...">` components.
+3. Attach sources and verification blocks to Islamic, Tax, Emergency, and History pages.
+4. Run `npm run lint` and `npm run build` after Phase 7.

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import CryptoForexClient from "./CryptoForexClient";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
+import EditorialSection from "@/components/EditorialSection";
+import { internationalCryptoForexArticle } from "@/lib/content/sections/international-crypto-forex";
 
 export const revalidate = 60;
 
@@ -8,15 +10,6 @@ export const metadata: Metadata = {
   title: "লাইভ ক্রিপ্টো ও ফরেক্স রেট কনভার্টার | Live Crypto & Forex Converter",
   description:
     "বিটকয়েন, ইথেরিয়াম, ইউএসডিটিসহ শীর্ষ ক্রিপ্টোকারেন্সির লাইভ দাম এবং ডলার, ইউরো, টাকার রিয়েল-টাইম এক্সচেঞ্জ রেট রূপান্তর করুন সহজে।",
-  keywords: [
-    "crypto to bdt",
-    "forex rates bd",
-    "bitcoin price in bdt",
-    "ডলার রেট",
-    "ক্রিপ্টো কনভার্টার",
-    "usdt to taka",
-    "live currency exchange",
-  ],
   alternates: { canonical: "https://totthobox.com/international/crypto-forex" },
   openGraph: {
     title: "লাইভ ক্রিপ্টো ও ফরেক্স রেট কনভার্টার | Totthobox",
@@ -50,8 +43,11 @@ export default function CryptoForexPage() {
           "২৪ ঘণ্টার মূল্য পরিবর্তন নির্দেশক",
         ]}
       />
-      <div className="max-w-2xl mx-auto px-4 py-6 sm:py-8">
-        <CryptoForexClient />
+      <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-8">
+        <div className="max-w-2xl mx-auto">
+          <CryptoForexClient />
+        </div>
+        <EditorialSection article={internationalCryptoForexArticle} />
       </div>
     </>
   );

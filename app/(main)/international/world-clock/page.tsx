@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import WorldClockClient from "./WorldClockClient";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
+import EditorialSection from "@/components/EditorialSection";
+import { internationalWorldClockArticle } from "@/lib/content/sections/international-world-clock";
 
 export const revalidate = 1800;
 
@@ -8,15 +10,6 @@ export const metadata: Metadata = {
   title: "বিশ্ব ঘড়ি ও আন্তর্জাতিক টাইমজোন কনভার্টার | World Clock & Timezone",
   description:
     "বিশ্বের প্রধান শহরগুলোর রিয়েল-টাইম লাইভ সময়, দিন-রাত্রির স্ট্যাটাস এবং যেকোনো দেশের সাথে স্থানীয় সময়ের পার্থক্য সহজে রূপান্তর করুন।",
-  keywords: [
-    "world clock",
-    "বিশ্ব ঘড়ি",
-    "timezone converter",
-    "বাংলাদেশ সময়",
-    "dhaka time now",
-    "লাইভ সময় রূপান্তর",
-    "international time check",
-  ],
   alternates: { canonical: "https://totthobox.com/international/world-clock" },
   openGraph: {
     title: "বিশ্ব ঘড়ি ও টাইমজোন কনভার্টার | Totthobox",
@@ -50,8 +43,11 @@ export default function WorldClockPage() {
           "সরাসরি ফলাফল কপি করার সুবিধা",
         ]}
       />
-      <div className="max-w-2xl mx-auto px-4 py-6 sm:py-8">
-        <WorldClockClient />
+      <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-8">
+        <div className="max-w-2xl mx-auto">
+          <WorldClockClient />
+        </div>
+        <EditorialSection article={internationalWorldClockArticle} />
       </div>
     </>
   );

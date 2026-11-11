@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import CallingCodesClient from "./CallingCodesClient";
 import ToolStructuredData from "@/components/seo/ToolStructuredData";
+import EditorialSection from "@/components/EditorialSection";
+import { internationalCallingCodesArticle } from "@/lib/content/sections/international-calling-codes";
 
 export const revalidate = 86400;
 
@@ -8,14 +10,6 @@ export const metadata: Metadata = {
   title: "আন্তর্জাতিক ডায়ালিং কোড ডিরেক্টরি | International Calling Codes",
   description:
     "বিশ্বের সকল দেশের আন্তর্জাতিক ডায়ালিং কান্ট্রি কোড, রাজধানী, জরুরি হেল্পলাইন এবং আন্তর্জাতিক ফোন নম্বর ফরম্যাট করুন সহজে।",
-  keywords: [
-    "country calling codes",
-    "international dialing codes",
-    "আন্তর্জাতিক ডায়ালিং কোড",
-    "কান্ট্রি কোড তালিকা",
-    "bd country code",
-    "phone code finder",
-  ],
   alternates: { canonical: "https://totthobox.com/international/calling-codes" },
   openGraph: {
     title: "আন্তর্জাতিক ডায়ালিং কোড ডিরেক্টরি | Totthobox",
@@ -49,8 +43,11 @@ export default function CallingCodesPage() {
           "এক ক্লিকে ডায়ালিং কোড কপি করার সুবিধা",
         ]}
       />
-      <div className="max-w-2xl mx-auto px-4 py-6 sm:py-8">
-        <CallingCodesClient />
+      <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-8">
+        <div className="max-w-2xl mx-auto">
+          <CallingCodesClient />
+        </div>
+        <EditorialSection article={internationalCallingCodesArticle} />
       </div>
     </>
   );

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import SignListClient from "./signListClient";
+import EditorialSection from "@/components/EditorialSection";
+import { signsArticle } from "@/lib/content/sections/signs";
 import { fetchApi } from "@/lib/api/fetcher";
 import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
 
@@ -68,5 +70,10 @@ export default async function SignListPage({ params }: Props) {
   const { category } = await params;
   const initialData = await getSignCategoryData(category);
 
-  return <SignListClient categorySlug={category} initialData={initialData} />;
+  return (
+    <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-8">
+      <SignListClient categorySlug={category} initialData={initialData} />
+      <EditorialSection article={signsArticle} />
+    </div>
+  );
 }

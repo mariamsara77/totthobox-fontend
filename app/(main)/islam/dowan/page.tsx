@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import DowaClient from "./dowaClient";
+import EditorialSection from "@/components/EditorialSection";
+import { islamDowanArticle } from "@/lib/content/sections/islam-dowan";
 import { fetchApi } from "@/lib/api/fetcher";
 import { CACHE_TAGS } from "@/lib/cache-config";
 
@@ -39,5 +41,10 @@ async function getInitialData() {
 
 export default async function DowaPage() {
   const initialData = await getInitialData();
-  return <DowaClient initialData={initialData} />;
+  return (
+    <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-8">
+      <DowaClient initialData={initialData} />
+      <EditorialSection article={islamDowanArticle} />
+    </div>
+  );
 }
