@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { cache } from "react";
 import { notFound } from "next/navigation";
 import BasicIslamShowClient from "./basicislamShowClient";
-import AuthorReviewerBlock from "@/components/AuthorReviewerBlock";
 import Disclaimer from "@/components/Disclaimer";
 import { fetchApi } from "@/lib/api/fetcher";
 import { getSlugsForPath } from "@/lib/api/slugs";
@@ -96,20 +95,7 @@ export default async function BasicIslamShowPage({
       <BasicIslamShowClient initialData={data} slug={slug} />
       <div className="mx-auto max-w-4xl space-y-4 px-4">
         <Disclaimer type="islamic" />
-        <AuthorReviewerBlock
-          category="islamic"
-          sources={[
-            {
-              name: "Quran.com — কুরআন পাঠ ও অধ্যয়ন",
-              url: "https://quran.com/",
-            },
-            {
-              name: "Sunnah.com — হাদিস সংগ্রহ",
-              url: "https://sunnah.com/",
-              note: "প্রতিটি হাদিসের মান, নম্বর ও প্রাসঙ্গিকতা মূল সংগ্রহ থেকে যাচাই করুন।",
-            },
-          ]}
-        />
+        {/* TODO(owner): add verified author/reviewer details and exact Quran/hadith citations. */}
       </div>
     </>
   );
