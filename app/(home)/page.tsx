@@ -137,7 +137,7 @@ export default function HomePage() {
 
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-tight text-zinc-900 dark:text-zinc-50 max-w-4xl mx-auto">
           প্রয়োজনীয় সব তথ্য ও সেবা <br className="hidden sm:inline" />
-          <span className="text-transparent bg-clip-text bg-gradient-to- from-indigo-600 via-sky-500 to-emerald-500 dark:from-indigo-400 dark:via-sky-400 dark:to-emerald-400">
+          <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-600 via-sky-500 to-emerald-500 dark:from-indigo-400 dark:via-sky-400 dark:to-emerald-400">
             এক প্ল্যাটফর্মে
           </span>
         </h1>
@@ -175,11 +175,11 @@ export default function HomePage() {
 
         {/* Dynamic Services Cards */}
         <div className="grid grid-cols-2 gap-3.5 sm:gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {services.map((service, index) => {
+          {services.map((service) => {
             const Icon = service.icon;
             return (
               <Link
-                key={index}
+                key={service.href}
                 href={service.href}
                 prefetch={false}
                 className="group relative flex flex-col items-center justify-between p-4 sm:p-5 text-center rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-400/10 hover:bg-white dark:hover:bg-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 shadow-xs hover:shadow-lg transition-all duration-200 hover:-translate-y-1"

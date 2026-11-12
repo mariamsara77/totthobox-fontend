@@ -21,7 +21,7 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
       className={`chat-layout-root pwa-screen-height min-h-0 w-full overflow-hidden overscroll-none`}
     >
       <ChatLayoutProvider>
-        <main className="flex h-full min-h-0 w-full min-w-0 overflow-hidden">
+        <main id="main-content" tabIndex={-1} className="flex h-full min-h-0 w-full min-w-0 overflow-hidden">
           {children}
         </main>
       </ChatLayoutProvider>

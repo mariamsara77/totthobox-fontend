@@ -6,10 +6,10 @@ import { ArrowLeft, RefreshCw } from "lucide-react";
 
 export default function ChatError({
   error,
-  reset,
+  retry,
 }: {
   error: Error & { digest?: string };
-  reset: () => void;
+  retry: () => void;
 }) {
   useEffect(() => {
     console.warn("Chat error boundary caught:", error);
@@ -32,7 +32,7 @@ export default function ChatError({
           </Link>
           <button
             type="button"
-            onClick={() => reset()}
+            onClick={() => retry()}
             className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-500"
           >
             <RefreshCw className="size-4" />

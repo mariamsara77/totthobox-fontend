@@ -134,6 +134,7 @@ export default function RootLayout({
         suppressHydrationWarning
         className="antialiased bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
       >
+        <a href="#main-content" className="skip-link">মূল বিষয়বস্তুতে যান</a>
         <SiteStructuredData />
         <TagManager />
         <NetworkStatus />

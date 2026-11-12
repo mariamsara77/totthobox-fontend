@@ -25,7 +25,7 @@ export default function ThemeToggle() {
   ];
 
   return (
-    <div className="flex w-full gap-2 items-center rounded-xl p-1 backdrop-blur-sm border border-zinc-400/25 bg-zinc-400/10">
+    <div role="group" aria-label="থিম নির্বাচন" className="flex w-full gap-2 items-center rounded-xl p-1 backdrop-blur-sm border border-zinc-400/25 bg-zinc-400/10">
       {themes.map(({ id, label, icon: Icon }) => {
         const isActive = theme === id;
         return (
@@ -33,11 +33,12 @@ export default function ThemeToggle() {
             key={id}
             type="button"
             onClick={() => setTheme(id)}
-            className={`flex flex-1 items-center justify-center gap-2 rounded-lg p-2 text-sm transition-all duration-200 ${
+            aria-pressed={isActive}
+            className={`flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg p-2 text-sm transition-all duration-200 ${
               isActive ? "bg-zinc-400/25" : "hover:bg-zinc-400/10"
             }`}
           >
-            <Icon className="h-4 w-4 shrink-0" />
+            <Icon aria-hidden="true" className="h-4 w-4 shrink-0" />
             <span className="truncate">{label}</span>
           </button>
         );

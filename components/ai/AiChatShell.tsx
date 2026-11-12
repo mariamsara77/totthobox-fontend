@@ -79,6 +79,8 @@ export default function AiChatShell({
 
       {/* Main Content Area */}
       <main
+        id="main-content"
+        tabIndex={-1}
         className={`
           absolute inset-y-0 left-0 z-20 w-full h-full flex flex-col
           transition-transform duration-300 ease-in-out

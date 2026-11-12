@@ -2,10 +2,10 @@
 
 export default function GlobalError({
   error,
-  reset,
+  retry,
 }: {
   error: Error & { digest?: string };
-  reset: () => void;
+  retry: () => void;
 }) {
   return (
     <html lang="bn">
@@ -30,7 +30,7 @@ export default function GlobalError({
           )}
 
           <button
-            onClick={() => reset()}
+            onClick={() => retry()}
             className="mt-8 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-emerald-500"
           >
             আবার চেষ্টা করুন

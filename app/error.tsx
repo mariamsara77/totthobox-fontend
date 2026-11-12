@@ -5,10 +5,10 @@ import ErrorPage from "@/components/ErrorPage";
 
 export default function Error({
   error,
-  reset,
+  retry,
 }: {
   error: Error & { digest?: string };
-  reset: () => void;
+  retry: () => void;
 }) {
   useEffect(() => {
     // এখানে Sentry / LogRocket ইত্যাদি কানেক্ট করতে পারেন
@@ -32,7 +32,7 @@ export default function Error({
       title={title}
       description={description}
       showRetry
-      onRetry={reset}
+      onRetry={retry}
       digest={error.digest}
     />
   );

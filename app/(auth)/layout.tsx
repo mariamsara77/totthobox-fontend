@@ -8,12 +8,12 @@ export default function AuthLayout({
     <div className="flex min-h-screen w-full items-center justify-center px-3 py-6 sm:px-4">
       <div className="w-full max-w-lg space-y-4">
         <header className="flex justify-center">
-          <Link href="/">
+          <Link href="/" aria-label="তথ্যবক্স হোম পেজ">
             <BrandIcon className="size-12" />
           </Link>
         </header>
 
-        <main>{children}</main>
+        <main id="main-content" tabIndex={-1}>{children}</main>
       </div>
     </div>
   );

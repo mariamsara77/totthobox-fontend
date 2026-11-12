@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Sidebar from "@/components/Sidebar";
@@ -34,7 +34,7 @@ export default function MainLayout({
               <Navbar />
             </div>
 
-            <main className="flex-1 w-full">{children}</main>
+            <main id="main-content" tabIndex={-1} className="flex-1 w-full">{children}</main>
             <HelpfulContent />
             <RelatedLinks />
             <Footer />

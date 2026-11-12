@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 import NavbarHeader from "@/components/NavbarHeader";
 import Footer from "@/components/Footer";
 
@@ -20,11 +20,11 @@ export default function HomeLayout({
   return (
     <div>
       <div className="flex">
-        <div className="flex flex-1 flex-col">
+        <div className="flex min-w-0 flex-1 flex-col">
           <div className="sticky top-0 z-50">
             <NavbarHeader />
           </div>
-          <main className="flex-1 w-full">{children}</main>
+          <main id="main-content" tabIndex={-1} className="flex-1 w-full">{children}</main>
           <Footer />
         </div>
       </div>

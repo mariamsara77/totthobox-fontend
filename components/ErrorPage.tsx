@@ -23,7 +23,7 @@ export default function ErrorPage({
     <div className="flex min-h-screen flex-col">
       <NavbarHeader />
 
-      <main className="flex flex-1 flex-col items-center justify-center px-4 py-16 text-center">
+      <main id="main-content" tabIndex={-1} className="flex flex-1 flex-col items-center justify-center px-4 py-16 text-center">
         <div className="select-none text-7xl font-bold tracking-tighter text-zinc-200 dark:text-zinc-800">
           {code}
         </div>
