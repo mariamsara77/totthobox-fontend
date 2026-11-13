@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
+const LARAVEL_API =
+  process.env.LARAVEL_API_URL || "https://admin.totthobox.com/api";
+
 type TrackingActivity = {
   type: string;
   key: string;
@@ -52,7 +55,25 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Persistence belongs to the configured analytics/backend service.
+    // Forward offline sync data to Laravel backend (fire-and-forget)
+    void fetch(`${LARAVEL_API}/tracking/sync`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+        "User-Agent": req.headers.get("user-agent") || "TotthoboxFrontend/1.0",
+        "X-Forwarded-For":
+          req.headers.get("x-forwarded-for") ||
+          req.headers.get("x-real-ip") ||
+          "unknown",
+      },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(10_000),
+    }).catch(() => {
+      // Backend unreachable — silently ignore
+    });
+
     return NextResponse.json(
       { status: "success", synced: activities.length },
       { status: 202 },

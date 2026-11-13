@@ -1,7 +1,8 @@
 // lib/tracker.ts
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL || "https://admin.totthobox.com/api";
+// Always use the same-origin Next.js API proxy to avoid CORS issues
+// and ensure tracking data is forwarded to the Laravel backend server-side.
+const API_BASE = "/api";
 
 type TrackPayload = Record<string, unknown>;
 

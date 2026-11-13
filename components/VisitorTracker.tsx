@@ -15,8 +15,8 @@ function hasAnalyticsConsent(): boolean {
   }
 }
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "https://admin.totthobox.com/api";
+// Always use the same-origin Next.js API proxy to avoid CORS issues.
+const API_BASE_URL = "/api";
 
 export default function VisitorTracker() {
   const pathname = usePathname();
