@@ -25,3 +25,48 @@ Rules: Additive only, no invented facts, preserved existing content, titles <= 6
 - **Notes**: All existing 600+ word overview, mega stats, maps, codes, timezones, currencies, and FAQs retained without deletion. Population "As of" year omitted as database does not contain population year timestamps.
 
 ---
+
+## GROUP 2: Land Converter, Percentage Calculator, Number to Word
+
+### 1. Land Converter (`/converter/land`)
+- **Page Affected**: `/converter/land`
+- **Date**: 2026-11-14
+- **Before Title**: `জমি পরিমাপ ক্যালকুলেটর - শতাংশ, কাঠা, বিঘা কনভার্টার | Totthobox` (65 chars)
+- **After Title**: `শতাংশ থেকে কাঠা ও বিঘা হিসাব ক্যালকুলেটর` (39 chars, <= 60 chars)
+- **Before Description**: `সহজেই শতাংশ, কাঠা, বিঘা, স্কয়ার ফিট ও একর কনভার্ট করুন। Totthobox-এর নিখুঁত Land Area Converter ও বিস্তারিত ভূমি পরিমাপ নির্দেশিকা।` (128 chars)
+- **After Description**: `৪ শতাংশ কত কাঠা বা ২০ শতাংশ কত কাঠা? ১ শতাংশ = ০.৬০৫ কাঠা ও ১ বিঘা = ২০ কাঠা হিসেবে শতাংশ থেকে কাঠা ও কাঠা থেকে শতাংশ রূপান্তরের পূর্ণাঙ্গ চার্ট ও হিসাব দেখুন।` (158 chars)
+- **Added Blocks**:
+  1. H2 quick-answer sections for top ~10 common queries ("৪ শতাংশ কত কাঠা?", "২০ শতাংশ কত কাঠা?", etc.) with exact worked mathematical breakdown based on repo constants (1 shotangsho = 435.6 sq ft, 1 katha = 720 sq ft, ratio = 0.605).
+  2. Server-rendered 1-100 "শতাংশ থেকে কাঠা" conversion chart, with per-row anchors (`#shotangsho-1` to `#shotangsho-100`).
+  3. Mini charts: "কাঠা থেকে শতাংশ" (anchors `#katha-N`) and "বিঘা থেকে কাঠা" (anchors `#bigha-N`).
+  4. Regional variation notice clarifying local customs vs government land registry standard (720 sq ft katha).
+
+### 2. Percentage Tool (`/tools/percentage-calculator`)
+- **Page Affected**: `/tools/percentage-calculator`
+- **Date**: 2026-11-14
+- **Before Title**: `পার্সেন্টেজ ক্যালকুলেটর — সহজ বাংলায় শতকরা হিসাব | তথ্যবক্স` (56 chars)
+- **After Title**: `কত পারসেন্ট কীভাবে বের করবেন - শতকরা হিসাব ক্যালকুলেটর` (53 chars, <= 60 chars)
+- **Before Description**: `সহজ বাংলায় পার্সেন্টেজ ক্যালকুলেটর। কোনো সংখ্যার শতকরা, বৃদ্ধি-হ্রাস, ছাড়, টিপ, মার্জিন ও পার্থক্য — সূত্র ও ব্যাখ্যাসহ তাৎক্ষণিক ফলাফল। রেজিস্ট্রেশন লাগবে না।` (156 chars)
+- **After Description**: `কত পারসেন্ট কীভাবে বের করবেন? X টাকার Y% কত, প্রাপ্ত নম্বরের শতকরা হার ও ডিসকাউন্ট নির্ণয়ের সহজ সূত্র ও উদাহরণসহ হিসাব করুন তথ্যবক্স ক্যালকুলেটরে।` (152 chars)
+- **Added Blocks**:
+  1. Direct-answer block: "কত পারসেন্ট কীভাবে বের করবেন: সহজ গাইড ও সূত্র".
+  2. 3 verified worked examples with arithmetic checked in code:
+     - Example 1: `X টাকার Y% কত?` (৫,০০০ টাকার ১৫% = ৭৫০ টাকা)
+     - Example 2: `প্রাপ্ত নম্বরের শতকরা হার` (৮০০ তে ৬০০ = ৭৫%)
+     - Example 3: `কেনাকাটায় ডিসকাউন্ট` (১,২০০ টাকায় ২০% ছাড় = ২৪০ টাকা ছাড়, বিক্রয়মূল্য ৯৬০ টাকা)
+
+### 3. Number to Word (`/converter/number-to-word`)
+- **Page Affected**: `/converter/number-to-word`
+- **Date**: 2026-11-14
+- **Before Title**: `সংখ্যা থেকে কথায় রূপান্তরকারী | Number to Word Converter Bangla | Totthobox` (73 chars)
+- **After Title**: `অংক থেকে কথায় বাংলা - সংখ্যা থেকে কথায় রূপান্তর` (51 chars, <= 60 chars)
+- **Before Description**: `যেকোনো সংখ্যাকে সহজে বাংলা ও ইংরেজি শব্দে রূপান্তর করুন। ব্যাংক চেক, দলিল ও চালানের জন্য টাকা-পয়সা, ইউনিকোড বাংলা ও আদর্শলিপি (ANSI) ফরম্যাট সমর্থিত।` (143 chars)
+- **After Description**: `অংক থেকে কথায় বাংলা রূপান্তর করুন সহজে। ব্যাংক চেক, দলিল ও ভাউচারের জন্য সংখ্যা থেকে কথায় টাকা লেখার সঠিক ফরম্যাট ও বাস্তব উদাহরণ জানুন তথ্যবক্সে।` (148 chars)
+- **Added Blocks**:
+  1. Direct-answer block: "অংক থেকে কথায় বাংলা: লেখার নিয়ম ও চেক স্টাইল উদাহরণ".
+  2. 3 verified bank-cheque style examples:
+     - Example 1: ২৫,৫০০ -> `পঁচিশ হাজার পাঁচ শত টাকা মাত্র` (Twenty-Five Thousand Five Hundred Taka Only)
+     - Example 2: ১,৫০,০০০ -> `এক লক্ষ পঞ্চাশ হাজার টাকা মাত্র` (One Lakh Fifty Thousand Taka Only)
+     - Example 3: ৫,৭৫,৩৫০ -> `পাঁচ লক্ষ পঁচাত্তর হাজার তিন শত পঞ্চাশ টাকা মাত্র` (Five Lakh Seventy-Five Thousand Three Hundred Fifty Taka Only)
+
+---

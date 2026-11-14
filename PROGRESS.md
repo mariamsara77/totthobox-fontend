@@ -4,8 +4,8 @@
 
 ### Search Console Optimization Pass
 - [x] **Group 1 (/international/country/[slug]):** Direct-answer "দ্রুত তথ্য" block under H1 with H2 questions ("{দেশ}-এর আয়তন কত?", "{দেশ}-এর জনসংখ্যা কত?", "{দেশ} কোন মহাদেশে অবস্থিত?", "{দেশ}-এর রাজধানীর নাম কী?"), title <= 60 chars, description 120-160 chars, 3-4 related country internal links, FAQPage JSON-LD synchronized with direct answers, all 600+ words editorial text retained. (DONE)
-- [ ] **Group 2 (Land converter, Percentage tool, Number to word):** Land tables computed from repo constants, direct answers for 4/20 shotangsho, percentage & number-to-word worked examples and metadata update. (IN PROGRESS)
-- [ ] **Group 3 (Holiday pages):** Holiday detail date+weekday+holiday status direct sentence under H1, today's Bangla date server-rendering island, last updated display. (NEXT STEP)
+- [x] **Group 2 (Land converter, Percentage tool, Number to word):** Land tables computed from repo constants (1 shotangsho = 435.6 sq ft, 1 katha = 720 sq ft, 1-100 shotangsho anchor table, mini tables), direct answers for 4/20 shotangsho, percentage & number-to-word worked examples and metadata update. (DONE)
+- [ ] **Group 3 (Holiday pages):** Holiday detail date+weekday+holiday status direct sentence under H1, today's Bangla date server-rendering island, last updated display. (IN PROGRESS)
 - [ ] **Group 4 (Software/fonts):** Additive info, install steps, FAQ, and SOFTWARE_AUDIT.md scan of all download links. (TODO)
 - [ ] **Group 5 (Bangladesh info pages & signs):** Direct answers under H1 from record fields only; missing data logged to SEO_CHANGELOG.md. (TODO)
 - [ ] **Group 6 (Verification, Build & Report):** check-seo.mjs, curl test, lint and production build. (TODO)
