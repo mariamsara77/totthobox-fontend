@@ -8,7 +8,7 @@
 - [x] **Group 3 (Holiday pages):** Holiday detail date+weekday+holiday status direct sentence under H1, today's Bangla date server-rendering island, last updated display. (DONE)
 - [x] **Group 4 (Software/fonts):** Additive info, install steps, FAQ, and SOFTWARE_AUDIT.md scan of all download links. (DONE)
 - [x] **Group 5 (Bangladesh info pages & signs):** Direct answers under H1 from record fields only; missing data logged to SEO_CHANGELOG.md. (DONE)
-- [ ] **Group 6 (Verification, Build & Report):** check-seo.mjs, curl test, lint and production build. (IN PROGRESS)
+- [x] **Group 6 (Verification, Build & Report):** check-seo.mjs (20/20 pass), curl live test on 2 URLs per group (all 200, 1 H1, valid JSON-LD), lint (0 errors), production build (606 static pages generated). (DONE)
 
 ### Polish Pass: Analytics, Visitor Tracking, SEO, Sitemap & Responsive UI/UX
 - [x] **Phase P1 (Analytics + Tag Manager):** Single GTM container (`GTM-5RFHKJJJ`) via `next/script` (`strategy="afterInteractive"`) + `<noscript>` fallback; duplicate GA4 script eliminated; Consent Mode v2 default denied + dynamic updates; `<RouteTracker>` SPA pageview tracking; shared event helpers in `lib/analytics.ts`; noise excluded (/offline, /auth/*, /settings/*, bots); `ANALYTICS_SETUP.md` created.
