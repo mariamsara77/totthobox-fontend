@@ -340,6 +340,90 @@ export default async function AppShowPage({
         </p>
       </section>
 
+      {/* ইনস্টলেশন গাইড — additive, server-rendered, from API data only */}
+      {app.platform && (
+        <section aria-labelledby="install-heading" className="space-y-3">
+          <h2 id="install-heading" className="text-xl font-bold">
+            {app.name} কিভাবে ইনস্টল করবেন?
+          </h2>
+          <ol className="list-decimal list-inside space-y-2 text-sm leading-relaxed opacity-80">
+            <li>উপরের ডাউনলোড বাটনে ক্লিক করে ফাইল সংগ্রহ করুন।</li>
+            <li>ডাউনলোড সম্পন্ন হলে ফাইলটি খুলুন এবং ইনস্টলেশন উইজার্ড অনুসরণ করুন।</li>
+            <li>
+              {app.platform.toLowerCase().includes("windows")
+                ? "Windows-এ ইনস্টল করতে .exe ফাইলে ডাবল ক্লিক করুন এবং Administrator হিসেবে চালান।"
+                : `${app.platform} ডিভাইসে ইনস্টলেশনের জন্য সংশ্লিষ্ট প্ল্যাটফর্মের নির্দেশনা অনুসরণ করুন।`}
+            </li>
+            <li>ইনস্টলেশনের পর সফটওয়্যার চালু করুন এবং প্রয়োজনে লাইসেন্স যাচাই করুন।</li>
+          </ol>
+          {app.platform.toLowerCase().includes("windows") && (
+            <p className="text-xs opacity-60">
+              সমর্থিত সিস্টেম: {app.platform}
+              {app.version ? ` (সংস্করণ ${app.version})` : ""}
+            </p>
+          )}
+        </section>
+      )}
+
+      {/* FAQ — built from real API fields only */}
+      {(app.name || description) && (() => {
+        const faqItems: { q: string; a: string }[] = [];
+        if (app.name) {
+          faqItems.push({
+            q: `${app.name} কী?`,
+            a: description
+              ? `${description.slice(0, 200)}${description.length > 200 ? "..." : ""}`
+              : `${app.name} হলো একটি সফটওয়্যার।`,
+          });
+        }
+        if (app.platform) {
+          faqItems.push({
+            q: `${app.name} কোন প্ল্যাটফর্মে চলে?`,
+            a: `${app.name} ${app.platform} প্ল্যাটফর্মে${app.version ? ` (সংস্করণ ${app.version})` : ""} সমর্থিত।`,
+          });
+        }
+        if (app.developer) {
+          faqItems.push({
+            q: `${app.name}-এর ডেভেলপার কে?`,
+            a: `${app.name}-এর ডেভেলপার হলেন ${app.developer}।`,
+          });
+        }
+        if (faqItems.length === 0) return null;
+        const faqSchema = {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqItems.map((item) => ({
+            "@type": "Question",
+            name: item.q,
+            acceptedAnswer: { "@type": "Answer", text: item.a },
+          })),
+        };
+        return (
+          <>
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+            />
+            <section aria-labelledby="faq-heading" className="space-y-4">
+              <h2 id="faq-heading" className="text-xl font-bold">
+                সচরাচর জিজ্ঞাসা ({app.name})
+              </h2>
+              <div className="space-y-4">
+                {faqItems.map((item) => (
+                  <div
+                    key={item.q}
+                    className="rounded-2xl border border-zinc-400/25 bg-zinc-400/5 p-4 space-y-1"
+                  >
+                    <h3 className="font-semibold text-sm">{item.q}</h3>
+                    <p className="text-sm opacity-80 leading-relaxed">{item.a}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </>
+        );
+      })()}
+
       {/* Reactions */}
       <InteractiveActions
         appId={app.id}

@@ -98,3 +98,25 @@ Rules: Additive only, no invented facts, preserved existing content, titles <= 6
 - Satisfies query: "আজকের বাংলা তারিখ" — Bangla date shown server-side from `ssrDateIso`
 
 ---
+
+## Group 4 — Software Pages & Audit (2026-11-15)
+
+### SOFTWARE_AUDIT.md Created
+- Scanned all 15 software records via `/api/apps/{slug}`
+- **Critical finding:** ALL 15 download links point to `github.com/mariamsara77/recuva/releases/download/...` (single unofficial repo)
+- 3 HIGH-risk entries: Bijoy Bayanno, Microsoft Office 2007, Microsoft Office 2010 (commercial copyrighted software)
+- 6 MEDIUM-risk: VLC, LibreOffice, Avro, Recuva, Refuse USB, Proshika Shabda (open-source or unclear on unofficial repo)
+- 2 NEEDS REVIEW: Kalpurush, SutonnyMJ (license not stated in API data)
+- Full findings in `SOFTWARE_AUDIT.md` — no records edited, human review required
+
+### `/software/[slug]` — Additive Sections (all slugs)
+
+**Before:** Platform/version info table + "সফটওয়্যার তথ্য" section + strong notice
+**After:** Added below the strong notice (additive):
+1. **কিভাবে ইনস্টল করবেন** — 4-step numbered install guide (server-rendered, from API `platform` and `version` fields; conditional on `app.platform` existing)
+2. **সচরাচর জিজ্ঞাসা** — FAQ section with FAQPage JSON-LD (up to 3 Q&A built from real API fields: name+description, platform+version, developer; conditional — only renders when at least 1 Q&A can be built)
+- No titles, URLs, slugs changed
+- No "crack", "full version free", "zip file free" added
+- All existing content retained
+
+---
