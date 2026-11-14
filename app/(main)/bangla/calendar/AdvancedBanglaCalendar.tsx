@@ -48,12 +48,28 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 type Props = {
   initialHolidays?: any;
+  initialDateIso?: string;
 };
 
-export default function AdvancedBanglaCalendar({ initialHolidays }: Props = {}) {
-  const [todayDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [viewDate, setViewDate] = useState(new Date());
+export default function AdvancedBanglaCalendar({
+  initialHolidays,
+  initialDateIso,
+}: Props = {}) {
+  const [todayDate, setTodayDate] = useState(() =>
+    initialDateIso ? new Date(initialDateIso) : new Date(),
+  );
+  const [selectedDate, setSelectedDate] = useState(() =>
+    initialDateIso ? new Date(initialDateIso) : new Date(),
+  );
+  const [viewDate, setViewDate] = useState(() =>
+    initialDateIso ? new Date(initialDateIso) : new Date(),
+  );
+
+  useEffect(() => {
+    // Client-side hydration sync to actual client local date
+    const clientNow = new Date();
+    setTodayDate(clientNow);
+  }, []);
   const [direction, setDirection] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);

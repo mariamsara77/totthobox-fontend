@@ -100,11 +100,13 @@ const faqSchema = {
 export default async function BanglaCalendarPage() {
   const currentYear = new Date().getFullYear();
   const initialHolidays = await getHolidays(currentYear);
+  // Stable SSR fallback for today's date — client island updates after hydration
+  const ssrDateIso = new Date().toISOString();
 
   return (
     <div className="max-w-4xl mx-auto px-2.5 sm:px-6 py-6 sm:py-10 space-y-10">
       {/* Interactive Calendar Tool with Pre-fetched SSR Data */}
-      <AdvancedBanglaCalendar initialHolidays={initialHolidays} />
+      <AdvancedBanglaCalendar initialHolidays={initialHolidays} initialDateIso={ssrDateIso} />
 
       {/* Comprehensive Editorial & Reference Guide (SSR) */}
       <article className="rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/50 dark:bg-zinc-900/40 p-6 sm:p-10 space-y-8">

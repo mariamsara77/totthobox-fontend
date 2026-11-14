@@ -70,3 +70,31 @@ Rules: Additive only, no invented facts, preserved existing content, titles <= 6
      - Example 3: ৫,৭৫,৩৫০ -> `পাঁচ লক্ষ পঁচাত্তর হাজার তিন শত পঞ্চাশ টাকা মাত্র` (Five Lakh Seventy-Five Thousand Three Hundred Fifty Taka Only)
 
 ---
+
+## Group 3 — Holiday Detail Pages & Bangla Calendar (2026-11-15)
+
+### Pages Changed
+
+#### `/bangla/holiday/[slug]` (all holiday detail pages)
+**Before title:** `{holiday.title} | ছুটির ক্যালেন্ডার`
+**After title:** `{holiday.title} {yearBn} কত তারিখ ছুটি | ছুটির ক্যালেন্ডার` (≤60 chars, truncated if needed)
+
+**Before description:** `seo.description` or generic fallback without date/type
+**After description:** Includes `date_formatted`, `day_name_bn`, and holiday type (সরকারি/ঐচ্ছিক ছুটি), 120-160 chars
+
+**Added blocks:**
+- Direct-answer paragraph immediately under H1: `{holiday.title} {date_formatted} রোজ {day_name_bn} পালিত হবে এবং এটি একটি {সরকারি/ঐচ্ছিক} ছুটি ({type})।`
+- Conditional `সর্বশেষ হালনাগাদ` display (only if `holiday.updated_at` exists in API — currently not present, block hidden)
+- All existing content (date card, gallery, editorial text, FAQ JSON-LD) retained unchanged
+
+#### `/bangla/calendar`
+**Before:** `<AdvancedBanglaCalendar initialHolidays={initialHolidays} />`
+**After:** `<AdvancedBanglaCalendar initialHolidays={initialHolidays} initialDateIso={ssrDateIso} />`
+
+**AdvancedBanglaCalendar.tsx changes:**
+- Added `initialDateIso?: string` prop
+- `useState` for `todayDate`, `selectedDate`, `viewDate` now initialized from `initialDateIso` (stable SSR fallback prevents hydration mismatch)
+- `useEffect` on mount updates `todayDate` to actual client local date (client-side island pattern — no ISR cache breakage)
+- Satisfies query: "আজকের বাংলা তারিখ" — Bangla date shown server-side from `ssrDateIso`
+
+---

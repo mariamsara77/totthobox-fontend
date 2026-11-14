@@ -51,9 +51,41 @@ export async function generateMetadata({
   const contentText = extractRecordText(holiday);
   const robots = getRobotsForContent(contentText, 300);
 
+  const yearStr = holiday.date ? holiday.date.split("-")[0] : "";
+  const yearBn = yearStr
+    ? yearStr.replace(/\d/g, (d: string) => "০১২৩৪৫৬৭৮৯"[parseInt(d, 10)])
+    : "";
+
+  let title =
+    seo.title ||
+    `${holiday.title}${yearBn ? ` ${yearBn}` : ""} কত তারিখ ছুটি | ছুটির ক্যালেন্ডার`;
+  if (title.length > 60) {
+    title = `${holiday.title}${yearBn ? ` ${yearBn}` : ""} ছুটির তারিখ`;
+  }
+  if (title.length > 60) {
+    title = title.slice(0, 60);
+  }
+
+  const isOptional = holiday.type ? holiday.type.includes("ঐচ্ছিক") : false;
+  const holidayTypeLabel = isOptional ? "ঐচ্ছিক ছুটি" : "সরকারি ছুটি";
+
+  let description =
+    seo.description ||
+    `${holiday.title}${yearBn ? ` ${yearBn}` : ""} সালের ${holiday.date_formatted || ""} (${holiday.day_name_bn || ""}) তারিখে। এটি ${holidayTypeLabel} কি না এবং বিস্তারিত বিবরণ জানুন তথ্যবক্সে।`;
+
+  if (description.length > 160) {
+    description = description.slice(0, 157) + "...";
+  }
+  while (description.length < 120) {
+    description += " ছুটির পূর্ণ বিবরণ।";
+  }
+  if (description.length > 160) {
+    description = description.slice(0, 160);
+  }
+
   return {
-    title: seo.title || `${holiday.title} | ছুটির ক্যালেন্ডার | তথ্যবক্স`,
-    description: seo.description || `${holiday.title} - বাংলাদেশ সরকারের ছুটির তারিখ, তাৎপর্য ও বিস্তারিত বিবরণ।`,
+    title,
+    description,
     robots,
     alternates: {
       canonical: `https://totthobox.com/bangla/holiday/${encodeURIComponent(slug)}`,
@@ -118,6 +150,17 @@ export default async function HolidayShowPage({
             <h1 className="text-3xl font-bold tracking-tight">
               {holiday.title}
             </h1>
+
+            {/* সরাসরি উত্তর (First sentence under H1 from API data only) */}
+            <p className="text-sm sm:text-base font-medium text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 rounded-xl p-3.5 leading-relaxed">
+              <strong>{holiday.title}</strong> {holiday.date_formatted || ""} রোজ <strong>{holiday.day_name_bn || ""}</strong> পালিত হবে এবং এটি একটি <strong>{holiday.type?.includes("ঐচ্ছিক") ? "ঐচ্ছিক" : "সরকারি"} ছুটি</strong> ({holiday.type || ""})।
+            </p>
+
+            {holiday.updated_at && (
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                সর্বশেষ হালনাগাদ: {holiday.updated_at}
+              </p>
+            )}
 
             <p className="text-sm ">ছুটির ক্যালেন্ডার · বিস্তারিত তথ্য</p>
 
