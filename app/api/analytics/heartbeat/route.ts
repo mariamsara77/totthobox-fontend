@@ -10,26 +10,74 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ status: "ignored" }, { status: 200 });
     }
 
-    // Forward non-blocking to Laravel backend
-    void fetch(`${LARAVEL_API}/analytics/heartbeat`, {
+    const {
+      visitor_id,
+      session_id,
+      path,
+      is_pwa,
+    } = body as Record<string, unknown>;
+
+    // Send heartbeat event to Laravel tracking/event
+    const trackingPayload = {
+      category: "heartbeat",
+      action: "ping",
+      js_visitor_id: String(visitor_id || "vis_anonymous"),
+      session_id: String(session_id || "ses_anonymous"),
+      payload: {
+        path: path || "/",
+        url: `https://totthobox.com${path || "/"}`,
+        is_pwa: Boolean(is_pwa),
+        timestamp: Date.now(),
+      },
+    };
+
+    const res = await fetch(`${LARAVEL_API}/tracking/event`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
+        "X-Requested-With": "XMLHttpRequest",
         "User-Agent": req.headers.get("user-agent") || "TotthoboxFrontend/1.0",
         "X-Forwarded-For":
           req.headers.get("x-forwarded-for") ||
           req.headers.get("x-real-ip") ||
           "unknown",
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(trackingPayload),
       signal: AbortSignal.timeout(5000),
-    }).catch(() => {
-      // Backend not ready or unreachable - fail silently
     });
 
-    return NextResponse.json({ status: "ok" }, { status: 200 });
-  } catch {
+    // Also sync PWA state if PWA mode is active
+    if (Boolean(is_pwa)) {
+      void fetch(`${LARAVEL_API}/tracking/sync-pwa`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+          "X-App-Mode": "standalone",
+        },
+        body: JSON.stringify({ is_pwa: true, has_installed: true }),
+        signal: AbortSignal.timeout(5000),
+      }).catch(() => null);
+    }
+
+    const data = await res.json().catch(() => null);
+
+    if (process.env.NODE_ENV === "development" && !res.ok) {
+      return NextResponse.json(data ?? { error: "Backend failed" }, {
+        status: res.status,
+      });
+    }
+
+    return NextResponse.json(data ?? { status: "ok" }, { status: res.status });
+  } catch (error) {
+    if (process.env.NODE_ENV === "development") {
+      return NextResponse.json(
+        { error: (error as Error).message },
+        { status: 502 },
+      );
+    }
     return NextResponse.json({ status: "ok" }, { status: 200 });
   }
 }
