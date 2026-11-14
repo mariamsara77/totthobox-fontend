@@ -203,3 +203,150 @@ To eliminate "Low Value Content" rejections, records need structured editorial d
 | `author_bio` | `VARCHAR(500)` | Short biography / credentials |
 | `reviewer_name` | `VARCHAR(191)` | Name of Islamic / Legal reviewer |
 | `updated_at` | `TIMESTAMP` | Explicit date of last editorial verification |
+
+---
+
+## 5. First-Party Privacy-Safe Visitor Tracking Contract
+
+To power accurate first-party visitor statistics without third-party trackers or PII, the Laravel backend should implement three endpoints:
+
+### 1. `POST /api/analytics/pageview`
+Receives client beacon or fetch keepalive when a page is viewed.
+
+**Request Headers:**
+- `Content-Type: application/json`
+- `User-Agent: <client-user-agent>`
+- `X-Forwarded-For: <client-ip>`
+
+**Request Payload Example:**
+```json
+{
+  "visitor_id": "b3f6c8d1-4e7a-4a8b-90f1-28a1c8f42d6a",
+  "session_id": "9a1e4c3b-7f2d-41a8-86d4-0b1e3f5a7c9d",
+  "is_first_visit": false,
+  "is_pwa": false,
+  "referrer": "https://www.google.com/",
+  "path": "/tools/tax-vat-calculator",
+  "device_type": "mobile",
+  "language": "bn-BD",
+  "timestamp": 1731548400000
+}
+```
+
+**Response:**
+```json
+{
+  "status": "success",
+  "message": "Pageview recorded."
+}
+```
+
+---
+
+### 2. `POST /api/analytics/heartbeat`
+Ping sent every 60s while the user's tab is actively visible (`Page Visibility API`). Used to calculate real-time "Online Now" active users.
+
+**Request Payload Example:**
+```json
+{
+  "visitor_id": "b3f6c8d1-4e7a-4a8b-90f1-28a1c8f42d6a",
+  "session_id": "9a1e4c3b-7f2d-41a8-86d4-0b1e3f5a7c9d",
+  "path": "/bangla/calendar",
+  "is_pwa": true,
+  "timestamp": 1731548460000
+}
+```
+
+**Response:**
+```json
+{
+  "status": "success"
+}
+```
+
+---
+
+### 3. `GET /api/analytics/stats`
+Returns aggregated, real traffic counts for display on Home or About pages.
+
+**Response Example:**
+```json
+{
+  "status": "success",
+  "data": {
+    "total": "45250",
+    "today": "1420",
+    "online": "18",
+    "pwa_users": "320",
+    "period_7d": "12840",
+    "period_30d": "45250"
+  }
+}
+```
+
+---
+
+### Database Schema (MySQL / PostgreSQL Migration)
+
+```sql
+-- 1. Raw pageview events (partitioned or pruned after 90 days)
+CREATE TABLE `analytics_pageviews` (
+  `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `visitor_id` VARCHAR(64) NOT NULL,
+  `session_id` VARCHAR(64) NOT NULL,
+  `path` VARCHAR(255) NOT NULL,
+  `referrer` VARCHAR(500) NULL,
+  `device_type` ENUM('mobile', 'tablet', 'desktop') NOT NULL DEFAULT 'desktop',
+  `is_pwa` TINYINT(1) NOT NULL DEFAULT 0,
+  `is_first_visit` TINYINT(1) NOT NULL DEFAULT 0,
+  `language` VARCHAR(16) NULL,
+  `ip_hash` CHAR(64) NULL COMMENT 'SHA-256 of IP + salt, no raw IP stored',
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX `idx_pv_visitor` (`visitor_id`),
+  INDEX `idx_pv_path_created` (`path`, `created_at`),
+  INDEX `idx_pv_created` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 2. Real-time active sessions for "Online Now" (in-memory or short TTL)
+CREATE TABLE `analytics_active_sessions` (
+  `session_id` VARCHAR(64) PRIMARY KEY,
+  `visitor_id` VARCHAR(64) NOT NULL,
+  `path` VARCHAR(255) NOT NULL,
+  `is_pwa` TINYINT(1) NOT NULL DEFAULT 0,
+  `last_seen_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX `idx_online_seen` (`last_seen_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 3. Daily Aggregates table (permanent history)
+CREATE TABLE `analytics_daily_aggregates` (
+  `date` DATE PRIMARY KEY,
+  `total_pageviews` INT UNSIGNED NOT NULL DEFAULT 0,
+  `unique_visitors` INT UNSIGNED NOT NULL DEFAULT 0,
+  `pwa_sessions` INT UNSIGNED NOT NULL DEFAULT 0,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+```
+
+---
+
+### Backend Logic & Architecture Rules
+
+1. **Online Now Calculation:**
+   Count unique `visitor_id` in `analytics_active_sessions` where `last_seen_at >= NOW() - INTERVAL 3 MINUTE`.
+   Prune records older than 10 minutes via scheduled task:
+   ```php
+   DB::table('analytics_active_sessions')->where('last_seen_at', '<', now()->subMinutes(10))->delete();
+   ```
+
+2. **Bot Filtering:**
+   Discard requests if `User-Agent` contains `bot`, `crawl`, `spider`, `lighthouse`, `headless`, or `wget`.
+
+3. **Rate Limiting:**
+   Throttle incoming pageviews to 60 requests per IP per minute using Laravel's rate limiter:
+   `Route::middleware(['throttle:60,1'])->group(...)`
+
+4. **CORS:**
+   Allow origin `https://totthobox.com` with methods `POST, GET, OPTIONS` and headers `Content-Type, Accept, User-Agent, X-Requested-With`.
+
+5. **Retention:**
+   Raw `analytics_pageviews` older than 90 days should be pruned by `php artisan model:prune` or daily cron after aggregating into `analytics_daily_aggregates`.

@@ -455,7 +455,7 @@ export default function Sidebar() {
                   <button
                     type="button"
                     onClick={() => setShowAllModules(true)}
-                    className="text-[11px] font-medium text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-0.5"
+                    className="text-[11px] font-medium text-indigo-600 dark:text-indigo-400 hover:underline flex min-h-[44px] min-w-[44px] items-center justify-center px-2 py-1"
                   >
                     সকল বিভাগ
                   </button>
@@ -1087,17 +1087,17 @@ export default function Sidebar() {
                   <button
                     type="button"
                     onClick={() => setShowAllModules(true)}
-                    className="flex w-full items-center gap-2 px-3 py-2 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10 rounded-xl transition-colors"
+                    className="flex min-h-[44px] w-full items-center gap-2 px-3 py-2.5 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10 rounded-xl transition-colors"
                   >
-                    <Grid className="w-3.5 h-3.5" />
+                    <Grid className="w-4 h-4" />
                     <span>অন্যান্য বিভাগ দেখুন</span>
                   </button>
                   <Link
                     href="/services"
                     onClick={closeMobile}
-                    className="flex w-full items-center gap-2 px-3 py-1.5 text-xs text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 rounded-xl transition-colors"
+                    className="flex min-h-[44px] w-full items-center gap-2 px-3 py-2.5 text-xs text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 rounded-xl transition-colors"
                   >
-                    <Layers className="w-3.5 h-3.5" />
+                    <Layers className="w-4 h-4" />
                     <span>সকল সেবার তালিকা</span>
                   </Link>
                 </div>

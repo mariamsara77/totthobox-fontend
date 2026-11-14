@@ -247,7 +247,7 @@ export default function AgeCalculator() {
             </div>
             <button
               onClick={resetSingle}
-              className="px-4 py-2 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/20 text-sm transition"
+              className="flex min-h-[44px] items-center justify-center px-4 py-2 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/20 text-sm transition"
             >
               রিসেট করুন
             </button>
@@ -385,7 +385,7 @@ export default function AgeCalculator() {
             </div>
             <button
               onClick={resetDifference}
-              className="px-4 py-2 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/20 text-sm transition"
+              className="flex min-h-[44px] items-center justify-center px-4 py-2 rounded-xl bg-zinc-400/10 hover:bg-zinc-400/20 text-sm transition"
             >
               রিসেট করুন
             </button>

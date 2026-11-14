@@ -125,11 +125,11 @@ assert.ok(adSlot.includes("contentWords >= 500"));
 assert.ok(adSlot.includes('process.env.ADSENSE_ENABLED === "true"'));
 assert.ok(adSlot.includes('process.env.ADSENSE_CMP_READY === "true"'));
 
-assert.ok(tagManager.includes("if (analytics) {"));
-assert.ok(tagManager.includes("loadGoogleAnalytics();"));
-assert.ok(tagManager.includes("loadGoogleTagManager();"));
-assert.ok(!tagManager.includes("if (analytics || marketing) loadGoogleTagManager();"));
+assert.ok(rootLayout.includes('id="google-tag-manager"'));
+assert.ok(rootLayout.includes('googletagmanager.com/gtm.js'));
+assert.ok(rootLayout.includes('ns.html?id='));
 assert.ok(tagManager.includes('analytics_storage: analytics ? "granted" : "denied"'));
+assert.ok(!tagManager.includes('googletagmanager.com/gtag/js'));
 
 assert.ok(adUnit.includes("if (!canRender || adBlocked) return null;"));
 assert.ok(adUnit.includes("{marketingConsent && ("));

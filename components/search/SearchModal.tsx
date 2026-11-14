@@ -7,6 +7,7 @@ import type { KeyboardEvent as ReactKeyboardEvent } from "react";
 import { useGlobalSearch } from "@/hooks/useGlobalSearch";
 import { getSearchUrl } from "@/lib/searchRoutes";
 import type { SearchItem } from "@/types/search";
+import { trackSearch, trackOutboundClick } from "@/lib/analytics";
 import SearchInput from "./SearchInput";
 import SearchPrefixes from "./SearchPrefixes";
 import SearchResults from "./SearchResults";
@@ -83,6 +84,7 @@ export default function SearchModal({ onClose }: SearchModalProps) {
       handleClose();
       const url = getSearchUrl(item);
       if (url.startsWith("http://") || url.startsWith("https://")) {
+        trackOutboundClick(url, "search_result");
         window.location.assign(url);
         return;
       }
@@ -121,6 +123,7 @@ export default function SearchModal({ onClose }: SearchModalProps) {
 
   const handleSearch = () => {
     if (search.trim().length >= 2) {
+      trackSearch(search, total);
       fetchResults(search, limit);
     } else {
       inputRef.current?.focus();

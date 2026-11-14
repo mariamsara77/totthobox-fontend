@@ -389,7 +389,7 @@ export default function AdvancedBanglaCalendar() {
 
       {/* --- Animated Calendar Grid --- */}
       <section
-        className="overflow-hidden p-2"
+        className="overflow-hidden p-0.5 sm:p-2"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
@@ -412,11 +412,11 @@ export default function AdvancedBanglaCalendar() {
             initial="enter"
             animate="center"
             exit="exit"
-            className="grid grid-cols-7 gap-1"
+            className="grid grid-cols-7 gap-0.5 sm:gap-1"
           >
             {calendarDays.map((day, index) => {
               if (!day)
-                return <div key={`empty-${index}`} className="aspect-square" />;
+                return <div key={`empty-${index}`} className="aspect-square min-h-[40px] min-w-[40px]" />;
 
               const { isSelected, isToday, holiday } = day;
               let cellBg = "hover:bg-zinc-400/10 hover:bg-zinc-800";
@@ -432,7 +432,7 @@ export default function AdvancedBanglaCalendar() {
                     setSelectedDate(day.dateObj);
                     setShowModal(true);
                   }}
-                  className={`group relative aspect-square rounded-xl transition-all duration-200 ${cellBg}`}
+                  className={`group relative aspect-square min-h-[40px] min-w-[40px] rounded-xl transition-all duration-200 ${cellBg}`}
                 >
                   <div className="flex flex-col items-center justify-center h-full">
                     <span

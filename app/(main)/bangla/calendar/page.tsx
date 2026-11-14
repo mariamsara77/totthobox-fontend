@@ -102,7 +102,7 @@ export default async function BanglaCalendarPage() {
   const initialHolidays = await getHolidays(currentYear);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 sm:py-10 space-y-10">
+    <div className="max-w-4xl mx-auto px-2.5 sm:px-6 py-6 sm:py-10 space-y-10">
       {/* Interactive Calendar Tool with Pre-fetched SSR Data */}
       <AdvancedBanglaCalendar initialHolidays={initialHolidays} />
 

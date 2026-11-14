@@ -42,7 +42,7 @@ export default function Navbar() {
             type="button"
             onClick={() => setIsOpen(true)}
             aria-label="সাইডবার খুলুন"
-            className="flex min-h-11 items-center justify-center rounded-xl p-2 text-zinc-700 dark:text-zinc-300 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 md:hidden"
+            className="flex min-h-11 min-w-11 items-center justify-center rounded-xl p-2 text-zinc-700 dark:text-zinc-300 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 md:hidden"
           >
             <Menu className="h-6 w-6" />
           </button>
@@ -51,7 +51,7 @@ export default function Navbar() {
           {isCollapsed && (
             <button
               onClick={toggleCollapsed}
-              className="hidden min-h-11 items-center justify-center rounded-xl p-2 text-zinc-700 dark:text-zinc-300 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 md:flex"
+              className="hidden min-h-11 min-w-11 items-center justify-center rounded-xl p-2 text-zinc-700 dark:text-zinc-300 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 md:flex"
               title="Expand sidebar"
               aria-label="সাইডবার বড় করুন"
             >

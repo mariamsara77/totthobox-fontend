@@ -160,3 +160,93 @@ The following routes currently fetch primary page content on the client side wit
 - [ ] **Phase 6 — AdSense Compliance & Unified `<AdSlot>` Component**
 - [ ] **Phase 7 — Internal Linking, Breadcrumbs & Structured Data**
 - [ ] **Phase 8 — Verification Audit Script & Final Report**
+
+---
+
+## Polish Pass Audit & Architecture Report
+
+### 1. Polish Pass Summary
+A site-wide Polish Pass was executed covering Analytics & Google Tag Manager (P1), first-party privacy-safe visitor tracking (P2), comprehensive SEO & Sitemap hardening (P3), and global responsive UI/UX sizing & touch target optimization (P4).
+
+### 2. Detailed Changes by Phase
+
+#### Phase P1 — Analytics & Tag Manager (Single Container + Consent Mode v2)
+- **Eliminated Duplicate Script Loading:** Removed direct code injection of `gtag.js?id=G-...` from `TagManager.tsx`. GA4 is now configured exclusively inside GTM to prevent double-counted pageviews.
+- **Single GTM Container:** GTM container (`GTM-5RFHKJJJ`) is loaded once in `app/layout.tsx` using `next/script` with `strategy="afterInteractive"`, accompanied by an official `<noscript>` iframe in `<body>`.
+- **Consent Mode v2:** Default consent (`ad_storage: 'denied'`, `analytics_storage: 'denied'`, `ad_user_data: 'denied'`, `ad_personalization: 'denied'`) is set in the `<head>` before GTM executes. Integrated with `CookieSettings.tsx` via `totthobox:consent-updated` to dynamically update consent.
+- **App Router SPA Pageviews:** Built `<RouteTracker>` client component (wrapped in `<Suspense>`) pushing `{ event: 'page_view', page_path, page_title, page_location }` to `window.dataLayer` on navigation (skipping initial container load to avoid double-counting).
+- **Shared Event Helpers (`lib/analytics.ts`):** Implemented safe helper functions for `tool_used`, `converter_used`, `search`, `outbound_click`, `download_click`, `infinite_scroll_load`, `share`, `404_view`, and `contact_click`.
+- **Traffic Hygiene:** Ignored internal/private routes (`/offline`, `/auth/*`, `/settings/*`) and automated bots/crawlers.
+- **Documentation:** Created `ANALYTICS_SETUP.md` with step-by-step GTM tag, trigger, and variable definitions.
+
+#### Phase P2 — Custom Visitor Tracking (First-Party & Privacy-Safe)
+- **Core Library (`lib/visitor-tracker.ts`) & Component (`components/analytics/VisitorTracker.tsx`):**
+  - Anonymous visitor ID (`localStorage` UUID, no PII), 30-min inactivity session ID, first-visit flag.
+  - PWA standalone mode detection (`display-mode: standalone` / `navigator.standalone`).
+  - Viewport-derived device categorization (`mobile`, `tablet`, `desktop`), language, and referrer.
+  - Sent via `navigator.sendBeacon` (fallback `fetch keepalive`) scheduled after idle via `requestIdleCallback`.
+  - Client-side deduplication (5-second window) and 300ms route transition debouncing.
+  - Online-now heartbeat every 60s active only when tab is visible (`Page Visibility API`).
+  - Respects user consent (`analytics_storage`) and Do-Not-Track (`DNT`).
+- **Real Stats Presentation (`components/UserAnalytics.tsx`):**
+  - Displays real user count returned from API. If API is unreachable or returns 0/null, the block is completely hidden. Zero fabricated fallback numbers.
+- **Next.js Proxy Handlers (`app/api/analytics/`):**
+  - `/api/analytics/pageview` (POST)
+  - `/api/analytics/heartbeat` (POST)
+  - `/api/analytics/stats` (GET)
+- **Backend Contract (`BACKEND_CHANGES.md`):**
+  - Documented SQL tables (`analytics_pageviews`, `analytics_active_sessions`, `analytics_daily_aggregates`), indexes, pruning schedules, bot filters, and rate limiting.
+
+#### Phase P3 — SEO & Sitemap
+- **Root Metadata (`app/layout.tsx`):**
+  - `metadataBase: new URL("https://totthobox.com")`, `openGraph.locale: "bn_BD"`, title template `%s | Totthobox`, default OG/Twitter images, theme-color `#ffffff`, manifest `/manifest.json`, and icons.
+- **Forbidden Meta Keywords Removed:**
+  - Audited and purged legacy `keywords` meta tags from all pages (`services`, `terms-of-service`, `internet-speed-test`, `password-generator`).
+- **Robots & Crawl Directives (`app/robots.ts`):**
+  - Allows public content; disallows private routes (`/api/`, `/auth/`, `/settings/`, `/ai/`, `/messages/`, `/offline`). Points to `https://totthobox.com/sitemap.xml`.
+- **Accurate Dynamic Sitemap (`app/sitemap.ts`):**
+  - Excludes thin/private routes. Pulls real `lastModified` timestamps from API `updated_at` (never `new Date()` fallback).
+- **Enhanced 404 Experience (`components/ErrorPage.tsx` & `app/not-found.tsx`):**
+  - Added direct navigation shortcuts (Calendar, Land Converter, Tax Calculator, Emergency Helpline) and `404_view` analytics event.
+- **Automated Verification Script (`scripts/check-seo.mjs`):**
+  - Audits 20 route types for HTTP 200, single `<h1>`, title/description length, canonical validity, JSON-LD schema validity, and absence of meta keywords. **All 20 routes pass with 0 failures.**
+
+#### Phase P4 — UI/UX Sizing, Padding & Responsive System
+- **Global CSS & Tokens (`app/globals.css`):**
+  - Base body font size 16px (prevents iOS auto-zoom), Bangla line-height (1.75).
+  - Fluid heading scales using CSS `clamp()`.
+  - Wide tables and `<pre>` code blocks scroll inside their own containers (`.table-container`, `overflow-x: auto`) preventing page horizontal overflow.
+  - Universal interactive element touch target standard (>= 44x44px).
+  - PWA safe-area insets (`env(safe-area-inset-top)`, `env(safe-area-inset-bottom)`).
+  - Accessible `prefers-reduced-motion` and visible keyboard focus rings.
+- **Shared Layout Components (`components/layout/`):**
+  - `PageContainer`, `Section`, `Card`, `PageHeader`.
+- **Playwright Responsive Audit (`scripts/check-responsive.mjs`):**
+  - Automated testing across 5 viewports: 360px, 390px, 768px, 1024px, and 1440px.
+  - Verified zero horizontal overflow on all screen sizes (`document.documentElement.scrollWidth <= innerWidth`).
+  - Fixed touch targets < 40px:
+    - NavbarHeader settings button (added `min-w-11`).
+    - Sidebar quick module toggles and footer links (added `min-h-[44px]`).
+    - Age Calculator single and comparison reset buttons (added `min-h-[44px]`).
+    - InfiniteList and InfiniteScrollTrigger load-more triggers (added `min-h-11`).
+    - Bangla Calendar date cells (adjusted padding to guarantee >= 40px touch targets on 360px screens).
+  - Saved and verified screenshots at 390px and 1440px in `/audit-screenshots/`.
+
+### 3. Verification Test Results
+- `npm run lint`: **0 errors** (437 warnings in legacy files).
+- `npm run build`: **0 errors** (100% successful static generation of all dynamic routes).
+- `npm run test:pwa-cache`: **All PWA cache-security and AdSense checks passed**.
+- `node scripts/check-seo.mjs`: **Passed (20/20 routes clean)**.
+- `node scripts/check-responsive.mjs`: **Passed across all 5 viewports (360, 390, 768, 1024, 1440px)**.
+
+### 4. Required Environment Variables for Production
+| Variable | Value / Purpose |
+| :--- | :--- |
+| `NEXT_PUBLIC_GTM_ID` | `GTM-5RFHKJJJ` (Google Tag Manager container ID) |
+| `NEXT_PUBLIC_GA_ID` | `G-HGE2T2J8ZT` (Configured inside GTM container) |
+| `NEXT_PUBLIC_ADSENSE_CLIENT` | `ca-pub-9522604367420521` (AdSense publisher ID) |
+| `ADSENSE_ENABLED` | `false` (Set `true` only after CMP is verified) |
+| `ADSENSE_CMP_READY` | `false` (Set `true` only after Google-certified CMP with IAB TCF is live) |
+| `REVALIDATE_SECRET` | Secret token for on-demand ISR revalidation (`/api/revalidate`) |
+| `CRON_SECRET` | Secret token for hourly news warming cron (`/api/cron/warm-news`) |
+

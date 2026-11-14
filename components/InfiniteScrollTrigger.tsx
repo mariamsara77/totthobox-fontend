@@ -82,7 +82,7 @@ export default function InfiniteScrollTrigger({
                 onLoadMore();
               }
             }}
-            className="px-5 py-2 rounded-xl border border-zinc-300 dark:border-zinc-800 text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition"
+            className="inline-flex min-h-[44px] items-center justify-center px-5 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-800 text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition"
           >
             আরও লোড করুন
           </button>

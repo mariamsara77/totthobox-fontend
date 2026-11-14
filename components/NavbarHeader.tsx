@@ -71,7 +71,7 @@ export default function Navbar() {
           <button
             type="button"
             onClick={openSettingsModal}
-            className="flex min-h-11 items-center justify-center rounded-xl p-2 text-zinc-700 dark:text-zinc-300 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            className="flex min-h-11 min-w-11 items-center justify-center rounded-xl p-2 text-zinc-700 dark:text-zinc-300 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
             aria-label="সেটিংস মেনু খুলুন"
           >
             <Settings className="h-5 w-5" aria-hidden="true" />

@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { Loader2, RefreshCw, CheckCircle2 } from "lucide-react";
+import { trackInfiniteScrollLoad } from "@/lib/analytics";
 
 export interface InfiniteListProps<T> {
   initialItems: T[];
@@ -103,6 +104,7 @@ export default function InfiniteList<T extends { id?: string | number }>({
       prefetchedPageRef.current = null;
       prefetchedDataRef.current = null;
       setIsLoading(false);
+      trackInfiniteScrollLoad(type, nextPage);
       prefetchNextPage(nextPage + 1);
       return;
     }
@@ -123,6 +125,7 @@ export default function InfiniteList<T extends { id?: string | number }>({
         setItems((prev) => [...prev, ...newItems]);
         setPage(nextPage);
         setHasMore(json.meta?.has_more ?? newItems.length >= pageSize);
+        trackInfiniteScrollLoad(type, nextPage);
         prefetchNextPage(nextPage + 1);
       } else {
         setHasMore(false);
@@ -225,7 +228,7 @@ export default function InfiniteList<T extends { id?: string | number }>({
         <div className="flex justify-center pt-2">
           <button
             onClick={loadMore}
-            className="px-6 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition"
+            className="flex min-h-11 items-center justify-center px-6 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition"
           >
             আরও লোড করুন (পৃষ্ঠা {page + 1})
           </button>

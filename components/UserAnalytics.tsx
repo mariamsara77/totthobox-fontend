@@ -12,10 +12,14 @@ type AnalyticsResponse = {
 };
 
 function getValidTotal(value: unknown): string | null {
+  if (typeof value === "number" && value > 0) {
+    return value.toLocaleString("bn-BD");
+  }
   if (typeof value !== "string") return null;
 
   const total = value.trim();
-  return total ? total : null;
+  if (!total || total === "0") return null;
+  return total;
 }
 
 function isAnalyticsResponse(value: unknown): value is AnalyticsResponse {
@@ -55,6 +59,8 @@ export default function UserAnalytics() {
     return () => controller.abort();
   }, []);
 
+  if (!totalUsers) return null;
+
   return (
     <div className="flex items-center justify-center py-2">
       <div className="flex items-center gap-3 rounded-full border border-zinc-400/25 px-4 py-2 text-zinc-700 dark:text-zinc-300">
@@ -63,14 +69,8 @@ export default function UserAnalytics() {
           <span className="relative size-2 rounded-full bg-emerald-500" />
         </span>
         <p className="text-sm">
-          {totalUsers ? (
-            <>
-              প্ল্যাটফর্মটি সক্রিয়ভাবে ব্যবহৃত হয়েছে{" "}
-              <span className="text-base font-semibold">{totalUsers}+</span> বার
-            </>
-          ) : (
-            <span>দৈনন্দিন তথ্য ও হিসাবের নির্ভরযোগ্য উন্মুক্ত পোর্টাল</span>
-          )}
+          প্ল্যাটফর্মটি সক্রিয়ভাবে ব্যবহৃত হয়েছে{" "}
+          <span className="text-base font-semibold">{totalUsers}+</span> বার
         </p>
       </div>
     </div>

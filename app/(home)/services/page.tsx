@@ -1,5 +1,6 @@
 import React from "react";
 import { QuickFavoritesBar } from "@/components/tools/QuickFavorites";
+import { PageContainer } from "@/components/layout";
 import Link from "next/link";
 import { Metadata } from "next";
 import {
@@ -24,13 +25,11 @@ export const metadata: Metadata = {
   title: "মূল সেবা",
   description:
     "Totthobox-এ পাবেন বাংলাদেশ জেলা তথ্য, ইসলামিক শিক্ষা, স্বাস্থ্য জ্ঞান, জরুরী নম্বর, ছুটির তালিকা, কনভার্টার এবং প্রয়োজনীয় ডিজিটাল সেবা।",
-  keywords:
-    "তথ্যবক্স, Totthobox, বাংলাদেশ সার্ভিস পোর্টাল, বাংলা ক্যালেন্ডার, জরুরি নম্বর, শিশুশিক্ষা, কনভার্টার, ইসলামিক শিক্ষা",
-  alternates: { canonical: "/services" },
+  alternates: { canonical: "https://totthobox.com/services" },
   openGraph: {
     title: "মূল সেবা | Totthobox",
     description: "Totthobox-এর তথ্যভিত্তিক সেবা, ক্যালেন্ডার, কনভার্টার, ডিজিটাল টুলস, বাংলাদেশ ও আন্তর্জাতিক তথ্য এক জায়গায়।",
-    url: "/services",
+    url: "https://totthobox.com/services",
     siteName: "Totthobox",
     type: "website",
     locale: "bn_BD",
@@ -110,7 +109,7 @@ const services = [
 
 export default function ServicesPage() {
   return (
-    <div className="max-w-7xl mx-auto p-4 lg:px-8 space-y-8 py-8">
+    <PageContainer size="wide" className="space-y-8">
       {/* Header */}
       <div className="max-w-4xl mx-auto">
         <QuickFavoritesBar />
@@ -251,6 +250,6 @@ export default function ServicesPage() {
           </p>
         </div>
       </article>
-    </div>
+    </PageContainer>
   );
 }

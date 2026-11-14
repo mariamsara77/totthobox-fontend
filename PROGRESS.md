@@ -2,6 +2,13 @@
 
 ## Checklist
 
+### Polish Pass: Analytics, Visitor Tracking, SEO, Sitemap & Responsive UI/UX
+- [x] **Phase P1 (Analytics + Tag Manager):** Single GTM container (`GTM-5RFHKJJJ`) via `next/script` (`strategy="afterInteractive"`) + `<noscript>` fallback; duplicate GA4 script eliminated; Consent Mode v2 default denied + dynamic updates; `<RouteTracker>` SPA pageview tracking; shared event helpers in `lib/analytics.ts`; noise excluded (/offline, /auth/*, /settings/*, bots); `ANALYTICS_SETUP.md` created.
+- [x] **Phase P2 (Custom Visitor Tracking):** First-party privacy-safe `lib/visitor-tracker.ts` + `<VisitorTracker>` component; anonymous visitor ID + 30-min session ID + PWA detection; sendBeacon/fetch-keepalive on idle; 60s tab visibility heartbeat; `UserAnalytics.tsx` renders only real API stats and hides if unavailable (no fake fallbacks); API proxy routes added; backend contract documented in `BACKEND_CHANGES.md`.
+- [x] **Phase P3 (SEO + Sitemap):** `metadataBase`, `bn_BD` locale, title template, OG/Twitter image; zero `keywords` meta tags across pages; clean canonicals stripping tracking params; `app/robots.ts` disallowing private routes; `app/sitemap.ts` with real API `lastModified`; 404 page navigation shortcuts + view tracking; `scripts/check-seo.mjs` passes 20/20 routes.
+- [x] **Phase P4 (UI/UX Sizing, Padding & Responsive):** Global CSS tokens, Bangla line-height (1.75), clamp() headings, responsive table containers; shared layout components (`PageContainer`, `Section`, `Card`, `PageHeader`); `scripts/check-responsive.mjs` Playwright audit across 5 viewports (360, 390, 768, 1024, 1440px); zero horizontal overflow; all tap targets >= 44px (calendar >= 40px); audit screenshots saved and verified.
+- [x] **Phase P5 (Final Verification):** `npm run lint` (0 errors), `npm run build` (0 errors), `npm run test:pwa-cache` (pass), `scripts/check-seo.mjs` (pass), `scripts/check-responsive.mjs` (pass); `AUDIT_REPORT.md` updated with full Polish Pass details and env requirements.
+
 ### Phase 1: Trust & Compliance Files
 - [x] Create `public/ads.txt`
 - [x] Remove global meta keywords from `app/layout.tsx`

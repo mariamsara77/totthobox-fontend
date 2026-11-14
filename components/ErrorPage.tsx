@@ -54,9 +54,33 @@ export default function ErrorPage({
 
           <Link
             href="/"
-            className="rounded-xl border border-zinc-300 bg-white px-5 py-2.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-400/10 dark:text-zinc-200 dark:hover:bg-zinc-800"
+            className="rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-emerald-500 shadow-sm"
           >
             হোম পেজে ফিরে যান
+          </Link>
+          <Link
+            href="/bangla/calendar"
+            className="rounded-xl border border-zinc-300 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
+          >
+            ক্যালেন্ডার ও ছুটি
+          </Link>
+          <Link
+            href="/converter/land"
+            className="rounded-xl border border-zinc-300 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
+          >
+            ভূমি ও পরিমাপ
+          </Link>
+          <Link
+            href="/tools/tax-vat-calculator"
+            className="rounded-xl border border-zinc-300 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
+          >
+            ট্যাক্স ও ভ্যাট
+          </Link>
+          <Link
+            href="/contact/police"
+            className="rounded-xl border border-zinc-300 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
+          >
+            জরুরি হটলাইন
           </Link>
         </div>
       </main>

@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import TrackToolUsage from "@/components/analytics/TrackToolUsage";
 import {
   HelpCircle,
   Lightbulb,
@@ -108,6 +109,7 @@ export default function ToolGuide({ content, guide, className = "" }: ToolGuideP
     <article
       className={`mt-12 space-y-10 border-t border-zinc-200/80 dark:border-zinc-800/80 pt-10 text-zinc-800 dark:text-zinc-200 ${className}`}
     >
+      <TrackToolUsage title={title} />
       {/* FAQ Schema */}
       {faqSchema && (
         <script

@@ -10,15 +10,6 @@ export const metadata: Metadata = {
   title: "ইন্টারনেট স্পিড টেস্ট ও পিং চেকার | Live Internet Speed Test",
   description:
     "আপনার ব্রডব্যান্ড ওয়াইফাই বা মোবাইল ইন্টারনেটের সঠিক ডাউনলোড গতি, পিং (Ping) এবং জিটার (Jitter) রিয়েল-টাইমে পরিমাপ করুন সম্পূর্ণ বিনামূল্যে।",
-  keywords: [
-    "speed test",
-    "internet speed test",
-    "স্পিড টেস্ট",
-    "ইন্টারনেট গতি পরীক্ষা",
-    "wifi speed test bd",
-    "ping checker",
-    "ব্রডব্যান্ড স্পিড টেস্ট",
-  ],
   alternates: { canonical: "https://totthobox.com/tools/internet-speed-test" },
   openGraph: {
     title: "লাইভ ইন্টারনেট স্পিড ও পিং টেস্ট | Totthobox",

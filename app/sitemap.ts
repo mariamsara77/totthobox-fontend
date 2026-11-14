@@ -148,6 +148,11 @@ function hasMorePages(json: unknown): boolean {
   return false;
 }
 
+type SitemapSlugEntry = {
+  slug: string;
+  updatedAt?: Date;
+};
+
 async function fetchSlugs(
   endpoint: string,
   options: {
@@ -156,14 +161,14 @@ async function fetchSlugs(
     maxPages?: number;
     timeoutMs?: number;
   } = {},
-): Promise<string[]> {
+): Promise<SitemapSlugEntry[]> {
   const {
     includeItem,
     revalidateSeconds = 86400,
     maxPages = 20,
     timeoutMs = 8000,
   } = options;
-  const slugs: string[] = [];
+  const entries: SitemapSlugEntry[] = [];
   const seen = new Set<string>();
   const perPage = 50;
 
@@ -196,7 +201,23 @@ async function fetchSlugs(
 
         if (!seen.has(slug)) {
           seen.add(slug);
-          slugs.push(slug);
+
+          const rawDate =
+            typeof item.updated_at === "string"
+              ? item.updated_at
+              : typeof item.created_at === "string"
+                ? item.created_at
+                : null;
+
+          let updatedAt: Date | undefined;
+          if (rawDate) {
+            const parsed = new Date(rawDate);
+            if (!isNaN(parsed.getTime())) {
+              updatedAt = parsed;
+            }
+          }
+
+          entries.push({ slug, updatedAt });
         }
       }
 
@@ -206,7 +227,7 @@ async function fetchSlugs(
     }
   }
 
-  return slugs;
+  return entries;
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -256,48 +277,57 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly" as const,
       priority: 0.6,
     })),
-    ...holidays.map((slug) => ({
-      url: `${SITE_URL}/bangla/holiday/${encodeURIComponent(slug)}`,
+    ...holidays.map((item) => ({
+      url: `${SITE_URL}/bangla/holiday/${encodeURIComponent(item.slug)}`,
+      lastModified: item.updatedAt,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
-    ...introductions.map((slug) => ({
-      url: `${SITE_URL}/bangladesh/introduction/${encodeURIComponent(slug)}`,
+    ...introductions.map((item) => ({
+      url: `${SITE_URL}/bangladesh/introduction/${encodeURIComponent(item.slug)}`,
+      lastModified: item.updatedAt,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
-    ...histories.map((slug) => ({
-      url: `${SITE_URL}/bangladesh/history/${encodeURIComponent(slug)}`,
+    ...histories.map((item) => ({
+      url: `${SITE_URL}/bangladesh/history/${encodeURIComponent(item.slug)}`,
+      lastModified: item.updatedAt,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
-    ...tourism.map((slug) => ({
-      url: `${SITE_URL}/bangladesh/tourism/${encodeURIComponent(slug)}`,
+    ...tourism.map((item) => ({
+      url: `${SITE_URL}/bangladesh/tourism/${encodeURIComponent(item.slug)}`,
+      lastModified: item.updatedAt,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
-    ...establishments.map((slug) => ({
-      url: `${SITE_URL}/bangladesh/establishment/${encodeURIComponent(slug)}`,
+    ...establishments.map((item) => ({
+      url: `${SITE_URL}/bangladesh/establishment/${encodeURIComponent(item.slug)}`,
+      lastModified: item.updatedAt,
       changeFrequency: "monthly" as const,
       priority: 0.5,
     })),
-    ...islamBasic.map((slug) => ({
-      url: `${SITE_URL}/islam/basic/${encodeURIComponent(slug)}`,
+    ...islamBasic.map((item) => ({
+      url: `${SITE_URL}/islam/basic/${encodeURIComponent(item.slug)}`,
+      lastModified: item.updatedAt,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
-    ...islamDowa.map((slug) => ({
-      url: `${SITE_URL}/islam/dowan/${encodeURIComponent(slug)}`,
+    ...islamDowa.map((item) => ({
+      url: `${SITE_URL}/islam/dowan/${encodeURIComponent(item.slug)}`,
+      lastModified: item.updatedAt,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
-    ...people.map((slug) => ({
-      url: `${SITE_URL}/bangladesh/public-figure/${encodeURIComponent(slug)}`,
+    ...people.map((item) => ({
+      url: `${SITE_URL}/bangladesh/public-figure/${encodeURIComponent(item.slug)}`,
+      lastModified: item.updatedAt,
       changeFrequency: "monthly" as const,
       priority: 0.5,
     })),
-    ...apps.map((slug) => ({
-      url: `${SITE_URL}/software/${encodeURIComponent(slug)}`,
+    ...apps.map((item) => ({
+      url: `${SITE_URL}/software/${encodeURIComponent(item.slug)}`,
+      lastModified: item.updatedAt,
       changeFrequency: "monthly" as const,
       priority: 0.5,
     })),

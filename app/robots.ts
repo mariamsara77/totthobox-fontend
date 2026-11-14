@@ -9,9 +9,14 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        // Let crawlers read route-level noindex directives. Robots.txt is not
-        // an access-control mechanism; private routes must remain protected by auth.
-        disallow: ["/api/"],
+        disallow: [
+          "/api/",
+          "/auth/",
+          "/settings/",
+          "/ai/",
+          "/messages/",
+          "/offline",
+        ],
       },
       {
         userAgent: "Mediapartners-Google",

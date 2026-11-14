@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Share2, Copy, Check } from "lucide-react";
+import { trackShare, trackEvent } from "@/lib/analytics";
 
 interface CopyResultButtonProps {
   textToCopy: string;
@@ -35,6 +36,7 @@ export function CopyResultButton({
         document.body.removeChild(textArea);
       }
       setCopied(true);
+      trackEvent("tool_copy_result", { text_length: textToCopy.length });
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error("Copy failed", err);
@@ -93,6 +95,7 @@ export function ShareToolButton({
     if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
       try {
         await navigator.share(shareData);
+        trackShare("native", title);
         return;
       } catch (err) {
         if ((err as Error).name === "AbortError") return;
@@ -103,6 +106,7 @@ export function ShareToolButton({
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
+      trackShare("clipboard_copy", title);
       setTimeout(() => setCopied(false), 2000);
     } catch {}
   };

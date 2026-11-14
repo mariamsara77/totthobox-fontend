@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { Geist, Geist_Mono, Noto_Sans_Bengali } from "next/font/google";
 import "./globals.css";
 import { AppProviders } from "./providers";
 import TagManager from "@/components/partials/TagManager";
+import RouteTracker from "@/components/analytics/RouteTracker";
 import GoogleTranslate from "@/components/GoogleTranslate";
 import DeferredVisitorTracker from "@/components/DeferredVisitorTracker";
 import InstallPWA from "@/components/InstallPWA";
@@ -102,6 +104,8 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
+const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || "GTM-5RFHKJJJ";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -129,11 +133,58 @@ export default function RootLayout({
             "BBXFXNIJfoxxN-BC24pweOIBTZIHEmR9_XbbRyuqGyncTQnzKmhm65R4HGaZPYrdoLfkimilv3U4he7CK0_paBU"
           }
         />
+        {/* Consent Mode v2 Default (Executes BEFORE GTM container loads) */}
+        <script
+          id="gtm-consent-default"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              window.gtag = gtag;
+              gtag('consent', 'default', {
+                'ad_storage': 'denied',
+                'analytics_storage': 'denied',
+                'ad_user_data': 'denied',
+                'ad_personalization': 'denied',
+                'functionality_storage': 'granted',
+                'security_storage': 'granted'
+              });
+              gtag('set', 'ads_data_redaction', true);
+              try {
+                var raw = localStorage.getItem('cookie_consent');
+                if (raw) {
+                  var c = JSON.parse(raw);
+                  gtag('consent', 'update', {
+                    'analytics_storage': c.analytics ? 'granted' : 'denied',
+                    'ad_storage': c.marketing ? 'granted' : 'denied',
+                    'ad_user_data': c.marketing ? 'granted' : 'denied',
+                    'ad_personalization': c.marketing ? 'granted' : 'denied'
+                  });
+                }
+              } catch(e) {}
+            `,
+          }}
+        />
+        {/* ONE GTM Container loaded once in root layout via next/script */}
+        <Script
+          id="google-tag-manager"
+          strategy="afterInteractive"
+          src={`https://www.googletagmanager.com/gtm.js?id=${GTM_ID}`}
+        />
       </head>
       <body
         suppressHydrationWarning
         className="antialiased bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
       >
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          />
+        </noscript>
+        <RouteTracker />
         <SiteStructuredData />
         <TagManager />
         <NetworkStatus />

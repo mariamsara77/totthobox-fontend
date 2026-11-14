@@ -1,8 +1,11 @@
+"use client";
+
 import Link from "next/link";
 import CookieSettings from "./CookieSettings";
 import { FaFacebook, FaTelegramPlane } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { SiGmail } from "react-icons/si";
+import { trackOutboundClick, trackContactClick } from "@/lib/analytics";
 
 export default function Footer() {
   return (
@@ -56,6 +59,7 @@ export default function Footer() {
           </Link>
           <Link
             href="/contact-us"
+            onClick={() => trackContactClick("footer_link", "/contact-us")}
             className="flex min-h-[44px] items-center rounded-xl px-3 py-2 text-sm text-zinc-600 hover:text-zinc-900 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
           >
             যোগাযোগ
@@ -76,6 +80,7 @@ export default function Footer() {
             href="https://facebook.com/totthobox"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackOutboundClick("https://facebook.com/totthobox", "social_facebook")}
             className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl p-2.5 text-zinc-500 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
             aria-label="Facebook"
           >
@@ -85,6 +90,7 @@ export default function Footer() {
             href="https://x.com/totthobox"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackOutboundClick("https://x.com/totthobox", "social_x")}
             className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl p-2.5 text-zinc-500 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
             aria-label="X"
           >
@@ -94,6 +100,7 @@ export default function Footer() {
             href="https://t.me/totthobox"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackOutboundClick("https://t.me/totthobox", "social_telegram")}
             className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl p-2.5 text-zinc-500 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
             aria-label="Telegram"
           >
@@ -101,6 +108,7 @@ export default function Footer() {
           </a>
           <a
             href="mailto:admin@totthobox.com"
+            onClick={() => trackContactClick("email", "admin@totthobox.com")}
             className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl p-2.5 text-zinc-500 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
             aria-label="Email"
           >

@@ -7,13 +7,6 @@ export const metadata: Metadata = {
   title: "ব্যবহারের শর্তাবলি (Terms of Service)",
   description:
     "Totthobox প্ল্যাটফর্ম ব্যবহারের সম্পূর্ণ নিয়ম ও শর্তাবলি। ব্যবহারকারীর দায়িত্ব, সেবার সীমাবদ্ধতা এবং তথ্যের সঠিকতা সম্পর্কে বিস্তারিত জানুন।",
-  keywords: [
-    "ব্যবহারের শর্তাবলি",
-    "terms of service",
-    "Totthobox terms",
-    "নিয়মাবলী",
-    "তথ্যবক্স শর্তাবলি",
-  ],
   openGraph: {
     title: "ব্যবহারের শর্তাবলি | Totthobox",
     description: "Totthobox প্ল্যাটফর্ম ব্যবহারের নিয়ম, ব্যবহারকারীর দায়িত্ব এবং সেবার সীমাবদ্ধতা সম্পর্কে জানুন।",

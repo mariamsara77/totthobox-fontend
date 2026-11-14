@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
-const VisitorTracker = dynamic(() => import("@/components/VisitorTracker"), {
+const VisitorTracker = dynamic(() => import("@/components/analytics/VisitorTracker"), {
   ssr: false,
 });
 

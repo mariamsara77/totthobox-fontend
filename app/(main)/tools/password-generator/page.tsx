@@ -10,15 +10,6 @@ export const metadata: Metadata = {
   title: "নিরাপদ পাসওয়ার্ড ও হ্যাশ জেনারেটর | Strong Password & Hash Generator",
   description:
     "ওয়েব ক্রিপ্টো এপিআই দিয়ে তৈরি করুন হ্যাক-প্রুফ শক্তিশালী র্যান্ডম পাসওয়ার্ড, মেমোর্যাবল পাসফ্রেজ ও তাৎক্ষণিক SHA-256 হ্যাশ। সম্পূর্ণ বিনামূল্যে ও ক্লায়েন্ট-সাইড সুরক্ষিত।",
-  keywords: [
-    "password generator",
-    "পাসওয়ার্ড জেনারেটর",
-    "strong password generator",
-    "random password",
-    "sha256 generator",
-    "পাসফ্রেজ জেনারেটর",
-    "password security bd",
-  ],
   alternates: { canonical: "https://totthobox.com/tools/password-generator" },
   openGraph: {
     title: "নিরাপদ পাসওয়ার্ড ও হ্যাশ জেনারেটর | Totthobox",

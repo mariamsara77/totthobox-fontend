@@ -40,6 +40,60 @@
 /* =========================================
    Mobile Responsiveness & Viewport Guard
    ========================================= */
+:root {
+  --font-base-size: 16px;
+  --line-height-bangla: 1.75;
+  --tap-target-min: 44px;
+}
+
+html {
+  font-size: var(--font-base-size);
+}
+
+body {
+  font-size: 1rem;
+  line-height: var(--line-height-bangla);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Fluid responsive headings with clamp() */
+h1 {
+  font-size: clamp(1.75rem, 4vw + 1rem, 2.75rem);
+  line-height: 1.35;
+}
+
+h2 {
+  font-size: clamp(1.35rem, 2.5vw + 0.8rem, 2rem);
+  line-height: 1.4;
+}
+
+h3 {
+  font-size: clamp(1.15rem, 1.8vw + 0.6rem, 1.5rem);
+  line-height: 1.45;
+}
+
+/* Content code & tables stay within their container */
+pre, code {
+  max-width: 100%;
+}
+
+pre {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+table {
+  max-width: 100%;
+  border-collapse: collapse;
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 html, body {
   max-width: 100%;
   overflow-x: clip;
@@ -47,6 +101,16 @@ html, body {
 
 img, svg, video, canvas, audio, iframe, embed, object {
   max-width: 100%;
+}
+
+/* Respect user's motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* =========================================

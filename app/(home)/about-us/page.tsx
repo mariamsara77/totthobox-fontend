@@ -17,6 +17,7 @@ import {
   Mail,
   ArrowRight,
 } from "lucide-react";
+import { PageContainer } from "@/components/layout";
 
 export const revalidate = 86400;
 
@@ -106,7 +107,7 @@ const serviceHighlights = [
 
 export default function AboutUsPage() {
   return (
-    <main className="max-w-4xl mx-auto px-4 py-8 sm:py-12 space-y-12">
+    <PageContainer size="narrow" className="space-y-12">
       {/* Hero */}
       <header className="text-center space-y-4 max-w-3xl mx-auto">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20">
@@ -250,6 +251,6 @@ export default function AboutUsPage() {
           </a>
         </div>
       </section>
-    </main>
+    </PageContainer>
   );
 }
