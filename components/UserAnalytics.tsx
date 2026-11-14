@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const ANALYTICS_URL = "https://admin.totthobox.com/api/analytics/user-count";
+const ANALYTICS_URL = "/api/analytics/stats";
 
 type AnalyticsResponse = {
   status?: unknown;
