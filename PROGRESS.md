@@ -99,7 +99,7 @@
 - [x] Organization & WebSite JSON-LD already present in the root layout
 - [x] Existing detail-page BreadcrumbList and Tool WebApplication schema retained
 - [x] Existing news detail NewsArticle schema retained
-- [ ] Visual breadcrumbs and schema coverage still need a route-by-route validation
+- [x] Visual breadcrumbs and schema coverage validated across all detail and listing routes
 - [ ] Article/VideoObject coverage only where the matching publisher-owned content exists
 
 ### Phase 11: Final Verification & Audit
