@@ -4,6 +4,7 @@ export type Currency = { code: string; name: string; symbol: string };
 
 export type Neighbor = {
   name: string;
+  name_bengali?: string | null;
   slug: string;
   flag_emoji: string;
   flag: string | null;
@@ -350,6 +351,7 @@ export const getCountry = cache(async function getCountry(slug: string) {
     .filter((c) => found.borders.includes(c.cca3))
     .map((n) => ({
       name: n.name,
+      name_bengali: n.name_bengali,
       slug: n.slug,
       flag_emoji: n.flag_emoji,
       flag: n.flag,
