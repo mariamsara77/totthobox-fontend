@@ -163,6 +163,8 @@ export default async function UserProfilePage({
                                     src={profile.avatar}
                                     alt={profile.name}
                                     fill
+                                    priority
+                                    sizes="(max-width: 768px) 128px, 160px"
                                     className="object-cover"
                                 />
                             ) : (
@@ -261,7 +263,7 @@ export default async function UserProfilePage({
                                 <div className="flex gap-4 items-start">
                                     {item.thumbnail && (
                                         <div className="relative size-12 rounded-full overflow-hidden shrink-0 bg-zinc-200 dark:bg-zinc-800">
-                                            <Image src={item.thumbnail} alt={item.title} fill className="object-cover" />
+                                            <Image src={item.thumbnail} alt={item.title} fill sizes="48px" className="object-cover" />
                                         </div>
                                     )}
                                     <div className="flex-1">

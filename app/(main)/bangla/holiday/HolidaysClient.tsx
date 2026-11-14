@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import useSWRInfinite from "swr/infinite";
-import Image from "next/image";
 import { Calendar, Search, X, ArrowRight, ChevronDown } from "lucide-react";
 import InfiniteScrollTrigger from "@/components/InfiniteScrollTrigger";
 import { FaCalendarMinus } from "react-icons/fa";

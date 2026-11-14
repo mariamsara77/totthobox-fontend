@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import { cache } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Home, Eye, ArrowLeft, ChevronDown, Share2 } from "lucide-react";
 import InteractiveActions from "./InteractiveActions";

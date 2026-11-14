@@ -90,10 +90,10 @@
 - [ ] Git commit and preview verification required before enabling production ads
 
 ### Phase 9: Performance Optimization
-- [ ] Audit `next/image` width/height and priority on LCP
-- [ ] Audit `next/font` with `display: swap`
-- [ ] Dynamic import heavy libraries (pdf, mammoth, ffmpeg)
-- [ ] Git commit `phase-9: performance and Core Web Vitals optimizations`
+- [x] Audit `next/image` width/height, sizes, and priority on LCP
+- [x] Audit `next/font` with `display: swap`
+- [x] Dynamic import heavy libraries (pdf, mammoth, ffmpeg)
+- [x] Git commit `phase-9: performance and Core Web Vitals optimizations`
 
 ### Phase 10: Structured Data & Linking
 - [x] Organization & WebSite JSON-LD already present in the root layout
