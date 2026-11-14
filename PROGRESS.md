@@ -2,6 +2,14 @@
 
 ## Checklist
 
+### Search Console Optimization Pass
+- [x] **Group 1 (/international/country/[slug]):** Direct-answer "দ্রুত তথ্য" block under H1 with H2 questions ("{দেশ}-এর আয়তন কত?", "{দেশ}-এর জনসংখ্যা কত?", "{দেশ} কোন মহাদেশে অবস্থিত?", "{দেশ}-এর রাজধানীর নাম কী?"), title <= 60 chars, description 120-160 chars, 3-4 related country internal links, FAQPage JSON-LD synchronized with direct answers, all 600+ words editorial text retained. (DONE)
+- [ ] **Group 2 (Land converter, Percentage tool, Number to word):** Land tables computed from repo constants, direct answers for 4/20 shotangsho, percentage & number-to-word worked examples and metadata update. (IN PROGRESS)
+- [ ] **Group 3 (Holiday pages):** Holiday detail date+weekday+holiday status direct sentence under H1, today's Bangla date server-rendering island, last updated display. (NEXT STEP)
+- [ ] **Group 4 (Software/fonts):** Additive info, install steps, FAQ, and SOFTWARE_AUDIT.md scan of all download links. (TODO)
+- [ ] **Group 5 (Bangladesh info pages & signs):** Direct answers under H1 from record fields only; missing data logged to SEO_CHANGELOG.md. (TODO)
+- [ ] **Group 6 (Verification, Build & Report):** check-seo.mjs, curl test, lint and production build. (TODO)
+
 ### Polish Pass: Analytics, Visitor Tracking, SEO, Sitemap & Responsive UI/UX
 - [x] **Phase P1 (Analytics + Tag Manager):** Single GTM container (`GTM-5RFHKJJJ`) via `next/script` (`strategy="afterInteractive"`) + `<noscript>` fallback; duplicate GA4 script eliminated; Consent Mode v2 default denied + dynamic updates; `<RouteTracker>` SPA pageview tracking; shared event helpers in `lib/analytics.ts`; noise excluded (/offline, /auth/*, /settings/*, bots); `ANALYTICS_SETUP.md` created.
 - [x] **Phase P2 (Custom Visitor Tracking):** First-party privacy-safe `lib/visitor-tracker.ts` + `<VisitorTracker>` component; anonymous visitor ID + 30-min session ID + PWA detection; sendBeacon/fetch-keepalive on idle; 60s tab visibility heartbeat; `UserAnalytics.tsx` renders only real API stats and hides if unavailable (no fake fallbacks); API proxy routes added; backend contract documented in `BACKEND_CHANGES.md`.

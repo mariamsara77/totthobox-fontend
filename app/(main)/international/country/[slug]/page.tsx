@@ -17,6 +17,44 @@ import { IoMdArrowDropdown } from "react-icons/io";
 
 export const revalidate = 86400;
 
+const CONTINENT_BN: Record<string, string> = {
+  Asia: "এশিয়া",
+  Europe: "ইউরোপ",
+  Africa: "আফ্রিকা",
+  "North America": "উত্তর আমেরিকা",
+  "South America": "দক্ষিণ আমেরিকা",
+  Oceania: "ওশেনিয়া",
+  Antarctica: "অ্যান্টার্কটিকা",
+};
+
+function buildCountryDescription(country: any, bnName: string): string {
+  const parts: string[] = [];
+  if (country.area > 0) parts.push(`মোট আয়তন ${formatArea(country.area)}`);
+  if (country.population > 0) parts.push(`জনসংখ্যা প্রায় ${formatPopulation(country.population)}`);
+  if (country.capital && country.capital !== "N/A") parts.push(`রাজধানী ${country.capital}`);
+  const cont = country.continent && country.continent !== "N/A"
+    ? (CONTINENT_BN[country.continent] || country.continent)
+    : "";
+  if (cont) parts.push(`মহাদেশ ${cont}`);
+
+  const facts = parts.join(", ");
+  let desc = `${bnName}-এর ${facts}। বিস্তারিত ভৌগোলিক অবস্থান, মানচিত্র, ডায়াল কোড ও প্রয়োজনীয় তথ্য জানুন তথ্যবক্সে।`;
+
+  if (desc.length > 160) {
+    desc = `${bnName}-এর ${facts}। বিস্তারিত ভৌগোলিক অবস্থান, মানচিত্র ও তথ্য জানুন তথ্যবক্সে।`;
+  }
+  if (desc.length > 160) {
+    desc = desc.slice(0, 157) + "...";
+  }
+  while (desc.length < 120) {
+    desc += " তথ্যবক্স বিশ্বকোষ।";
+  }
+  if (desc.length > 160) {
+    desc = desc.slice(0, 160);
+  }
+  return desc;
+}
+
 export async function generateStaticParams() {
   try {
     const countries = await getAllCountries();
@@ -44,17 +82,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const bnName = country.name_bengali || country.name;
-  const population = formatPopulation(country.population);
-  const area = formatArea(country.area);
-  const languages = country.languages.slice(0, 3).join(", ");
-  const currency = country.currencies[0]?.name || "";
+  const possessiveName = `${bnName}-এর`;
+  let title = `${possessiveName} আয়তন কত? জনসংখ্যা, রাজধানী ও মহাদেশ`;
+  if (title.length > 60) {
+    title = `${possessiveName} আয়তন কত? জনসংখ্যা ও রাজধানী`;
+  }
+  if (title.length > 60) {
+    title = `${possessiveName} আয়তন, জনসংখ্যা ও তথ্য`;
+  }
+  if (title.length > 60) {
+    title = title.slice(0, 60);
+  }
 
-  const title = `${bnName} (${country.name}) - রাজধানী, জনসংখ্যা, আয়তন, মানচিত্র ও বিস্তারিত তথ্য | Totthobox`;
-  const description = `${bnName} (${country.name}) এর রাজধানী ${country.capital}, জনসংখ্যা ${population}, আয়তন ${area}। ${
-    country.continent ? `${country.continent} মহাদেশের ` : ""
-  }${country.region ? `${country.region} অঞ্চলের ` : ""}এই দেশের ভাষা${
-    languages ? ` (${languages})` : ""
-  }${currency ? `, মুদ্রা ${currency}` : ""}, সীমান্তবর্তী দেশ, পতাকা, কোড ও মানচিত্রসহ সম্পূর্ণ তথ্য জানুন।`;
+  const description = buildCountryDescription(country, bnName);
 
   return {
     title,
@@ -95,7 +135,73 @@ export default async function CountryPage({ params }: Props) {
   }
 
   const overviewText = generateOverview(country);
-  const faqs = generateFaqs(country);
+  const bnName = country.name_bengali || country.name;
+  const possessiveName = `${bnName}-এর`;
+  const continentBn =
+    country.continent && country.continent !== "N/A"
+      ? CONTINENT_BN[country.continent] || country.continent
+      : "";
+
+  const allCountries = await getAllCountries();
+  const sameContinentCountries = allCountries.filter(
+    (c) => c.slug !== country.slug && c.continent === country.continent,
+  );
+  const relatedCountries =
+    neighbors.length >= 4
+      ? neighbors.slice(0, 4)
+      : [
+          ...neighbors,
+          ...sameContinentCountries.filter(
+            (sc) => !neighbors.some((nb) => nb.slug === sc.slug),
+          ),
+        ].slice(0, 4);
+
+  const quickQuestions: { q: string; a1: string; details: string }[] = [];
+
+  if (country.area > 0) {
+    quickQuestions.push({
+      q: `${possessiveName} আয়তন কত?`,
+      a1: `${possessiveName} মোট আয়তন ${formatArea(country.area)} (${country.area.toLocaleString("bn-BD")} বর্গ কিলোমিটার)।`,
+      details: `আয়তনের দিক থেকে দেশটির ভৌগোলিক বিস্তৃতি ও অবস্থান বিশ্বের মানচিত্রে অত্যন্ত গুরুত্বপূর্ণ।`,
+    });
+  }
+
+  if (country.population > 0) {
+    quickQuestions.push({
+      q: `${possessiveName} জনসংখ্যা কত?`,
+      a1: `${possessiveName} বর্তমান জনসংখ্যা আনুমানিক ${formatPopulation(country.population)} (প্রায় ${country.population.toLocaleString("bn-BD")} জন)।`,
+      details:
+        country.density !== "N/A"
+          ? `দেশটিতে প্রতি বর্গ কিলোমিটারে জনসংখ্যার গড় ঘনত্ব প্রায় ${country.density} জন।`
+          : `এটি দেশটির মোট আনুমানিক জনসংখ্যা।`,
+    });
+  }
+
+  if (continentBn) {
+    quickQuestions.push({
+      q: `${bnName} কোন মহাদেশে অবস্থিত?`,
+      a1: `${bnName} ${continentBn} মহাদেশের ${country.subregion || country.region || ""} অঞ্চলে অবস্থিত ${country.independent === "স্বাধীন রাষ্ট্র" ? "একটি স্বাধীন রাষ্ট্র" : "একটি অধীনস্থ অঞ্চল"}।`,
+      details: `${country.landlocked === "স্থলবেষ্টিত" ? "দেশটি চারদিক থেকে স্থলবেষ্টিত এবং এর কোনো সমুদ্র উপকূল নেই।" : "দেশটির উন্মুক্ত সমুদ্র উপকূল রয়েছে।"}${country.borders_count > 0 ? ` স্থলপথে ${possessiveName} সীমান্ত রয়েছে ${country.borders_count}টি প্রতিবেশী দেশের সাথে।` : " এটি একটি দ্বীপরাষ্ট্র বা কোনো স্থল সীমান্ত নেই।"}`,
+    });
+  }
+
+  if (country.capital && country.capital !== "N/A") {
+    quickQuestions.push({
+      q: `${possessiveName} রাজধানীর নাম কী?`,
+      a1: `${possessiveName} রাজধানীর নাম ${country.capital}।`,
+      details: `এটি দেশের প্রধান প্রশাসনিক কেন্দ্র, রাজনৈতিক কার্যকলাপ এবং অর্থনৈতিক প্রাণকেন্দ্র হিসেবে পরিচালিত হয়।`,
+    });
+  }
+
+  const quickFaqs = quickQuestions.map((item) => ({
+    q: item.q,
+    a: `${item.a1} ${item.details}`,
+  }));
+  const existingFaqs = generateFaqs(country);
+  const faqs = [
+    ...quickFaqs,
+    ...existingFaqs.filter((ef) => !quickFaqs.some((qf) => qf.q === ef.q)),
+  ];
 
   const translations = Object.entries({
     "🇧🇩 বাংলা": country.name_bengali,
@@ -283,6 +389,60 @@ export default async function CountryPage({ params }: Props) {
             </div>
           </div>
         </div>
+
+        {/* দ্রুত তথ্য (Server-rendered Direct Answer Block) */}
+        {quickQuestions.length > 0 && (
+          <section
+            aria-label="দ্রুত তথ্য"
+            className="rounded-2xl border border-zinc-400/25 bg-zinc-400/10/40 p-5 space-y-4"
+          >
+            <div className="flex items-center gap-2 pb-2 border-b border-zinc-400/25">
+              <span className="text-lg" aria-hidden>
+                ⚡
+              </span>
+              <h2 className="text-base font-bold">
+                {bnName} সম্পর্কে দ্রুত তথ্য
+              </h2>
+            </div>
+
+            <div className="space-y-4">
+              {quickQuestions.map((item) => (
+                <div key={item.q} className="space-y-1">
+                  <h2 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
+                    {item.q}
+                  </h2>
+                  <p className="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
+                    <strong className="font-semibold text-zinc-900 dark:text-zinc-100">
+                      {item.a1}
+                    </strong>{" "}
+                    {item.details}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* সম্পর্কিত দেশসমূহ (3-4 genuinely related internal links) */}
+            {relatedCountries.length > 0 && (
+              <div className="pt-3 border-t border-zinc-400/25 space-y-2">
+                <p className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">
+                  সম্পর্কিত দেশসমূহ{continentBn ? ` (${continentBn} মহাদেশ)` : ""}:
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {relatedCountries.map((rc) => (
+                    <Link
+                      key={rc.slug}
+                      href={`/international/country/${encodeURIComponent(rc.slug)}`}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-400/10 hover:bg-zinc-400/20 border border-zinc-400/20 text-xs transition"
+                    >
+                      <span aria-hidden>{rc.flag_emoji}</span>
+                      <span>{rc.name_bengali || rc.name}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </section>
+        )}
 
         {/* Overview */}
         <article className="border border-zinc-400/25 rounded-xl p-4">
