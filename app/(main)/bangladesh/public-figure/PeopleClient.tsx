@@ -235,7 +235,7 @@ export default function PeopleClient({ initialData }: { initialData: any }) {
               <div className="flex gap-4 items-start">
                 <div className="shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-zinc-400/15">
                   {person.image_url ? (
-                    <Image src={person.image_url} alt={person.name} width={64} height={64} sizes="64px" priority={index < 2} className="w-full h-full object-cover" />
+                    <Image src={person.image_url} alt={person.name} width={64} height={64} sizes="64px" className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-lg font-medium opacity-60">
                       {person.name?.charAt(0)}

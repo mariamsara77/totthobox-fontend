@@ -277,7 +277,6 @@ export default function TourismClient({
                       height={64}
                       sizes="64px"
                       className="w-full h-full object-cover"
-                      priority={index < 2}
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center opacity-40">
