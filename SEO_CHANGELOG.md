@@ -120,3 +120,37 @@ Rules: Additive only, no invented facts, preserved existing content, titles <= 6
 - All existing content retained
 
 ---
+
+## Group 5 — Bangladesh Info Pages & Signs (2026-11-15)
+
+### Pages Changed
+
+#### `/bangladesh/establishment/[slug]` — `EstablishmentShowClient.tsx`
+**Added block** (immediately after H1, server-rendered via client component initial props):
+```
+{establishment.title} {establishment.district}, {establishment.thana}, {establishment.division} এলাকায় অবস্থিত।
+```
+- Conditional: only renders when `thana` or `district` field is non-null
+- Uses only `thana`, `district`, `division` fields from API (the only location fields present)
+- Example slugs with data: গণভবন (ঢাকা জেলা), জাতীয় স্মৃতিসৌধ (সাভার, গাজীপুর), বুয়েট (লালবাগ, ঢাকা), ঢাকা মেডিকেল (শাহবাগ, ঢাকা)
+- All existing content retained; `MapPin` location display below is unchanged
+
+#### `/signs/[category]/[sign]` — `signShowClient.tsx`
+**Added block** (immediately after H1):
+```
+{item.name} হলো একটি {category.name} শ্রেণির চিহ্ন।
+```
+- Conditional: only renders when both `item.name` and `category.name` exist in API data
+- All existing content retained
+
+### Pages Skipped (Missing Data — Add in Admin)
+
+| Section | Pages | Missing Fields |
+|---------|-------|----------------|
+| `/bangladesh/history/[slug]` | All | No `location`, `thana`, `district`, `division`, `established_year` fields in API |
+| `/bangladesh/introduction/[slug]` | All | No location fields in API |
+| `/bangladesh/tourism/[slug]` | All | No location fields verified in API |
+| `/bangladesh/public-figure/[slug]` | All | No location fields applicable |
+| Specific establishment slugs where `thana` AND `district` are both null | Those records | Missing `thana` and `district` in admin |
+
+---

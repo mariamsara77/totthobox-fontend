@@ -163,6 +163,17 @@ export default function EstablishmentShowClient({ establishment }: Props) {
             {establishment.title}
           </h1>
 
+          {/* সরাসরি উত্তর — API ফিল্ড থেকে, শুধুমাত্র যখন লোকেশন ডেটা আছে */}
+          {(establishment.thana || establishment.district) && (
+            <p className="text-sm font-medium text-blue-800 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 rounded-xl px-3.5 py-2.5 leading-relaxed">
+              <strong>{establishment.title}</strong>{" "}
+              {establishment.district ? `${establishment.district}` : ""}
+              {establishment.thana ? `, ${establishment.thana}` : ""}
+              {establishment.division ? `, ${establishment.division}` : ""}{" "}
+              এলাকায় অবস্থিত।
+            </p>
+          )}
+
           {location && (
             <p className="text-sm flex items-center gap-1.5 opacity-80">
               <MapPin className="w-4 h-4 shrink-0" />

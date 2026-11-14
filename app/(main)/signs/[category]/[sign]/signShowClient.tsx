@@ -108,6 +108,14 @@ export default function SignShowClient({ initialData, categorySlug }: Props) {
             {item.name}
           </h1>
 
+          {/* সরাসরি উত্তর — API ফিল্ড থেকে */}
+          {(item.name && category?.name) && (
+            <p className="text-sm font-medium text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 rounded-xl px-3.5 py-2.5 leading-relaxed">
+              <strong>{item.name}</strong> হলো একটি{" "}
+              <strong>{category.name}</strong> শ্রেণির চিহ্ন।
+            </p>
+          )}
+
           <p className="text-sm opacity-80">
             {category?.name || "ট্রাফিক"} সাইন · অর্থ ও ব্যবহার
           </p>
