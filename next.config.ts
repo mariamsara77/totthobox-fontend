@@ -325,8 +325,6 @@ const nextConfig: NextConfig = {
 // Service workers cannot inspect Cookie or Set-Cookie headers. Runtime HTML
 // caching is therefore restricted to known public routes and responses that
 // explicitly opt in with Cache-Control: public and do not vary by identity.
-const publicDocumentPath =
-  /^\/(?:$|about-us(?:\/|$)|contact-us(?:\/|$)|services(?:\/|$)|privacy-policy(?:\/|$)|cookie-policy(?:\/|$)|copyright-policy(?:\/|$)|editorial-policy(?:\/|$)|terms-of-service(?:\/|$)|disclaimer(?:\/|$)|bangla(?:\/|$)|bangladesh(?:\/|$)|international(?:\/|$)|islam(?:\/|$)|converter(?:\/|$)|pdf-editor(?:\/|$)|tools(?:\/|$)|software(?:\/|$)|signs(?:\/|$)|contact\/police(?:\/|$)|news\/headlines(?:\/|$)|users(?:\/|$))/i;
 
 const publicResponseCacheabilityPlugin = {
   cacheWillUpdate: async ({
@@ -376,11 +374,21 @@ const publicResponseCacheabilityPlugin = {
 const publicDocumentCaching: RuntimeCaching = {
   handler: "NetworkFirst",
   method: "GET",
-  urlPattern: ({ request, url }) =>
-    request.mode === "navigate" &&
-    url.origin === self.location.origin &&
-    url.search === "" &&
-    publicDocumentPath.test(url.pathname),
+  urlPattern: ({ request, url }) => {
+    const isPublic =
+      /^\/(?:$|about-us(?:\/|$)|contact-us(?:\/|$)|services(?:\/|$)|privacy-policy(?:\/|$)|cookie-policy(?:\/|$)|copyright-policy(?:\/|$)|editorial-policy(?:\/|$)|terms-of-service(?:\/|$)|disclaimer(?:\/|$)|bangla(?:\/|$)|bangladesh(?:\/|$)|international(?:\/|$)|islam(?:\/|$)|converter(?:\/|$)|pdf-editor(?:\/|$)|tools(?:\/|$)|software(?:\/|$)|signs(?:\/|$)|contact\/police(?:\/|$)|news\/headlines(?:\/|$)|users(?:\/|$))/i.test(
+        url.pathname,
+      );
+    const isExcludedApi = /^\/api(?:\/|$)/i.test(url.pathname);
+    return (
+      request.method === "GET" &&
+      request.mode === "navigate" &&
+      url.origin === self.location.origin &&
+      url.search === "" &&
+      !isExcludedApi &&
+      isPublic
+    );
+  },
   options: {
     cacheName: "public-document-pages-v3",
     networkTimeoutSeconds: 4,
@@ -410,13 +418,26 @@ const apiNetworkOnlyCaching: RuntimeCaching = {
   urlPattern: ({ url }) => /^\/api(?:\/|$)/i.test(url.pathname),
 };
 
+const apiNonGetNetworkOnlyCaching: RuntimeCaching = {
+  handler: "NetworkOnly",
+  method: "POST",
+  urlPattern: ({ url }) => /^\/api(?:\/|$)/i.test(url.pathname),
+};
+
 const nonPublicNavigationNetworkOnlyCaching: RuntimeCaching = {
   handler: "NetworkOnly",
   method: "GET",
-  urlPattern: ({ request, url }) =>
-    request.mode === "navigate" &&
-    url.origin === self.location.origin &&
-    (url.search !== "" || !publicDocumentPath.test(url.pathname)),
+  urlPattern: ({ request, url }) => {
+    const isPublic =
+      /^\/(?:$|about-us(?:\/|$)|contact-us(?:\/|$)|services(?:\/|$)|privacy-policy(?:\/|$)|cookie-policy(?:\/|$)|copyright-policy(?:\/|$)|editorial-policy(?:\/|$)|terms-of-service(?:\/|$)|disclaimer(?:\/|$)|bangla(?:\/|$)|bangladesh(?:\/|$)|international(?:\/|$)|islam(?:\/|$)|converter(?:\/|$)|pdf-editor(?:\/|$)|tools(?:\/|$)|software(?:\/|$)|signs(?:\/|$)|contact\/police(?:\/|$)|news\/headlines(?:\/|$)|users(?:\/|$))/i.test(
+        url.pathname,
+      );
+    return (
+      request.mode === "navigate" &&
+      url.origin === self.location.origin &&
+      (url.search !== "" || !isPublic)
+    );
+  },
 };
 
 const withPWA = withPWAInit({
@@ -439,6 +460,7 @@ const withPWA = withPWAInit({
       publicDocumentCaching,
       rscNetworkOnlyCaching,
       apiNetworkOnlyCaching,
+      apiNonGetNetworkOnlyCaching,
       nonPublicNavigationNetworkOnlyCaching,
     ],
   },
