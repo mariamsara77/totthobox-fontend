@@ -4,26 +4,78 @@ import { useEffect, useState } from "react";
 
 const ANALYTICS_URL = "/api/analytics/stats";
 
+type AnalyticsData = {
+  total?: unknown;
+  today?: unknown;
+  online?: unknown;
+  pwa?: unknown;
+};
+
 type AnalyticsResponse = {
   status?: unknown;
-  data?: {
-    total?: unknown;
-  };
+  data?: AnalyticsData;
 };
 
 function getValidTotal(value: unknown): string | null {
-  if (typeof value === "number" && value > 0) {
+  if (value === null || value === undefined) return null;
+
+  if (typeof value === "number") {
+    if (isNaN(value) || value <= 0) return null;
     return value.toLocaleString("bn-BD");
   }
+
   if (typeof value !== "string") return null;
 
   const total = value.trim();
-  if (!total || total === "0") return null;
+  if (
+    !total ||
+    total === "0" ||
+    total.toLowerCase() === "nan" ||
+    total.toLowerCase() === "unknown" ||
+    total.toLowerCase() === "null"
+  ) {
+    return null;
+  }
+
   return total;
 }
 
 function isAnalyticsResponse(value: unknown): value is AnalyticsResponse {
   return typeof value === "object" && value !== null;
+}
+
+function checkPlausibility(data?: AnalyticsData): void {
+  if (process.env.NODE_ENV === "production" || !data) return;
+
+  const onlineStr = String(data.online ?? "").trim().toLowerCase();
+  const todayStr = String(data.today ?? "").trim().toLowerCase();
+
+  // Check for round 10k or online >= today suspicious patterns
+  const isSuspiciousRound =
+    onlineStr === "10k" ||
+    onlineStr === "10000" ||
+    todayStr === "10k" ||
+    todayStr === "10000";
+
+  const isOnlineExceedingToday =
+    Boolean(onlineStr) &&
+    Boolean(todayStr) &&
+    onlineStr === todayStr &&
+    onlineStr !== "0";
+
+  if (isSuspiciousRound || isOnlineExceedingToday) {
+    console.warn(
+      "[Totthobox Analytics Dev Warning] Implausible stats returned from backend upstream:",
+      {
+        total: data.total,
+        today: data.today,
+        online: data.online,
+        pwa: data.pwa,
+        reason:
+          "online >= today or round 10k offset detected. Check AnalyticsController::index on Laravel backend.",
+      },
+    );
+  }
 }
 
 export default function UserAnalytics() {
@@ -44,6 +96,8 @@ export default function UserAnalytics() {
 
         const payload: unknown = await response.json();
         if (!isAnalyticsResponse(payload)) return;
+
+        checkPlausibility(payload.data);
 
         const total = getValidTotal(payload.data?.total);
         if (payload.status === "success" && total) {

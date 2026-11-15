@@ -2,8 +2,8 @@
 
 ## Current Work: Tracking & Analytics Consolidation Pass
 - [x] **Phase 1 (Frontend & Backend Audit):** Completed mapping of all tracking calls to `TRACKING_VERIFICATION.md`, checked layout mounts (confirmed single active tracker `<DeferredVisitorTracker />`), probed live Laravel endpoints with fake ID `test-audit-visitor-cdf124d0`, confirmed `/tracking/event`, `/tracking/sync-pwa`, `/analytics/user-count` return 200, `/tracking/sync` returns 200 with top-level activities, while `/analytics/pageview`, `/analytics/heartbeat`, `/analytics/stats` return 404. Suspicious 10k floor discovered in `/analytics/user-count`. (DONE)
-- [/] **Phase 2 (Consolidate to ONE tracker, working today):** Capability-aware proxies with fallback, IP/UA forwarding, fail silent in prod, dev headers, bot/DNT filter, stats plausibility warning, service worker NetworkOnly verification. (IN PROGRESS)
-- [ ] **Phase 3 (Google Analytics / GTM correctness):** GTM single container, Consent Mode v2, RouteTracker dataLayer test, custom events check, ANALYTICS_SETUP.md. (NEXT STEP)
+- [x] **Phase 2 (Consolidate to ONE tracker, working today):** Implemented `lib/server/analytics-proxy.ts` capability-aware proxy with 10-minute in-memory capability cache, falling back to existing working endpoints (`/tracking/event`, `/tracking/sync-pwa`, `/analytics/user-count`) on 404/405 without backend changes; forwards client IP (`X-Forwarded-For`, `X-Real-IP`) and original User-Agent with 3.5s timeout; dev mode returns upstream headers (`x-tracking-upstream`) and real responses; prod mode fails silently with rate-limited error logging; server-side and client-side bot/DNT/ignored-route exclusion; `UserAnalytics.tsx` validation with dev plausibility warning for suspicious 10k backend counts; PWA and service worker NetworkOnly validated. (DONE)
+- [/] **Phase 3 (Google Analytics / GTM correctness):** GTM single container, Consent Mode v2, RouteTracker dataLayer test, custom events check, ANALYTICS_SETUP.md. (IN PROGRESS)
 - [ ] **Phase 4 (Backend instructions):** BACKEND_REQUIRED.md with exact Laravel snippets.
 - [ ] **Phase 5 (Verification & Report):** Linter, build, tests, final report.
 
