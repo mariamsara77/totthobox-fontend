@@ -8,7 +8,7 @@ export function GET(request: NextRequest) {
     ""
   ).toUpperCase();
 
-  return NextResponse.json(
+  const response = NextResponse.json(
     { country },
     {
       headers: {
@@ -18,4 +18,15 @@ export function GET(request: NextRequest) {
       },
     },
   );
+
+  if (country) {
+    response.cookies.set("tb_country", country, {
+      path: "/",
+      maxAge: 86400 * 7,
+      sameSite: "lax",
+      httpOnly: false,
+    });
+  }
+
+  return response;
 }

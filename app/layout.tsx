@@ -149,15 +149,36 @@ export default function RootLayout({
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               window.gtag = gtag;
+
+              // 1. Region-specific default: Denied for EEA, UK (GB) and Switzerland (CH)
               gtag('consent', 'default', {
                 'ad_storage': 'denied',
                 'analytics_storage': 'denied',
                 'ad_user_data': 'denied',
                 'ad_personalization': 'denied',
                 'functionality_storage': 'granted',
+                'security_storage': 'granted',
+                'region': [
+                  'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR',
+                  'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL',
+                  'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE', 'IS', 'LI', 'NO',
+                  'GB', 'CH'
+                ]
+              });
+
+              // 2. Global default: Granted for all other visitors
+              gtag('consent', 'default', {
+                'ad_storage': 'granted',
+                'analytics_storage': 'granted',
+                'ad_user_data': 'granted',
+                'ad_personalization': 'granted',
+                'functionality_storage': 'granted',
                 'security_storage': 'granted'
               });
+
               gtag('set', 'ads_data_redaction', true);
+
+              // 3. Saved visitor choice overrides defaults on load, before GTM fires
               try {
                 var raw = localStorage.getItem('cookie_consent');
                 if (raw) {

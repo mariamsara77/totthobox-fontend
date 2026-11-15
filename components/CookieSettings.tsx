@@ -62,6 +62,12 @@ export default function CookieSettings() {
       version: 1,
     };
     localStorage.setItem("cookie_consent", JSON.stringify(prefs));
+    if (!prefs.analytics) {
+      try {
+        localStorage.removeItem("tb_visitor_id");
+        localStorage.removeItem("tb_visited_before");
+      } catch {}
+    }
     setSettings({ analytics: prefs.analytics, marketing: prefs.marketing });
     setIsOpen(false);
     setShowBanner(false);

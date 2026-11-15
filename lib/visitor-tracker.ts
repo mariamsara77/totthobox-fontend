@@ -1,4 +1,4 @@
-import { isBot, isIgnoredRoute } from "@/lib/analytics";
+import { isBot, isIgnoredRoute, hasAnalyticsConsent } from "@/lib/analytics";
 
 export interface VisitorPageviewPayload {
   visitor_id: string;
@@ -37,27 +37,6 @@ const STORAGE_INSTALLED_KEY = "pwa_installed";
 const SESSION_ID_KEY = "tb_session_id";
 const SESSION_ACTIVITY_KEY = "tb_session_last_active";
 const SESSION_TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
-
-function hasAnalyticsConsent(): boolean {
-  if (typeof window === "undefined") return false;
-
-  // Respect Do-Not-Track
-  if (
-    navigator.doNotTrack === "1" ||
-    (window as unknown as { doNotTrack?: string }).doNotTrack === "1"
-  ) {
-    return false;
-  }
-
-  try {
-    const raw = window.localStorage.getItem("cookie_consent");
-    if (!raw) return false;
-    const saved = JSON.parse(raw) as Record<string, unknown>;
-    return saved.analytics === true;
-  } catch {
-    return false;
-  }
-}
 
 function getOrGenerateUUID(): string {
   if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {

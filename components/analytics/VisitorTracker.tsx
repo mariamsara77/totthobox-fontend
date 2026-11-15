@@ -61,9 +61,18 @@ export default function VisitorTracker() {
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
-    // If user grants consent dynamically, trigger pageview
-    const handleConsent = () => {
-      trackVisitorPageView(pathname);
+    // If user changes consent dynamically: trigger pageview on grant, stop on deny
+    const handleConsent = (event: Event) => {
+      const customEvent = event as CustomEvent<{ analytics?: boolean }>;
+      const isGranted = customEvent?.detail?.analytics === true;
+      if (isGranted) {
+        trackVisitorPageView(pathname);
+        if (document.visibilityState === "visible") {
+          startHeartbeat();
+        }
+      } else {
+        stopHeartbeat();
+      }
     };
     window.addEventListener("totthobox:consent-updated", handleConsent);
 

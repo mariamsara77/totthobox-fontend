@@ -6,6 +6,71 @@ declare global {
 }
 
 /**
+ * 32 European Economic Area (EEA) + UK (GB) + Switzerland (CH) country codes
+ * requiring explicit opt-in consent for analytics and tracking.
+ */
+export const EEA_UK_CH_COUNTRIES = new Set([
+  "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR",
+  "DE", "GR", "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL",
+  "PL", "PT", "RO", "SK", "SI", "ES", "SE", "IS", "LI", "NO",
+  "GB", "CH",
+]);
+
+export function isEeaCountry(countryCode: string | null | undefined): boolean {
+  if (!countryCode) return false;
+  return EEA_UK_CH_COUNTRIES.has(countryCode.trim().toUpperCase());
+}
+
+export function getClientCountry(): string | null {
+  if (typeof window === "undefined") return null;
+
+  try {
+    const match = document.cookie.match(/(?:^|;\s*)tb_country=([A-Z]{2})/i);
+    if (match?.[1]) return match[1].toUpperCase();
+  } catch {}
+
+  try {
+    const sessionCountry = window.sessionStorage.getItem("tb_country");
+    if (sessionCountry) return sessionCountry.toUpperCase();
+  } catch {}
+
+  return null;
+}
+
+export function hasAnalyticsConsent(): boolean {
+  if (typeof window === "undefined") return false;
+
+  // Respect Do-Not-Track
+  if (
+    navigator.doNotTrack === "1" ||
+    (window as unknown as { doNotTrack?: string }).doNotTrack === "1"
+  ) {
+    return false;
+  }
+
+  // 1. Saved visitor choice overrides defaults
+  try {
+    const raw = window.localStorage.getItem("cookie_consent");
+    if (raw) {
+      const saved = JSON.parse(raw) as Record<string, unknown>;
+      if (typeof saved.analytics === "boolean") {
+        return saved.analytics === true;
+      }
+    }
+  } catch {}
+
+  // 2. No saved choice: check region
+  // EEA, UK and Switzerland are denied by default (must opt-in)
+  const country = getClientCountry();
+  if (country && isEeaCountry(country)) {
+    return false;
+  }
+
+  // All other regions and unknown country are granted by default
+  return true;
+}
+
+/**
  * Checks if current user-agent is a known bot, crawler, or automated runner.
  */
 export function isBot(): boolean {

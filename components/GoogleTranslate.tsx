@@ -127,6 +127,13 @@ export default function GoogleTranslate() {
         .then((geo: { country?: string }) => {
           const countryCode = geo.country?.toUpperCase() || "";
 
+          if (countryCode) {
+            try {
+              window.sessionStorage.setItem("tb_country", countryCode);
+              document.cookie = `tb_country=${countryCode}; path=/; max-age=604800; SameSite=Lax`;
+            } catch {}
+          }
+
           if (countryCode === "BD") {
             if (!manualPreference) {
               clearTranslationCookie();

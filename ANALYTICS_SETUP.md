@@ -10,15 +10,12 @@
 
 1. **Single GTM Container:** GTM script (`gtm.js?id=GTM-5RFHKJJJ`) is loaded once in `app/layout.tsx` via `next/script` (`strategy="afterInteractive"`) with a `<noscript>` iframe fallback.
 2. **Zero Code Duplication:** GA4 (`gtag.js`) is NOT loaded directly in frontend code. GA4 is managed entirely within GTM to prevent double-counting.
-3. **Consent Mode v2:** Default consent state is initialized in `<head>` BEFORE GTM loads:
-   - `ad_storage: 'denied'`
-   - `analytics_storage: 'denied'`
-   - `ad_user_data: 'denied'`
-   - `ad_personalization: 'denied'`
-   - `functionality_storage: 'granted'`
-   - `security_storage: 'granted'`
-   - `ads_data_redaction: true`
-   Returning visitors with a saved cookie preference in `localStorage` (`cookie_consent`) get an immediate `gtag('consent', 'update', ...)` before GTM triggers tags.
+3. **Region-Based Consent Mode v2:** Default consent state is initialized in `<head>` BEFORE GTM loads in the following order:
+   - **Step 3a (EEA, UK, Switzerland Regional Default - Denied):** All 4 signals (`ad_storage`, `analytics_storage`, `ad_user_data`, `ad_personalization`) set to `'denied'` for the 32 country codes (`['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE', 'IS', 'LI', 'NO', 'GB', 'CH']`).
+   - **Step 3b (Global Default - Granted):** All 4 signals set to `'granted'` for all other visitors worldwide (including Bangladesh, US, India, etc.).
+   - **Step 3c (Override on Load):** Returning visitors with a saved cookie preference in `localStorage` (`cookie_consent`) get an immediate `gtag('consent', 'update', ...)` before GTM triggers tags.
+   - **Step 3d (First-Party Tracker Synchronization):** The custom visitor tracker (`<DeferredVisitorTracker />` / `lib/visitor-tracker.ts`) reads the same consent state: sends by default outside EEA/UK/CH, never sends and does not write `tb_visitor_id` to `localStorage` in denied regions without an explicit user Accept. User Deny choice revokes both GTM analytics and the first-party tracker and deletes local visitor IDs.
+   - `ads_data_redaction: true` is enabled.
 4. **Single-Page Application (SPA) Route Tracking:** Next.js App Router client-side navigations trigger `<RouteTracker />` which pushes `{ event: "page_view", page_path, page_title, page_location }` to `window.dataLayer`. The initial hard load is skipped by `<RouteTracker />` so GTM's standard initialization handles the first page view without duplication.
 
 ---

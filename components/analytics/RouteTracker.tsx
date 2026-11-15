@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { isBot, isIgnoredRoute } from "@/lib/analytics";
+import { isBot, isIgnoredRoute, hasAnalyticsConsent } from "@/lib/analytics";
 
 function RouteTrackerInner() {
   const pathname = usePathname();
@@ -19,6 +19,9 @@ function RouteTrackerInner() {
       isFirstLoad.current = false;
       return;
     }
+
+    // Stop GTM virtual pageviews if consent is denied (EEA default or user opt-out)
+    if (!hasAnalyticsConsent()) return;
 
     const search = searchParams?.toString();
     const pagePath = search ? `${pathname}?${search}` : pathname;

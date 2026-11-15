@@ -27,21 +27,28 @@ export function proxy(request: NextRequest) {
   }
 
   const response = NextResponse.next();
+
+  const country = (
+    request.headers.get("x-vercel-ip-country") ||
+    request.headers.get("cf-ipcountry") ||
+    request.headers.get("x-country-code") ||
+    ""
+  ).trim().toUpperCase();
+
+  if (country && request.cookies.get("tb_country")?.value !== country) {
+    response.cookies.set("tb_country", country, {
+      path: "/",
+      maxAge: 86400 * 7,
+      sameSite: "lax",
+      httpOnly: false,
+    });
+  }
+
   return noStorePaths.test(pathname) ? applyNoStoreHeaders(response) : response;
 }
 
 export const config = {
   matcher: [
-    "/dashboard/:path*",
-    "/profile/:path*",
-    "/settings/:path*",
-    "/messages/:path*",
-    "/login",
-    "/register",
-    "/forgot-password",
-    "/reset-password",
-    "/auth/:path*",
-    "/api/auth/:path*",
-    "/offline",
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|woff2|woff|ttf|css|js|txt|xml)$).*)",
   ],
 };

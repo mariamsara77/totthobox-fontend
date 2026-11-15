@@ -219,6 +219,55 @@ export default function PrivacyPolicyPage() {
           </ul>
         </section>
 
+        {/* Section 7: First-Party Visitor Tracking & Regional Opt-Out */}
+        <section className="space-y-4">
+          <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
+            ৭. ভিজিটর ট্র্যাকিং, সংগৃহীত তথ্য ও অপ্ট-আউট (Visitor Tracking & Opt-Out)
+          </h2>
+          <div className="space-y-3 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+            <p>
+              প্ল্যাটফর্মের কার্যক্ষমতা ও জনপ্রিয় সেবাগুলো মূল্যায়নের স্বার্থে Totthobox একটি নিজস্ব ফার্স্ট-পার্টি অ্যানালিটিক্স ট্র্যাকার পরিচালনা করে।
+            </p>
+            <div>
+              <h3 className="font-semibold text-zinc-800 dark:text-zinc-200">
+                ক. ট্র্যাকার কী কী তথ্য সংগ্রহ করে:
+              </h3>
+              <ul className="list-disc ml-6 mt-1 space-y-1">
+                <li>বেনামি ভিজিটর আইডেন্টিফায়ার (<code className="text-xs bg-zinc-100 dark:bg-zinc-800 px-1 py-0.5 rounded">tb_visitor_id</code>) এবং সেশন আইডি</li>
+                <li>পরিদর্শিত পৃষ্ঠার পাথ (<code className="text-xs bg-zinc-100 dark:bg-zinc-800 px-1 py-0.5 rounded">pathname</code>), শিরোনাম ও রেফারেল URL</li>
+                <li>ডিভাইসের ধরন (মোবাইল/ট্যাবলেট/ডেস্কটপ), স্ক্রিন রেজোলিউশন ও ব্রাউজারের ভাষা</li>
+                <li>পৃষ্ঠা লোড হওয়ার সময়কাল (মিলিসেকেন্ডে) এবং PWA ইনস্টলেশন অবস্থা</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold text-zinc-800 dark:text-zinc-200">
+                খ. আপনার গোপনীয়তা ও সুরক্ষা:
+              </h3>
+              <ul className="list-disc ml-6 mt-1 space-y-1">
+                <li>কোনো ব্যক্তিগত পরিচয়যোগ্য তথ্য (PII) যেমন নাম, ফোন নম্বর বা ইমেইল ট্র্যাকিংয়ে নেওয়া হয় না।</li>
+                <li>আইপি অ্যাড্রেস সার্ভারে স্থায়ীভাবে জমা রাখা হয় না; এটি সুরক্ষিত ক্রিপ্টোগ্রাফিক হ্যাশ (HMAC-SHA256) হিসেবে প্রসেস হয়।</li>
+                <li>ব্রাউজারের Do Not Track (DNT) সিগন্যাল সক্রিয় থাকলে ট্র্যাকার স্বয়ংক্রিয়ভাবে বন্ধ থাকে।</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold text-zinc-800 dark:text-zinc-200">
+                গ. অঞ্চলভিত্তিক সম্মতি নীতি (Region-Based Consent):
+              </h3>
+              <p className="mt-1">
+                ইউরোপীয় অর্থনৈতিক অঞ্চল (EEA), যুক্তরাজ্য (UK) এবং সুইজারল্যান্ডের (CH) ভিজিটরদের জন্য ডিফল্ট সম্মতি &ldquo;Denied&rdquo; থাকে। এই অঞ্চলগুলো থেকে ভিজিটররা কুকি ব্যানারে &ldquo;সবগুলো গ্রহণ করুন&rdquo; চাপলে কেবল তখনই ট্র্যাকিং সক্রিয় হয়। অন্যান্য অঞ্চলের সাধারণ ভিজিটরদের ক্ষেত্রে প্ল্যাটফর্মের পরিসংখ্যান নিশ্চিত করতে ডিফল্ট সম্মতি &ldquo;Granted&rdquo; থাকে।
+              </p>
+            </div>
+            <div>
+              <h3 className="font-semibold text-zinc-800 dark:text-zinc-200">
+                ঘ. যেভাবে যেকোনো সময় অপ্ট-আউট (Opt-Out) করবেন:
+              </h3>
+              <p className="mt-1">
+                আপনি যেকোনো মুহূর্তে আমাদের ওয়েবসাইটের ফুটারের <strong>&ldquo;কুকি সেটিংস&rdquo; (Cookie Settings)</strong> বোতামে ক্লিক করে &ldquo;প্রয়োজনীয় শুধু&rdquo; (Necessary Only) নির্বাচন করতে পারেন অথবা অ্যানালিটিক্স বন্ধ করতে পারেন। এর মাধ্যমে তাৎক্ষণিকভাবে Google Analytics ও Totthobox নিজস্ব ট্র্যাকার উভয়ই সম্পূর্ণ বন্ধ হয়ে যাবে এবং লোকাল স্টোরেজ থেকে ভিজিটর আইডি মুছে ফেলা হবে।
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* Contact Box */}
         <div className="bg-zinc-50 dark:bg-zinc-800/40 p-6 sm:p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 text-center space-y-3">
           <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">গোপনীয়তা বিষয়ক যোগাযোগ</h3>
