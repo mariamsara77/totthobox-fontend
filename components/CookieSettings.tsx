@@ -4,12 +4,77 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { RxSwitch } from "react-icons/rx";
 
+// EEA + UK + CH: এই দেশগুলোতেই কেবল অটো ব্যানার দেখাবে
+const CONSENT_REQUIRED_COUNTRIES = new Set([
+  "AT",
+  "BE",
+  "BG",
+  "HR",
+  "CY",
+  "CZ",
+  "DK",
+  "EE",
+  "FI",
+  "FR",
+  "DE",
+  "GR",
+  "HU",
+  "IE",
+  "IT",
+  "LV",
+  "LT",
+  "LU",
+  "MT",
+  "NL",
+  "PL",
+  "PT",
+  "RO",
+  "SK",
+  "SI",
+  "ES",
+  "SE",
+  "IS",
+  "LI",
+  "NO",
+  "GB",
+  "CH",
+]);
+
+type Prefs = { analytics: boolean; marketing: boolean };
+
+function readCountry(): string | null {
+  try {
+    const m = document.cookie.match(/(?:^|;\s*)tb_country=([^;]+)/);
+    return m ? decodeURIComponent(m[1]).toUpperCase() : null;
+  } catch {
+    return null;
+  }
+}
+
+function pushConsentUpdate(prefs: Prefs) {
+  try {
+    const w = window as unknown as { dataLayer?: unknown[] };
+    w.dataLayer = w.dataLayer || [];
+    // GTM-এর জন্য arguments অবজেক্ট লাগে, array নয়
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    (function gtag(..._args: unknown[]) {
+      // eslint-disable-next-line prefer-rest-params
+      w.dataLayer!.push(arguments);
+    })("consent", "update", {
+      analytics_storage: prefs.analytics ? "granted" : "denied",
+      ad_storage: prefs.marketing ? "granted" : "denied",
+      ad_user_data: prefs.marketing ? "granted" : "denied",
+      ad_personalization: prefs.marketing ? "granted" : "denied",
+    });
+  } catch {}
+}
+
 export default function CookieSettings() {
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [settings, setSettings] = useState({
-    analytics: false,
-    marketing: false,
+  const [settings, setSettings] = useState<Prefs>({
+    analytics: true,
+    marketing: true,
   });
   const [showBanner, setShowBanner] = useState(false);
 
@@ -20,34 +85,43 @@ export default function CookieSettings() {
 
   const closeSettings = () => {
     setIsOpen(false);
-    if (!localStorage.getItem("cookie_consent")) setShowBanner(true);
   };
 
   useEffect(() => {
+    const country = readCountry();
+    const consentRequired =
+      country !== null && CONSENT_REQUIRED_COUNTRIES.has(country);
     const saved = localStorage.getItem("cookie_consent");
-    if (!saved) {
-      setSettings({ analytics: false, marketing: false });
-      setShowBanner(true);
-      return;
+
+    if (saved) {
+      try {
+        const data = JSON.parse(saved);
+        setSettings({
+          analytics: data.analytics === true,
+          marketing: data.marketing === true,
+        });
+        setShowBanner(false);
+        return;
+      } catch {
+        // নষ্ট ডেটা: নিচে ডিফল্টে যাবে
+      }
     }
 
-    try {
-      const data = JSON.parse(saved);
-      setSettings({
-        analytics: data.analytics === true,
-        marketing: data.marketing === true,
-      });
-      setShowBanner(false);
-    } catch {
+    if (consentRequired) {
+      // EEA/UK/CH: সম্মতি না দেওয়া পর্যন্ত বন্ধ, ব্যানার দেখাবে
       setSettings({ analytics: false, marketing: false });
       setShowBanner(true);
+    } else {
+      // বাকি সব দেশ: ডিফল্ট চালু, ব্যানার নেই
+      setSettings({ analytics: true, marketing: true });
+      setShowBanner(false);
     }
   }, []);
 
   useEffect(() => {
     if (!isOpen) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") closeSettings();
+      if (e.key === "Escape") setIsOpen(false);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -71,6 +145,10 @@ export default function CookieSettings() {
     setSettings({ analytics: prefs.analytics, marketing: prefs.marketing });
     setIsOpen(false);
     setShowBanner(false);
+    pushConsentUpdate({
+      analytics: prefs.analytics,
+      marketing: prefs.marketing,
+    });
     window.dispatchEvent(
       new CustomEvent("totthobox:consent-updated", {
         detail: { analytics: prefs.analytics, marketing: prefs.marketing },
@@ -80,6 +158,7 @@ export default function CookieSettings() {
 
   return (
     <>
+      {/* অটো ব্যানার: শুধু EEA/UK/CH ভিজিটর, পছন্দ সেভ না থাকলে */}
       {showBanner && (
         <section
           role="region"
@@ -90,16 +169,16 @@ export default function CookieSettings() {
             আপনার কুকি পছন্দ
           </h2>
           <p className="mt-1.5 text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">
-            প্রয়োজনীয় স্টোরেজ সাইট চালাতে ব্যবহৃত হয়। অ্যানালিটিক্স ও মার্কেটিং
-            প্রযুক্তি ঐচ্ছিক; আপনার সিদ্ধান্ত না পাওয়া পর্যন্ত এগুলো চালু হবে না।
-            বিস্তারিত জানতে{" "}
+            প্রয়োজনীয় স্টোরেজ সাইট চালাতে ব্যবহৃত হয়। আপনার অঞ্চলে
+            অ্যানালিটিক্স ও মার্কেটিং প্রযুক্তি ঐচ্ছিক; আপনার সিদ্ধান্ত না
+            পাওয়া পর্যন্ত এগুলো চালু হবে না। বিস্তারিত জানতে{" "}
             <Link
               href="/cookie-policy"
               className="font-semibold text-indigo-700 underline underline-offset-2 dark:text-indigo-400"
             >
               কুকি নীতি
             </Link>{" "}
-            পড়ুন।
+            পড়ুন।
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
             <button
@@ -107,7 +186,7 @@ export default function CookieSettings() {
               onClick={() => save(false, true)}
               className="min-h-11 rounded-xl border border-zinc-300 px-3 py-2 text-xs font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
             >
-              শুধু প্রয়োজনীয়
+              শুধু প্রয়োজনীয়
             </button>
             <button
               type="button"
@@ -127,7 +206,7 @@ export default function CookieSettings() {
         </section>
       )}
 
-      {/* Trigger */}
+      {/* সবসময় থাকা ট্রিগার বাটন */}
       <button
         type="button"
         onClick={openSettings}
@@ -137,7 +216,6 @@ export default function CookieSettings() {
         কুকি সেটিংস
       </button>
 
-      {/* Bottom-right panel */}
       {isOpen && (
         <div className="fixed bottom-6 right-4 sm:right-6 z-50">
           <div
@@ -151,7 +229,6 @@ export default function CookieSettings() {
             aria-labelledby="cookie-title"
             className="w-[calc(100vw-2rem)] sm:w-96 max-w-sm overflow-hidden rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/95 shadow-2xl backdrop-blur-xl"
           >
-            {/* Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-100 dark:border-zinc-800/80">
               <h3
                 id="cookie-title"
@@ -181,7 +258,6 @@ export default function CookieSettings() {
               </button>
             </div>
 
-            {/* Collapse toggle */}
             <button
               type="button"
               onClick={() => setIsExpanded(!isExpanded)}
@@ -205,29 +281,30 @@ export default function CookieSettings() {
               </svg>
             </button>
 
-            {/* Options */}
             {isExpanded && (
               <div className="mx-3 mt-2 space-y-0 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/60 dark:border-zinc-800/60 px-4 py-1">
-                {/* Necessary */}
                 <div className="flex items-center justify-between py-2.5 border-b border-zinc-200/50 dark:border-zinc-800/50">
                   <div>
                     <p className="text-xs font-semibold text-zinc-800 dark:text-zinc-200">
                       প্রয়োজনীয় কুকিজ
                     </p>
-                    <p className="text-[10px] text-zinc-500">সাইট পরিচালনার জন্য আবশ্যিক</p>
+                    <p className="text-[10px] text-zinc-500">
+                      সাইট পরিচালনার জন্য আবশ্যিক
+                    </p>
                   </div>
                   <span className="rounded-full bg-zinc-200 dark:bg-zinc-800 px-2 py-0.5 text-[10px] font-medium text-zinc-600 dark:text-zinc-400">
                     সর্বদা সক্রিয়
                   </span>
                 </div>
 
-                {/* Analytics */}
                 <div className="flex items-center justify-between py-2.5 border-b border-zinc-200/50 dark:border-zinc-800/50">
                   <div>
                     <p className="text-xs font-semibold text-zinc-800 dark:text-zinc-200">
                       অ্যানালিটিক্স
                     </p>
-                    <p className="text-[10px] text-zinc-500">ভিজিটর পরিসংখ্যান ও উন্নয়ন</p>
+                    <p className="text-[10px] text-zinc-500">
+                      ভিজিটর পরিসংখ্যান ও উন্নয়ন
+                    </p>
                   </div>
                   <button
                     type="button"
@@ -250,13 +327,14 @@ export default function CookieSettings() {
                   </button>
                 </div>
 
-                {/* Marketing */}
                 <div className="flex items-center justify-between py-2.5">
                   <div>
                     <p className="text-xs font-semibold text-zinc-800 dark:text-zinc-200">
                       মার্কেটিং ও বিজ্ঞাপন
                     </p>
-                    <p className="text-[10px] text-zinc-500">গুগল অ্যাডসেন্স ও প্রাসঙ্গিক বিজ্ঞাপন</p>
+                    <p className="text-[10px] text-zinc-500">
+                      গুগল অ্যাডসেন্স ও প্রাসঙ্গিক বিজ্ঞাপন
+                    </p>
                   </div>
                   <button
                     type="button"
@@ -281,7 +359,6 @@ export default function CookieSettings() {
               </div>
             )}
 
-            {/* Footer */}
             <div className="px-5 py-4">
               <p className="mb-3 text-[11px] text-zinc-500 dark:text-zinc-400">
                 বিস্তারিত জানতে আমাদের{" "}
@@ -291,7 +368,7 @@ export default function CookieSettings() {
                 >
                   কুকি নীতি
                 </Link>{" "}
-                পড়ুন।
+                পড়ুন।
               </p>
 
               <div className="flex gap-2">

@@ -42,7 +42,7 @@ export default function SearchInput({
         autoCorrect="off"
         spellCheck={false}
         aria-label="অনুসন্ধান"
-        className="min-w-0 flex-1 bg-transparent text-[14.5px] leading-none text-zinc-900 outline-none placeholder:text-zinc-400 dark:text-zinc-100 dark:placeholder:text-zinc-600"
+        className="min-w-0 flex-1 bg-transparent text-[14.5px] leading-none text-zinc-900 outline-none! placeholder:text-zinc-400 dark:text-zinc-100 dark:placeholder:text-zinc-600"
       />
 
       {loading && (

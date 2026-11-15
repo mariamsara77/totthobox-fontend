@@ -17,60 +17,60 @@ export default function Footer() {
         >
           <Link
             href="/about-us"
-            className="flex min-h-[44px] items-center rounded-xl px-3 py-2 text-sm text-zinc-600 hover:text-zinc-900 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
+            className="flex min-h-11 items-center rounded-xl px-3 py-2 text-sm text-zinc-600 hover:text-zinc-900 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
           >
             আমাদের সম্পর্কে
           </Link>
           <Link
             href="/editorial-policy"
-            className="flex min-h-[44px] items-center rounded-xl px-3 py-2 text-sm text-zinc-600 hover:text-zinc-900 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
+            className="flex min-h-11 items-center rounded-xl px-3 py-2 text-sm text-zinc-600 hover:text-zinc-900 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
           >
             সম্পাদকীয় নীতিমালা
           </Link>
           <Link
             href="/privacy-policy"
-            className="flex min-h-[44px] items-center rounded-xl px-3 py-2 text-sm text-zinc-600 hover:text-zinc-900 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
+            className="flex min-h-11 items-center rounded-xl px-3 py-2 text-sm text-zinc-600 hover:text-zinc-900 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
           >
             গোপনীয়তা নীতি
           </Link>
           <Link
             href="/terms-of-service"
-            className="flex min-h-[44px] items-center rounded-xl px-3 py-2 text-sm text-zinc-600 hover:text-zinc-900 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
+            className="flex min-h-11 items-center rounded-xl px-3 py-2 text-sm text-zinc-600 hover:text-zinc-900 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
           >
             ব্যবহারের শর্তাবলী
           </Link>
           <Link
             href="/disclaimer"
-            className="flex min-h-[44px] items-center rounded-xl px-3 py-2 text-sm text-zinc-600 hover:text-zinc-900 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
+            className="flex min-h-11 items-center rounded-xl px-3 py-2 text-sm text-zinc-600 hover:text-zinc-900 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
           >
             দায়মুক্তি (Disclaimer)
           </Link>
           <Link
             href="/cookie-policy"
-            className="flex min-h-[44px] items-center rounded-xl px-3 py-2 text-sm text-zinc-600 hover:text-zinc-900 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
+            className="flex min-h-11 items-center rounded-xl px-3 py-2 text-sm text-zinc-600 hover:text-zinc-900 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
           >
             কুকি নীতি
           </Link>
           <Link
             href="/copyright-policy"
-            className="flex min-h-[44px] items-center rounded-xl px-3 py-2 text-sm text-zinc-600 hover:text-zinc-900 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
+            className="flex min-h-11 items-center rounded-xl px-3 py-2 text-sm text-zinc-600 hover:text-zinc-900 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
           >
             কপিরাইট ও DMCA
           </Link>
           <Link
             href="/contact-us"
             onClick={() => trackContactClick("footer_link", "/contact-us")}
-            className="flex min-h-[44px] items-center rounded-xl px-3 py-2 text-sm text-zinc-600 hover:text-zinc-900 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
+            className="flex min-h-11 items-center rounded-xl px-3 py-2 text-sm text-zinc-600 hover:text-zinc-900 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
           >
             যোগাযোগ
           </Link>
           <Link
             href="/sitemap.xml"
-            className="flex min-h-[44px] items-center rounded-xl px-3 py-2 text-sm text-zinc-600 hover:text-zinc-900 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
+            className="flex min-h-11 items-center rounded-xl px-3 py-2 text-sm text-zinc-600 hover:text-zinc-900 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
           >
             সাইটম্যাপ
           </Link>
-          <div className="flex items-center min-h-[44px]">
+          <div className="flex items-center min-h-11">
             <CookieSettings />
           </div>
         </nav>
@@ -80,8 +80,13 @@ export default function Footer() {
             href="https://facebook.com/totthobox"
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => trackOutboundClick("https://facebook.com/totthobox", "social_facebook")}
-            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl p-2.5 text-zinc-500 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+            onClick={() =>
+              trackOutboundClick(
+                "https://facebook.com/totthobox",
+                "social_facebook",
+              )
+            }
+            className="flex min-h-11 min-w-11 items-center justify-center rounded-xl p-2.5 text-zinc-500 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
             aria-label="Facebook"
           >
             <FaFacebook aria-hidden="true" className="h-5 w-5" />
@@ -90,8 +95,10 @@ export default function Footer() {
             href="https://x.com/totthobox"
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => trackOutboundClick("https://x.com/totthobox", "social_x")}
-            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl p-2.5 text-zinc-500 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+            onClick={() =>
+              trackOutboundClick("https://x.com/totthobox", "social_x")
+            }
+            className="flex min-h-11 min-w-11 items-center justify-center rounded-xl p-2.5 text-zinc-500 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
             aria-label="X"
           >
             <FaXTwitter aria-hidden="true" className="h-5 w-5" />
@@ -100,8 +107,10 @@ export default function Footer() {
             href="https://t.me/totthobox"
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => trackOutboundClick("https://t.me/totthobox", "social_telegram")}
-            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl p-2.5 text-zinc-500 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+            onClick={() =>
+              trackOutboundClick("https://t.me/totthobox", "social_telegram")
+            }
+            className="flex min-h-11 min-w-11 items-center justify-center rounded-xl p-2.5 text-zinc-500 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
             aria-label="Telegram"
           >
             <FaTelegramPlane aria-hidden="true" className="h-5 w-5" />
@@ -109,7 +118,7 @@ export default function Footer() {
           <a
             href="mailto:admin@totthobox.com"
             onClick={() => trackContactClick("email", "admin@totthobox.com")}
-            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl p-2.5 text-zinc-500 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+            className="flex min-h-11 min-w-11 items-center justify-center rounded-xl p-2.5 text-zinc-500 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
             aria-label="Email"
           >
             <SiGmail aria-hidden="true" className="h-5 w-5" />
