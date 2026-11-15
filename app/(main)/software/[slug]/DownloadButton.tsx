@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ExternalLink } from "lucide-react";
+import { trackDownload, trackOutboundClick } from "@/lib/analytics";
 
 type Props = {
   appId: string | number;
@@ -50,6 +51,10 @@ export default function DownloadButton({
       }
 
       // নতুন ট্যাবে সোর্স ওপেন
+      trackDownload(name, platform || downloadType);
+      if (downloadType === "external" && data.download_url) {
+        trackOutboundClick(data.download_url, "software_download");
+      }
       window.open(data.download_url, "_blank", "noopener,noreferrer");
     } catch (error) {
       console.error("Software source error:", error);

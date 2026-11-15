@@ -44,8 +44,10 @@ export function applyConsent(preferences: ConsentPreferences | null) {
   window.dataLayer = window.dataLayer || [];
   window.gtag =
     window.gtag ||
-    function gtag(...args: unknown[]) {
-      window.dataLayer?.push(args);
+    function gtag() {
+      // Ensure dataLayer receives standard arguments object required by GTM/GA4
+      // eslint-disable-next-line prefer-rest-params
+      window.dataLayer?.push(arguments);
     };
 
   const analytics = preferences?.analytics === true;

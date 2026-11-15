@@ -104,7 +104,15 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || "GTM-5RFHKJJJ";
+const ENV_GTM_ID = process.env.NEXT_PUBLIC_GTM_ID?.trim();
+const GTM_ID = ENV_GTM_ID || "GTM-5RFHKJJJ";
+
+if (process.env.NODE_ENV !== "production" && !ENV_GTM_ID) {
+  // eslint-disable-next-line no-console
+  console.warn(
+    "[Totthobox Analytics Warning] NEXT_PUBLIC_GTM_ID is not defined in environment variables. Falling back to 'GTM-5RFHKJJJ'. To configure your own container, set NEXT_PUBLIC_GTM_ID in your hosting dashboard and .env.local.",
+  );
+}
 
 export default function RootLayout({
   children,
