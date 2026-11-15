@@ -76,6 +76,27 @@ function clearStoredAuth() {
   }
 }
 
+function broadcastAuthSync(action: "login" | "logout" | "sync") {
+  if (typeof window === "undefined") return;
+  try {
+    if (typeof BroadcastChannel !== "undefined") {
+      const channel = new BroadcastChannel("totthobox-auth");
+      channel.postMessage({ type: "auth-sync", action, timestamp: Date.now() });
+      channel.close();
+    }
+  } catch {
+    // BroadcastChannel unsupported
+  }
+  try {
+    localStorage.setItem(
+      "totthobox_auth_sync",
+      JSON.stringify({ action, timestamp: Date.now() }),
+    );
+  } catch {
+    // localStorage unsupported
+  }
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -155,7 +176,44 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     window.addEventListener("focus", handleFocus);
-    return () => window.removeEventListener("focus", handleFocus);
+
+    // Cross-tab / cross-window synchronization
+    let broadcastChannel: BroadcastChannel | null = null;
+    if (typeof BroadcastChannel !== "undefined") {
+      try {
+        broadcastChannel = new BroadcastChannel("totthobox-auth");
+        broadcastChannel.onmessage = (event) => {
+          if (
+            event.data?.type === "auth-sync" ||
+            event.data?.type === "github-auth-success"
+          ) {
+            clearStoredAuth();
+            void fetchUser(true);
+          }
+        };
+      } catch {
+        broadcastChannel = null;
+      }
+    }
+
+    const handleStorageEvent = (event: StorageEvent) => {
+      if (
+        event.key === "totthobox_auth_sync" ||
+        event.key === "totthobox_auth_event"
+      ) {
+        clearStoredAuth();
+        void fetchUser(true);
+      }
+    };
+    window.addEventListener("storage", handleStorageEvent);
+
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+      window.removeEventListener("storage", handleStorageEvent);
+      if (broadcastChannel) {
+        broadcastChannel.close();
+      }
+    };
   }, [applyUser, fetchUser]);
 
   // ── Email + password login ─────────────────────────────────────────────
@@ -169,6 +227,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!res.ok) throw data;
     applyUser(data.user);
     storeAuth(data.user);
+    broadcastAuthSync("login");
   };
 
   // ── One-click saved profile login (refresh token) ──────────────────────
@@ -179,6 +238,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!res.ok) return false;
       applyUser(data.user);
       storeAuth(data.user);
+      broadcastAuthSync("login");
       return true;
     } catch {
       return false;
@@ -190,6 +250,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await fetch("/api/auth/logout", { method: "POST" }).catch(() => null);
     clearStoredAuth();
     applyUser(null);
+    broadcastAuthSync("logout");
     router.refresh();
   };
 
@@ -203,11 +264,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         login,
         loginWithRefresh,
         logout,
-        mutateUser: () => {
-          // Always clear the sessionStorage cache before a forced re-fetch
-          // so stale data never blocks the fresh /api/auth/me response.
+        mutateUser: async () => {
           clearStoredAuth();
-          return fetchUser(true);
+          await fetchUser(true);
+          broadcastAuthSync("sync");
         },
       }}
     >

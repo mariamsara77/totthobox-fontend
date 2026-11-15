@@ -80,6 +80,18 @@ const nextConfig: NextConfig = {
         ],
       },
 
+      // Relax COOP on OAuth callback routes so external identity providers
+      // (GitHub, Google) retain window.opener when redirecting back into popups.
+      {
+        source: "/auth/:path*",
+        headers: [
+          {
+            key: "Cross-Origin-Opener-Policy",
+            value: "unsafe-none",
+          },
+        ],
+      },
+
       // Keep long-lived caching limited to stable/versioned public assets.
       {
         source: "/fonts/:path*",

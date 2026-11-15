@@ -1,8 +1,9 @@
-// components/auth/GithubLoginButton.tsx
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { getGithubClientId, getGithubRedirectUri } from "@/lib/auth-config";
 
 type Props = {
   onLoginSuccess?: () => void | Promise<void>;
@@ -10,27 +11,36 @@ type Props = {
 
 export default function GithubLoginButton({ onLoginSuccess }: Props) {
   const { mutateUser } = useAuth();
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const popupRef = useRef<Window | null>(null);
   const pollTimerRef = useRef<NodeJS.Timeout | null>(null);
-  // Track whether we already handled a message so the poll-close branch
-  // doesn't reset loading after a successful auth.
   const handledRef = useRef(false);
+  const activeListenersRef = useRef<(() => void) | null>(null);
+
+  const cleanupListeners = () => {
+    if (activeListenersRef.current) {
+      activeListenersRef.current();
+      activeListenersRef.current = null;
+    }
+  };
 
   const cleanup = () => {
     if (pollTimerRef.current) {
       clearInterval(pollTimerRef.current);
       pollTimerRef.current = null;
     }
-    // Don't force-close the popup — it closes itself via window.close()
+    cleanupListeners();
     popupRef.current = null;
   };
 
   useEffect(() => {
     return () => {
-      if (pollTimerRef.current) clearInterval(pollTimerRef.current);
-      if (popupRef.current && !popupRef.current.closed) popupRef.current.close();
+      cleanup();
+      if (popupRef.current && !popupRef.current.closed) {
+        popupRef.current.close();
+      }
     };
   }, []);
 
@@ -40,17 +50,31 @@ export default function GithubLoginButton({ onLoginSuccess }: Props) {
     handledRef.current = false;
     cleanup();
 
-    const clientId =
-      process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID || "Ov23li78Wl6unzKg6n59";
+    const clientId = getGithubClientId();
+    if (!clientId) {
+      setError("GitHub লগইন ক্লায়েন্ট আইডি সেট করা নেই।");
+      setLoading(false);
+      return;
+    }
 
-    const redirectUri = `${window.location.origin}/auth/github/callback`;
+    const redirectUri = getGithubRedirectUri();
 
-    // GitHub OAuth URL with requested scopes
-    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(
+    // Generate random state for CSRF defense
+    const state =
+      Math.random().toString(36).substring(2, 15) +
+      Date.now().toString(36);
+    try {
+      sessionStorage.setItem("github_oauth_state", state);
+    } catch {
+      // sessionStorage unavailable
+    }
+
+    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${encodeURIComponent(
+      clientId,
+    )}&redirect_uri=${encodeURIComponent(
       redirectUri,
-    )}&scope=read:user%20user:email`;
+    )}&scope=read:user%20user:email&state=${encodeURIComponent(state)}`;
 
-    // Calculate center coordinates for popup
     const width = 600;
     const height = 700;
     const left = window.screenX + (window.outerWidth - width) / 2;
@@ -62,80 +86,151 @@ export default function GithubLoginButton({ onLoginSuccess }: Props) {
       `width=${width},height=${height},left=${left},top=${top},status=yes,scrollbars=yes`,
     );
 
+    if (!popup) {
+      setError("পপআপ উইন্ডো খুলতে সমস্যা হয়েছে। অনুগ্রহ করে ব্রাউজারের পপআপ ব্লকার বন্ধ করুন।");
+      setLoading(false);
+      return;
+    }
+
     popupRef.current = popup;
 
-    // Listen for OAuth messages from the callback window
-    const handleMessage = async (event: MessageEvent) => {
-      if (event.origin !== window.location.origin) return;
+    // Process OAuth completion payload
+    const handleAuthResult = async (data: {
+      type: string;
+      code?: string;
+      state?: string | null;
+      message?: string;
+    }) => {
+      if (handledRef.current) return;
+      handledRef.current = true;
+      cleanup();
 
-      if (event.data?.type === "github-auth-success") {
-        handledRef.current = true;
-        window.removeEventListener("message", handleMessage);
-        cleanup();
+      if (data.type === "github-auth-error") {
+        setError(data.message || "GitHub সাইন ইন বাতিল হয়েছে বা ব্যর্থ হয়েছে।");
+        setLoading(false);
+        return;
+      }
 
+      if (data.type === "github-auth-success") {
         try {
-          // The callback popup sends us the GitHub code and closes itself.
-          // We exchange it here (parent window) so cookies are committed
-          // in the same window context before we call mutateUser().
-          if (!event.data?.code) {
-            throw new Error(
-              "GitHub authorization code পাওয়া যায়নি। আবার চেষ্টা করুন।",
-            );
+          if (!data.code) {
+            throw new Error("GitHub authorization code পাওয়া যায়নি। আবার চেষ্টা করুন।");
+          }
+
+          // Verify state match if present
+          try {
+            const expectedState = sessionStorage.getItem("github_oauth_state");
+            if (expectedState && data.state && data.state !== expectedState) {
+              throw new Error("নিরাপত্তা যাচাই ব্যর্থ হয়েছে (CSRF token mismatch)। আবার চেষ্টা করুন।");
+            }
+          } finally {
+            sessionStorage.removeItem("github_oauth_state");
           }
 
           const res = await fetch("/api/auth/github", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
-            body: JSON.stringify({ code: event.data.code }),
+            body: JSON.stringify({
+              code: data.code,
+              redirect_uri: redirectUri,
+            }),
           });
 
           if (!res.ok) {
-            const data = await res.json().catch(() => null);
+            const resData = await res.json().catch(() => null);
             throw new Error(
-              data?.message || "GitHub লগইন সম্পন্ন করা যায়নি। আবার চেষ্টা করুন।",
+              resData?.message || "GitHub লগইন সম্পন্ন করা যায়নি। আবার চেষ্টা করুন।",
             );
           }
 
-          // Cookies are now set in this window — safe to fetch the user
+          // Session cookies are now set — refresh user and UI
           await mutateUser();
+          router.refresh();
           await onLoginSuccess?.();
         } catch (err) {
           setError(
             err instanceof Error
               ? err.message
-              : "GitHub লগইন সম্পন্ন করতে সমস্যা হয়েছে",
+              : "GitHub লগইন সম্পন্ন করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।",
           );
         } finally {
           setLoading(false);
         }
       }
+    };
 
-      if (event.data?.type === "github-auth-error") {
-        handledRef.current = true;
-        window.removeEventListener("message", handleMessage);
-        cleanup();
-        setError(
-          event.data.message || "GitHub সাইন ইন বাতিল হয়েছে বা ব্যর্থ হয়েছে।",
-        );
-        setLoading(false);
+    // Channel 1: window.postMessage
+    const onMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      if (
+        event.data?.type === "github-auth-success" ||
+        event.data?.type === "github-auth-error"
+      ) {
+        void handleAuthResult(event.data);
+      }
+    };
+    window.addEventListener("message", onMessage);
+
+    // Channel 2: BroadcastChannel
+    let broadcastChannel: BroadcastChannel | null = null;
+    if (typeof BroadcastChannel !== "undefined") {
+      try {
+        broadcastChannel = new BroadcastChannel("totthobox-auth");
+        broadcastChannel.onmessage = (event) => {
+          if (
+            event.data?.type === "github-auth-success" ||
+            event.data?.type === "github-auth-error"
+          ) {
+            void handleAuthResult(event.data);
+          }
+        };
+      } catch {
+        broadcastChannel = null;
+      }
+    }
+
+    // Channel 3: storage event fallback
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === "totthobox_auth_event" && event.newValue) {
+        try {
+          const parsed = JSON.parse(event.newValue);
+          if (
+            parsed?.type === "github-auth-success" ||
+            parsed?.type === "github-auth-error"
+          ) {
+            void handleAuthResult(parsed);
+          }
+        } catch {
+          // Ignore invalid JSON
+        }
+      }
+    };
+    window.addEventListener("storage", onStorage);
+
+    activeListenersRef.current = () => {
+      window.removeEventListener("message", onMessage);
+      window.removeEventListener("storage", onStorage);
+      if (broadcastChannel) {
+        broadcastChannel.close();
+        broadcastChannel = null;
       }
     };
 
-    window.addEventListener("message", handleMessage);
-
-    // Watch if user closes popup without completing auth (no message received)
+    // Watch if user closes popup manually without completing
     pollTimerRef.current = setInterval(() => {
       if (popup && popup.closed) {
         clearInterval(pollTimerRef.current!);
         pollTimerRef.current = null;
-        window.removeEventListener("message", handleMessage);
-        // Only reset loading if we haven't handled a success/error message yet
-        if (!handledRef.current) {
-          setLoading(false);
-        }
+        cleanupListeners();
+        // Give 500ms grace period for asynchronous message delivery before resetting loading state
+        setTimeout(() => {
+          if (!handledRef.current) {
+            setLoading(false);
+          }
+        }, 500);
       }
-    }, 800);
+    }, 600);
   };
 
   return (
@@ -166,7 +261,7 @@ export default function GithubLoginButton({ onLoginSuccess }: Props) {
       </button>
 
       {error && (
-        <p role="alert" className="mt-2 text-center text-sm text-red-500">
+        <p role="alert" className="mt-2 text-center text-sm text-red-500 dark:text-red-400">
           {error}
         </p>
       )}

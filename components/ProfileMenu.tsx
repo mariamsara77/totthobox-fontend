@@ -187,10 +187,18 @@ export default function ProfileMenu({
     );
   }
 
+  const displayName =
+    (user.name && user.name.trim()) ||
+    (user.slug && user.slug.trim()) ||
+    (user.email && user.email.split("@")[0]) ||
+    "User";
+
+  const displayEmail = user.email?.trim() || "সংযুক্ত অ্যাকাউন্ট";
+
   const avatarSrc =
     user.avatar_url ||
     `https://ui-avatars.com/api/?name=${encodeURIComponent(
-      user.name,
+      displayName,
     )}&background=10b981&color=fff`;
 
   return (
@@ -200,7 +208,7 @@ export default function ProfileMenu({
         ref={buttonRef}
         type="button"
         onClick={toggleDropdown}
-        onMouseEnter={(e) => isSidebar && collapsed && onHover?.(e, user.name)}
+        onMouseEnter={(e) => isSidebar && collapsed && onHover?.(e, displayName)}
         onMouseLeave={isSidebar ? onLeave : undefined}
         aria-label="প্রোফাইল মেনু"
         aria-expanded={isDropdownOpen}
@@ -214,7 +222,7 @@ export default function ProfileMenu({
       >
         <img
           src={avatarSrc}
-          alt={user.name}
+          alt={displayName}
           referrerPolicy="no-referrer"
           className={
             isSidebar
@@ -225,9 +233,9 @@ export default function ProfileMenu({
 
         {isSidebar && !collapsed && (
           <div className="flex min-w-0 flex-col overflow-hidden">
-            <span className="truncate text-sm">{user.name}</span>
+            <span className="truncate text-sm">{displayName}</span>
             <span className="truncate text-xs text-zinc-500 dark:text-zinc-400">
-              {user.email}
+              {displayEmail}
             </span>
           </div>
         )}
@@ -257,16 +265,16 @@ export default function ProfileMenu({
               <div className="flex items-center gap-3 px-4 py-3">
                 <img
                   src={avatarSrc}
-                  alt={user.name}
+                  alt={displayName}
                   referrerPolicy="no-referrer"
                   className="h-12 w-12 rounded-xl object-cover"
                 />
                 <div className="flex min-w-0 flex-col overflow-hidden">
                   <span className="truncate text-sm font-semibold text-zinc-900 dark:text-white">
-                    {user.name}
+                    {displayName}
                   </span>
                   <span className="truncate text-xs text-zinc-500 dark:text-zinc-400">
-                    {user.email}
+                    {displayEmail}
                   </span>
                 </div>
               </div>

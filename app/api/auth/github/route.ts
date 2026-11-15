@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { laravelJson } from "@/lib/server/laravel";
 import { setAuthCookies } from "@/lib/auth/session";
+import { getGithubClientId } from "@/lib/auth-config";
 
 export async function POST(request: Request) {
   try {
@@ -11,12 +12,9 @@ export async function POST(request: Request) {
 
     // If an authorization code was passed from GitHub OAuth redirect, exchange it with GitHub
     if (!githubAccessToken && body?.code && typeof body.code === "string") {
-      const clientId =
-        process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID ||
-        process.env.GITHUB_CLIENT_ID ||
-        "Ov23li78Wl6unzKg6n59";
+      const clientId = getGithubClientId();
       const clientSecret =
-        process.env.GITHUB_CLIENT_SECRET ||
+        process.env.GITHUB_CLIENT_SECRET?.trim() ||
         "1bfa14eba9bb4057ac80d36caee30eab4792204b";
 
       if (!clientId || !clientSecret) {
@@ -26,17 +24,23 @@ export async function POST(request: Request) {
         );
       }
 
+      const exchangePayload: Record<string, string> = {
+        client_id: clientId,
+        client_secret: clientSecret,
+        code: body.code.trim(),
+      };
+
+      if (typeof body?.redirect_uri === "string" && body.redirect_uri.trim()) {
+        exchangePayload.redirect_uri = body.redirect_uri.trim();
+      }
+
       const tokenRes = await fetch("https://github.com/login/oauth/access_token", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify({
-          client_id: clientId,
-          client_secret: clientSecret,
-          code: body.code.trim(),
-        }),
+        body: JSON.stringify(exchangePayload),
       });
 
       const tokenData = await tokenRes.json().catch(() => null);
