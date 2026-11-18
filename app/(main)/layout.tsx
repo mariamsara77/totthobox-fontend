@@ -5,6 +5,7 @@ import Sidebar from "@/components/Sidebar";
 import { SidebarProvider } from "@/context/SidebarContext";
 import HelpfulContent from "@/components/HelpfulContent";
 import RelatedLinks from "@/components/RelatedLinks";
+import AdSenseScript from "@/components/partials/AdSenseScript";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://totthobox.com"),
@@ -23,6 +24,7 @@ export default function MainLayout({
 }>) {
   return (
     <div>
+      <AdSenseScript />
       <SidebarProvider>
         <div className="flex">
           {/* Sidebar */}

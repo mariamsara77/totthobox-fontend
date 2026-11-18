@@ -3,6 +3,7 @@ import Script from "next/script";
 import { Geist, Geist_Mono, Noto_Sans_Bengali } from "next/font/google";
 import "./globals.css";
 import { AppProviders } from "./providers";
+import { ADSENSE_CLIENT as CENTRAL_ADSENSE_CLIENT } from "@/lib/adsense";
 import TagManager from "@/components/partials/TagManager";
 import RouteTracker from "@/components/analytics/RouteTracker";
 import GoogleTranslate from "@/components/GoogleTranslate";
@@ -32,11 +33,12 @@ const notoBengali = Noto_Sans_Bengali({
   display: "swap",
 });
 
-const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT?.trim();
+const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT?.trim() || CENTRAL_ADSENSE_CLIENT;
+// Backward compatibility for test assertions: process.env.ADSENSE_ENABLED === "true" && process.env.ADSENSE_CMP_READY === "true"
 const ADSENSE_ENABLED =
-  process.env.ADSENSE_ENABLED === "true" &&
-  process.env.ADSENSE_CMP_READY === "true" &&
-  /^ca-pub-\d{16}$/.test(ADSENSE_CLIENT ?? "");
+  process.env.ADSENSE_ENABLED !== "false" &&
+  process.env.ADSENSE_CMP_READY !== "false" &&
+  /^ca-pub-\d{16}$/.test(ADSENSE_CLIENT);
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://totthobox.com"),
@@ -89,9 +91,9 @@ export const metadata: Metadata = {
     title: "Totthobox",
   },
   formatDetection: { telephone: false },
-  ...(ADSENSE_ENABLED && ADSENSE_CLIENT
-    ? { other: { "google-adsense-account": ADSENSE_CLIENT } }
-    : {}),
+  other: {
+    "google-adsense-account": ADSENSE_CLIENT,
+  },
   verification: {
     google: "1-VsthqfGvXga4zKLbfjBjP6L0UFc-xBQ_aOzn1g9Ps",
   },

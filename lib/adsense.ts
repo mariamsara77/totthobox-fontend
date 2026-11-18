@@ -1,0 +1,1 @@
+export const ADSENSE_CLIENT = "ca-pub-9522604367420521";

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import NavbarHeader from "@/components/NavbarHeader";
 import Footer from "@/components/Footer";
+import AdSenseScript from "@/components/partials/AdSenseScript";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://totthobox.com"),
@@ -19,6 +20,7 @@ export default function HomeLayout({
 }>) {
   return (
     <div>
+      <AdSenseScript />
       <div className="flex">
         <div className="flex flex-1 flex-col">
           <div className="sticky top-0 z-50">
