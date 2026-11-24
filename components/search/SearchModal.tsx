@@ -1,0 +1,250 @@
+"use client";
+
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { ArrowDownIcon, ArrowUpIcon } from "@heroicons/react/24/outline";
+import type { KeyboardEvent as ReactKeyboardEvent } from "react";
+import { useGlobalSearch } from "@/hooks/useGlobalSearch";
+import { getSearchUrl } from "@/lib/searchRoutes";
+import type { SearchItem } from "@/types/search";
+import { trackSearch, trackOutboundClick } from "@/lib/analytics";
+import SearchInput from "./SearchInput";
+import SearchPrefixes from "./SearchPrefixes";
+import SearchResults from "./SearchResults";
+
+interface SearchModalProps {
+  onClose: () => void;
+}
+
+export default function SearchModal({ onClose }: SearchModalProps) {
+  const router = useRouter();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const [entered, setEntered] = useState(false);
+  const [, setIsClosing] = useState(false);
+
+  const {
+    search,
+    setSearch,
+    results,
+    scope,
+    total,
+    hasMore,
+    loading,
+    metaLoading,
+    selectedIndex,
+    setSelectedIndex,
+    prefixes,
+    hints,
+    showInitial,
+    showResults,
+    showNoResults,
+    loadMore,
+    clearSearch,
+    choosePrefix,
+    abort,
+    limit,
+    fetchResults,
+  } = useGlobalSearch();
+
+  // Enter animation
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setEntered(true));
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  // Focus + body scroll lock + ESC
+  useEffect(() => {
+    inputRef.current?.focus();
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") handleClose();
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = "unset";
+      window.removeEventListener("keydown", handleKeyDown);
+      abort();
+    };
+  }, [abort]);
+
+  const handleClose = useCallback(() => {
+    setIsClosing(true);
+    setEntered(false);
+    setTimeout(() => {
+      onClose();
+    }, 220);
+  }, [onClose]);
+
+  const openItem = useCallback(
+    (item: SearchItem) => {
+      handleClose();
+      const url = getSearchUrl(item);
+      if (url.startsWith("http://") || url.startsWith("https://")) {
+        trackOutboundClick(url, "search_result");
+        window.location.assign(url);
+        return;
+      }
+      router.push(url);
+    },
+    [handleClose, router],
+  );
+
+  const handleKeyDown = useCallback(
+    (e: ReactKeyboardEvent<HTMLInputElement>) => {
+      if (!results.length) return;
+
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setSelectedIndex(Math.min(selectedIndex + 1, results.length - 1));
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setSelectedIndex(Math.max(selectedIndex - 1, 0));
+      } else if (e.key === "Enter" && results[selectedIndex]) {
+        e.preventDefault();
+        openItem(results[selectedIndex]);
+      }
+    },
+    [results, selectedIndex, setSelectedIndex, openItem],
+  );
+
+  const handleChoosePrefix = (prefix: string) => {
+    choosePrefix(prefix);
+    requestAnimationFrame(() => inputRef.current?.focus());
+  };
+
+  const handleClear = () => {
+    clearSearch();
+    requestAnimationFrame(() => inputRef.current?.focus());
+  };
+
+  const handleSearch = () => {
+    if (search.trim().length >= 2) {
+      trackSearch(search, total);
+      fetchResults(search, limit);
+    } else {
+      inputRef.current?.focus();
+    }
+  };
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="সাইটে অনুসন্ধান"
+      className="fixed inset-0 z-100 flex items-start justify-center p-0 sm:p-6 sm:pt-[10vh]"
+      onClick={handleClose}
+    >
+      {/* Backdrop */}
+      <div
+        className={`absolute inset-0 bg-black/50 dark:bg-black/75 backdrop-blur-xs transition-all duration-300 ease-out ${
+          entered ? "opacity-100" : "opacity-0"
+        }`}
+      />
+
+      {/* Modal Panel: Full-screen on mobile (<sm), elegant floating modal on sm+ */}
+      <div
+        ref={modalRef}
+        onClick={(e) => e.stopPropagation()}
+        className={`relative flex flex-col h-full sm:h-auto max-h-screen sm:max-h-[85vh] w-full max-w-none sm:max-w-2xl overflow-hidden rounded-none sm:rounded-2xl border-0 sm:border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-2xl backdrop-blur-xl transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          entered
+            ? "translate-y-0 scale-100 opacity-100"
+            : "translate-y-4 scale-[0.97] opacity-0"
+        }`}
+      >
+        {/* Header */}
+        <div className="relative shrink-0 border-b border-zinc-200 dark:border-zinc-800 pt-[max(0rem,env(safe-area-inset-top))]">
+          <SearchInput
+            value={search}
+            onChange={setSearch}
+            onKeyDown={handleKeyDown}
+            onClear={handleClear}
+            onSearch={handleSearch}
+            onClose={handleClose}
+            loading={loading}
+            inputRef={inputRef}
+          />
+
+          {showInitial && (
+            <div
+              className={`transition-all duration-300 ${
+                entered
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-2 opacity-0"
+              }`}
+            >
+              <SearchPrefixes
+                prefixes={prefixes}
+                hints={hints}
+                metaLoading={metaLoading}
+                onChoose={handleChoosePrefix}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Body: Scrollable results list */}
+        <div
+          className={`flex-1 min-h-0 overflow-hidden flex flex-col transition-all duration-300 delay-75 ${
+            entered ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
+          }`}
+        >
+          <SearchResults
+            results={results}
+            scope={scope}
+            query={search}
+            selectedIndex={selectedIndex}
+            setSelectedIndex={setSelectedIndex}
+            hasMore={hasMore}
+            loading={loading}
+            showResults={showResults}
+            showNoResults={showNoResults}
+            onSelect={openItem}
+            onLoadMore={loadMore}
+            onClear={handleClear}
+          />
+        </div>
+
+        {/* Footer */}
+        {(showResults || showNoResults) && (
+          <div
+            className={`shrink-0 flex items-center justify-between border-t border-zinc-200 dark:border-zinc-800 px-4 py-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] text-xs text-zinc-500 transition-all duration-300 delay-100 ${
+              entered ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
+            }`}
+          >
+            <span>
+              {showResults
+                ? `${total || results.length}টি ফলাফল`
+                : "কোনো ফলাফল নেই"}
+            </span>
+
+            <div className="hidden items-center gap-3 sm:flex">
+              <span className="flex items-center gap-1">
+                <kbd className="inline-flex gap-0.5 rounded border border-zinc-200 bg-white px-1.5 py-0.5 dark:border-zinc-800 dark:bg-zinc-400/10">
+                  <ArrowUpIcon className="size-2.5" />
+                  <ArrowDownIcon className="size-2.5" />
+                </kbd>
+                নেভিগেট
+              </span>
+              <span className="flex items-center gap-1">
+                <kbd className="rounded border border-zinc-200 bg-white px-1.5 py-0.5 dark:border-zinc-800 dark:bg-zinc-400/10">
+                  ↵
+                </kbd>
+                খুলুন
+              </span>
+              <span className="flex items-center gap-1">
+                <kbd className="rounded border border-zinc-200 bg-white px-1.5 py-0.5 dark:border-zinc-800 dark:bg-zinc-400/10">
+                  Esc
+                </kbd>
+                বন্ধ
+              </span>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

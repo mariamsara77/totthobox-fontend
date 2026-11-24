@@ -1,0 +1,136 @@
+diff --git a/app/Services/AIContent/ContentQualityJudge.php b/app/Services/AIContent/ContentQualityJudge.php
+new file mode 100644
+index 0000000..7b91d24
+--- /dev/null
++++ b/app/Services/AIContent/ContentQualityJudge.php
+@@ -0,0 +1,192 @@
++<?php
++
++declare(strict_types=1);
++
++namespace App\Services\AIContent;
++
++/**
++ * ContentQualityJudge
++ * 
++ * Production-ready Quality Gate service for Totthobox AI Content Generation.
++ * Evaluates content against Google's Helpful Content System, thin-content thresholds,
++ * factual grounding, sensitive topic routing, and uniqueness criteria.
++ */
++class ContentQualityJudge
++{
++    public const STATUS_PASSED = 'passed';
++    public const STATUS_REJECTED = 'rejected';
++    public const STATUS_MANUAL_REVIEW = 'manual_review_required';
++
++    public const MIN_WORD_COUNT = 300;
++    public const MIN_QUALITY_SCORE = 80;
++    public const MAX_DUPLICATE_RATIO = 0.15;
++
++    private const SENSITIVE_CATEGORIES = [
++        'islam', 'religion', 'health', 'law', 'politics', 'medical', 'tax_law'
++    ];
++
++    private const SENSITIVE_KEYWORDS = [
++        'ফতোয়া', 'হাদিস', 'কোরআন', 'শরীয়া', 'আইন', 'ধারা', 'দণ্ডবিধি',
++        'ঔষধ', 'রোগ', 'চিকিৎসা', 'ট্যাক্স রেয়াত', 'আদালত', 'বিচার'
++    ];
++
++    /**
++     * Evaluate an AI generated content payload.
++     *
++     * @param array $payload ['title' => string, 'content' => string, 'sources' => array]
++     * @param string $category
++     * @return array ['status' => string, 'score' => int, 'reasons' => array, 'requires_manual_review' => bool]
++     */
++    public function evaluate(array $payload, string $category = 'general'): array
++    {
++        $title = trim($payload['title'] ?? '');
++        $content = trim($payload['content'] ?? '');
++        $sources = $payload['sources'] ?? [];
++
++        $score = 100;
++        $reasons = [];
++        $requiresManualReview = false;
++
++        // 1. Thin Content Guard
++        $wordCount = $this->countBengaliWords($content);
++        if ($wordCount < self::MIN_WORD_COUNT) {
++            $score -= 40;
++            $reasons[] = "Thin content: Word count ({$wordCount}) is below the minimum threshold of " . self::MIN_WORD_COUNT;
++        }
++
++        // 2. Sentence Variety & Repetition Check
++        $repetitionRatio = $this->checkSentenceRepetition($content);
++        if ($repetitionRatio > 0.15) {
++            $score -= 25;
++            $reasons[] = "High sentence repetition detected (" . round($repetitionRatio * 100) . "% duplicate sentences)";
++        }
++
++        // 3. Grounding & Source Citations
++        if (empty($sources) || !is_array($sources) || count($sources) === 0) {
++            $score -= 20;
++            $reasons[] = "Missing verified primary sources/citations for factual grounding";
++        }
++
++        // 4. Sensitive Topic Guard (YMYL: Your Money Your Life)
++        if ($this->isSensitiveTopic($category, $content, $title)) {
++            $requiresManualReview = true;
++            $reasons[] = "YMYL Sensitive topic detected ({$category}). Mandatory human editorial review required before publishing";
++        }
++
++        // 5. Final Status Decision
++        $status = self::STATUS_PASSED;
++        if ($requiresManualReview) {
++            $status = self::STATUS_MANUAL_REVIEW;
++        } elseif ($score < self::MIN_QUALITY_SCORE) {
++            $status = self::STATUS_REJECTED;
++        }
++
++        return [
++            'status' => $status,
++            'score' => max(0, $score),
++            'word_count' => $wordCount,
++            'reasons' => $reasons,
++            'requires_manual_review' => $requiresManualReview,
++            'evaluated_at' => now()->toIso8601String(),
++        ];
++    }
++
++    private function countBengaliWords(string $text): int
++    {
++        $clean = preg_replace('/<[^>]*>/', ' ', $text);
++        $words = preg_split('/[\s\p{P}]+/u', trim($clean), -1, PREG_SPLIT_NO_EMPTY);
++        return count($words);
++    }
++
++    private function checkSentenceRepetition(string $text): float
++    {
++        $clean = preg_replace('/<[^>]*>/', ' ', $text);
++        $sentences = preg_split('/[।!?\n]+/u', $clean, -1, PREG_SPLIT_NO_EMPTY);
++        $sentences = array_map('trim', $sentences);
++        $sentences = array_filter($sentences, fn($s) => mb_strlen($s, 'UTF-8') > 10);
++
++        $total = count($sentences);
++        if ($total <= 2) return 0.0;
++
++        $unique = count(array_unique($sentences));
++        return ($total - $unique) / $total;
++    }
++
++    private function isSensitiveTopic(string $category, string $content, string $title): bool
++    {
++        if (in_array(strtolower($category), self::SENSITIVE_CATEGORIES, true)) {
++            return true;
++        }
++
++        $combined = $title . ' ' . $content;
++        foreach (self::SENSITIVE_KEYWORDS as $keyword) {
++            if (mb_stripos($combined, $keyword) !== false) {
++                return true;
++            }
++        }
++
++        return false;
++    }
++}

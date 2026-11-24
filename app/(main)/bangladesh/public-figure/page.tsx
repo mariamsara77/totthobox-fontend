@@ -1,0 +1,60 @@
+import type { Metadata } from "next";
+import PeopleClient from "./PeopleClient";
+import EditorialSection from "@/components/EditorialSection";
+import { bangladeshPublicFigureArticle } from "@/lib/content/sections/bangladesh-public-figure";
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+
+async function getInitialData() {
+  try {
+    const response = await fetch(
+      `${API_BASE}/api/people?page=1&per_page=10`,
+      { next: { revalidate: 1800, tags: ["people-list"] } },
+    );
+    if (!response.ok) return null;
+    return response.json();
+  } catch (e) {
+    console.error("[public-figure] Failed to load initial data:", e);
+    return null;
+  }
+}
+
+export const revalidate = 1800;
+
+export const metadata: Metadata = {
+  title: "প্রোফাইল আর্কাইভ: বিশিষ্ট ব্যক্তিবর্গের জীবনী ও কর্মজীবন | তথ্যবক্স",
+  description:
+    "বাংলাদেশের গুরুত্বপূর্ণ ব্যক্তিবর্গ, রাজনীতিবিদ, পেশাজীবী ও বিখ্যাত ব্যক্তিদের জীবনবৃত্তান্ত, বর্তমান পদবী এবং কর্মজীবনের বিস্তারিত ইতিহাস।",
+  alternates: {
+    canonical: "https://totthobox.com/bangladesh/public-figure",
+  },
+  openGraph: {
+    title:
+      "প্রোফাইল আর্কাইভ: বিশিষ্ট ব্যক্তিবর্গের জীবনী ও কর্মজীবন | তথ্যবক্স",
+    description:
+      "বাংলাদেশের গুরুত্বপূর্ণ ব্যক্তিবর্গ, রাজনীতিবিদ এবং পেশাজীবীদের জীবনবৃত্তান্ত ও কর্মজীবনের বিস্তারিত ইতিহাস।",
+    url: "https://totthobox.com/bangladesh/public-figure",
+    siteName: "Totthobox",
+    type: "website",
+    locale: "bn_BD",
+    images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title:
+      "প্রোফাইল আর্কাইভ: বিশিষ্ট ব্যক্তিবর্গের জীবনী ও কর্মজীবন | তথ্যবক্স",
+    description:
+      "বাংলাদেশের গুরুত্বপূর্ণ ব্যক্তিবর্গ, রাজনীতিবিদ এবং পেশাজীবীদের জীবনবৃত্তান্ত ও কর্মজীবনের বিস্তারিত ইতিহাস।",
+    images: [{ url: "https://totthobox.com/og-image.png", alt: "Totthobox" }],
+  },
+};
+
+export default async function PublicFigurePage() {
+  const initialData = await getInitialData();
+  return (
+    <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-8">
+      <PeopleClient initialData={initialData} />
+      <EditorialSection article={bangladeshPublicFigureArticle} />
+    </div>
+  );
+}

@@ -1,0 +1,342 @@
+import type { MetadataRoute } from "next";
+import { getAllCountries } from "@/lib/countries";
+import { extractRecordText, isThinContent } from "@/lib/seo/word-count";
+
+const SITE_URL = "https://totthobox.com";
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+
+// Rebuild the sitemap at most daily instead of querying every dataset on every request.
+export const revalidate = 86400;
+
+const publicRoutes = [
+  "/",
+  "/about-us",
+  "/authors",
+  "/editorial-policy",
+  "/cookie-policy",
+  "/copyright-policy",
+  "/contact-us",
+  "/services",
+  "/privacy-policy",
+  "/terms-of-service",
+  "/disclaimer",
+  "/bangla/calendar",
+  "/bangla/holiday",
+  "/bangladesh/introduction",
+  "/bangladesh/history",
+  "/bangladesh/tourism",
+  "/bangladesh/establishment",
+  "/bangladesh/public-figure",
+  "/international/all-country",
+  "/international/world-clock",
+  "/international/crypto-forex",
+  "/international/calling-codes",
+  "/islam/basic",
+  "/islam/dowan",
+  "/converter/adarshalipi",
+  "/converter/area",
+  "/converter/currency",
+  "/converter/data",
+  "/converter/document",
+  "/converter/energy",
+  "/converter/file-data",
+  "/converter/image",
+  "/converter/land",
+  "/converter/length",
+  "/converter/media",
+  "/converter/number-to-word",
+  "/converter/speed",
+  "/converter/temperature",
+  "/converter/time",
+  "/converter/volume",
+  "/converter/weight",
+  "/pdf-editor",
+  "/tools/age-calculator",
+  "/tools/image-resizer",
+  "/tools/percentage-calculator",
+  "/tools/qrcode-generator",
+  "/tools/word-and-character-counter",
+  "/tools/writing-practice",
+  "/tools/zodiac-calculator",
+  "/tools/internet-speed-test",
+  "/tools/tax-vat-calculator",
+  "/tools/password-generator",
+  "/software/all",
+  "/signs/all",
+  "/signs/emergency",
+  "/signs/trafik-sain",
+  "/signs/agun",
+  "/contact/police",
+];
+
+function hasSoftwareContent(item: unknown): boolean {
+  if (!item || typeof item !== "object") return false;
+
+  const description =
+    "description" in item && typeof item.description === "string"
+      ? item.description
+      : "";
+
+  return description
+    .replace(/<[^>]*>/g, "")
+    .replace(/\s+/g, "")
+    .trim().length > 0;
+}
+
+function hasIndexableContent(item: unknown): boolean {
+  return !isThinContent(extractRecordText(item), 300);
+}
+
+async function fetchPlatforms(): Promise<string[]> {
+  try {
+    const response = await fetch(
+      `${API_BASE}/api/sidebar/software-platforms`,
+      { next: { revalidate: 86400 } },
+    );
+
+    if (!response.ok) return [];
+
+    const json = await response.json();
+    return Array.isArray(json)
+      ? json.filter(
+          (value): value is string =>
+            typeof value === "string" && value.trim() !== "",
+        )
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function extractItems(json: unknown): unknown[] {
+  if (Array.isArray(json)) return json;
+  if (!isRecord(json)) return [];
+
+  if (Array.isArray(json.data)) return json.data;
+  if (Array.isArray(json.items)) return json.items;
+
+  if (isRecord(json.data)) {
+    if (Array.isArray(json.data.items)) return json.data.items;
+    if (Array.isArray(json.data.data)) return json.data.data;
+
+    return Object.values(json.data).flatMap((value) =>
+      Array.isArray(value) ? value : [],
+    );
+  }
+
+  return [];
+}
+
+function hasMorePages(json: unknown): boolean {
+  if (!isRecord(json) || !isRecord(json.meta)) return false;
+
+  if (typeof json.meta.has_more === "boolean") {
+    return json.meta.has_more;
+  }
+
+  if (
+    typeof json.meta.current_page === "number" &&
+    typeof json.meta.last_page === "number"
+  ) {
+    return json.meta.current_page < json.meta.last_page;
+  }
+
+  return false;
+}
+
+type SitemapSlugEntry = {
+  slug: string;
+  updatedAt?: Date;
+};
+
+async function fetchSlugs(
+  endpoint: string,
+  options: {
+    includeItem?: (item: unknown) => boolean;
+    revalidateSeconds?: number;
+    maxPages?: number;
+    timeoutMs?: number;
+  } = {},
+): Promise<SitemapSlugEntry[]> {
+  const {
+    includeItem,
+    revalidateSeconds = 86400,
+    maxPages = 20,
+    timeoutMs = 8000,
+  } = options;
+  const entries: SitemapSlugEntry[] = [];
+  const seen = new Set<string>();
+  const perPage = 50;
+
+  for (let page = 1; page <= maxPages; page += 1) {
+    try {
+      const separator = endpoint.includes("?") ? "&" : "?";
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+      let response: Response;
+      try {
+        response = await fetch(
+          `${API_BASE}${endpoint}${separator}per_page=${perPage}&page=${page}`,
+          { next: { revalidate: revalidateSeconds }, signal: controller.signal },
+        );
+      } finally {
+        clearTimeout(timer);
+      }
+
+      if (!response.ok) break;
+
+      const json = await response.json();
+      const source = extractItems(json);
+
+      for (const item of source) {
+        if (!isRecord(item)) continue;
+
+        const slug = typeof item.slug === "string" ? item.slug.trim() : "";
+        if (!slug || (includeItem && !includeItem(item))) continue;
+
+        if (!seen.has(slug)) {
+          seen.add(slug);
+
+          const rawDate =
+            typeof item.updated_at === "string"
+              ? item.updated_at
+              : typeof item.created_at === "string"
+                ? item.created_at
+                : null;
+
+          let updatedAt: Date | undefined;
+          if (rawDate) {
+            const parsed = new Date(rawDate);
+            if (!isNaN(parsed.getTime())) {
+              updatedAt = parsed;
+            }
+          }
+
+          entries.push({ slug, updatedAt });
+        }
+      }
+
+      if (source.length === 0 || !hasMorePages(json)) break;
+    } catch {
+      break;
+    }
+  }
+
+  return entries;
+}
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const staticEntries = publicRoutes.map((path) => ({
+    url: `${SITE_URL}${path}`,
+    changeFrequency: path === "/" ? ("daily" as const) : ("weekly" as const),
+    priority: path === "/" ? 1 : 0.7,
+  }));
+
+  const [
+    countries,
+    softwarePlatforms,
+    holidays,
+    introductions,
+    histories,
+    tourism,
+    establishments,
+    islamBasic,
+    islamDowa,
+    people,
+    apps,
+  ] = await Promise.all([
+    getAllCountries(),
+    fetchPlatforms(),
+    fetchSlugs("/api/holidays", { includeItem: hasIndexableContent }),
+    fetchSlugs("/api/intro-bd", { includeItem: hasIndexableContent }),
+    fetchSlugs("/api/history-bd", { includeItem: hasIndexableContent }),
+    fetchSlugs("/api/tourism-bd", { includeItem: hasIndexableContent }),
+    fetchSlugs("/api/establishment-bd", { includeItem: hasIndexableContent }),
+    fetchSlugs("/api/islam/basic", { includeItem: hasIndexableContent }),
+    fetchSlugs("/api/islam/dowan", { includeItem: hasIndexableContent }),
+    fetchSlugs("/api/people", { includeItem: hasIndexableContent }),
+    fetchSlugs("/api/apps", {
+      includeItem: (item) =>
+        hasSoftwareContent(item) && hasIndexableContent(item),
+    }),
+  ]);
+
+  const dynamicEntries: MetadataRoute.Sitemap = [
+    ...countries.map((country) => ({
+      url: `${SITE_URL}/international/country/${encodeURIComponent(country.slug)}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...softwarePlatforms.map((platform) => ({
+      url: `${SITE_URL}/software/all/${encodeURIComponent(platform)}`,
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+    })),
+    ...holidays.map((item) => ({
+      url: `${SITE_URL}/bangla/holiday/${encodeURIComponent(item.slug)}`,
+      lastModified: item.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...introductions.map((item) => ({
+      url: `${SITE_URL}/bangladesh/introduction/${encodeURIComponent(item.slug)}`,
+      lastModified: item.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...histories.map((item) => ({
+      url: `${SITE_URL}/bangladesh/history/${encodeURIComponent(item.slug)}`,
+      lastModified: item.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...tourism.map((item) => ({
+      url: `${SITE_URL}/bangladesh/tourism/${encodeURIComponent(item.slug)}`,
+      lastModified: item.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...establishments.map((item) => ({
+      url: `${SITE_URL}/bangladesh/establishment/${encodeURIComponent(item.slug)}`,
+      lastModified: item.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    })),
+    ...islamBasic.map((item) => ({
+      url: `${SITE_URL}/islam/basic/${encodeURIComponent(item.slug)}`,
+      lastModified: item.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...islamDowa.map((item) => ({
+      url: `${SITE_URL}/islam/dowan/${encodeURIComponent(item.slug)}`,
+      lastModified: item.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...people.map((item) => ({
+      url: `${SITE_URL}/bangladesh/public-figure/${encodeURIComponent(item.slug)}`,
+      lastModified: item.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    })),
+    ...apps.map((item) => ({
+      url: `${SITE_URL}/software/${encodeURIComponent(item.slug)}`,
+      lastModified: item.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    })),
+  ];
+
+  const unique = new Map(
+    [...staticEntries, ...dynamicEntries].map((entry) => [entry.url, entry]),
+  );
+
+  return [...unique.values()];
+}

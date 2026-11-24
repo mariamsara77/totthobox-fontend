@@ -1,0 +1,44 @@
+import type { Metadata } from 'next';
+import HolidaysClient from './HolidaysClient';
+import EditorialSection from "@/components/EditorialSection";
+import { banglaHolidayArticle } from "@/lib/content/sections/bangla-holiday";
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
+
+async function getInitialData() {
+  try {
+    const response = await fetch(
+      `${API_BASE}/api/holidays?page=1&per_page=15`,
+      { next: { revalidate: 1800, tags: ["holidays-list"] } },
+    );
+    if (!response.ok) return null;
+    return response.json();
+  } catch (e) {
+    console.error("[holidays] Failed to load initial data:", e);
+    return null;
+  }
+}
+
+export const revalidate = 1800;
+
+export const metadata: Metadata = {
+  alternates: { canonical: "https://totthobox.com/bangla/holiday" },
+  openGraph: { title: "ছুটির ক্যালেন্ডার | সরকারি ও ঐচ্ছিক ছুটির তালিকা", description: "বাংলাদেশের সরকারি, ঐচ্ছিক ও ধর্মীয় ছুটির সম্পূর্ণ তালিকা। বছর, ধরন ও তারিখ অনুযায়ী খুঁজুন।", url: "https://totthobox.com/bangla/holiday", siteName: "Totthobox", type: "website", locale: "bn_BD",
+    images: [{ url: "https://totthobox.com/og-image.png", width: 1200, height: 630, alt: "Totthobox" }],
+  },
+  twitter: { card: "summary_large_image", title: "ছুটির ক্যালেন্ডার | Totthobox", description: "বাংলাদেশের সরকারি, ঐচ্ছিক ও ধর্মীয় ছুটির সম্পূর্ণ তালিকা।",
+    images: [{ url: "https://totthobox.com/og-image.png", alt: "Totthobox" }],
+  },
+  title: 'ছুটির ক্যালেন্ডার | সরকারি ও ঐচ্ছিক ছুটির তালিকা',
+  description: 'বাংলাদেশের সরকারি, ঐচ্ছিক ও ধর্মীয় ছুটির সম্পূর্ণ তালিকা। বছর, ধরন ও তারিখ অনুযায়ী খুঁজুন।',
+};
+
+export default async function HolidaysPage() {
+  const initialData = await getInitialData();
+  return (
+    <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-8">
+      <HolidaysClient initialData={initialData} />
+      <EditorialSection article={banglaHolidayArticle} />
+    </div>
+  );
+}

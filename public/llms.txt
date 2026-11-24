@@ -1,0 +1,46 @@
+# Totthobox (তথ্যবক্স)
+
+> Totthobox is Bangladesh's premier comprehensive Bengali digital utility and knowledge platform. It provides accurate, free calculations, converters, national encyclopedic entries, and citizen services in Bengali.
+
+## Core Online Tools
+- Age Calculator: https://totthobox.com/tools/age-calculator
+- Tax & VAT Calculator (NBR FY2024-25): https://totthobox.com/tools/tax-vat-calculator
+- Image & Signature Resizer (300x300, 300x80): https://totthobox.com/tools/image-resizer
+- Percentage Calculator: https://totthobox.com/tools/percentage-calculator
+- QR Code Generator: https://totthobox.com/tools/qrcode-generator
+- Password Generator: https://totthobox.com/tools/password-generator
+- Word and Character Counter: https://totthobox.com/tools/word-and-character-counter
+- Internet Speed Test: https://totthobox.com/tools/internet-speed-test
+
+## Smart Measurement Converters
+- Land Measurement (Katha, Shotok, Bigha, Acre): https://totthobox.com/converter/land
+- Number to Bengali Words (Cheque & Receipt): https://totthobox.com/converter/number-to-word
+- Currency & Forex Rates: https://totthobox.com/converter/currency
+- Length Converter: https://totthobox.com/converter/length
+- Weight & Mass Converter: https://totthobox.com/converter/weight
+- Area Converter: https://totthobox.com/converter/area
+- Time Converter: https://totthobox.com/converter/time
+- Temperature Converter: https://totthobox.com/converter/temperature
+
+## National Knowledge & Heritage
+- Bengali Calendar (1432 Bongabdo): https://totthobox.com/bangla/calendar
+- Public Holiday Calendar: https://totthobox.com/bangla/holiday
+- History of Bangladesh: https://totthobox.com/bangladesh/history
+- Historic Establishments: https://totthobox.com/bangladesh/establishment
+- Tourism Guide: https://totthobox.com/bangladesh/tourism
+
+## International & World Encyclopedia
+- All Countries Directory (250 countries): https://totthobox.com/international/all-country
+- World Clock: https://totthobox.com/international/world-clock
+- International Calling Codes: https://totthobox.com/international/calling-codes
+
+## Islamic Knowledge & Guides
+- Basic Islamic Knowledge: https://totthobox.com/islam/basic
+- Daily Essential Duas: https://totthobox.com/islam/dowan
+
+## Editorial & Publisher Transparency
+- Editorial Policy: https://totthobox.com/editorial-policy
+- Editorial Team & Fact-Checkers: https://totthobox.com/authors
+- Contact: https://totthobox.com/contact-us
+- Privacy Policy: https://totthobox.com/privacy-policy
+- Terms of Service: https://totthobox.com/terms-of-service

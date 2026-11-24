@@ -1,0 +1,107 @@
+import type { MetadataRoute } from 'next';
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    id: "com.totthobox.ai.app",
+    name: "Totthobox - ডিজিটাল তথ্য ও সেবা প্ল্যাটফর্ম",
+    short_name: "তথ্যবক্স",
+    description: "দৈনন্দিন কাজের হিসাব-নিকাশ, বাংলা ক্যালেন্ডার, জমি পরিমাপ, জরুরি সেবা ও প্রয়োজনীয় সকল তথ্য এক জায়গায়। অফলাইনেও ব্যবহারযোগ্য।",
+    start_url: "/?utm_source=pwa&utm_medium=pwa_app&install=true",
+    scope: "/",
+    display: "standalone",
+    display_override: ["fullscreen", "minimal-ui", "standalone"],
+    orientation: "portrait",
+    background_color: "#ffffff",
+    theme_color: "#18181b",
+    categories: ["utilities", "education", "productivity", "lifestyle"],
+    lang: "bn-BD",
+    dir: "ltr",
+    prefer_related_applications: false,
+    icons: [
+      {
+        src: "/web-app-manifest-192x192.png",
+        sizes: "192x192",
+        type: "image/png",
+        purpose: "any",
+      },
+      {
+        src: "/web-app-manifest-512x512.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "maskable",
+      },
+      {
+        src: "/web-app-manifest-512x512.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "any",
+      },
+    ],
+    screenshots: [
+      {
+        src: "/Screenshot_light.png",
+        sizes: "1080x1920",
+        type: "image/png",
+        form_factor: "narrow",
+        label: "Totthobox Home (Light)",
+      },
+      {
+        src: "/Screenshot_dark.png",
+        sizes: "1080x1920",
+        type: "image/png",
+        form_factor: "narrow",
+        label: "Totthobox Home (Dark)",
+      },
+      {
+        src: "/Screenshot_light_desktop.png",
+        sizes: "1917x958",
+        type: "image/png",
+        form_factor: "wide",
+        label: "Desktop View (Light)",
+      },
+      {
+        src: "/Screenshot_dark_desktop.png",
+        sizes: "1918x959",
+        type: "image/png",
+        form_factor: "wide",
+        label: "Desktop View (Dark)",
+      },
+    ],
+    shortcuts: [
+      {
+        name: "বাংলা ক্যালেন্ডার",
+        short_name: "ক্যালেন্ডার",
+        url: "/bangla/calendar",
+        icons: [{ src: "/web-app-manifest-192x192.png", sizes: "192x192", type: "image/png" }],
+      },
+      {
+        name: "বয়স ক্যালকুলেটর",
+        short_name: "বয়স গণক",
+        url: "/tools/age-calculator",
+        icons: [{ src: "/web-app-manifest-192x192.png", sizes: "192x192", type: "image/png" }],
+      },
+      {
+        name: "জরুরি সেবা (৯৯৯)",
+        short_name: "জরুরি সেবা",
+        url: "/contact/emergency",
+        icons: [{ src: "/web-app-manifest-192x192.png", sizes: "192x192", type: "image/png" }],
+      },
+      {
+        name: "জমি ও ক্ষেত্রফল পরিমাপ",
+        short_name: "জমি পরিমাপ",
+        url: "/converter/area",
+        icons: [{ src: "/web-app-manifest-192x192.png", sizes: "192x192", type: "image/png" }],
+      },
+    ],
+    share_target: {
+      action: "/share",
+      method: "POST",
+      enctype: "application/x-www-form-urlencoded",
+      params: {
+        title: "title",
+        text: "text",
+        url: "url",
+      },
+    },
+  } as MetadataRoute.Manifest;
+}

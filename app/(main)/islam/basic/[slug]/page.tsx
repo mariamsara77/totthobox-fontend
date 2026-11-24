@@ -1,0 +1,120 @@
+import type { Metadata } from "next";
+import { cache } from "react";
+import { notFound } from "next/navigation";
+import BasicIslamShowClient from "./basicislamShowClient";
+import Disclaimer from "@/components/Disclaimer";
+import AuthorReviewerBlock from "@/components/AuthorReviewerBlock";
+import { fetchApi } from "@/lib/api/fetcher";
+import { getSlugsForPath } from "@/lib/api/slugs";
+import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
+import { isThinContent, extractRecordText } from "@/lib/seo/word-count";
+
+export const revalidate = 86400;
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  return await getSlugsForPath("/api/islam/basic");
+}
+
+const getItem = cache(async function getItem(slug: string) {
+  const json = await fetchApi<any>(`/api/islam/basic/${slug}`, {
+    revalidate: CACHE_TTL.STATIC_CONTENT,
+    tags: [CACHE_TAGS.ISLAM_BASIC, `islam-basic:${slug}`],
+  });
+
+  return json?.success ? json.data : null;
+});
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const data = await getItem(slug);
+
+  if (!data) {
+    return {
+      title: "পৃষ্ঠা পাওয়া যায়নি | তথ্যবক্স",
+      robots: { index: false, follow: false },
+    };
+  }
+
+  const item = data.item;
+  const cleanDescription = (item.description_plain || item.description || "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  const isThin = isThinContent(extractRecordText(item), 300);
+  const title = `${item.title} | ইসলামের মৌলিক জ্ঞান | তথ্যবক্স`;
+  const descriptionSource =
+    cleanDescription ||
+    `${item.title} — ইসলামের মৌলিক জ্ঞান, ব্যাখ্যা ও প্রাসঙ্গিক তথ্য।`;
+  const description =
+    descriptionSource.length > 160
+      ? `${descriptionSource.slice(0, 157).trimEnd()}...`
+      : descriptionSource;
+  const canonical = `https://totthobox.com/islam/basic/${encodeURIComponent(item.slug || slug)}`;
+
+  return {
+    title,
+    description,
+    robots: {
+      index: !isThin,
+      follow: true,
+    },
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      url: canonical,
+      siteName: "Totthobox",
+      images: item.first_media_url ? [{ url: item.first_media_url }] : [],
+      locale: "bn_BD",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+    alternates: {
+      canonical,
+    },
+  };
+}
+
+export default async function BasicIslamShowPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const data = await getItem(slug);
+
+  if (!data) notFound();
+
+  return (
+    <>
+      <BasicIslamShowClient initialData={data} slug={slug} />
+      <div className="mx-auto max-w-4xl space-y-4 px-4 pb-8">
+        <Disclaimer type="islamic" />
+        <AuthorReviewerBlock
+          category="islamic"
+          lastUpdated="১৬ নভেম্বর ২০২৬"
+          sources={[
+            {
+              name: "ইসলামিক ফাউন্ডেশন বাংলাদেশ",
+              url: "https://islamicfoundation.gov.bd",
+              note: "প্রামাণ্য প্রকাশনা ও গবেষণা উইং।",
+            },
+            {
+              name: "সহিহ বুখারি ও সহিহ মুসলিম",
+              url: "https://sunnah.com",
+              note: "সিহাহ সিত্তাহভুক্ত মূল হাদিস গ্রন্থ।",
+            },
+          ]}
+        />
+      </div>
+    </>
+  );
+}

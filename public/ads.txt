@@ -1,0 +1,2 @@
+# Totthobox Google AdSense seller information
+# AdSense seller entry is omitted unless ADSENSE_ENABLED, ADSENSE_CMP_READY and a valid NEXT_PUBLIC_ADSENSE_CLIENT are configured.

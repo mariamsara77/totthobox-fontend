@@ -1,0 +1,403 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { RxSwitch } from "react-icons/rx";
+
+// EEA + UK + CH: এই দেশগুলোতেই কেবল অটো ব্যানার দেখাবে
+const CONSENT_REQUIRED_COUNTRIES = new Set([
+  "AT",
+  "BE",
+  "BG",
+  "HR",
+  "CY",
+  "CZ",
+  "DK",
+  "EE",
+  "FI",
+  "FR",
+  "DE",
+  "GR",
+  "HU",
+  "IE",
+  "IT",
+  "LV",
+  "LT",
+  "LU",
+  "MT",
+  "NL",
+  "PL",
+  "PT",
+  "RO",
+  "SK",
+  "SI",
+  "ES",
+  "SE",
+  "IS",
+  "LI",
+  "NO",
+  "GB",
+  "CH",
+]);
+
+type Prefs = { analytics: boolean; marketing: boolean };
+
+function readCountry(): string | null {
+  try {
+    const m = document.cookie.match(/(?:^|;\s*)tb_country=([^;]+)/);
+    return m ? decodeURIComponent(m[1]).toUpperCase() : null;
+  } catch {
+    return null;
+  }
+}
+
+function pushConsentUpdate(prefs: Prefs) {
+  try {
+    const w = window as unknown as { dataLayer?: unknown[] };
+    w.dataLayer = w.dataLayer || [];
+    // GTM-এর জন্য arguments অবজেক্ট লাগে, array নয়
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    (function gtag(..._args: unknown[]) {
+      // eslint-disable-next-line prefer-rest-params
+      w.dataLayer!.push(arguments);
+    })("consent", "update", {
+      analytics_storage: prefs.analytics ? "granted" : "denied",
+      ad_storage: prefs.marketing ? "granted" : "denied",
+      ad_user_data: prefs.marketing ? "granted" : "denied",
+      ad_personalization: prefs.marketing ? "granted" : "denied",
+    });
+  } catch {}
+}
+
+export default function CookieSettings() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [settings, setSettings] = useState<Prefs>({
+    analytics: true,
+    marketing: true,
+  });
+  const [showBanner, setShowBanner] = useState(false);
+
+  const openSettings = () => {
+    setIsOpen(true);
+    setShowBanner(false);
+  };
+
+  const closeSettings = () => {
+    setIsOpen(false);
+  };
+
+  useEffect(() => {
+    const country = readCountry();
+    const consentRequired =
+      country !== null && CONSENT_REQUIRED_COUNTRIES.has(country);
+    const saved = localStorage.getItem("cookie_consent");
+
+    if (saved) {
+      try {
+        const data = JSON.parse(saved);
+        setSettings({
+          analytics: data.analytics === true,
+          marketing: data.marketing === true,
+        });
+        setShowBanner(false);
+        return;
+      } catch {
+        // নষ্ট ডেটা: নিচে ডিফল্টে যাবে
+      }
+    }
+
+    if (consentRequired) {
+      // EEA/UK/CH: সম্মতি না দেওয়া পর্যন্ত বন্ধ, ব্যানার দেখাবে
+      setSettings({ analytics: false, marketing: false });
+      setShowBanner(true);
+    } else {
+      // বাকি সব দেশ: ডিফল্ট চালু, ব্যানার নেই
+      setSettings({ analytics: true, marketing: true });
+      setShowBanner(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isOpen]);
+
+  const save = (all = false, necessaryOnly = false) => {
+    const prefs = {
+      necessary: true,
+      analytics: necessaryOnly ? false : all ? true : settings.analytics,
+      marketing: necessaryOnly ? false : all ? true : settings.marketing,
+      timestamp: Date.now(),
+      version: 1,
+    };
+    localStorage.setItem("cookie_consent", JSON.stringify(prefs));
+    if (!prefs.analytics) {
+      try {
+        localStorage.removeItem("tb_visitor_id");
+        localStorage.removeItem("tb_visited_before");
+      } catch {}
+    }
+    setSettings({ analytics: prefs.analytics, marketing: prefs.marketing });
+    setIsOpen(false);
+    setShowBanner(false);
+    pushConsentUpdate({
+      analytics: prefs.analytics,
+      marketing: prefs.marketing,
+    });
+    window.dispatchEvent(
+      new CustomEvent("totthobox:consent-updated", {
+        detail: { analytics: prefs.analytics, marketing: prefs.marketing },
+      }),
+    );
+  };
+
+  return (
+    <>
+      {/* অটো ব্যানার: শুধু EEA/UK/CH ভিজিটর, পছন্দ সেভ না থাকলে */}
+      {showBanner && (
+        <section
+          role="region"
+          aria-label="কুকি সম্মতি"
+          className="fixed inset-x-3 bottom-3 z-[60] mx-auto max-w-2xl rounded-2xl border border-zinc-200 bg-white p-4 shadow-2xl dark:border-zinc-700 dark:bg-zinc-900 sm:inset-x-6 sm:p-5"
+        >
+          <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+            আপনার কুকি পছন্দ
+          </h2>
+          <p className="mt-1.5 text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">
+            প্রয়োজনীয় স্টোরেজ সাইট চালাতে ব্যবহৃত হয়। আপনার অঞ্চলে
+            অ্যানালিটিক্স ও মার্কেটিং প্রযুক্তি ঐচ্ছিক; আপনার সিদ্ধান্ত না
+            পাওয়া পর্যন্ত এগুলো চালু হবে না। বিস্তারিত জানতে{" "}
+            <Link
+              href="/cookie-policy"
+              className="font-semibold text-indigo-700 underline underline-offset-2 dark:text-indigo-400"
+            >
+              কুকি নীতি
+            </Link>{" "}
+            পড়ুন।
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => save(false, true)}
+              className="min-h-11 rounded-xl border border-zinc-300 px-3 py-2 text-xs font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
+            >
+              শুধু প্রয়োজনীয়
+            </button>
+            <button
+              type="button"
+              onClick={openSettings}
+              className="min-h-11 rounded-xl border border-zinc-300 px-3 py-2 text-xs font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
+            >
+              পছন্দ ঠিক করুন
+            </button>
+            <button
+              type="button"
+              onClick={() => save(true)}
+              className="min-h-11 rounded-xl bg-zinc-900 px-4 py-2 text-xs font-semibold text-white transition hover:opacity-90 dark:bg-zinc-100 dark:text-zinc-900"
+            >
+              সব গ্রহণ
+            </button>
+          </div>
+        </section>
+      )}
+
+      {/* সবসময় থাকা ট্রিগার বাটন */}
+      <button
+        type="button"
+        onClick={openSettings}
+        className="flex min-h-11 items-center gap-1.5 rounded-full border border-zinc-300 dark:border-zinc-700 bg-white/80 dark:bg-zinc-800/80 px-3.5 py-2 text-xs font-medium text-zinc-700 dark:text-zinc-300 shadow-xs transition hover:border-zinc-400 hover:text-zinc-900 dark:hover:border-zinc-600 dark:hover:text-zinc-100"
+      >
+        <RxSwitch className="h-3.5 w-3.5 opacity-70" />
+        কুকি সেটিংস
+      </button>
+
+      {isOpen && (
+        <div className="fixed bottom-6 right-4 sm:right-6 z-50">
+          <div
+            className="fixed inset-0 -z-10 bg-black/20 dark:bg-black/50 backdrop-blur-xs"
+            onClick={closeSettings}
+          />
+
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="cookie-title"
+            className="w-[calc(100vw-2rem)] sm:w-96 max-w-sm overflow-hidden rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/95 shadow-2xl backdrop-blur-xl"
+          >
+            <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-100 dark:border-zinc-800/80">
+              <h3
+                id="cookie-title"
+                className="text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-100"
+              >
+                কুকি ও গোপনীয়তা সেটিংস
+              </h3>
+              <button
+                type="button"
+                onClick={closeSettings}
+                className="rounded-full p-1.5 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-800 dark:hover:text-zinc-200 transition"
+                aria-label="বন্ধ করুন"
+              >
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="mx-3 mt-3 flex w-[calc(100%-1.5rem)] items-center justify-between rounded-xl px-4 py-2.5 text-left text-xs font-medium text-zinc-700 dark:text-zinc-300 bg-zinc-100/70 dark:bg-zinc-800/60 hover:bg-zinc-200/70 dark:hover:bg-zinc-700/60 transition"
+            >
+              <span>বিস্তারিত সেটিংস</span>
+              <svg
+                className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                  isExpanded ? "rotate-180" : ""
+                }`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+
+            {isExpanded && (
+              <div className="mx-3 mt-2 space-y-0 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/60 dark:border-zinc-800/60 px-4 py-1">
+                <div className="flex items-center justify-between py-2.5 border-b border-zinc-200/50 dark:border-zinc-800/50">
+                  <div>
+                    <p className="text-xs font-semibold text-zinc-800 dark:text-zinc-200">
+                      প্রয়োজনীয় কুকিজ
+                    </p>
+                    <p className="text-2xs text-zinc-500">
+                      সাইট পরিচালনার জন্য আবশ্যিক
+                    </p>
+                  </div>
+                  <span className="rounded-full bg-zinc-200 dark:bg-zinc-800 px-2 py-0.5 text-2xs font-medium text-zinc-600 dark:text-zinc-400">
+                    সর্বদা সক্রিয়
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between py-2.5 border-b border-zinc-200/50 dark:border-zinc-800/50">
+                  <div>
+                    <p className="text-xs font-semibold text-zinc-800 dark:text-zinc-200">
+                      অ্যানালিটিক্স
+                    </p>
+                    <p className="text-2xs text-zinc-500">
+                      ভিজিটর পরিসংখ্যান ও উন্নয়ন
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    aria-label="অ্যানালিটিক্স"
+                    aria-pressed={settings.analytics}
+                    onClick={() =>
+                      setSettings((s) => ({ ...s, analytics: !s.analytics }))
+                    }
+                    className={`relative h-5 w-9 shrink-0 rounded-full transition-colors duration-200 ${
+                      settings.analytics
+                        ? "bg-emerald-600"
+                        : "bg-zinc-300 dark:bg-zinc-700"
+                    }`}
+                  >
+                    <span
+                      className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-200 ${
+                        settings.analytics ? "translate-x-4" : "translate-x-0"
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between py-2.5">
+                  <div>
+                    <p className="text-xs font-semibold text-zinc-800 dark:text-zinc-200">
+                      মার্কেটিং ও বিজ্ঞাপন
+                    </p>
+                    <p className="text-2xs text-zinc-500">
+                      গুগল অ্যাডসেন্স ও প্রাসঙ্গিক বিজ্ঞাপন
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    aria-label="মার্কেটিং"
+                    aria-pressed={settings.marketing}
+                    onClick={() =>
+                      setSettings((s) => ({ ...s, marketing: !s.marketing }))
+                    }
+                    className={`relative h-5 w-9 shrink-0 rounded-full transition-colors duration-200 ${
+                      settings.marketing
+                        ? "bg-emerald-600"
+                        : "bg-zinc-300 dark:bg-zinc-700"
+                    }`}
+                  >
+                    <span
+                      className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-200 ${
+                        settings.marketing ? "translate-x-4" : "translate-x-0"
+                      }`}
+                    />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <div className="px-5 py-4">
+              <p className="mb-3 text-xs text-zinc-500 dark:text-zinc-400">
+                বিস্তারিত জানতে আমাদের{" "}
+                <Link
+                  href="/cookie-policy"
+                  className="text-indigo-600 dark:text-indigo-400 underline underline-offset-2 transition"
+                >
+                  কুকি নীতি
+                </Link>{" "}
+                পড়ুন।
+              </p>
+
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => save(false, true)}
+                  className="flex-1 rounded-xl py-2 text-xs font-medium text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
+                >
+                  শুধু প্রয়োজনীয়
+                </button>
+                <button
+                  type="button"
+                  onClick={() => save()}
+                  className="flex-1 rounded-xl bg-zinc-100 dark:bg-zinc-800 py-2 text-xs font-medium text-zinc-800 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition"
+                >
+                  সংরক্ষণ
+                </button>
+                <button
+                  type="button"
+                  onClick={() => save(true)}
+                  className="rounded-xl bg-zinc-900 dark:bg-zinc-100 px-4 py-2 text-xs font-medium text-white dark:text-zinc-900 hover:opacity-90 transition"
+                >
+                  সব গ্রহণ
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}

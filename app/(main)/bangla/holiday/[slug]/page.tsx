@@ -1,0 +1,312 @@
+import { Metadata } from "next";
+import { cache } from "react";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { Home, Eye, ArrowLeft, ChevronDown, Share2 } from "lucide-react";
+import InteractiveActions from "./InteractiveActions";
+import CreatorsTooltip from "./CreatorsTooltip";
+import MediaGallery from "@/components/MediaGallery";
+import { fetchApi } from "@/lib/api/fetcher";
+import { getSlugsForPath } from "@/lib/api/slugs";
+import { CACHE_TTL, CACHE_TAGS } from "@/lib/cache-config";
+import { getRobotsForContent, extractRecordText } from "@/lib/seo/word-count";
+
+export const revalidate = 86400;
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  return await getSlugsForPath("/api/holidays");
+}
+
+const getHolidayData = cache(async function getHolidayData(slug: string) {
+  const json = await fetchApi<any>(`/api/holidays/${slug}`, {
+    revalidate: CACHE_TTL.STATIC_CONTENT,
+    tags: [CACHE_TAGS.HOLIDAY, `holiday:${slug}`],
+  });
+
+  if (!json || !json.success || !json.holiday) return null;
+
+  return {
+    holiday: json.holiday,
+    creators: json.creators || [],
+    seo: json.seo || {},
+  };
+});
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const data = await getHolidayData(slug);
+
+  if (!data)
+    return {
+      title: "ছুটি পাওয়া যায়নি",
+      robots: { index: false, follow: false },
+    };
+
+  const { holiday, seo } = data;
+  const contentText = extractRecordText(holiday);
+  const robots = getRobotsForContent(contentText, 300);
+
+  const yearStr = holiday.date ? holiday.date.split("-")[0] : "";
+  const yearBn = yearStr
+    ? yearStr.replace(/\d/g, (d: string) => "০১২৩৪৫৬৭৮৯"[parseInt(d, 10)])
+    : "";
+
+  let title =
+    seo.title ||
+    `${holiday.title}${yearBn ? ` ${yearBn}` : ""} কত তারিখ ছুটি | ছুটির ক্যালেন্ডার`;
+  if (title.length > 60) {
+    title = `${holiday.title}${yearBn ? ` ${yearBn}` : ""} ছুটির তারিখ`;
+  }
+  if (title.length > 60) {
+    title = title.slice(0, 60);
+  }
+
+  const isOptional = holiday.type ? holiday.type.includes("ঐচ্ছিক") : false;
+  const holidayTypeLabel = isOptional ? "ঐচ্ছিক ছুটি" : "সরকারি ছুটি";
+
+  let description =
+    seo.description ||
+    `${holiday.title}${yearBn ? ` ${yearBn}` : ""} সালের ${holiday.date_formatted || ""} (${holiday.day_name_bn || ""}) তারিখে। এটি ${holidayTypeLabel} কি না এবং বিস্তারিত বিবরণ জানুন তথ্যবক্সে।`;
+
+  if (description.length > 160) {
+    description = description.slice(0, 157) + "...";
+  }
+  while (description.length < 120) {
+    description += " ছুটির পূর্ণ বিবরণ।";
+  }
+  if (description.length > 160) {
+    description = description.slice(0, 160);
+  }
+
+  return {
+    title,
+    description,
+    robots,
+    alternates: {
+      canonical: `https://totthobox.com/bangla/holiday/${encodeURIComponent(slug)}`,
+    },
+    openGraph: {
+      title: seo.title || `${holiday.title} | ছুটির ক্যালেন্ডার`,
+      description: seo.description || holiday.title,
+      url: `https://totthobox.com/bangla/holiday/${encodeURIComponent(slug)}`,
+      siteName: "Totthobox",
+      type: "article",
+      locale: "bn_BD",
+      images: holiday.image_url ? [{ url: holiday.image_url }] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: seo.title || `${holiday.title} | ছুটির ক্যালেন্ডার`,
+      description: seo.description || holiday.title,
+      images: holiday.image_url ? [{ url: holiday.image_url }] : [],
+    },
+  };
+}
+
+export default async function HolidayShowPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const data = await getHolidayData(slug);
+
+  if (!data) {
+    notFound();
+  }
+
+  const { holiday, creators } = data;
+
+  return (
+    <div className="max-w-2xl mx-auto space-y-4 p-4 sm:p-6">
+      {/* Breadcrumb */}
+      <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm">
+        <Link href="/" className="hover:underline">
+          হোম
+        </Link>
+        <span>/</span>
+        <Link href="/bangla/holiday" className="hover:underline">
+          ছুটির ক্যালেন্ডার
+        </Link>
+        <span>/</span>
+        <span className="opacity-70  truncate">{holiday.title}</span>
+      </nav>
+
+      {/* Header */}
+      <header className="space-y-4">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-1 space-y-2">
+            {holiday.type && (
+              <span className="inline-flex items-center rounded-md bg-zinc-400/10 px-2.5 py-1 text-xs  ">
+                {holiday.type}
+              </span>
+            )}
+
+            <h1 className="text-3xl font-bold tracking-tight">
+              {holiday.title}
+            </h1>
+
+            {/* সরাসরি উত্তর (First sentence under H1 from API data only) */}
+            <p className="text-sm sm:text-base font-medium text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 rounded-xl p-3.5 leading-relaxed">
+              <strong>{holiday.title}</strong> {holiday.date_formatted || ""} রোজ <strong>{holiday.day_name_bn || ""}</strong> পালিত হবে এবং এটি একটি <strong>{holiday.type?.includes("ঐচ্ছিক") ? "ঐচ্ছিক" : "সরকারি"} ছুটি</strong> ({holiday.type || ""})।
+            </p>
+
+            {holiday.updated_at && (
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                সর্বশেষ হালনাগাদ: {holiday.updated_at}
+              </p>
+            )}
+
+            <p className="text-sm ">ছুটির ক্যালেন্ডার · বিস্তারিত তথ্য</p>
+
+            <div className="">
+              {/* বাড়তি বাইরের div টি মুছে ফেলে সরাসরি এটি ব্যবহার করুন */}
+              <div className="inline-flex items-center gap-2 rounded-xl bg-zinc-400/10 p-2 text-xs">
+                <Eye className="w-3.5 h-3.5" />
+                <span>
+                  {holiday.views_count_bn || holiday.views_count || 0}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Creators Tooltip */}
+          {creators && creators.length > 0 && (
+            <div className="shrink-0">
+              <CreatorsTooltip creators={creators} />
+            </div>
+          )}
+        </div>
+      </header>
+
+      {/* Date Card */}
+      <div className="flex gap-4 p-4 rounded-2xl bg-zinc-400/10 ">
+        <div className="flex flex-col items-center justify-center size-15 rounded-xl bg-zinc-400/10 shrink-0">
+          <span className="text-x uppercase font-bold">
+            {holiday.month_short}
+          </span>
+          <span className="text-2xl font-bold leading-none">
+            {holiday.day_numeric}
+          </span>
+        </div>
+
+        <div className="space-y-">
+          <p className="text-xs opacity-80">তারিখ ও বার</p>
+          <p className="text-">{holiday.date_formatted}</p>
+          <p className="text-xs ">{holiday.day_name_bn}</p>
+        </div>
+      </div>
+
+      {/* Large Image / Media Gallery */}
+      {(holiday.images?.length > 0 || holiday.image_url) && (
+        <div className="rounded-xl overflow-hidden mb-6">
+          <MediaGallery
+            media={
+              holiday.images && holiday.images.length > 0
+                ? holiday.images.map((img: any) => ({
+                    url: img.url,
+                    caption: img.caption || holiday.title,
+                  }))
+                : [
+                    {
+                      url: holiday.image_url,
+                      caption: holiday.title,
+                    },
+                  ]
+            }
+          />
+        </div>
+      )}
+
+      {/* Details */}
+      <section aria-labelledby="holiday-details-heading" className="space-y-4">
+        <h2 id="holiday-details-heading" className="text-lg font-bold">
+          বিস্তারিত বিবরণ
+        </h2>
+
+        {holiday.details ? (
+          <div dangerouslySetInnerHTML={{ __html: holiday.details }} />
+        ) : (
+          <p>এই ছুটির দিন সম্পর্কে অতিরিক্ত কোনো তথ্য পাওয়া যায়নি।</p>
+        )}
+      </section>
+
+      {/* Like / Dislike / Share */}
+      <InteractiveActions
+        holidayId={holiday.id}
+        initialData={{
+          reactions: holiday.reactions || {
+            like_count: 0,
+            dislike_count: 0,
+            user_has_liked: false,
+            user_has_disliked: false,
+          },
+          title: holiday.title,
+          slug: holiday.slug,
+        }}
+      />
+
+      {/* Back Button */}
+      <div>
+        <Link
+          href="/bangla/holiday"
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm rounded-lg hover:underline"
+        >
+          <ArrowLeft className="size-4" />
+          ছুটির ক্যালেন্ডারে ফিরে যান
+        </Link>
+      </div>
+
+      {/* About Section */}
+      <section className="rounded-2xl bg-zinc-400/10/40 p-4 space-y-4">
+        <h2 className="text-lg font-bold">{holiday.title} সম্পর্কে</h2>
+        <div className="text-sm leading-relaxed  space-y-4">
+          <p>
+            <strong>{holiday.title}</strong> হলো বাংলাদেশের {holiday.type || ""}{" "}
+            ছুটি। তারিখ: <strong>{holiday.date_formatted}</strong> (
+            {holiday.day_name_bn})।
+          </p>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="space-y-4 pt-2">
+        <h2 className="text-lg font-bold">প্রায়শই জিজ্ঞাসিত প্রশ্ন</h2>
+
+        <div className="space-y-2">
+          <details className="group rounded-xl bg-zinc-400/10 overflow-hidden">
+            <summary className="flex items-center justify-between cursor-pointer p-4 hover:bg-zinc-400/25 transition list-none">
+              <span>{holiday.title} কী?</span>
+              <ChevronDown className="size-4 group-open:rotate-180 transition shrink-0" />
+            </summary>
+            <div className="px-4 pb-4 text-sm  leading-relaxed border-t border-zinc-400/25 pt-3">
+              উপরের “বিস্তারিত বিবরণ” সেকশনে এই ছুটির পূর্ণাঙ্গ ব্যাখ্যা লেখা
+              আছে।
+            </div>
+          </details>
+
+          <details className="group rounded-xl bg-zinc-400/10 overflow-hidden">
+            <summary className="flex items-center justify-between cursor-pointer p-4 hover:bg-zinc-400/25 transition list-none">
+              <span>অন্যান্য ছুটি কোথায় পাব?</span>
+              <ChevronDown className="w-4 h-4 text-zinc-400 group-open:rotate-180 transition shrink-0" />
+            </summary>
+            <div className="px-4 pb-4 text-sm  leading-relaxed border-t border-zinc-400/25 pt-3">
+              <Link
+                href="/bangla/holiday"
+                className="text-amber-600 hover:underline "
+              >
+                ছুটির ক্যালেন্ডার
+              </Link>{" "}
+              তালিকায় ফিরে গিয়ে অন্যান্য ছুটি দেখতে পারবেন।
+            </div>
+          </details>
+        </div>
+      </section>
+    </div>
+  );
+}

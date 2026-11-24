@@ -1,0 +1,35 @@
+"use client";
+
+import React from "react";
+import { Bell } from "lucide-react";
+
+interface Props {
+  count: number;
+  onClick: () => void;
+  className?: string;
+}
+
+export const NotificationBell = React.memo(function NotificationBell({
+  count,
+  onClick,
+  className = "",
+}: Props) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label="Notifications"
+      className={
+        "relative flex min-h-11 min-w-11 items-center justify-center rounded-xl p-2 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 " +
+        className
+      }
+    >
+      <Bell className="h-5 w-5" aria-hidden="true" />
+      {count > 0 && (
+        <span className="absolute top-1 right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-2xs font-bold text-white ring-2 ring-white dark:ring-zinc-900">
+          {count > 99 ? "99+" : count}
+        </span>
+      )}
+    </button>
+  );
+});
