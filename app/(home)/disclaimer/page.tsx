@@ -59,7 +59,7 @@ export default function DisclaimerPage() {
           আইনি নোটিশ ও ব্যবহারকারীর সচেতনতা
         </div>
 
-        <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50">
+        <h1 className="text-2xl sm:text-4xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
           দায়মুক্তি ও তথ্য নীতিমালা
         </h1>
         <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto leading-relaxed">

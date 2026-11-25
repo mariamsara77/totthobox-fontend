@@ -377,7 +377,7 @@ export default function ContactClient({
                 className="rounded-2xl bg-zinc-400/10 p-4 space-y-4 transition hover:bg-zinc-400/15"
               >
                 <div className="flex items-start gap-4">
-                  <div className="size-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shrink-0">
+                  <div className="size-12 rounded-full bg-[var(--accent-soft)] text-[var(--accent-ink)] flex items-center justify-center shrink-0">
                     {getIcon()}
                   </div>
                   <div className="flex-1 min-w-0">

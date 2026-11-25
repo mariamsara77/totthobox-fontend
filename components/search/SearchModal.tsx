@@ -170,7 +170,7 @@ export default function SearchModal({ onClose }: SearchModalProps) {
 
           {showInitial && (
             <div
-              className={`transition-all duration-300 ${
+              className={`transition-[transform,opacity] duration-200 ${
                 entered
                   ? "translate-y-0 opacity-100"
                   : "translate-y-2 opacity-0"
@@ -188,7 +188,7 @@ export default function SearchModal({ onClose }: SearchModalProps) {
 
         {/* Body: Scrollable results list */}
         <div
-          className={`flex-1 min-h-0 overflow-hidden flex flex-col transition-all duration-300 delay-75 ${
+          className={`flex-1 min-h-0 overflow-hidden flex flex-col transition-[transform,opacity] duration-200 ${
             entered ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
           }`}
         >
@@ -211,7 +211,7 @@ export default function SearchModal({ onClose }: SearchModalProps) {
         {/* Footer */}
         {(showResults || showNoResults) && (
           <div
-            className={`shrink-0 flex items-center justify-between border-t border-zinc-200 dark:border-zinc-800 px-4 py-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] text-xs text-zinc-500 transition-all duration-300 delay-100 ${
+            className={`shrink-0 flex items-center justify-between border-t border-zinc-200 dark:border-zinc-800 px-4 py-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] text-xs text-zinc-500 transition-[transform,opacity] duration-200 ${
               entered ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
             }`}
           >

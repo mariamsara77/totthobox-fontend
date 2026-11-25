@@ -168,19 +168,20 @@ export default function TaxVatClient() {
           <ShareToolButton title="বাংলাদেশ আয়কর ও ভ্যাট ক্যালকুলেটর - Totthobox" />
         </div>
 
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
           আয়কর ও ভ্যাট ক্যালকুলেটর
         </h1>
-        <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
+        <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
           জাতীয় রাজস্ব বোর্ড (NBR) এর সর্বশেষ আয়কর স্লাব, বিনিয়োগ কর রেয়াত এবং ভ্যাট (VAT) নিখুঁতভাবে হিসাব করুন।
         </p>
 
         {/* Tab switch */}
         <div className="flex justify-center pt-2">
-          <div className="inline-flex p-1 rounded-xl bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200/80 dark:border-zinc-800/80">
+          <div className="inline-flex p-1 rounded-[var(--radius-lg)] bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200/80 dark:border-zinc-800/80">
             <button
+              type="button"
               onClick={() => setActiveTab("tax")}
-              className={`min-h-11 px-5 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all flex items-center gap-2 ${
+              className={`min-h-11 px-5 py-2 text-xs sm:text-sm font-semibold rounded-[var(--radius-md)] transition-colors flex items-center gap-2 ${
                 activeTab === "tax"
                   ? "bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 shadow-xs"
                   : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
@@ -190,8 +191,9 @@ export default function TaxVatClient() {
               ব্যক্তিগত আয়কর হিসাব
             </button>
             <button
+              type="button"
               onClick={() => setActiveTab("vat")}
-              className={`min-h-11 px-5 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all flex items-center gap-2 ${
+              className={`min-h-11 px-5 py-2 text-xs sm:text-sm font-semibold rounded-[var(--radius-md)] transition-colors flex items-center gap-2 ${
                 activeTab === "vat"
                   ? "bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 shadow-xs"
                   : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
@@ -273,16 +275,16 @@ export default function TaxVatClient() {
             </div>
 
             {/* Tax Result Summary Card */}
-            <div className="rounded-2xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/10 via-emerald-500/5 to-transparent p-5 sm:p-6 text-center space-y-3">
-              <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
+            <div className="rounded-[var(--radius-xl)] border border-[var(--accent-soft-border)] bg-[var(--surface-card)] p-5 sm:p-6 text-center space-y-3 shadow-[var(--shadow-xs)]">
+              <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
                 মোট প্রদেয় আয়কর (Net Tax Payable)
               </span>
 
               <div className="flex flex-wrap items-baseline justify-center gap-2">
-                <span className="text-4xl sm:text-5xl font-black text-zinc-900 dark:text-zinc-50 tabular-nums">
+                <span className="text-4xl sm:text-5xl font-semibold text-zinc-900 dark:text-zinc-50 tabular-nums">
                   ৳{taxCalculation.netTax.toLocaleString("bn-BD")}
                 </span>
-                <span className="text-sm font-semibold text-zinc-500">
+                <span className="text-sm font-medium text-zinc-500 tabular-nums">
                   (কার্যকরী কর হার: {taxCalculation.effectiveRate.toFixed(2)}%)
                 </span>
               </div>
@@ -415,27 +417,27 @@ export default function TaxVatClient() {
             </div>
 
             {/* VAT Result Box */}
-            <div className="rounded-2xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/10 via-emerald-500/5 to-transparent p-5 sm:p-6 text-center space-y-4">
-              <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
+            <div className="rounded-[var(--radius-xl)] border border-[var(--accent-soft-border)] bg-[var(--surface-card)] p-5 sm:p-6 text-center space-y-4 shadow-[var(--shadow-xs)]">
+              <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
                 ভ্যাট হিসাব ফলাফল
               </span>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800">
+                <div className="p-4 rounded-[var(--radius-lg)] bg-[var(--surface-raised)] border border-zinc-200/80 dark:border-zinc-800">
                   <span className="text-xs text-zinc-500">মূল বা খাঁটি দাম (Net Price)</span>
-                  <p className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-zinc-50 mt-1 tabular-nums">
+                  <p className="text-xl sm:text-2xl font-semibold text-zinc-900 dark:text-zinc-50 mt-1 tabular-nums">
                     ৳{vatCalculation.basePrice.toLocaleString("bn-BD", { maximumFractionDigits: 2 })}
                   </p>
                 </div>
-                <div className="p-4 rounded-xl bg-white dark:bg-zinc-900 border border-emerald-500/30">
-                  <span className="text-xs text-emerald-600 dark:text-emerald-400 font-bold">ভ্যাট পরিমাণ ({vatRate}%)</span>
-                  <p className="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1 tabular-nums">
+                <div className="p-4 rounded-[var(--radius-lg)] bg-[var(--accent-soft)] border border-[var(--accent-soft-border)]">
+                  <span className="text-xs text-[var(--accent-ink)] font-semibold">ভ্যাট পরিমাণ ({vatRate}%)</span>
+                  <p className="text-xl sm:text-2xl font-semibold text-[var(--accent-ink)] mt-1 tabular-nums">
                     ৳{vatCalculation.vatPayable.toLocaleString("bn-BD", { maximumFractionDigits: 2 })}
                   </p>
                 </div>
-                <div className="p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800">
+                <div className="p-4 rounded-[var(--radius-lg)] bg-[var(--surface-raised)] border border-zinc-200/80 dark:border-zinc-800">
                   <span className="text-xs text-zinc-500">সর্বমোট প্রদেয় (Total Gross)</span>
-                  <p className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-zinc-50 mt-1 tabular-nums">
+                  <p className="text-xl sm:text-2xl font-semibold text-zinc-900 dark:text-zinc-50 mt-1 tabular-nums">
                     ৳{vatCalculation.totalPrice.toLocaleString("bn-BD", { maximumFractionDigits: 2 })}
                   </p>
                 </div>

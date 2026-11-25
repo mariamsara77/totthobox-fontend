@@ -165,7 +165,7 @@ export default function ProfileMenu({
           onClick={() => openLoginModal()}
           onMouseEnter={(e) => collapsed && onHover?.(e, "লগইন")}
           onMouseLeave={onLeave}
-          className={`flex min-h-11 w-full items-center gap-4 rounded-xl px-3 py-2.5 text-left text-sm transition-all hover:bg-zinc-100 dark:hover:bg-zinc-800 ${
+          className={`flex min-h-11 w-full items-center gap-3 rounded-[var(--radius-lg)] px-3 py-2.5 text-left text-sm transition-colors hover:bg-zinc-200/60 dark:hover:bg-zinc-800 ${
             collapsed ? "justify-center" : ""
           }`}
         >
@@ -179,7 +179,7 @@ export default function ProfileMenu({
       <button
         type="button"
         onClick={() => openLoginModal()}
-        className="flex min-h-11 items-center gap-2 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-100/80 dark:bg-zinc-800/80 px-4 py-2.5 text-sm font-medium transition-all hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-zinc-100 shadow-xs"
+        className="flex min-h-11 items-center gap-2 rounded-[var(--radius-lg)] border border-zinc-200 dark:border-zinc-800 bg-[var(--surface-raised)] px-4 py-2.5 text-sm font-medium transition-colors hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-zinc-100 shadow-xs"
       >
         <UserIcon size={16} />
         লগইন

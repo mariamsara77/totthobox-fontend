@@ -32,7 +32,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
     return (
       <div
         ref={ref}
-        className={`rounded-2xl ${VARIANT_MAP[variant]} ${PADDING_MAP[padding]} ${className}`}
+        className={`rounded-[var(--radius-xl)] ${VARIANT_MAP[variant]} ${PADDING_MAP[padding]} ${className}`}
         {...props}
       >
         {children}

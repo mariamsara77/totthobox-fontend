@@ -597,15 +597,15 @@ export default function CryptoForexClient() {
               aria-hidden
             />
           ) : conversion ? (
-            <div className="rounded-2xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/10 to-transparent p-5 text-center space-y-3">
+            <div className="rounded-[var(--radius-xl)] border border-[var(--accent-soft-border)] bg-[var(--surface-card)] p-5 text-center space-y-3 shadow-[var(--shadow-xs)]">
               <p className="text-xs font-semibold text-zinc-500">
                 {fmt(parseFloat(amount), { max: 8 })} {fromAsset} =
               </p>
               <div className="flex flex-wrap items-baseline justify-center gap-2">
-                <span className="text-3xl sm:text-4xl font-extrabold tabular-nums tracking-tight text-zinc-900 dark:text-zinc-50 break-all">
+                <span className="text-3xl sm:text-4xl font-semibold tabular-nums tracking-tight text-zinc-900 dark:text-zinc-50 break-all">
                   {conversion.formatted}
                 </span>
-                <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400">
+                <span className="text-lg font-semibold text-[var(--accent-ink)]">
                   {toAsset}
                 </span>
               </div>
@@ -626,12 +626,12 @@ export default function CryptoForexClient() {
                       key={a.code}
                       type="button"
                       onClick={() => setToAsset(a.code)}
-                      className="rounded-xl bg-white/70 dark:bg-zinc-900/60 border border-zinc-200/70 dark:border-zinc-800 px-3 py-2 hover:border-emerald-500/40 transition"
+                      className="rounded-[var(--radius-lg)] bg-[var(--surface-raised)] border border-zinc-200/70 dark:border-zinc-800 px-3 py-2 hover:border-[var(--accent-soft-border)] transition-colors"
                     >
-                      <span className="block text-[11px] text-zinc-500">
+                      <span className="block text-xs text-zinc-500">
                         {flagOf(a.code)} {a.code}
                       </span>
-                      <span className="block text-sm font-bold tabular-nums text-zinc-900 dark:text-zinc-100 truncate">
+                      <span className="block text-sm font-semibold tabular-nums text-zinc-900 dark:text-zinc-100 truncate">
                         {fmt(a.value, { max: 2 })}
                       </span>
                     </button>
@@ -672,13 +672,13 @@ export default function CryptoForexClient() {
               onClick={() => useInConverter(coin.key)}
               className={`${cardCls} p-3.5 text-left hover:border-zinc-300 dark:hover:border-zinc-700 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40`}
             >
-              <p className="text-[11px] text-zinc-500">{label} (২৪ ঘণ্টা)</p>
-              <p className="mt-1 text-sm font-bold text-zinc-900 dark:text-zinc-100 truncate">
+              <p className="text-xs text-zinc-500">{label} (২৪ ঘণ্টা)</p>
+              <p className="mt-1 text-sm font-semibold text-zinc-900 dark:text-zinc-100 truncate">
                 {coin.name}{" "}
                 <span className="font-normal text-zinc-500">{coin.key}</span>
               </p>
               <p
-                className={`mt-1 inline-flex items-center gap-1 text-sm font-extrabold tabular-nums ${
+                className={`mt-1 inline-flex items-center gap-1 text-sm font-semibold tabular-nums ${
                   up
                     ? "text-emerald-600 dark:text-emerald-400"
                     : "text-rose-600 dark:text-rose-400"
@@ -962,10 +962,10 @@ export default function CryptoForexClient() {
                         </span>
                       </span>
                       <span className="text-right shrink-0">
-                        <span className="block text-sm font-extrabold tabular-nums text-zinc-900 dark:text-zinc-100">
+                        <span className="block text-sm font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">
                           {code === "BDT" ? "—" : `৳${fmt(inBdt, { max: 2 })}`}
                         </span>
-                        <span className="block text-[11px] text-zinc-500">
+                        <span className="block text-xs text-zinc-500">
                           {code === "BDT" ? "বেস মুদ্রা" : `১ ${code} এর মূল্য`}
                         </span>
                       </span>
@@ -976,7 +976,7 @@ export default function CryptoForexClient() {
             </ul>
           )}
 
-          <p className="flex items-start gap-1.5 text-[11px] leading-relaxed text-zinc-500 pt-1">
+          <p className="flex items-start gap-1.5 text-xs leading-relaxed text-zinc-500 pt-1">
             <Info className="w-3.5 h-3.5 shrink-0 mt-px" />
             রেট প্রতি ১ মিনিটে স্বয়ংক্রিয়ভাবে আপডেট হয়। এটি শুধু তথ্যের জন্য;
             লেনদেনের আগে নিজের এক্সচেঞ্জ বা ব্যাংকের রেট যাচাই করুন। কোনো সারিতে

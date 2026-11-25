@@ -373,7 +373,7 @@ export function NotificationModal({ open, onClose, onCountChange }: Props) {
         type="button"
         aria-label="বন্ধ করুন"
         onClick={handleClose}
-        className={`absolute inset-0 bg-black/40 dark:bg-black/70 backdrop-blur-xs transition-all duration-300 ease-out ${
+        className={`absolute inset-0 bg-black/40 dark:bg-black/70 backdrop-blur-xs transition-opacity duration-300 ease-out ${
           entered ? "opacity-100" : "opacity-0"
         }`}
       />
@@ -384,7 +384,7 @@ export function NotificationModal({ open, onClose, onCountChange }: Props) {
         role="dialog"
         aria-modal="true"
         aria-label="নোটিফিকেশন"
-        className={`relative flex h-full w-full max-w-md flex-col overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/95 shadow-2xl backdrop-blur-xl transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`relative flex h-full w-full max-w-md flex-col overflow-hidden rounded-[var(--radius-xl)] border border-zinc-200 dark:border-zinc-800 bg-[var(--surface-card)] shadow-2xl transition-[transform,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           entered
             ? "translate-x-0 scale-100 opacity-100"
             : "translate-x-8 scale-[0.97] opacity-0"
@@ -413,8 +413,9 @@ export function NotificationModal({ open, onClose, onCountChange }: Props) {
                   type="button"
                   onClick={() => void handleMarkAll()}
                   disabled={markingAll}
+                  aria-label="সব পড়া হিসেবে মার্ক করুন"
                   title="সব পড়া হিসেবে মার্ক করুন"
-                  className="flex size-8 items-center justify-center rounded-lg text-indigo-600 transition-all duration-200 hover:bg-indigo-50 active:scale-90 disabled:opacity-50 dark:hover:bg-indigo-500/10"
+                  className="flex min-h-11 min-w-11 items-center justify-center rounded-[var(--radius-md)] text-[var(--accent-ink)] transition-colors duration-200 hover:bg-[var(--accent-soft)] active:scale-95 disabled:opacity-50"
                 >
                   {markingAll ? (
                     <Loader2 className="size-4 animate-spin" />
@@ -426,7 +427,8 @@ export function NotificationModal({ open, onClose, onCountChange }: Props) {
               <button
                 type="button"
                 onClick={handleClose}
-                className="flex size-8 items-center justify-center rounded-lg text-zinc-500 transition-all duration-200 hover:bg-zinc-400/10 hover:text-zinc-900 active:scale-90 dark:hover:text-zinc-100"
+                aria-label="নোটিফিকেশন বন্ধ করুন"
+                className="flex min-h-11 min-w-11 items-center justify-center rounded-[var(--radius-md)] text-zinc-500 transition-colors duration-200 hover:bg-zinc-400/10 hover:text-zinc-900 active:scale-95 dark:hover:text-zinc-100"
               >
                 <X className="size-4" />
               </button>

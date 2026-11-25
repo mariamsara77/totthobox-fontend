@@ -719,11 +719,7 @@ export default function WorldClockClient() {
         <section aria-label="লাইভ বিশ্ব ঘড়ি" className="space-y-4">
           {/* Home hero */}
           <article
-            className={`relative overflow-hidden rounded-3xl border p-5 sm:p-6 ${
-              homeIsDay
-                ? "border-amber-500/20 bg-gradient-to-br from-amber-50 to-white dark:from-amber-500/10 dark:to-zinc-900"
-                : "border-indigo-500/20 bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-500/10 dark:to-zinc-900"
-            }`}
+            className="relative overflow-hidden rounded-[var(--radius-xl)] border border-zinc-200/80 bg-[var(--surface-card)] p-5 sm:p-6 shadow-[var(--shadow-xs)] dark:border-zinc-800"
           >
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-2.5 min-w-0">
@@ -735,7 +731,7 @@ export default function WorldClockClient() {
                   {homeCity.flag}
                 </span>
                 <div className="min-w-0">
-                  <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
+                  <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
                     {homeCity.city}
                     <Home
                       className="w-3.5 h-3.5 text-zinc-400"
@@ -748,9 +744,9 @@ export default function WorldClockClient() {
                 </div>
               </div>
               <span
-                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold border ${
+                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border ${
                   homeIsDay
-                    ? "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20"
+                    ? "bg-sky-500/10 text-sky-700 dark:text-sky-300 border-sky-500/20"
                     : "bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border-indigo-500/20"
                 }`}
               >
@@ -828,7 +824,7 @@ export default function WorldClockClient() {
                         <p className="text-xs text-zinc-500 mt-0.5">
                           {now ? formatDate(now, c.timeZone) : "--"}
                           {dd !== 0 && (
-                            <span className="text-amber-600 dark:text-amber-400">
+                            <span className="text-zinc-600 dark:text-zinc-400">
                               {" "}
                               · {dayDiffLabel(dd)}
                             </span>
@@ -836,9 +832,9 @@ export default function WorldClockClient() {
                         </p>
                       </div>
                       <span
-                        className={`shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium border ${
+                        className={`shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border ${
                           isDay
-                            ? "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20"
+                            ? "bg-sky-500/10 text-sky-700 dark:text-sky-300 border-sky-500/20"
                             : "bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border-indigo-500/20"
                         }`}
                       >
@@ -1102,7 +1098,7 @@ export default function WorldClockClient() {
             />
 
             {/* legend */}
-            <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-zinc-500">
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-zinc-500">
               {(Object.keys(SLOT_LABEL) as Slot[]).map((s) => (
                 <span key={s} className="inline-flex items-center gap-1.5">
                   <span className={`w-2.5 h-2.5 rounded-sm ${SLOT_STYLE[s]}`} />
@@ -1125,13 +1121,13 @@ export default function WorldClockClient() {
                         <span className="font-semibold text-zinc-900 dark:text-zinc-100 truncate">
                           {r.city.city}
                         </span>
-                        <span className="text-[11px] font-mono text-zinc-400 shrink-0">
+                        <span className="text-xs font-mono text-zinc-400 shrink-0">
                           {formatUtcOffset(r.offset)}
                         </span>
                       </span>
                       <span className="flex items-center gap-2 shrink-0">
                         {r.day !== 0 && (
-                          <span className="text-[11px] text-amber-600 dark:text-amber-400">
+                          <span className="text-xs text-zinc-600 dark:text-zinc-400">
                             {dayDiffLabel(r.day)}
                           </span>
                         )}

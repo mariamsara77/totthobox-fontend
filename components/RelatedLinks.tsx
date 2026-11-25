@@ -106,7 +106,7 @@ export default function RelatedLinks() {
   if (!items.length) return null;
 
   return (
-    <section className="mx-auto w-full max-w-2xl px-4 pb-8 pt-6 sm:px-6 sm:pt-8" aria-labelledby="related-pages-title">
+    <section className="mx-auto w-full max-w-3xl px-4 pb-8 pt-6 sm:px-6 sm:pt-8" aria-labelledby="related-pages-title">
       <div className="border-t border-zinc-200 pt-6 dark:border-zinc-800">
         <div className="mb-4 space-y-1">
           <h2 id="related-pages-title" className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
@@ -124,7 +124,7 @@ export default function RelatedLinks() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="group block rounded-xl border border-zinc-200 bg-white p-4 transition-colors duration-150 hover:border-[var(--accent-soft-border)] hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-zinc-800/70"
+                  className="group block min-h-14 rounded-[var(--radius-lg)] border border-zinc-200 bg-[var(--surface-card)] p-4 transition-colors duration-150 hover:border-[var(--accent-soft-border)] hover:bg-[var(--surface-raised)] dark:border-zinc-800"
                 >
                   <div className="flex items-start gap-3">
                     <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">

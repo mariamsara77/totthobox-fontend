@@ -198,19 +198,19 @@ export default function HelpfulContent() {
   if (!guide) return null;
 
   return (
-    <section className="mx-auto w-full max-w-2xl px-4 pb-6 sm:px-6" aria-labelledby="helpful-content-title">
+    <section className="mx-auto w-full max-w-3xl px-4 pb-6 sm:px-6" aria-labelledby="helpful-content-title">
       <div className="border-t border-zinc-200 dark:border-zinc-800 pt-6">
-        <h2 id="helpful-content-title" className="text-lg font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+        <h2 id="helpful-content-title" className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
           {guide.title}
         </h2>
-        <p className="mt-3 text-sm leading-7 text-zinc-600 dark:text-zinc-400">
+        <p className="mt-3 text-sm sm:text-base leading-[1.8] text-zinc-600 dark:text-zinc-400">
           {guide.intro}
         </p>
         <h3 className="mt-6 text-base font-semibold text-zinc-900 dark:text-zinc-100">কীভাবে ব্যবহার করবেন</h3>
-        <ol className="mt-2 list-decimal space-y-1.5 pl-5 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
+        <ol className="mt-2 list-decimal space-y-2 pl-5 text-sm leading-7 text-zinc-600 dark:text-zinc-400">
           {guide.steps.map((step) => <li key={step}>{step}</li>)}
         </ol>
-        <div className="mt-5 rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/70 dark:bg-zinc-800/40 p-4 text-sm leading-6 text-zinc-700 dark:text-zinc-300">
+        <div className="mt-5 rounded-[var(--radius-lg)] border border-zinc-200/80 dark:border-zinc-800/80 bg-[var(--surface-raised)] p-4 text-sm leading-7 text-zinc-700 dark:text-zinc-300">
           <strong className="text-zinc-900 dark:text-zinc-100 font-semibold">টিপস:</strong> {guide.tip}
         </div>
       </div>

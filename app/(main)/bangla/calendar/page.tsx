@@ -116,7 +116,7 @@ export default async function BanglaCalendarPage() {
             <Calendar className="w-3.5 h-3.5" />
             বাংলা একাডেমি প্রমিত বর্ষপঞ্জি অনুসারে প্রস্তুত
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-zinc-100">
+          <h2 className="text-2xl sm:text-3xl font-semibold text-zinc-900 dark:text-zinc-100">
             বাংলা ক্যালেন্ডারের ইতিহাস, গঠনরীতি ও প্রমিত নিয়ম
           </h2>
           <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">

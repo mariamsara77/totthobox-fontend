@@ -50,7 +50,7 @@ export default function NetworkStatus() {
         className={`
           flex items-center gap-3 rounded-2xl border px-4 py-3.5
           text-sm font-medium shadow-lg backdrop-blur-xl
-          transition-all duration-300
+          transition-[transform,opacity,background-color] duration-300
           ${
             isOffline
               ? "border-zinc-300/70 bg-white/95 text-zinc-900 dark:border-zinc-700/70 dark:bg-zinc-400/10 dark:text-zinc-100"

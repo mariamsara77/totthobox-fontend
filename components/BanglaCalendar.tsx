@@ -432,21 +432,21 @@ export default function AdvancedBanglaCalendar() {
                     setSelectedDate(day.dateObj);
                     setShowModal(true);
                   }}
-                  className={`group relative aspect-square min-h-10 min-w-10 rounded-xl transition-all duration-200 ${cellBg}`}
+                  className={`group relative aspect-square min-h-11 min-w-11 rounded-[var(--radius-lg)] transition-colors duration-200 ${cellBg}`}
                 >
                   <div className="flex flex-col items-center justify-center h-full">
                     <span
-                      className={`text-sm font-black ${isSelected ? "text-white" : day.isWeekend ? "text-rose-500" : ""}`}
+                      className={`text-sm font-semibold tabular-nums ${isSelected ? "text-white" : day.isWeekend ? "text-rose-500" : ""}`}
                     >
                       {day.engDay}
                     </span>
                     <span
-                      className={`text-xs font-bold mt-0.5 ${isSelected ? "text-emerald-100" : "text-zinc-300"}`}
+                      className={`text-xs font-medium mt-0.5 tabular-nums ${isSelected ? "text-emerald-100" : "text-zinc-400"}`}
                     >
                       {bnNum(day.bnObj.day)}
                     </span>
                     {holiday && (
-                      <span className="absolute bottom-1 w-1.5 h-1.5 rounded-full bg-rose-500 shadow-[0_0_4px_rgba(244,63,94,0.8)]" />
+                      <span className="absolute bottom-1 w-1.5 h-1.5 rounded-full bg-rose-500" />
                     )}
                   </div>
 

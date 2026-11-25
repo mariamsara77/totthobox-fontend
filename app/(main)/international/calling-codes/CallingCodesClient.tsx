@@ -570,7 +570,7 @@ export default function CallingCodesClient() {
             {filteredData.map((item) => (
               <article
                 key={item.iso2}
-                className="group relative rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-white dark:bg-zinc-900 p-4 shadow-sm hover:shadow-md hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-200 flex flex-col justify-between min-h-[148px]"
+                className="group relative rounded-[var(--radius-xl)] border border-zinc-200/80 dark:border-zinc-800/80 bg-[var(--surface-card)] p-4 shadow-[var(--shadow-xs)] hover:shadow-[var(--shadow-md)] hover:border-[var(--accent-soft-border)] transition-[box-shadow,border-color] duration-200 flex flex-col justify-between min-h-36"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">

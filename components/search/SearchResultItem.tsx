@@ -64,7 +64,7 @@ export default function SearchResultItem({
       data-search-index={index}
       onClick={onSelect}
       onMouseEnter={onHover}
-      className={`group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-all duration-100 focus:outline-none focus:ring-2 focus:ring-zinc-300/60 dark:focus:ring-zinc-600 ${
+      className={`group flex min-h-12 w-full items-center gap-3 rounded-[var(--radius-lg)] px-3 py-2.5 text-left transition-colors duration-100 focus:outline-none focus:ring-2 focus:ring-zinc-300/60 dark:focus:ring-zinc-600 ${
         selected
           ? "bg-zinc-100/90 dark:bg-zinc-800/70"
           : "hover:bg-zinc-50 dark:hover:bg-zinc-400/10"
@@ -118,7 +118,7 @@ export default function SearchResultItem({
       </span>
 
       <ChevronRightIcon
-        className={`size-3.5 shrink-0 transition-all duration-100 ${
+        className={`size-3.5 shrink-0 transition-[transform,color] duration-100 ${
           selected
             ? "translate-x-0.5 text-zinc-500 dark:text-zinc-300"
             : "text-zinc-300 dark:text-zinc-700"

@@ -22,7 +22,7 @@ export default function ServiceCard({
   return (
     <Link
       href={item.href}
-      className="group flex min-h-14 items-center gap-3 rounded-xl border border-zinc-200 bg-white p-3 transition-colors hover:border-[var(--accent-soft-border)] hover:bg-zinc-50 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] motion-reduce:transition-none dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-zinc-800/70"
+      className="group flex min-h-14 items-center gap-3 rounded-[var(--radius-lg)] border border-zinc-200 bg-[var(--surface-card)] p-3 transition-colors hover:border-[var(--accent-soft-border)] hover:bg-[var(--surface-raised)] active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] motion-reduce:transition-none dark:border-zinc-800"
     >
       <span
         className={`flex size-9 shrink-0 items-center justify-center rounded-lg transition-colors group-hover:bg-[var(--accent-primary)] group-hover:text-[var(--accent-foreground)] sm:size-10 ${iconTone}`}

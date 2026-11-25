@@ -67,7 +67,7 @@ export default function SearchInput({
         type="button"
         onClick={onSearch}
         aria-label="অনুসন্ধান করুন"
-        className="flex h-8 shrink-0 items-center gap-1.5 rounded-lg bg-zinc-900 px-3 text-xs font-medium text-white transition-all hover:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-400 focus:ring-offset-1 active:scale-95 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+        className="flex min-h-9 shrink-0 items-center gap-1.5 rounded-[var(--radius-md)] bg-zinc-900 px-3 text-xs font-medium text-white transition-colors hover:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-400 focus:ring-offset-1 active:scale-95 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
       >
         <MagnifyingGlassIcon className="size-3.5" />
       </button>

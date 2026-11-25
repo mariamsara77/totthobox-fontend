@@ -47,10 +47,10 @@ export function CopyResultButton({
     <button
       type="button"
       onClick={handleCopy}
-      className={`flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-all active:scale-95 ${
+      className={`flex min-h-11 items-center justify-center gap-2 rounded-[var(--radius-lg)] px-4 py-2.5 text-sm font-medium transition-colors active:scale-95 ${
         copied
-          ? "bg-emerald-600 text-white shadow-xs"
-          : "border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-700 shadow-xs"
+          ? "bg-[var(--accent-primary)] text-[var(--accent-foreground)] shadow-xs"
+          : "border border-zinc-200 dark:border-zinc-800 bg-[var(--surface-card)] text-zinc-800 dark:text-zinc-200 hover:bg-[var(--surface-raised)] shadow-xs"
       } ${className}`}
       aria-label={copied ? successMessage : label}
     >
@@ -118,7 +118,7 @@ export function ShareToolButton({
         onClick={handleShare}
         aria-label="শেয়ার করুন"
         title="শেয়ার বা লিংক কপি করুন"
-        className={`flex min-h-11 min-w-11 items-center justify-center rounded-xl p-2.5 border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-100/60 dark:bg-zinc-800/60 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all active:scale-95 ${className}`}
+        className={`flex min-h-11 min-w-11 items-center justify-center rounded-[var(--radius-lg)] p-2.5 border border-zinc-200/80 dark:border-zinc-800/80 bg-[var(--surface-raised)] text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors active:scale-95 ${className}`}
       >
         {copied ? (
           <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
