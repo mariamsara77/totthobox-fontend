@@ -122,6 +122,56 @@ type Currency = "USD" | "BDT";
 /* Component                                                           */
 /* ------------------------------------------------------------------ */
 
+interface AssetSelectProps {
+  id: string;
+  value: string;
+  onChange: (v: string) => void;
+  hasData: boolean;
+  cryptoList: CryptoRow[];
+  forexCodes: string[];
+  className: string;
+}
+
+function AssetSelect({
+  id,
+  value,
+  onChange,
+  hasData,
+  cryptoList,
+  forexCodes,
+  className,
+}: AssetSelectProps) {
+  return (
+    <select
+      id={id}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className={className}
+      disabled={!hasData}
+    >
+      {!hasData && <option>{value}</option>}
+      {cryptoList.length > 0 && (
+        <optgroup label="ক্রিপ্টোকারেন্সি">
+          {cryptoList.map((c) => (
+            <option key={`${id}-${c.key}`} value={c.key}>
+              {c.key} · {c.name}
+            </option>
+          ))}
+        </optgroup>
+      )}
+      {forexCodes.length > 0 && (
+        <optgroup label="ফিয়াট মুদ্রা">
+          {forexCodes.map((f) => (
+            <option key={`${id}-${f}`} value={f}>
+              {flagOf(f)} {f}
+            </option>
+          ))}
+        </optgroup>
+      )}
+    </select>
+  );
+}
+
 export default function CryptoForexClient() {
   const { data, error, isLoading, isValidating, mutate } = useSWR<ApiData>(
     "/api/crypto-forex",
@@ -149,7 +199,7 @@ export default function CryptoForexClient() {
 
   // Freshness
   const [updatedAt, setUpdatedAt] = useState<number | null>(null);
-  const [tick, setTick] = useState(0);
+  const [nowMs, setNowMs] = useState<number>(0);
 
   /* ---- persistence ---- */
   useEffect(() => {
@@ -183,18 +233,22 @@ export default function CryptoForexClient() {
 
   /* ---- freshness tracking ---- */
   useEffect(() => {
-    if (data) setUpdatedAt(Date.now());
+    if (data) {
+      const now = Date.now();
+      setUpdatedAt(now);
+      setNowMs(now);
+    }
   }, [data]);
 
   useEffect(() => {
-    const t = setInterval(() => setTick((x) => x + 1), 1000);
+    const t = setInterval(() => setNowMs(Date.now()), 1000);
     return () => clearInterval(t);
   }, []);
 
-  const secondsAgo = updatedAt
-    ? Math.max(0, Math.floor((Date.now() - updatedAt) / 1000))
-    : null;
-  void tick; // re-render each second
+  const secondsAgo =
+    updatedAt && nowMs >= updatedAt
+      ? Math.max(0, Math.floor((nowMs - updatedAt) / 1000))
+      : null;
 
   /* ---- derived data ---- */
   const cryptoList: CryptoRow[] = useMemo(() => {
@@ -331,45 +385,6 @@ export default function CryptoForexClient() {
     displayCcy === "USD"
       ? `$${fmt(usd, { max: 2 })}`
       : `৳${fmt(usd * bdtRate, { max: 2 })}`;
-
-  /* ---- reusable select ---- */
-  const AssetSelect = ({
-    id,
-    value,
-    onChange,
-  }: {
-    id: string;
-    value: string;
-    onChange: (v: string) => void;
-  }) => (
-    <select
-      id={id}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className={fieldCls}
-      disabled={!hasData}
-    >
-      {!hasData && <option>{value}</option>}
-      {cryptoList.length > 0 && (
-        <optgroup label="ক্রিপ্টোকারেন্সি">
-          {cryptoList.map((c) => (
-            <option key={`${id}-${c.key}`} value={c.key}>
-              {c.key} · {c.name}
-            </option>
-          ))}
-        </optgroup>
-      )}
-      {forexCodes.length > 0 && (
-        <optgroup label="ফিয়াট মুদ্রা">
-          {forexCodes.map((f) => (
-            <option key={`${id}-${f}`} value={f}>
-              {flagOf(f)} {f}
-            </option>
-          ))}
-        </optgroup>
-      )}
-    </select>
-  );
 
   return (
     <div className="w-full max-w-2xl mx-auto px-4 sm:px-0 space-y-6 sm:space-y-8">
@@ -517,6 +532,10 @@ export default function CryptoForexClient() {
                 id="cf-from"
                 value={fromAsset}
                 onChange={setFromAsset}
+                hasData={hasData}
+                cryptoList={cryptoList}
+                forexCodes={forexCodes}
+                className={fieldCls}
               />
             </div>
 
@@ -536,7 +555,15 @@ export default function CryptoForexClient() {
               <label htmlFor="cf-to" className={labelCls}>
                 এতে (To)
               </label>
-              <AssetSelect id="cf-to" value={toAsset} onChange={setToAsset} />
+              <AssetSelect
+                id="cf-to"
+                value={toAsset}
+                onChange={setToAsset}
+                hasData={hasData}
+                cryptoList={cryptoList}
+                forexCodes={forexCodes}
+                className={fieldCls}
+              />
             </div>
           </div>
 

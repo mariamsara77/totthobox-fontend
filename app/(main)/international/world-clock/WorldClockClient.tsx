@@ -1113,7 +1113,7 @@ export default function WorldClockClient() {
 
             {cities.length < 2 ? (
               <p className="text-sm text-zinc-500 text-center py-3">
-                তুলনা করতে "বিশ্ব ঘড়ি" ট্যাব থেকে আরও শহর যোগ করুন।
+                তুলনা করতে &quot;বিশ্ব ঘড়ি&quot; ট্যাব থেকে আরও শহর যোগ করুন।
               </p>
             ) : (
               <ul className="space-y-3">
