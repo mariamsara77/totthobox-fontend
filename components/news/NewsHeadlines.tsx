@@ -448,6 +448,7 @@ export default function NewsHeadlines({
                       width={400}
                       height={176}
                       loading="lazy"
+                      unoptimized
                       className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
                     />
                   </Link>

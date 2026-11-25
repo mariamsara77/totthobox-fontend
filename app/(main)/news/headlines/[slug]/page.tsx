@@ -268,7 +268,7 @@ export default async function NewsDetailPage({
         <ArrowLeft className="h-4 w-4" /> সব সংবাদ শিরোনাম
       </Link>
       <div className="overflow-hidden rounded-2xl border border-zinc-400/25 bg-white dark:bg-zinc-400/10">
-        {item.image_url && <Image src={item.image_url} alt={item.title || "সংবাদ ছবি"} width={800} height={460} className="max-h-115 w-full bg-zinc-100 object-cover dark:bg-zinc-800" />}
+        {item.image_url && <Image src={item.image_url} alt={item.title || "সংবাদ ছবি"} width={800} height={460} unoptimized className="max-h-115 w-full bg-zinc-100 object-cover dark:bg-zinc-800" />}
         <div className="p-5 sm:p-8">
           <div className="mb-4 flex flex-wrap items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
             <span className="rounded-full bg-zinc-400/10 px-3 py-1 font-semibold text-zinc-700 dark:text-zinc-200">{item.source_name || "সংবাদমাধ্যম"}</span>
