@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
-import { Geist, Geist_Mono, Noto_Sans_Bengali, Hind_Siliguri } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { AppProviders } from "./providers";
 import { APPEARANCE_INIT_SCRIPT } from "@/lib/appearance";
@@ -13,31 +13,46 @@ import PWAUpdateToast from "@/components/pwa/PWAUpdateToast";
 import SiteStructuredData from "@/components/seo/SiteStructuredData";
 import MobileBottomNav from "@/components/navigation/MobileBottomNav";
 
-const geistSans = Geist({
+const geistSans = localFont({
+  src: "./fonts/geist-sans-var.woff2",
   variable: "--font-geist-sans",
-  subsets: ["latin"],
+  weight: "100 900",
   display: "swap",
   preload: false,
 });
 
-const geistMono = Geist_Mono({
+const geistMono = localFont({
+  src: "./fonts/geist-mono-var.woff2",
   variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: "100 900",
   display: "swap",
   preload: false,
 });
 
-const notoBengali = Noto_Sans_Bengali({
-  variable: "--font-noto-bengali",
-  subsets: ["bengali"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
-
-const hindSiliguri = Hind_Siliguri({
+const hindSiliguri = localFont({
+  src: [
+    {
+      path: "./fonts/hind-siliguri-bengali-400.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "./fonts/hind-siliguri-bengali-500.woff2",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "./fonts/hind-siliguri-bengali-600.woff2",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "./fonts/hind-siliguri-bengali-700.woff2",
+      weight: "700",
+      style: "normal",
+    },
+  ],
   variable: "--font-hind-siliguri",
-  subsets: ["bengali"],
-  weight: ["300", "400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -144,8 +159,6 @@ export default function RootLayout({
         geistSans.variable +
         " " +
         geistMono.variable +
-        " " +
-        notoBengali.variable +
         " " +
         hindSiliguri.variable
       }
