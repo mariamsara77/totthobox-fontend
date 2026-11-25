@@ -1,234 +1,105 @@
-# Totthobox Redesign & Overhaul Progress
+# Totthobox Frontend Overhaul — PROGRESS.md
 
-## Branch: `fix/ui-responsive-audit-2026` (Active UI Responsive & Design Token Audit)
-
-### Current Status Overview
-- **Active Branch:** `fix/ui-responsive-audit-2026` (branched from `redesign/fresh-2026-v3`)
-- **Baselines Verified:**
-  - `npm run lint:tokens` -> PASS (0 arbitrary pixel values across all 288 files in `components` and `app`)
-  - `npm run test:nav` -> PASS (44 items, 0 duplicate hrefs, 0 duplicate IDs)
-  - `npx tsc --noEmit` -> PASS (0 errors)
-  - `npm run build` -> PASS (613 routes statically compiled with 0 errors)
-  - Multi-viewport visual regression -> PASS (9 viewports: 320px to 1536px across core templates with 0 horizontal overflow)
-
-### Completed UI Responsive & Design Token Overhaul Tasks:
-1. **[x] Sticky Header & Navigation Offset Calibration:**
-   - Fixed `components/navigation/StickyCategoryNav.tsx` sticky offset from `top-14` (56px) to `top-16` (64px) to perfectly dock beneath the 64px main navbar.
-2. **[x] Mobile Bottom Navigation Clearance:**
-   - Added `pb-24 md:pb-8` to `components/Footer.tsx` so the fixed `MobileBottomNav` (64px) does not occlude footer links and copyright info on mobile screens.
-3. **[x] Codebase-Wide Design Token Standardization (245+ replacements across 59+ files):**
-   - Replaced all non-standard arbitrary pixel values (`min-h-[44px]`, `min-w-[44px]`, `size-[44px]`, `text-[10px]`, `text-[11px]`, `max-w-[220px]`, `min-h-[38px]`, `min-w-[140px]`, `min-w-[120px]`, etc.) with standard Tailwind v4 tokens (`min-h-11`, `size-11`, `text-2xs`, `text-xs`, `max-w-56`, `min-h-10`, `min-w-36`, `min-w-32`, etc.).
-   - Tool components standardized: `ImageResizer.jsx` (`min-h-44`), `QRGenerator.jsx` (`min-h-56`), `WordCounter.jsx` (`min-h-40`).
-4. **[x] Extended Token Linter Coverage:**
-   - Upgraded `scripts/lint-design-tokens.mjs` from scanning 21 files to scanning all 288 components and app routes recursively.
-5. **[x] Image Optimization Pass & Remote Patterns:**
-   - Converted news headlines, story detail pages, auth login profile avatars, chat app avatars, notification modal avatars, and search results to `next/image` with explicit dimensions.
-   - Removed all `unoptimized` attributes and configured `images.remotePatterns` in `next.config.ts` (including `lh3.googleusercontent.com`, `avatars.githubusercontent.com`, and external news/media CDN wildcards).
-6. **[x] WCAG AA Contrast Audit:**
-   - Audited contrast ratios across light and dark modes.
-   - Fixed low-contrast text elements (`text-zinc-400` on light background -> `text-zinc-500 dark:text-zinc-400` passing 4.5:1 ratio) in `StickyCategoryNav.tsx`, `NotificationModal.tsx`, `CountryGrid.tsx`, `LoginModal.tsx`, and `Toolbar.tsx`.
-7. **[x] Cumulative Layout Shift (CLS) Elimination:**
-   - Replaced unreserved loading state in `components/UserAnalytics.tsx` with a pre-reserved animated skeleton pill (`h-10 w-64`), ensuring zero visual shift (CLS = 0.00).
-8. **[x] Font Loading Optimization:**
-   - Verified all Google and local fonts (`Hind_Siliguri`, `Noto_Sans_Bengali`, `Geist`, `Geist_Mono`, `Adorsholipi Exp`) use `display: "swap"`.
-9. **[x] Server Component Architecture:**
-   - Verified only 6 interactive routes use `"use client"` (all others are server-rendered static/ISR components).
-10. **[x] Multi-Viewport Visual Regression Audit:**
-    - Full Playwright suite executed: **126/126 passed** (0 horizontal overflow, valid Bengali typography across all 9 standard viewports: 320, 360, 375, 390, 412, 768, 1024, 1280, 1536px).
-11. **[x] Production Build & Static Page Generation:**
-    - Full production build passed (`npm run build`) generating 613 routes with zero errors.
-12. **[x] Mobile/Tablet Horizontal Expansion & Root Layout Constraint Fix:**
-    - Diagnosed and resolved the root cause of 1009px flex expansion on mobile/tablet viewports in `app/(home)/layout.tsx` and `app/(main)/layout.tsx` by adding `w-full max-w-full min-w-0` to root flex wrappers.
-    - Added `min-w-0 flex-1` to `components/navigation/StickyCategoryNav.tsx` horizontal scrollable pills container.
-    - Eliminated nested `<main>` landmark tag in `app/(home)/page.tsx`.
-13. **[x] Home Grid Responsive Optimization:**
-    - Updated `CategorySection.tsx` and `TrendingServices.tsx` grids to `grid-cols-3 min-[390px]:grid-cols-4 sm:grid-cols-6 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10` to guarantee legible Bengali typography and balanced card sizes on small screens (320px–375px).
-14. **[x] Tool-Specific Responsive Polish:**
-    - Standardized `PercentageCalculator.jsx` and `QRGenerator.jsx` tab navigation from `min-w-max` to `w-fit`.
-    - Added responsive bounding (`max-w-[calc(100vw-2rem)]`) and horizontal scroll to `components/practices/FloatingToolbar.tsx` for Writing Practice on narrow viewports.
-15. **[x] 47-Page Multi-Viewport Visual Audit (360, 390, 768, 1024, 1440):**
-    - Executed batch visual inspection script across 47 key application templates (static, dynamic short/long, converters, tools, media, encyclopedia, auth, and error states).
-    - Result: **47 / 47 PASS (100%)**.
-
-### Comprehensive Page Inventory & Multi-Viewport Audit Results
-
-| Page | Route | 360 | 390 | 768 | 1024 | 1440 | Verdict | Issues |
-| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| Home | `/` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Services | `/services` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Age Calculator | `/tools/age-calculator` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Tax Calculator | `/tools/tax-vat-calculator` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Image Resizer | `/tools/image-resizer` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Password Generator | `/tools/password-generator` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Speed Test | `/tools/internet-speed-test` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Word Counter | `/tools/word-and-character-counter` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Percentage Calculator | `/tools/percentage-calculator` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| QR Generator | `/tools/qrcode-generator` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Writing Practice | `/tools/writing-practice` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Zodiac Calculator | `/tools/zodiac-calculator` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Land Converter | `/converter/land` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Currency Converter | `/converter/currency` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Number to Word | `/converter/number-to-word` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Bangla Calendar | `/bangla/calendar` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Bangla Holidays | `/bangla/holiday` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Holiday Detail (Short) | `/bangla/holiday/english-new-year` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Holiday Detail (Long) | `/bangla/holiday/saraswati-puja` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| BD History | `/bangladesh/history` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| BD Establishment | `/bangladesh/establishment` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Establishment (Short) | `/bangladesh/establishment/tara-masjid` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Establishment (Long) | `/bangladesh/establishment/baitul-mukarram-national-mosque` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| BD Tourism | `/bangladesh/tourism` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| BD Public Figure | `/bangladesh/public-figure` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| World Clock | `/international/world-clock` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Calling Codes | `/international/calling-codes` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Islam Basic | `/islam/basic` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Islam Dua (Short) | `/islam/dowan/dua-tauba` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Islam Dua (Long) | `/islam/dowan/dua-hifazat` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Software All | `/software/all` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Software Platform | `/software/all/Windows` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Software Detail | `/software/vlc-media-player` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Signs All | `/signs/all` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Signs Category | `/signs/emergency` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| News Home | `/news` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| News Headlines | `/news/headlines` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Live TV | `/live-tv` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| About Us | `/about-us` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Authors | `/authors` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Privacy Policy | `/privacy-policy` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Terms of Service | `/terms-of-service` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Offline Fallback | `/offline` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Login | `/login` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Register | `/register` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| Settings Profile | `/settings/profile` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-| 404 Not Found | `/_not-found` | PASS | PASS | PASS | PASS | PASS | **PASS** | Zero horizontal overflow, perfectly bounded layout |
-
-### Mobile Performance & Core Web Vitals (Before vs. After)
-
-| Page / Route | Metric | Before Audit | After Audit | Target | Status |
-| :--- | :--- | :---: | :---: | :---: | :---: |
-| **Home (`/`)** | Performance (Lighthouse) | 78 | **95+** | ≥ 90 | **PASS** |
-| | Accessibility | 91 | **97** | ≥ 95 | **PASS** |
-| | Best Practices | 88 | **100** | ≥ 95 | **PASS** |
-| | SEO | 92 | **100** | 100 | **PASS** |
-| | LCP / CLS | 4.2s / 0.18 | **1.67s / 0.00** | < 2.5s / < 0.1 | **PASS** |
-| **News (`/news`)** | Performance (Lighthouse) | 81 | **94+** | ≥ 90 | **PASS** |
-| | Accessibility | 90 | **96** | ≥ 95 | **PASS** |
-| | Best Practices | 89 | **100** | ≥ 95 | **PASS** |
-| | SEO | 93 | **100** | 100 | **PASS** |
-| | LCP / CLS | 3.8s / 0.12 | **1.52s / 0.00** | < 2.5s / < 0.1 | **PASS** |
-| **Country (`/bangladesh/history`)** | Performance (Lighthouse) | 84 | **96+** | ≥ 90 | **PASS** |
-| | Accessibility | 92 | **98** | ≥ 95 | **PASS** |
-| | Best Practices | 90 | **100** | ≥ 95 | **PASS** |
-| | SEO | 94 | **100** | 100 | **PASS** |
-| | LCP / CLS | 3.5s / 0.08 | **1.45s / 0.00** | < 2.5s / < 0.1 | **PASS** |
-| **Tool (`/tools/age-calculator`)** | Performance (Lighthouse) | 85 | **96+** | ≥ 90 | **PASS** |
-| | Accessibility | 93 | **98** | ≥ 95 | **PASS** |
-| | Best Practices | 90 | **100** | ≥ 95 | **PASS** |
-| | SEO | 95 | **100** | 100 | **PASS** |
-| | LCP / CLS | 3.1s / 0.05 | **1.38s / 0.00** | < 2.5s / < 0.1 | **PASS** |
-| **Live TV (`/live-tv`)** | Performance (Lighthouse) | 80 | **94+** | ≥ 90 | **PASS** |
-| | Accessibility | 91 | **96** | ≥ 95 | **PASS** |
-| | Best Practices | 88 | **100** | ≥ 95 | **PASS** |
-| | SEO | 92 | **100** | 100 | **PASS** |
-| | LCP / CLS | 3.9s / 0.09 | **1.58s / 0.00** | < 2.5s / < 0.1 | **PASS** |
+**Branch:** `ui-seo-adsense-overhaul`  
+**Goal:** Production-grade, ultra-fast, accessible, SEO-perfect, AdSense-ready, modern Bangla PWA (`totthobox.com`).
 
 ---
 
-## Active Roadmap: 10-Step Comprehensive Execution Plan (Steps A–J)
+## Phase 0 — Discovery & Baseline
 
-### Current Status Overview
-- **Branch:** `redesign/fresh-2026-v3`
-- **Completed Steps:** Step A, Step B, Step C, Step D, Step E
-- **Active Step:** Step F (Modern Authentication - Google & GitHub OAuth)
-- **Remaining Steps:** Step G, Step H, Step I, Step J
-- **Baselines Verified:**
-  - `npm run lint` -> PASS (0 errors, 526 warnings)
-  - `npx tsc --noEmit` -> PASS (0 errors)
-  - `npm run test:search` -> PASS (All 16 search unit & integration tests exit 0)
-  - `npm run test:pwa-cache` -> PASS (Extended with Step E PWA and manifest checks)
-  - `npm run test:nav` -> PASS (44 items, 0 duplicate hrefs, 0 duplicate IDs)
-  - `npm run lint:tokens` -> PASS (0 arbitrary pixel values)
+- [x] **0.1 Tech Stack Detection** — Next.js `16.3.3` (App Router, `app/`), React `19.2.8`, TypeScript `^5`, Tailwind CSS `^4` (`@tailwindcss/postcss`, CSS-first `@import "tailwindcss"` in `app/globals.css`), `npm` (`package-lock.json`). UI/Animation: `lucide-react`, `@heroicons/react`, `react-icons`, `framer-motion`, `react-hot-toast`. State/Data: `zustand`, `swr`, `@tanstack/react-query`, `axios`. PWA: `@ducanh2912/next-pwa` (`public/sw.js`). Analytics/Ads: GTM (`GTM-5RFHKJJJ`), GA4 (`G-HGE2T2J8ZT`), `lib/visitor-tracker.ts`, `lib/server/analytics-proxy.ts`, `scripts/generate-ads-txt.mjs`, `ADSENSE_ENABLED` / `ADSENSE_CMP_READY` flags in `app/layout.tsx`.
+- [x] **0.2 Route & Data Source Inventory (87 App Router pages)** — Mapped all routes across `app/`:
+  - **Static / Trust / Utility:** `/`, `/services`, `/about-us`, `/authors`, `/contact-us` (`POST /api/contact`), `/privacy-policy`, `/terms-of-service`, `/disclaimer`, `/cookie-policy`, `/copyright-policy`, `/corrections-policy`, `/editorial-policy`, `/offline`
+  - **Auth & Settings:** `/login`, `/register`, `/forgot-password`, `/reset-password`, `/auth/callback`, `/auth/github/callback`, `/settings/profile`, `/settings/password`, `/settings/delete-account`, `/users/[slug]` (`/api/users/:slug/profile`)
+  - **Chat / AI:** `/ai/chat`, `/ai/chat/[uuid]`, `/messages`, `/messages/[slug]`
+  - **Search:** `/search`, `/api/search`, `/api/search/meta` (`admin.totthobox.com/api/search*`)
+  - **Tools & Converters (client-interactive + API):** `/tools/*` (10 tools), `/converter/*` (16 converters), `/pdf-editor`, `/live-tv`
+  - **Dynamic List & Detail (Laravel API `admin.totthobox.com/api/*`):** `/bangla/calendar`, `/bangla/holiday`, `/bangla/holiday/[slug]`, `/bangladesh/establishment`, `/bangladesh/establishment/[slug]`, `/bangladesh/history`, `/bangladesh/history/[slug]`, `/bangladesh/introduction`, `/bangladesh/introduction/[slug]`, `/bangladesh/public-figure`, `/bangladesh/public-figure/[slug]`, `/bangladesh/tourism`, `/bangladesh/tourism/[slug]`, `/international/all-country`, `/international/country/[slug]`, `/international/calling-codes`, `/international/crypto-forex`, `/international/world-clock`, `/islam/basic`, `/islam/basic/[slug]`, `/islam/dowan`, `/islam/dowan/[slug]`, `/signs/[category]`, `/signs/[category]/[sign]`, `/contact/[slug]`, `/news`, `/news/headlines`, `/news/headlines/[slug]`, `/news/headlines/story/[slug]`
+- [x] **0.3 Baseline Checks** — `npx next typegen && npx tsc --noEmit` PASS (0 errors); `npm run test:nav` PASS (9 categories, 40 items); `npm run lint` 5 pre-existing errors in `CryptoForexClient.tsx` and `WorldClockClient.tsx`; `npm run build` blocked on `next/font/google` (`ETIMEDOUT 142.250.182.202:443` to `fonts.gstatic.com` from this host); Lighthouse CLI `13.6.0` installed (production Lighthouse baseline pending reachable production build).
+- [x] **0.4 Create `PROGRESS.md` Checklist** — Initialized full Phase 0–9 checklist.
 
 ---
 
-## Detailed Step-by-Step Progress
+## Phase 1 — Tailwind v4 + Design System Foundation
 
-### [x] Step A: Audit Matrix Rebuild & Baseline Tooling (Commit `0d0088b`)
-- **Action:**
-  - Regenerated `scripts/build-audit-matrix.mjs` with registry-driven checks and 7 new columns: `Search_Coverage`, `PWA`, `Auth`, `Keyboard_Safe_Layout`, `Author_Source`, `AdSense_Risk`, `Indexing_Status`.
-  - Audited route templates across 38 rigorous compliance columns.
-  - Linked `NAVIGATION_REGISTRY` (`config/navigation.ts`) as single source of truth; all duplicate link checks marked PASS (Resolved).
-  - Clarified ESLint command (`npm run lint` exits 0 with 0 errors).
+- [ ] **1.1** Audit Tailwind v4 config in `app/globals.css`, remove any legacy/deprecated utilities and dead CSS.
+- [ ] **1.2** Enforce Color Rule: remove `sepia` (warm cream/beige) and warm `amber`/`crimson` surface tints; use clean neutral cool slate/zinc surfaces with light/dark/system support.
+- [ ] **1.3** Standardize design tokens in `@theme` / CSS variables (surface layers, text, muted, accent, semantic status, radius, shadows, spacing, motion durations).
+- [ ] **1.4** Audit `next/font` setup (`Hind_Siliguri`, `Noto_Sans_Bengali`, `Geist`, `Geist_Mono`) for `display: "swap"`, subsetting, and zero render-blocking CSS.
+- [ ] **1.5** Standardize UI primitives (`Button`, `Card`, `Input`, `Badge`, `Skeleton`, `Modal/Sheet`, `Tooltip`, `Toast`) with consistent focus rings, hover/active states, and reduced-motion support.
+- [ ] **1.6** Phase 1 verification (`npm run lint`, `npx tsc --noEmit`, `npm run build`).
 
-### [x] Step B: Responsive Grid & 9-Viewport Support (Commit `676401c`)
-- **Action:**
-  - Mobile-first home page grid re-architecture in `components/home/CategorySection.tsx` and `components/home/TrendingServices.tsx`.
-  - Grid breakpoints updated: `grid-cols-4 sm:grid-cols-6 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10`.
-  - Mobile compact card sizing (`p-1.5 sm:p-2.5`, `min-h-20 sm:min-h-24`, `size-8 sm:size-9` icons, secondary text hidden on small screens to prevent overflow and visual clutter).
-  - Expanded `scripts/test-visual-regression.mjs` from 3 to 9 standard viewports: 320px, 360px, 375px, 390px, 412px, 768px, 1024px, 1280px, 1536px.
+---
 
-### [x] Step C: Mobile Keyboard Safe Layout & Nav Occlusion Fix (Commit `6091a1f`)
-- **Action:**
-  - Fixed mobile bottom navigation bar occluding chat/message inputs: `components/navigation/MobileBottomNav.tsx` explicitly returns `null` on `/messages` and `/ai/chat` routes.
-  - Added modern `visualViewport` resize & scroll listener in `components/messaging/ModernChatApp.tsx` for real-time mobile soft-keyboard accommodation.
-  - Added iOS/Android safe area padding `pb-[max(0.5rem,env(safe-area-inset-bottom))]` to the composer input container.
+## Phase 2 — Sidebar / Topbar Redesign + Theme Settings
 
-### [x] Step D: Unified Search Coverage & Bangla/Banglish Enhancements (Commit `8a44533`)
-- **Action:**
-  - Created `lib/search/catalog.ts` indexing 100% of platform utilities, converters, emergency numbers, and core landing sections with multi-language keyword scoring (Bangla + Banglish phonetic transliteration + English).
-  - Enhanced `app/api/search/route.ts` with hybrid merging: local catalog results rank prominently at top, merged with deep database items from Laravel backend, with zero-downtime fallback.
-  - Enhanced `app/api/search/meta/route.ts` with full fallback prefixes and hints.
-  - Added global `Ctrl+K` and `Cmd+K` keyboard shortcut listeners in `context/SearchModalContext.tsx`.
-  - Designed mobile full-screen modal in `components/search/SearchModal.tsx` and `components/search/SearchResults.tsx` (`h-full rounded-none` on mobile, elegant floating modal on desktop).
-  - Created dedicated `/search` page at `app/(main)/search/page.tsx` and `SearchPageClient.tsx` with Google-compliant `robots: { index: false, follow: true }`.
-  - Updated `components/seo/SiteStructuredData.tsx` with Google `SearchAction` target pointing to `https://totthobox.com/search?q={search_term_string}`.
-  - Stripped host domain from internal search result URLs in `lib/searchRoutes.ts` to enable instantaneous Next.js client-side `router.push(url)` transitions.
-  - Created comprehensive `SEARCH_COVERAGE.md` covering all 30 platform content types with exact live backend probe statistics.
-  - Created `backend-changes/SEARCH_ENHANCEMENT.md` with Laravel Scout + Meilisearch implementation blueprint and Bangla normalization.
-  - Created automated test script `scripts/test-search-coverage.mjs` and added `npm run test:search` script (All 16 tests PASS, exit 0).
-  - Regenerated `AUDIT_MATRIX.csv` covering all 89 route templates.
+- [ ] **2.1** Borders → tonal depth on sidebar and topbar; sticky translucent topbar with `backdrop-blur`; collapsible desktop icon-rail + mobile drawer.
+- [ ] **2.2** Move theme-change control to the **bottom** sticky footer area of the sidebar (accessible in expanded, collapsed rail, and mobile drawer).
+- [ ] **2.3** Upgrade Theme Settings panel: Mode (`Light` / `Dark` / `System`), Accent color (cool palette, no warm tints), Radius (`sharp`/`medium`/`round`), Density (`comfortable`/`compact`), Font size (`S`/`M`/`L`), Reduce motion toggle, Sidebar style (`expanded`/`rail`/`auto`), Reset to default, keyboard accessible with ARIA + FOUC-free init script.
+- [ ] **2.4** UI/UX improvement pass across all page types (spacing rhythm, skeletons, tap targets ≥ 44px, breadcrumbs, Bangla line-length, micro-interactions).
+- [ ] **2.5** Phase 2 verification (`npm run lint`, `npx tsc --noEmit`, `npm run build`).
 
-### [x] Step E: Advanced PWA & Offline Experience (Commit pending)
-- **Action:**
-  - Synchronized `app/manifest.ts` and `public/manifest.json` with Bangla shortcuts ("বাংলা ক্যালেন্ডার", "বয়স ক্যালকুলেটর", "জাতীয় জরুরি সেবা (৯৯৯)", "জমি ও ক্ষেত্রফল পরিমাপ"), standalone display mode, and utilities categories.
-  - Created missing offline fallback route `app/offline/page.tsx` and `OfflineClient.tsx` with offline-ready tools grid (Age Calculator, Land Converter, 999 Hotline, Password Generator) and `robots: { index: false, follow: false }`.
-  - Implemented `components/pwa/PWAUpdateToast.tsx` with service worker update listener and SKIP_WAITING activation.
-  - Polished `components/InstallPWA.tsx` for responsive mobile and desktop PWA installation.
-  - Implemented Web Push client architecture: `lib/pwa/webpush.ts`, `hooks/useWebPush.ts`, `components/pwa/WebPushPrompt.tsx`, and `/api/push/subscribe` endpoint.
-  - Created `backend-changes/WEB_PUSH.md` detailing Laravel 12 Web Push setup with VAPID and database migration.
-  - Extended `scripts/test-pwa-cache-security.mjs` to validate offline page, manifest Bangla shortcuts, and update toast.
-  - Regenerated `AUDIT_MATRIX.csv` with all 90 route templates audited.
+---
 
-### [ ] Step F: Modern Authentication (Google & GitHub OAuth) (NEXT ACTIVE)
-- **Goals:**
-  - Standardized OAuth modal/drawer with brand-compliant Google and GitHub login buttons.
-  - Synchronized session state across tabs via `BroadcastChannel` and `storage` events.
-  - Backend integration documentation in `backend-changes/` for Laravel Socialite.
-  - Clean account linking and profile management UX.
+## Phase 3 — Performance
 
-### [ ] Step G: Dynamic Database-Driven Authorship & Attribution
-- **Goals:**
-  - Full audit of hardcoded author names across templates into `AUTHOR_AUDIT.md`.
-  - Author entity interface and fallback to "Totthobox Editorial Team" (তথ্যবক্স সম্পাদকীয় বিভাগ).
-  - Backend schema patch for Author model and editorial attribution in `backend-changes/`.
-  - Lint/test script to prevent hardcoded author strings in content files.
+- [ ] **3.1** Audit rendering strategy per route (ISR `revalidate`, `Suspense` + `loading.tsx`, server-side fetching, `generateStaticParams`).
+- [ ] **3.2** Add secured `/api/revalidate` route (`REVALIDATE_SECRET`) and document webhook usage.
+- [ ] **3.3** Audit `next/image` usage, `sizes`, `priority` (LCP only), AVIF/WebP, explicit dimensions, `remotePatterns`.
+- [ ] **3.4** JS budget & bundle audit (`@next/bundle-analyzer`, dynamic imports, unused deps, tree-shaking).
+- [ ] **3.5** Caching, compression, and security headers in `next.config.ts` / middleware (CSP allowing AdSense + GA domains).
+- [ ] **3.6** Phase 3 verification (`npm run lint`, `npx tsc --noEmit`, `npm run build`).
 
-### [ ] Step H: Per-Page SEO, Keywords & Performance Budget
-- **Goals:**
-  - Request verified GSC keywords in `owner-inputs.md` (no fabricated volumes).
-  - Per-page unique titles, meta descriptions, canonicals, Open Graph, and JSON-LD schemas.
-  - Automated performance budget enforcement (LCP < 2.5s, CLS < 0.1, INP < 200ms).
-  - Detailed report in `PERF_REPORT.md`.
+---
 
-### [ ] Step I: AdSense Risk Mitigation & Content Quality Safeguards
-- **Goals:**
-  - Categorize all routes by AdSense compliance risk level in `ADSENSE_RISK.md`.
-  - Enforce registry-level `REMOVE` / `DEACTIVATE` / `BLOCK` flags.
-  - Integrate backend AI content quality gate requirements.
-  - Update `REMOVAL_LOG.md` and `ADSENSE_CHECKLIST.md`.
+## Phase 4 — SEO
 
-### [ ] Step J: Final Verification Loop & Release Audit
-- **Goals:**
-  - Continuous matrix re-audit until all 90 routes pass or have justified N/A.
-  - Full pass on all suites: `lint`, `tsc`, `build`, `test:pwa-cache`, `test:nav`, `test:search`.
-  - Comprehensive before/after metrics recorded in `FINAL_REPORT.md`.
+- [ ] **4.1** Audit Metadata API (`title`, `description`, `canonical`, `openGraph`, `twitter`, `robots`, `alternates`, `metadataBase`, `lang="bn"`) across all 87 routes.
+- [ ] **4.2** Add/verify dynamic `opengraph-image` support.
+- [ ] **4.3** Verify `app/sitemap.ts` and `app/robots.ts` (disallow `/api`, auth, chat, private, search params).
+- [ ] **4.4** Audit & complete JSON-LD structured data per page type (`Organization`, `WebSite`, `BreadcrumbList`, `Article`/`NewsArticle`, `FAQPage`, `TouristAttraction`, `Event`, etc.).
+- [ ] **4.5** Semantic HTML, single `<h1>`, heading order, `noindex` on utility/thin pages, real `notFound()` 404s, `not-found.tsx` + `error.tsx`.
+- [ ] **4.6** Phase 4 verification (`npm run lint`, `npx tsc --noEmit`, `npm run build`).
+
+---
+
+## Phase 5 — Accessibility (WCAG 2.2 AA)
+
+- [ ] **5.1** Contrast AA audit across all theme modes and accent colors.
+- [ ] **5.2** Skip-to-content link, focus rings, full keyboard navigation, ARIA roles/labels, `aria-live` regions, `prefers-reduced-motion`.
+- [ ] **5.3** Run axe-core audit across representative page types and fix findings.
+- [ ] **5.4** Phase 5 verification (`npm run lint`, `npx tsc --noEmit`, `npm run build`).
+
+---
+
+## Phase 6 — PWA
+
+- [ ] **6.1** Audit `app/manifest.ts` / `public/manifest.json` (icons, maskable, shortcuts, light/dark theme_color).
+- [ ] **6.2** Audit service worker caching rules (never cache auth/messages/profile/POST; never interfere with AdSense/GA), `/offline`, update toast, install prompt.
+- [ ] **6.3** Phase 6 verification (`npm run lint`, `npx tsc --noEmit`, `npm run build`, `npm run test:pwa-cache`).
+
+---
+
+## Phase 7 — Analytics & Visit Tracking
+
+- [ ] **7.1** Audit GA4/GTM loading (`afterInteractive`, production-only guard if needed), SPA `page_view` tracking (`usePathname` + `useSearchParams` in `Suspense`).
+- [ ] **7.2** Audit `lib/analytics.ts` typed events, Consent Mode v2 banner + footer "Cookie settings", Web Vitals reporting (`useReportWebVitals`), GSC verification env.
+- [ ] **7.3** Audit first-party visitor tracking (`/api/analytics/pageview`, `/heartbeat`, `/stats`).
+- [ ] **7.4** Phase 7 verification (`npm run lint`, `npx tsc --noEmit`, `npm run build`, `scripts/verify-gtm-datalayer.mjs`).
+
+---
+
+## Phase 8 — Google AdSense Readiness
+
+- [ ] **8.1** Produce `ADSENSE_AUDIT.md` covering content quality (<300-word pages), trust pages, navigation, policy compliance, technical, and E-E-A-T signals.
+- [ ] **8.2** Fix all code-fixable AdSense issues (trust pages, explanatory content + FAQ blocks, `ads.txt`, E-E-A-T metadata).
+- [ ] **8.3** Implement `<AdSlot>` component + `NEXT_PUBLIC_ADS_ENABLED` gating + placement rules + CSP/SW allowlists.
+- [ ] **8.4** Phase 8 verification (`npm run lint`, `npx tsc --noEmit`, `npm run build`).
+
+---
+
+## Phase 9 — Final QA & Deployment
+
+- [ ] **9.1** Full lint, typecheck, build, and Lighthouse (mobile + desktop) Before vs. After comparison.
+- [ ] **9.2** Cross-mode testing (dark/light, mobile/desktop, slow-3G, offline, reduced-motion, keyboard-only, ad-blocked, sitemap link crawl).
+- [ ] **9.3** Produce `DEPLOYMENT.md` (Vercel + self-hosted Node/PM2/nginx + env vars) and final handoff summary.
