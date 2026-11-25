@@ -37,7 +37,7 @@
 - [x] **2.2** Moved theme-change control to the **bottom** sticky footer area via shared `SidebarThemeControl.tsx` across expanded sidebar, collapsed icon rail (1-click cycle + settings trigger), and mobile drawer (`MobileNavDrawer.tsx` sticky bottom footer).
 - [x] **2.3** Upgraded Theme Settings panel (`AppearanceSettings.tsx`, `SettingsModal.tsx`, `lib/appearance.ts`, `AppearanceContext.tsx`, `SidebarContext.tsx`): Mode (`Light`/`Dark`/`System`) with live preview, cool Accent palette, Radius (`sharp`/`medium`/`round`), Density (`comfortable`/`compact`), Bangla Font Size (`S`/`M`/`L`), Sidebar style (`expanded`/`rail`/`auto`), Reduce motion switch, Reset to default, arrow-key `radiogroup` navigation + modal focus trap, and zero-FOUC `APPEARANCE_INIT_SCRIPT`.
 - [x] **2.4** `/unslop` UI/UX pass across components and pages: removed remaining gradients (`TaxVatClient`, `CryptoForexClient`, `WorldClockClient`, `ContactClient`), replaced `font-black`/`font-extrabold` display weights with `font-semibold`, replaced `transition-all` with explicit property transitions, eliminated all 10 arbitrary pixel token lint warnings (`CallingCodesClient`, `CryptoForexClient`, `WorldClockClient`), wired `--radius-*` + `--space-card` tokens into `Card`, `ServiceCard`, `Tabs`, `ToolActions`, and modals, ensured ≥ 44px tap targets (`NotificationModal`, `BanglaCalendar`, `Tabs`), and widened Bangla prose measure (`max-w-3xl`, `leading-[1.8]`) in `HelpfulContent` and `RelatedLinks`.
-- [ ] **2.5** Phase 2 verification (`npm run lint`, `npx tsc --noEmit`, `npm run build`).
+- [x] **2.5** Phase 2 verification — `npx tsc --noEmit` PASS (0 errors), `npm run lint` PASS (0 errors, 517 pre-existing warnings), `npm run lint:tokens` PASS (0 arbitrary pixel values across 290 files), `npm run test:nav` PASS (9 categories, 40 items), offline `npm run build` PASS (593/593 static pages).
 
 ---
 
@@ -103,3 +103,9 @@
 - [ ] **9.1** Full lint, typecheck, build, and Lighthouse (mobile + desktop) Before vs. After comparison.
 - [ ] **9.2** Cross-mode testing (dark/light, mobile/desktop, slow-3G, offline, reduced-motion, keyboard-only, ad-blocked, sitemap link crawl).
 - [ ] **9.3** Produce `DEPLOYMENT.md` (Vercel + self-hosted Node/PM2/nginx + env vars) and final handoff summary.
+
+---
+
+## Track: PDF-EDITOR (Pending Prompt — Do Not Start)
+
+- [ ] **PDF-EDITOR** — Waiting for user prompt before starting.
