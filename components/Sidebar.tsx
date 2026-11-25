@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import BrandIcon from "@/components/BrandIcon";
 import SearchTrigger from "@/components/search/SearchTrigger";
+import SidebarThemeControl from "@/components/navigation/SidebarThemeControl";
 import ProfileMenu from "./ProfileMenu";
 import { useSettingsModal } from "@/context/SettingsModalContext";
 import { useSidebar } from "@/context/SidebarContext";
@@ -1075,27 +1076,13 @@ export default function Sidebar() {
       </div>
 
       {/* Footer */}
-      <div className="sticky bottom-0 shrink-0 space-y-1 bg-[var(--surface-sunken)] p-2.5 shadow-[0_-1px_0_var(--surface-hairline)]">
-        <button
-          type="button"
-          onClick={openSettingsModal}
-          onMouseEnter={(e) => handleMouseEnter(e, "থিম ও সেটিংস")}
-          onMouseLeave={handleMouseLeave}
-          className={cn(
-            "flex min-h-10 w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-200/60 dark:text-zinc-300 dark:hover:bg-zinc-800",
-            collapsed && "justify-center px-2",
-          )}
-          title="থিম ও সেটিংস"
-          aria-label="থিম ও সেটিংস"
-        >
-          <Settings
-            className="size-4.5 shrink-0 text-zinc-500"
-            strokeWidth={1.75}
-          />
-          {!collapsed && (
-            <span className="flex-1 truncate text-left">থিম ও সেটিংস</span>
-          )}
-        </button>
+      <div className="sticky bottom-0 shrink-0 space-y-2 bg-[var(--surface-sunken)] p-2.5 shadow-[0_-1px_0_var(--surface-hairline)]">
+        <SidebarThemeControl
+          collapsed={collapsed}
+          onOpenSettings={openSettingsModal}
+          onHover={handleMouseEnter}
+          onLeave={handleMouseLeave}
+        />
 
         <ProfileMenu
           variant="sidebar"

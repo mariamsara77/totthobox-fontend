@@ -13,7 +13,7 @@ import {
   X,
 } from "lucide-react";
 import BrandIcon from "@/components/BrandIcon";
-import AppearanceSettings from "@/components/AppearanceSettings";
+import SidebarThemeControl from "@/components/navigation/SidebarThemeControl";
 import Icon from "@/components/ui/Icon";
 import { NAVIGATION_REGISTRY } from "@/config/navigation";
 import { useMobileNav } from "@/context/MobileNavContext";
@@ -97,19 +97,11 @@ export default function MobileNavDrawer() {
               closeDrawer();
               openSearchModal();
             }}
-            className="flex min-h-11 w-full items-center gap-2.5 rounded-xl border border-zinc-200 bg-zinc-50 px-3.5 text-left text-sm text-zinc-600 transition-colors hover:border-zinc-300 active:scale-[0.98] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300"
+            className="flex min-h-11 w-full items-center gap-2.5 rounded-xl bg-[var(--surface-card)] px-3.5 text-left text-sm text-zinc-600 shadow-[0_0_0_1px_var(--surface-hairline)] transition-colors hover:text-zinc-900 active:scale-[0.98] dark:text-zinc-300 dark:hover:text-zinc-100"
           >
             <Search className="size-4 shrink-0 text-zinc-500" strokeWidth={1.75} aria-hidden="true" />
             <span className="truncate">টুল, ক্যালকুলেটর বা তথ্য খুঁজুন</span>
           </button>
-
-          {/* Appearance & Accent Engine */}
-          <div className="space-y-2">
-            <h2 className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">
-              থিম ও অ্যাপিয়ারেন্স
-            </h2>
-            <AppearanceSettings />
-          </div>
 
           {/* Navigation Tree */}
           <nav aria-label="বিভাগ ও সেবাসমূহ" className="space-y-1.5">
@@ -191,7 +183,33 @@ export default function MobileNavDrawer() {
             </Link>
           </nav>
 
-          {/* Language & Account */}
+          {/* Policy Links */}
+          <div className="pt-2">
+            <div className="flex flex-wrap gap-x-3 gap-y-1">
+              {POLICY_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={closeDrawer}
+                  className="inline-flex min-h-10 items-center text-xs text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Sticky Bottom Footer: Theme & Account */}
+        <div className="shrink-0 space-y-2.5 bg-[var(--surface-sunken)] p-3 shadow-[0_-1px_0_var(--surface-hairline)]">
+          <SidebarThemeControl
+            touchFriendly
+            onOpenSettings={() => {
+              closeDrawer();
+              openSettingsModal();
+            }}
+          />
+
           <div className="grid grid-cols-2 gap-2">
             <button
               type="button"
@@ -199,7 +217,7 @@ export default function MobileNavDrawer() {
                 closeDrawer();
                 openSettingsModal();
               }}
-              className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-50 active:scale-95 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300"
+              className="flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[var(--surface-card)] px-3 text-xs font-medium text-zinc-700 shadow-[0_0_0_1px_var(--surface-hairline)] transition-colors hover:bg-[var(--surface-raised)] active:scale-95 dark:text-zinc-300"
             >
               <Globe className="size-4" strokeWidth={1.75} aria-hidden="true" />
               <span>ভাষা ও সেটিংস</span>
@@ -209,7 +227,7 @@ export default function MobileNavDrawer() {
               <Link
                 href="/settings/profile"
                 onClick={closeDrawer}
-                className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-50 active:scale-95 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300"
+                className="flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[var(--surface-card)] px-3 text-xs font-medium text-zinc-700 shadow-[0_0_0_1px_var(--surface-hairline)] transition-colors hover:bg-[var(--surface-raised)] active:scale-95 dark:text-zinc-300"
               >
                 <UserIcon className="size-4" strokeWidth={1.75} aria-hidden="true" />
                 <span className="truncate">{user.name || "প্রোফাইল"}</span>
@@ -227,22 +245,6 @@ export default function MobileNavDrawer() {
                 <span>লগইন</span>
               </button>
             )}
-          </div>
-
-          {/* Policy Links */}
-          <div className="border-t border-zinc-200 pt-3 dark:border-zinc-800">
-            <div className="flex flex-wrap gap-x-3 gap-y-1">
-              {POLICY_LINKS.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={closeDrawer}
-                  className="inline-flex min-h-10 items-center text-xs text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
           </div>
         </div>
       </aside>
