@@ -30,11 +30,11 @@ export default function MainLayout({
 
           {/* Main content area */}
           <div className="flex min-w-0 flex-1 w-full flex-col">
-            <div className="md:hidden sticky top-0 z-50 w-full">
+            <div className="hidden md:block sticky top-0 z-40 w-full">
               <Navbar />
             </div>
 
-            <main className="flex-1 w-full min-w-0">{children}</main>
+            <main className="flex-1 w-full min-w-0 pb-16 md:pb-0">{children}</main>
             <HelpfulContent />
             <RelatedLinks />
             <Footer />

@@ -2,13 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, LayoutGrid, Search, PhoneCall, Settings } from "lucide-react";
+import { Bookmark, Home, Menu, Newspaper, Wrench } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { useSearchModal } from "@/context/SearchModalContext";
-import { useSettingsModal } from "@/context/SettingsModalContext";
+import { useMobileNav } from "@/context/MobileNavContext";
 
 const ITEM_BASE =
-  "relative flex h-full min-w-0 flex-col items-center justify-center gap-0.5 px-1 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-emerald-500 motion-reduce:transition-none";
+  "relative flex h-full min-h-11 min-w-11 flex-col items-center justify-center gap-0.5 px-1 text-xs font-medium transition-[color,transform] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent-primary)] motion-reduce:transition-none";
 
 const IDLE =
   "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100";
@@ -18,34 +17,26 @@ interface NavLinkProps {
   label: string;
   Icon: LucideIcon;
   active: boolean;
-  tone?: "brand" | "danger";
 }
 
-function NavLink({ href, label, Icon, active, tone = "brand" }: NavLinkProps) {
-  const activeColor =
-    tone === "danger"
-      ? "text-rose-600 dark:text-rose-400"
-      : "text-emerald-700 dark:text-emerald-400";
-  const barColor =
-    tone === "danger"
-      ? "bg-rose-600 dark:bg-rose-400"
-      : "bg-emerald-600 dark:bg-emerald-400";
-
+function NavLink({ href, label, Icon, active }: NavLinkProps) {
   return (
     <Link
       href={href}
       aria-current={active ? "page" : undefined}
-      className={`${ITEM_BASE} ${active ? activeColor : IDLE}`}
+      className={`${ITEM_BASE} ${
+        active ? "font-semibold text-[var(--accent-ink)]" : IDLE
+      }`}
     >
       {active && (
         <span
           aria-hidden="true"
-          className={`absolute inset-x-0 top-0 mx-auto h-0.5 w-8 rounded-full ${barColor}`}
+          className="absolute inset-x-0 top-0 mx-auto h-0.5 w-8 rounded-full bg-[var(--accent-primary)]"
         />
       )}
       <Icon
         className="size-5"
-        strokeWidth={active ? 2.5 : 1.75}
+        strokeWidth={active ? 2 : 1.5}
         aria-hidden="true"
       />
       <span className="max-w-full truncate">{label}</span>
@@ -55,8 +46,7 @@ function NavLink({ href, label, Icon, active, tone = "brand" }: NavLinkProps) {
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
-  const { openSearchModal } = useSearchModal();
-  const { openSettingsModal } = useSettingsModal();
+  const { isDrawerOpen, isSavedOpen, openDrawer, openSaved } = useMobileNav();
 
   // Hide on messaging / AI chat routes so the composer is never covered on mobile
   const isChatRoute =
@@ -64,56 +54,75 @@ export default function MobileBottomNav() {
   if (isChatRoute) return null;
 
   const isHome = pathname === "/";
-  const isServices = pathname.startsWith("/services");
-  // "/contact-us" is a different page, so only match /contact and /contact/...
-  const isEmergency =
-    pathname === "/contact" || pathname.startsWith("/contact/");
+  const isTools =
+    pathname.startsWith("/services") ||
+    pathname.startsWith("/tools") ||
+    pathname.startsWith("/converter") ||
+    pathname.startsWith("/pdf-editor");
+  const isNews =
+    pathname.startsWith("/news") ||
+    pathname.startsWith("/bangladesh") ||
+    pathname.startsWith("/international");
 
   return (
     <nav
       aria-label="মোবাইল বটম নেভিগেশন"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-zinc-200 bg-white/90 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_20px_rgba(0,0,0,0.06)] backdrop-blur-xl md:hidden dark:border-zinc-800 dark:bg-zinc-950/90 dark:shadow-[0_-4px_20px_rgba(0,0,0,0.4)]"
+      className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-zinc-200 bg-white md:hidden dark:border-zinc-800 dark:bg-zinc-950"
     >
-      <div className="grid h-16 grid-cols-5 items-stretch">
+      <div className="grid h-14 grid-cols-5 items-stretch">
         <NavLink href="/" label="হোম" Icon={Home} active={isHome} />
+        <NavLink href="/services" label="টুলস" Icon={Wrench} active={isTools} />
         <NavLink
-          href="/services"
-          label="সকল সেবা"
-          Icon={LayoutGrid}
-          active={isServices}
+          href="/news/headlines"
+          label="সংবাদ"
+          Icon={Newspaper}
+          active={isNews}
         />
 
-        {/* Center action: search */}
         <button
           type="button"
-          onClick={openSearchModal}
-          aria-label="সন্ধান করুন"
-          className="relative flex h-full min-w-0 flex-col items-center justify-center focus-visible:outline-none"
+          onClick={openSaved}
+          aria-label="সংরক্ষিত ও সাম্প্রতিক"
+          aria-expanded={isSavedOpen}
+          className={`${ITEM_BASE} ${
+            isSavedOpen ? "font-semibold text-[var(--accent-ink)]" : IDLE
+          }`}
         >
-          <span className="-mt-5 flex size-12 items-center justify-center rounded-full bg-emerald-600 text-white shadow-lg shadow-emerald-600/30 ring-4 ring-white transition-transform active:scale-95 motion-reduce:transition-none dark:bg-emerald-500 dark:text-zinc-950 dark:ring-zinc-950">
-            <Search className="size-5" strokeWidth={2.4} aria-hidden="true" />
-          </span>
-          <span className="mt-0.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-            সন্ধান
-          </span>
+          {isSavedOpen && (
+            <span
+              aria-hidden="true"
+              className="absolute inset-x-0 top-0 mx-auto h-0.5 w-8 rounded-full bg-[var(--accent-primary)]"
+            />
+          )}
+          <Bookmark
+            className="size-5"
+            strokeWidth={isSavedOpen ? 2 : 1.5}
+            aria-hidden="true"
+          />
+          <span className="max-w-full truncate">সংরক্ষিত</span>
         </button>
 
-        <NavLink
-          href="/contact/police"
-          label="জরুরি"
-          Icon={PhoneCall}
-          active={isEmergency}
-          tone="danger"
-        />
-
         <button
           type="button"
-          onClick={openSettingsModal}
-          aria-label="সেটিংস ও থিম পরিবর্তন"
-          className={`${ITEM_BASE} ${IDLE}`}
+          onClick={openDrawer}
+          aria-label="পূর্ণ মেনু ও থিম সেটিংস"
+          aria-expanded={isDrawerOpen}
+          className={`${ITEM_BASE} ${
+            isDrawerOpen ? "font-semibold text-[var(--accent-ink)]" : IDLE
+          }`}
         >
-          <Settings className="size-5" strokeWidth={1.75} aria-hidden="true" />
-          <span>সেটিংস</span>
+          {isDrawerOpen && (
+            <span
+              aria-hidden="true"
+              className="absolute inset-x-0 top-0 mx-auto h-0.5 w-8 rounded-full bg-[var(--accent-primary)]"
+            />
+          )}
+          <Menu
+            className="size-5"
+            strokeWidth={isDrawerOpen ? 2 : 1.5}
+            aria-hidden="true"
+          />
+          <span className="max-w-full truncate">মেনু</span>
         </button>
       </div>
     </nav>

@@ -21,10 +21,10 @@ export default function HomeLayout({
     <div className="w-full max-w-full min-w-0 overflow-x-clip">
       <div className="flex w-full min-w-0">
         <div className="flex flex-1 min-w-0 w-full flex-col">
-          <div className="sticky top-0 z-50 w-full">
+          <div className="hidden md:block sticky top-0 z-40 w-full">
             <NavbarHeader />
           </div>
-          <main className="flex-1 w-full min-w-0">{children}</main>
+          <main className="flex-1 w-full min-w-0 pb-16 md:pb-0">{children}</main>
           <Footer />
         </div>
       </div>

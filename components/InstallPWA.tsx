@@ -52,10 +52,10 @@ export default function InstallPWA() {
   if (!isInstallable || dismissed) return null;
 
   return (
-    <div className="fixed bottom-20 sm:bottom-6 right-4 z-40 flex items-center rounded-full bg-zinc-950/95 dark:bg-white/95 text-white dark:text-zinc-950 shadow-2xl border border-zinc-700/60 dark:border-zinc-300/60 backdrop-blur-md transition-all animate-in fade-in slide-in-from-bottom-2 duration-200">
+    <div className="fixed bottom-20 sm:bottom-6 right-4 z-40 flex items-center rounded-full bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 shadow-lg border border-zinc-700 dark:border-zinc-300 transition-opacity duration-200">
       <button
         onClick={handleInstallClick}
-        className="flex min-h-11 items-center gap-2 pl-4 pr-2 py-2 text-xs font-semibold tracking-wide"
+        className="flex min-h-11 items-center gap-2 pl-4 pr-2 py-2 text-xs font-medium"
       >
         <Smartphone size={16} strokeWidth={2.2} />
         <span>অ্যাপ ইনস্টল করুন</span>

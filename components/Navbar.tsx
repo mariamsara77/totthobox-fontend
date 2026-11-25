@@ -3,9 +3,10 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useEffect } from "react";
-import { Menu, PanelLeft, MessageCircle } from "lucide-react";
+import { PanelLeft, MessageCircle, Settings } from "lucide-react";
 import ProfileMenu from "./ProfileMenu";
 import { useSidebar } from "@/context/SidebarContext";
+import { useSettingsModal } from "@/context/SettingsModalContext";
 import { useNotificationModal } from "@/context/NotificationModalContext";
 import { useAuth } from "@/context/AuthContext";
 import BrandIcon from "@/components/BrandIcon";
@@ -19,7 +20,8 @@ const LiveNotificationSync = dynamic(
 );
 
 export default function Navbar() {
-  const { setIsOpen, isCollapsed, toggleCollapsed } = useSidebar();
+  const { isCollapsed, toggleCollapsed } = useSidebar();
+  const { openSettingsModal } = useSettingsModal();
   const { openNotificationModal, unreadCount, setUnreadCount } =
     useNotificationModal();
   const { isLoggedIn } = useAuth();
@@ -34,42 +36,32 @@ export default function Navbar() {
   }, [isLoggedIn, setUnreadCount]);
 
   return (
-    <header className="pwa-safe-top z-40 w-full border-b border-zinc-200/80 dark:border-zinc-800/80 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl transition-colors">
-      <div className="flex h-16 items-center justify-between px-3 sm:px-6">
-        <div className="flex items-center gap-2 sm:gap-4">
-          {/* Mobile menu button with 44px touch target */}
-          <button
-            type="button"
-            onClick={() => setIsOpen(true)}
-            aria-label="সাইডবার খুলুন"
-            className="flex min-h-11 min-w-11 items-center justify-center rounded-xl p-2 text-zinc-700 dark:text-zinc-300 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 md:hidden"
-          >
-            <Menu className="h-6 w-6" />
-          </button>
-
-          {/* Desktop: show expand button when collapsed */}
+    <header className="pwa-safe-top z-40 w-full border-b border-zinc-200 bg-white transition-colors dark:border-zinc-800 dark:bg-zinc-950">
+      <div className="flex h-14 items-center justify-between px-4 sm:px-6">
+        <div className="flex items-center gap-3">
           {isCollapsed && (
             <button
+              type="button"
               onClick={toggleCollapsed}
-              className="hidden min-h-11 min-w-11 items-center justify-center rounded-xl p-2 text-zinc-700 dark:text-zinc-300 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 md:flex"
-              title="Expand sidebar"
-              aria-label="সাইডবার বড় করুন"
+              className="hidden min-h-11 min-w-11 items-center justify-center rounded-lg p-2 text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 md:flex dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+              title="সাইডবার প্রসারিত করুন"
+              aria-label="সাইডবার প্রসারিত করুন"
             >
-              <PanelLeft className="h-5 w-5" />
+              <PanelLeft className="size-5" strokeWidth={1.75} />
             </button>
           )}
 
           <Link
             href="/"
             aria-label="Totthobox Home"
-            className="flex min-h-11 items-center gap-2 text-lg sm:text-xl font-bold text-zinc-900 dark:text-zinc-100"
+            className="flex min-h-11 items-center gap-2 text-base font-semibold text-zinc-900 dark:text-zinc-100"
           >
-            <BrandIcon className="h-7 w-7 sm:h-8 sm:w-8" />
-            <span className="inline-block">Totthobox</span>
+            <BrandIcon className="size-6" />
+            <span>Totthobox</span>
           </Link>
         </div>
 
-        <div className="flex items-center gap-1.5 sm:gap-3">
+        <div className="flex items-center gap-2">
           <SearchTrigger />
 
           {isLoggedIn && (
@@ -77,9 +69,9 @@ export default function Navbar() {
               <Link
                 href="/messages"
                 aria-label="মেসেজ"
-                className="flex min-h-11 min-w-11 items-center justify-center rounded-xl p-2 text-zinc-700 dark:text-zinc-300 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                className="flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2 text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
               >
-                <MessageCircle className="h-5 w-5" aria-hidden="true" />
+                <MessageCircle className="size-5" strokeWidth={1.75} aria-hidden="true" />
               </Link>
 
               <NotificationBell
@@ -89,6 +81,16 @@ export default function Navbar() {
               <LiveNotificationSync />
             </>
           )}
+
+          <button
+            type="button"
+            onClick={openSettingsModal}
+            className="flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2 text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+            aria-label="থিম ও সেটিংস খুলুন"
+            title="থিম ও সেটিংস"
+          >
+            <Settings className="size-5" strokeWidth={1.75} aria-hidden="true" />
+          </button>
 
           <ProfileMenu />
         </div>

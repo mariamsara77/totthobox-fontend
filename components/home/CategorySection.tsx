@@ -25,19 +25,19 @@ export default function CategorySection({
   return (
     <section
       id={id}
-      className="scroll-mt-32 space-y-4"
+      className="scroll-mt-20 space-y-4 md:scroll-mt-32"
       aria-labelledby={`${id}-heading`}
     >
       {/* Header */}
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex items-center justify-between gap-3 border-b border-zinc-200 pb-3 dark:border-zinc-800">
         <div className="flex min-w-0 items-center gap-3">
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-600/10 text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-300">
-            <Icon name={iconName} size={20} strokeWidth={2} />
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-zinc-200 bg-zinc-50 text-zinc-700 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
+            <Icon name={iconName} size={18} strokeWidth={1.75} />
           </div>
           <div className="min-w-0">
             <h2
               id={`${id}-heading`}
-              className="truncate text-lg font-bold leading-snug text-zinc-900 sm:text-xl dark:text-zinc-100"
+              className="truncate text-lg font-semibold leading-snug text-zinc-900 sm:text-xl dark:text-zinc-100"
             >
               {title}
             </h2>
@@ -50,13 +50,13 @@ export default function CategorySection({
         {viewAllHref && (
           <Link
             href={viewAllHref}
-            className="group flex min-h-10 shrink-0 items-center gap-1 rounded-lg px-3 text-sm font-semibold text-emerald-700 transition-colors hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 motion-reduce:transition-none dark:text-emerald-300 dark:hover:bg-emerald-400/10"
+            className="group flex min-h-11 shrink-0 items-center gap-1 rounded-lg px-3 text-sm font-medium text-[var(--accent-ink)] transition-colors hover:bg-[var(--accent-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] motion-reduce:transition-none"
           >
             <span>সব দেখুন</span>
             <Icon
               name="ArrowRight"
               size={14}
-              strokeWidth={2.5}
+              strokeWidth={1.75}
               className="transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none"
             />
           </Link>
@@ -64,7 +64,7 @@ export default function CategorySection({
       </div>
 
       {/* Grid: 2 cols phone, 3 tablet, 4 laptop, 5 wide desktop */}
-      <div className="grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+      <div className="grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         {items.map((item) => (
           <ServiceCard key={item.id} item={item} />
         ))}

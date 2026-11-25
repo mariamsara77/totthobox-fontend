@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Star, Sparkles, X, ChevronRight } from "lucide-react";
+import { Bookmark, Star } from "lucide-react";
 
 export interface FavoriteTool {
   id: string;
@@ -26,7 +26,7 @@ const DEFAULT_FAVORITES: FavoriteTool[] = [
   },
   {
     id: "age-calculator",
-    title: "স্মার্ট এজ ক্যালকুলেটর",
+    title: "বয়স ক্যালকুলেটর",
     path: "/tools/age-calculator",
     category: "টুলস",
   },
@@ -66,7 +66,7 @@ export function useFavorites() {
       if (prev.some((f) => f.id === tool.id)) {
         updated = prev.filter((f) => f.id !== tool.id);
       } else {
-        updated = [tool, ...prev].slice(0, 8); // max 8 favorites
+        updated = [tool, ...prev].slice(0, 8);
       }
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
@@ -110,27 +110,24 @@ export function FavoriteButton({
             ? "প্রিয় তালিকাভুক্ত (ক্লিক করে সরান)"
             : "প্রিয় তালিকায় রাখুন"
         }
-        className={`flex min-h-11 min-w-11 items-center justify-center rounded-xl p-2.5 transition-all active:scale-95 ${
+        className={`flex min-h-11 min-w-11 items-center justify-center rounded-xl border p-2.5 transition-colors active:scale-95 ${
           active
-            ? "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 shadow-xs"
-            : "border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-100/60 dark:bg-zinc-800/60 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
+            ? "border-[var(--accent-soft-border)] bg-[var(--accent-soft)] text-[var(--accent-ink)]"
+            : "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-300 hover:text-zinc-900 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
         } ${className}`}
       >
         <Star
           size={18}
-          className={`transition-transform duration-200 ${
-            active
-              ? "fill-amber-500 stroke-amber-500 scale-110"
-              : "stroke-current"
-          }`}
+          strokeWidth={1.75}
+          className={active ? "fill-current" : ""}
         />
       </button>
 
       {showToast && (
-        <div className="absolute right-0 top-full mt-2 z-50 whitespace-nowrap rounded-lg bg-zinc-900 dark:bg-zinc-100 px-3 py-1.5 text-xs font-medium text-white dark:text-zinc-900 shadow-xl animate-in fade-in zoom-in-95 duration-150">
+        <div className="absolute right-0 top-full z-50 mt-2 whitespace-nowrap rounded-lg border border-zinc-200 bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white shadow-md dark:border-zinc-700 dark:bg-zinc-100 dark:text-zinc-900">
           {active
             ? "প্রিয় তালিকা থেকে সরানো হয়েছে"
-            : "প্রিয় তালিকায় যোগ হয়েছে! ★"}
+            : "প্রিয় তালিকায় যোগ হয়েছে"}
         </div>
       )}
     </div>
@@ -143,16 +140,20 @@ export function QuickFavoritesBar() {
   if (!isLoaded || favorites.length === 0) return null;
 
   return (
-    <div className="w-full rounded-2xl bg-zinc-400/10 p-3 sm:p-4 shadow-xs">
-      <div className="flex items-center justify-between gap-2 mb-2.5 px-1">
+    <div className="w-full rounded-xl border border-zinc-200 bg-white p-3.5 sm:p-4 dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="mb-2.5 flex items-center justify-between gap-2 px-0.5">
         <div className="flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-amber-500" />
-          <h3 className="text-xs sm:text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-            আপনার প্রিয় টুলস (Quick Shortcuts)
+          <Bookmark
+            className="size-4 text-[var(--accent-ink)]"
+            strokeWidth={1.75}
+            aria-hidden="true"
+          />
+          <h3 className="text-xs font-semibold text-zinc-800 sm:text-sm dark:text-zinc-200">
+            দ্রুত শর্টকাট
           </h3>
         </div>
         <span className="text-xs text-zinc-500 dark:text-zinc-400">
-          পিন করুন ★
+          সংরক্ষিত টুলস
         </span>
       </div>
 
@@ -161,9 +162,13 @@ export function QuickFavoritesBar() {
           <Link
             key={fav.id}
             href={fav.path}
-            className="flex min-h-10 items-center gap-1.5 rounded-xl border border-zinc-200/90 dark:border-zinc-800 bg-white dark:bg-zinc-800/80 px-3 py-1.5 text-xs font-medium text-zinc-800 dark:text-zinc-200 transition-all hover:bg-zinc-100 dark:hover:bg-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600 shadow-xs"
+            className="flex min-h-11 items-center gap-1.5 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-1.5 text-xs font-medium text-zinc-800 transition-colors hover:border-[var(--accent-soft-border)] hover:bg-[var(--accent-soft)] hover:text-[var(--accent-ink)] active:scale-[0.98] dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-200"
           >
-            <Star className="w-3.5 h-3.5 fill-amber-500 stroke-amber-500" />
+            <Star
+              className="size-3.5 text-[var(--accent-ink)]"
+              strokeWidth={1.75}
+              aria-hidden="true"
+            />
             <span>{fav.title}</span>
           </Link>
         ))}

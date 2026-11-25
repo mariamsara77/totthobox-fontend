@@ -37,12 +37,12 @@ export default function SearchInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={onKeyDown}
-        placeholder="কী খুঁজছেন? বাংলা বা English..."
+        placeholder="টুল, কনভার্টার বা তথ্য খুঁজুন"
         autoComplete="off"
         autoCorrect="off"
         spellCheck={false}
         aria-label="অনুসন্ধান"
-        className="min-w-0 flex-1 bg-transparent text-[14.5px] leading-none text-zinc-900 outline-none! placeholder:text-zinc-400 dark:text-zinc-100 dark:placeholder:text-zinc-600"
+        className="min-w-0 flex-1 bg-transparent text-base leading-none text-zinc-900 outline-none! placeholder:text-zinc-400 dark:text-zinc-100 dark:placeholder:text-zinc-600"
       />
 
       {loading && (

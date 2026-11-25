@@ -18,7 +18,7 @@ const LiveNotificationSync = dynamic(
   { ssr: false },
 );
 
-export default function Navbar() {
+export default function NavbarHeader() {
   const { openSettingsModal } = useSettingsModal();
   const { openNotificationModal, unreadCount, setUnreadCount } =
     useNotificationModal();
@@ -34,20 +34,53 @@ export default function Navbar() {
   }, [isLoggedIn, setUnreadCount]);
 
   return (
-    <header className="pwa-safe-top z-40 w-full border-b border-zinc-200/80 dark:border-zinc-800/80 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl transition-colors">
-      <div className="flex h-16 items-center justify-between px-3 sm:px-6">
-        <div className="flex items-center gap-3">
+    <header className="pwa-safe-top z-40 w-full border-b border-zinc-200 bg-white transition-colors dark:border-zinc-800 dark:bg-zinc-950">
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
+        <div className="flex items-center gap-6">
           <Link
             href="/"
             aria-label="Totthobox Home"
-            className="flex min-h-11 items-center gap-2 text-lg sm:text-xl font-bold text-zinc-900 dark:text-zinc-100"
+            className="flex min-h-11 items-center gap-2 text-base font-semibold text-zinc-900 dark:text-zinc-100"
           >
-            <BrandIcon className="h-7 w-7 sm:h-8 sm:w-8" />
-            <span className="inline-block">Totthobox</span>
+            <BrandIcon className="size-6" />
+            <span>Totthobox</span>
           </Link>
+
+          <nav aria-label="প্রাথমিক নেভিগেশন" className="hidden items-center gap-1 lg:flex">
+            <Link
+              href="/services"
+              className="rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+            >
+              সকল সেবা
+            </Link>
+            <Link
+              href="/bangla/calendar"
+              className="rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+            >
+              ক্যালেন্ডার
+            </Link>
+            <Link
+              href="/converter/land"
+              className="rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+            >
+              জমি পরিমাপ
+            </Link>
+            <Link
+              href="/news/headlines"
+              className="rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+            >
+              সংবাদ
+            </Link>
+            <Link
+              href="/contact/police"
+              className="rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+            >
+              জরুরি সেবা
+            </Link>
+          </nav>
         </div>
 
-        <div className="flex items-center gap-1 sm:gap-2">
+        <div className="flex items-center gap-2">
           <SearchTrigger />
 
           {isLoggedIn && (
@@ -55,9 +88,9 @@ export default function Navbar() {
               <Link
                 href="/messages"
                 aria-label="মেসেজ"
-                className="flex min-h-11 min-w-11 items-center justify-center rounded-xl p-2 text-zinc-700 dark:text-zinc-300 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                className="flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2 text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
               >
-                <MessageCircle className="h-5 w-5" aria-hidden="true" />
+                <MessageCircle className="size-5" strokeWidth={1.75} aria-hidden="true" />
               </Link>
 
               <NotificationBell
@@ -71,10 +104,11 @@ export default function Navbar() {
           <button
             type="button"
             onClick={openSettingsModal}
-            className="flex min-h-11 min-w-11 items-center justify-center rounded-xl p-2 text-zinc-700 dark:text-zinc-300 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
-            aria-label="সেটিংস মেনু খুলুন"
+            className="flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2 text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+            aria-label="থিম ও সেটিংস মেনু খুলুন"
+            title="থিম ও সেটিংস"
           >
-            <Settings className="h-5 w-5" aria-hidden="true" />
+            <Settings className="size-5" strokeWidth={1.75} aria-hidden="true" />
           </button>
 
           <ProfileMenu />

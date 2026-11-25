@@ -403,15 +403,15 @@ export default function CurrencyConverter() {
         </div>
 
         {/* কনভার্টেড অ্যামাউন্ট ডিসপ্লে */}
-        <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-gradient-to-br from-zinc-50 to-zinc-100/80 dark:from-zinc-900 dark:to-zinc-800/60 p-6 text-center shadow-xs">
-          <p className="text-xs uppercase tracking-wider text-zinc-500 mb-2 font-semibold">কনভার্টেড অ্যামাউন্ট</p>
+        <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 p-6 text-center">
+          <p className="text-xs text-zinc-500 mb-2 font-medium">কনভার্টেড অ্যামাউন্ট</p>
           <div className="flex flex-wrap justify-center items-baseline gap-2 sm:gap-3">
-            <span className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50 tabular-nums">
+            <span className="text-3xl sm:text-4xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50 tabular-nums">
               {convertedAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
-            <span className="text-base sm:text-lg font-bold uppercase text-emerald-600 dark:text-emerald-400">{toCurrency}</span>
+            <span className="text-base sm:text-lg font-semibold text-[var(--accent-ink)]">{toCurrency}</span>
           </div>
-          <p className="mt-3 text-xs sm:text-sm text-zinc-500">
+          <p className="mt-3 text-xs sm:text-sm text-zinc-500 tabular-nums">
             ১ {fromCurrency} = {exchangeRate.toFixed(4)} {toCurrency}
           </p>
         </div>

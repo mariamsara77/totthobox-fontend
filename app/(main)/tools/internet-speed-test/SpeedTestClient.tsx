@@ -180,28 +180,23 @@ export default function SpeedTestClient() {
       </header>
 
       {/* Speedometer Gauge Box */}
-      <section className="rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 bg-gradient-to-b from-white via-zinc-50/50 to-zinc-100/40 dark:from-zinc-900 dark:via-zinc-900/80 dark:to-zinc-950 p-6 sm:p-10 shadow-xs flex flex-col items-center justify-center text-center space-y-6">
+      <section className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-10 flex flex-col items-center justify-center text-center space-y-6">
         {/* Speed Value Circle */}
-        <div className="relative w-56 h-56 sm:w-64 sm:h-64 rounded-full border-8 border-zinc-200/80 dark:border-zinc-800 flex flex-col items-center justify-center shadow-inner bg-white dark:bg-zinc-900/90">
-          {/* Animated pulsing glow when testing */}
-          {(status === "ping" || status === "download") && (
-            <div className="absolute inset-0 rounded-full border-4 border-emerald-500 animate-ping opacity-30" />
-          )}
+        <div className="relative w-56 h-56 sm:w-64 sm:h-64 rounded-full border-4 border-zinc-200 dark:border-zinc-800 flex flex-col items-center justify-center bg-zinc-50 dark:bg-zinc-950">
+          <Gauge className="w-7 h-7 text-[var(--accent-ink)] mb-1" strokeWidth={1.75} />
 
-          <Gauge className="w-8 h-8 text-emerald-600 dark:text-emerald-400 mb-1 opacity-80" />
-
-          <span className="text-5xl sm:text-6xl font-black tracking-tight text-zinc-900 dark:text-zinc-50 tabular-nums font-mono">
+          <span className="text-5xl sm:text-6xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50 tabular-nums font-mono">
             {status === "complete" ? downloadSpeed : currentSpeed}
           </span>
-          <span className="text-sm font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mt-1">
+          <span className="text-sm font-medium text-[var(--accent-ink)] mt-1">
             Mbps
           </span>
 
-          <span className="text-xs font-medium text-zinc-400 mt-2">
+          <span className="text-xs font-medium text-zinc-500 mt-2">
             {status === "idle" && "পরীক্ষা শুরু করতে চাপুন"}
-            {status === "ping" && "ল্যাটেন্সি (Ping) পরিমাপ হচ্ছে..."}
-            {status === "download" && "ডাউনলোড গতি পরিমাপ হচ্ছে..."}
-            {status === "complete" && "পরিমাপ সম্পন্ন!"}
+            {status === "ping" && "ল্যাটেন্সি (Ping) পরিমাপ হচ্ছে"}
+            {status === "download" && "ডাউনলোড গতি পরিমাপ হচ্ছে"}
+            {status === "complete" && "পরিমাপ সম্পন্ন"}
           </span>
         </div>
 
@@ -210,7 +205,7 @@ export default function SpeedTestClient() {
           type="button"
           onClick={runTest}
           disabled={status === "ping" || status === "download"}
-          className="min-h-13 px-8 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold text-base shadow-lg shadow-emerald-600/20 active:scale-95 transition-all flex items-center gap-2.5"
+          className="min-h-12 px-8 py-3 rounded-xl bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] disabled:opacity-50 text-[var(--accent-foreground)] font-medium text-base active:scale-[0.98] transition-colors flex items-center gap-2.5"
         >
           {status === "ping" || status === "download" ? (
             <>

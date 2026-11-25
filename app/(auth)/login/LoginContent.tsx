@@ -153,7 +153,7 @@ export default function LoginContent() {
               <UserRound size={32} className="text-zinc-400" />
             </span>
           )}
-          <span className="absolute -inset-1 rounded-3xl border-2 border-zinc-300 dark:border-zinc-600 animate-pulse" />
+          <span className="absolute -inset-1 rounded-2xl border border-zinc-300 dark:border-zinc-600" />
         </div>
         <div className="text-center space-y-1">
           <p className="font-semibold text-base">{view.profile.name}</p>

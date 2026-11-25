@@ -50,7 +50,6 @@ function checkPlausibility(data?: AnalyticsData): void {
   const onlineStr = String(data.online ?? "").trim().toLowerCase();
   const todayStr = String(data.today ?? "").trim().toLowerCase();
 
-  // Check for round 10k or online >= today suspicious patterns
   const isSuspiciousRound =
     onlineStr === "10k" ||
     onlineStr === "10000" ||
@@ -86,7 +85,6 @@ export default function UserAnalytics() {
 
     const loadAnalytics = async () => {
       try {
-        // Check sessionStorage cache (5 min TTL) to avoid repeat network requests
         try {
           const cached = sessionStorage.getItem("tb_stats_total");
           const cachedTime = sessionStorage.getItem("tb_stats_time");
@@ -121,7 +119,7 @@ export default function UserAnalytics() {
           }
         }
       } catch {
-        // Do not render fabricated numbers if the endpoint is unreachable
+        // Do not render fabricated numbers if unreachable
       }
     };
 
@@ -132,22 +130,25 @@ export default function UserAnalytics() {
 
   if (!totalUsers) {
     return (
-      <div className="flex items-center justify-center py-2 h-10" aria-hidden="true">
-        <div className="h-8 w-64 rounded-full bg-zinc-100 dark:bg-zinc-800/40 animate-pulse" />
+      <div className="flex h-10 items-center justify-center py-2" aria-hidden="true">
+        <div className="h-7 w-56 rounded-lg border border-zinc-200 bg-zinc-100/70 dark:border-zinc-800 dark:bg-zinc-900" />
       </div>
     );
   }
 
   return (
-    <div className="flex items-center justify-center py-2">
-      <div className="flex items-center gap-3 rounded-full border border-zinc-400/25 px-4 py-2 text-zinc-700 dark:text-zinc-300">
-        <span className="relative flex">
-          <span className="absolute h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
-          <span className="relative size-2 rounded-full bg-emerald-500" />
-        </span>
-        <p className="text-sm">
-          প্ল্যাটফর্মটি সক্রিয়ভাবে ব্যবহৃত হয়েছে{" "}
-          <span className="text-base font-semibold">{totalUsers}+</span> বার
+    <div className="flex items-center justify-center py-1">
+      <div className="flex items-center gap-2.5 rounded-lg border border-zinc-200 bg-white px-3.5 py-1.5 text-zinc-700 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
+        <span
+          aria-hidden="true"
+          className="size-2 rounded-full bg-[var(--accent-primary)]"
+        />
+        <p className="text-sm tabular-nums">
+          প্ল্যাটফর্মটি ব্যবহৃত হয়েছে{" "}
+          <span className="font-semibold text-zinc-900 dark:text-zinc-100">
+            {totalUsers}+
+          </span>{" "}
+          বার
         </p>
       </div>
     </div>

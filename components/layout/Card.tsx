@@ -13,9 +13,9 @@ export default function Card({
 }: CardProps) {
   return (
     <div
-      className={`rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-white dark:bg-zinc-900/60 p-4 sm:p-6 shadow-xs ${
+      className={`rounded-xl border border-zinc-200 bg-white p-4 sm:p-6 dark:border-zinc-800 dark:bg-zinc-900 ${
         hoverable
-          ? "transition-all duration-200 hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-md"
+          ? "transition-colors duration-150 hover:border-zinc-300 dark:hover:border-zinc-700"
           : ""
       } ${className}`}
     >

@@ -255,11 +255,7 @@ export default function ProfileMenu({
             role="menu"
           >
             <div
-              style={{
-                backdropFilter: "blur(20px) saturate(180%)",
-                WebkitBackdropFilter: "blur(20px) saturate(180%)",
-              }}
-              className="overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/95 shadow-2xl"
+              className="overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg dark:border-zinc-800 dark:bg-zinc-950"
             >
               {/* Header */}
               <div className="flex items-center gap-3 px-4 py-3">

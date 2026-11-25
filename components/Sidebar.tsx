@@ -8,8 +8,6 @@ import SearchTrigger from "@/components/search/SearchTrigger";
 import ProfileMenu from "./ProfileMenu";
 import { useSettingsModal } from "@/context/SettingsModalContext";
 import { useSidebar } from "@/context/SidebarContext";
-import { IoSettings } from "react-icons/io5";
-
 import {
   Globe,
   Clock,
@@ -24,20 +22,16 @@ import {
   CalendarDays,
   CalendarRange,
   ArrowLeftRight,
-  Sparkles,
   MapPin,
   Flag,
   BookOpen,
   Moon,
-  Laptop,
-  Cpu,
   ShieldAlert,
   Newspaper,
   ChevronDown,
   ChevronRight,
   PanelLeftClose,
   PanelLeft,
-  X,
   Layers,
   FileText,
   Percent,
@@ -59,6 +53,9 @@ import {
   Volume2,
   ArrowLeft,
   Grid,
+  Settings,
+  MessageSquare,
+  Heart,
 } from "lucide-react";
 
 function cn(...classes: (string | boolean | undefined | null)[]) {
@@ -68,10 +65,9 @@ function cn(...classes: (string | boolean | undefined | null)[]) {
 type SubItemProps = {
   href: string;
   label: string;
-  icon?: React.ComponentType<{ className?: string }>;
+  icon?: React.ComponentType<{ className?: string; strokeWidth?: number }>;
   isActive: boolean;
   badge?: string | number;
-  onClick?: () => void;
   collapsed?: boolean;
   onHover?: (e: React.MouseEvent<HTMLElement>, label: string) => void;
   onLeave?: () => void;
@@ -83,62 +79,67 @@ function SubItem({
   icon: Icon,
   isActive,
   badge,
-  onClick,
   collapsed,
   onHover,
   onLeave,
 }: SubItemProps) {
-  const content = (
-    <>
-      {Icon && (
-        <Icon
-          className={cn(
-            "h-4 w-4 shrink-0 transition-colors",
-            isActive
-              ? "text-zinc-900 dark:text-zinc-50"
-              : "text-zinc-400 dark:text-zinc-500 group-hover:text-zinc-700 dark:group-hover:text-zinc-300"
-          )}
-        />
-      )}
-      {!collapsed && <span className="truncate flex-1 text-left">{label}</span>}
-      {!collapsed && badge !== undefined && (
-        <span className="ml-auto rounded-full bg-zinc-200 dark:bg-zinc-800 px-2 py-0.5 text-xs font-normal text-zinc-700 dark:text-zinc-300">
-          {badge}
-        </span>
-      )}
-    </>
-  );
-
-  const className = cn(
-    "group flex w-full min-h-10 items-center gap-2.5 rounded-xl px-2.5 py-2 text-xs sm:text-sm font-medium transition-all duration-150",
-    isActive
-      ? "bg-zinc-200/90 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 font-semibold shadow-2xs"
-      : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 hover:text-zinc-900 dark:hover:text-zinc-100",
-    collapsed && "justify-center px-2"
-  );
-
   return (
     <Link
       href={href}
-      onClick={onClick}
       onMouseEnter={(e) => onHover?.(e, label)}
       onMouseLeave={onLeave}
-      className={className}
+      className={cn(
+        "group flex min-h-9 w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-sm font-medium transition-colors duration-150",
+        isActive
+          ? "bg-[var(--accent-soft)] text-[var(--accent-ink)]"
+          : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800/70 dark:hover:text-zinc-100",
+        collapsed && "justify-center px-2",
+      )}
     >
-      {content}
+      {Icon && (
+        <Icon
+          strokeWidth={1.75}
+          className={cn(
+            "size-4 shrink-0 transition-colors",
+            isActive
+              ? "text-[var(--accent-ink)]"
+              : "text-zinc-400 group-hover:text-zinc-700 dark:text-zinc-500 dark:group-hover:text-zinc-300",
+          )}
+        />
+      )}
+      {!collapsed && <span className="flex-1 truncate text-left">{label}</span>}
+      {!collapsed && badge !== undefined && (
+        <span className="ml-auto rounded border border-zinc-200 bg-zinc-50 px-1.5 py-0.5 font-mono text-xs text-zinc-600 tabular-nums dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+          {badge}
+        </span>
+      )}
     </Link>
   );
+}
+
+interface NewsSourceItem {
+  key: string;
+  name: string;
+  total: number;
+  language: string;
+}
+
+interface DynamicCategoryItem {
+  id?: string | number;
+  slug: string;
+  name: string;
 }
 
 export default function Sidebar() {
   const { openSettingsModal } = useSettingsModal();
   const pathname = usePathname();
-  const { isOpen, setIsOpen, isCollapsed, toggleCollapsed } = useSidebar();
+  const { isCollapsed, toggleCollapsed } = useSidebar();
 
-  const [tooltip, setTooltip] = useState<{ label: string; top: number } | null>(null);
+  const [tooltip, setTooltip] = useState<{ label: string; top: number } | null>(
+    null,
+  );
   const [showAllModules, setShowAllModules] = useState(false);
 
-  // Nested Extra Converters Collapsible
   const [isExtraConvertersOpen, setIsExtraConvertersOpen] = useState(
     pathname.startsWith("/converter/length") ||
       pathname.startsWith("/converter/weight") ||
@@ -149,10 +150,9 @@ export default function Sidebar() {
       pathname.startsWith("/converter/temperature") ||
       pathname.startsWith("/converter/speed") ||
       pathname.startsWith("/converter/data") ||
-      pathname.startsWith("/converter/energy")
+      pathname.startsWith("/converter/energy"),
   );
 
-  // Determine the active module from current route
   const activeModule = useMemo(() => {
     if (pathname.startsWith("/international")) return "international";
     if (pathname.startsWith("/tools")) return "tools";
@@ -160,7 +160,6 @@ export default function Sidebar() {
     if (pathname.startsWith("/bangla")) return "bangla";
     if (pathname.startsWith("/bangladesh")) return "bangladesh";
     if (pathname.startsWith("/islam")) return "islam";
-    if (pathname.startsWith("/software")) return "software";
     if (pathname.startsWith("/contact")) return "contact";
     if (pathname.startsWith("/signs")) return "signs";
     if (pathname.startsWith("/news")) return "news";
@@ -168,43 +167,25 @@ export default function Sidebar() {
     return null;
   }, [pathname]);
 
-  // When pathname changes to a new section, collapse the manual "showAll" override
   useEffect(() => {
     setShowAllModules(false);
   }, [pathname]);
 
-  // Dynamic Data States
   const [newsSources, setNewsSources] = useState<{
-    bn?: any[];
-    en?: any[];
-    other?: any[];
+    bn?: NewsSourceItem[];
+    en?: NewsSourceItem[];
+    other?: NewsSourceItem[];
   }>({});
-  const [contactCategories, setContactCategories] = useState<any[]>([]);
-  const [signCategories, setSignCategories] = useState<any[]>([]);
-  const [softwarePlatforms, setSoftwarePlatforms] = useState<string[]>([]);
+  const [contactCategories, setContactCategories] = useState<
+    DynamicCategoryItem[]
+  >([]);
+  const [signCategories, setSignCategories] = useState<DynamicCategoryItem[]>(
+    [],
+  );
 
   const API_URL =
     process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.totthobox.com";
 
-  // Mobile scroll lock
-  useEffect(() => {
-    if (isOpen) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setIsOpen(false);
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, setIsOpen]);
-
-  // Fetch dynamic categories when on or viewing the relevant module
   useEffect(() => {
     const controller = new AbortController();
 
@@ -222,37 +203,38 @@ export default function Sidebar() {
               : Array.isArray(data?.sources)
                 ? data.sources
                 : [];
-            const normalizeSource = (source: any) => ({
-              ...source,
+            const normalizeSource = (
+              source: Record<string, unknown>,
+            ): NewsSourceItem => ({
               key: String(source?.key ?? source?.source_key ?? ""),
               name: String(
-                source?.name ?? source?.source_name ?? source?.title ?? ""
+                source?.name ?? source?.source_name ?? source?.title ?? "",
               ).trim(),
               total: Number(source?.total ?? source?.count ?? 0),
               language: String(source?.language ?? "").toLowerCase(),
             });
             const normalizedList = sourceList
               .map(normalizeSource)
-              .filter((source: any) => source.key && source.name);
-            const normalizeGroup = (items: any[]) =>
+              .filter((source: NewsSourceItem) => source.key && source.name);
+            const normalizeGroup = (items: Record<string, unknown>[]) =>
               items
                 .map(normalizeSource)
-                .filter((source: any) => source.key && source.name);
+                .filter((source: NewsSourceItem) => source.key && source.name);
             const groupedBn = Array.isArray(data?.bn)
               ? normalizeGroup(data.bn)
               : [];
             const groupedEn = Array.isArray(data?.en)
               ? normalizeGroup(data.en)
               : [];
-            const isBn = (source: any) =>
+            const isBn = (source: NewsSourceItem) =>
               source.language === "bn" || source.language.startsWith("bn-");
-            const isEn = (source: any) =>
+            const isEn = (source: NewsSourceItem) =>
               source.language === "en" || source.language.startsWith("en-");
             setNewsSources({
               bn: groupedBn.length ? groupedBn : normalizedList.filter(isBn),
               en: groupedEn.length ? groupedEn : normalizedList.filter(isEn),
               other: normalizedList.filter(
-                (source: any) => !isBn(source) && !isEn(source)
+                (source: NewsSourceItem) => !isBn(source) && !isEn(source),
               ),
             });
           }
@@ -277,24 +259,14 @@ export default function Sidebar() {
             if (Array.isArray(data)) setSignCategories(data);
           }
         }
-
-        if (pathname.startsWith("/software") || showAllModules) {
-          const res = await fetch(`${API_URL}/api/sidebar/software-platforms`, {
-            signal: controller.signal,
-          });
-          if (res.ok) {
-            const data = await res.json();
-            setSoftwarePlatforms(Array.isArray(data) ? data : []);
-          }
-        }
-      } catch (error: any) {
-        if (error.name !== "AbortError") {
+      } catch (error) {
+        if ((error as Error).name !== "AbortError") {
           // graceful fallback
         }
       }
     };
 
-    fetchData();
+    void fetchData();
     return () => controller.abort();
   }, [pathname, API_URL, showAllModules]);
 
@@ -302,7 +274,7 @@ export default function Sidebar() {
 
   const handleMouseEnter = (
     e: React.MouseEvent<HTMLElement>,
-    label: string
+    label: string,
   ) => {
     if (!collapsed) return;
     const rect = e.currentTarget.getBoundingClientRect();
@@ -313,958 +285,824 @@ export default function Sidebar() {
     setTooltip(null);
   };
 
-  const closeMobile = () => {
-    setIsOpen(false);
-  };
-
   return (
-    <>
-      {/* Mobile overlay */}
-      {isOpen && (
+    <aside
+      className={cn(
+        "hidden md:sticky md:top-0 md:flex h-dvh shrink-0 flex-col border-r border-zinc-200 bg-white transition-[width] duration-200 dark:border-zinc-800 dark:bg-zinc-950",
+        collapsed ? "w-16" : "w-64",
+      )}
+      onMouseLeave={handleMouseLeave}
+    >
+      {/* Tooltip for collapsed rail */}
+      {collapsed && tooltip && (
         <div
-          className="fixed inset-0 z-90 bg-black/50 dark:bg-black/70 backdrop-blur-xs md:hidden"
-          onClick={() => setIsOpen(false)}
-        />
+          className="pointer-events-none fixed left-18 z-60 -translate-y-1/2 whitespace-nowrap rounded-lg border border-zinc-200 bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white shadow-md dark:border-zinc-700 dark:bg-zinc-100 dark:text-zinc-900"
+          style={{ top: tooltip.top }}
+        >
+          {tooltip.label}
+        </div>
       )}
 
-      {/* Sidebar */}
-      <aside
+      {/* Header */}
+      <div
         className={cn(
-          "pwa-safe-top fixed top-0 left-0 z-100 flex h-dvh flex-col bg-white dark:bg-zinc-900 md:bg-white/95 md:dark:bg-zinc-900/95 backdrop-blur-xl border-r border-zinc-200/80 dark:border-zinc-800/80 transition-all duration-300 ease-in-out",
-          isOpen ? "translate-x-0" : "-translate-x-full",
-          "md:sticky md:top-0 md:translate-x-0",
-          collapsed ? "md:w-16" : "md:w-64",
-          "w-64"
+          "flex h-14 shrink-0 items-center",
+          collapsed ? "justify-center" : "justify-between px-4",
         )}
-        onMouseLeave={handleMouseLeave}
       >
-        {/* Global Tooltip for collapsed rail */}
-        {collapsed && tooltip && (
-          <div
-            className="fixed left-18 z-60 -translate-y-1/2 whitespace-nowrap rounded-xl bg-zinc-900 dark:bg-zinc-100 px-3 py-1.5 text-xs font-semibold text-white dark:text-zinc-900 shadow-xl pointer-events-none"
-            style={{ top: tooltip.top }}
-          >
-            {tooltip.label}
-          </div>
-        )}
+        {!collapsed && (
+          <>
+            <Link
+              href="/"
+              className="flex items-center gap-2 text-base font-semibold text-zinc-900 dark:text-zinc-100"
+            >
+              <BrandIcon className="size-6 shrink-0" />
+              <span className="truncate">Totthobox</span>
+            </Link>
 
-        {/* Header */}
-        <div
-          className={cn(
-            "flex h-16 items-center shrink-0 border-b border-zinc-200/60 dark:border-zinc-800/60",
-            collapsed ? "justify-center" : "justify-between px-4"
-          )}
-        >
-          {!collapsed && (
-            <>
-              <Link
-                href="/"
-                onClick={closeMobile}
-                className="flex items-center gap-2.5 text-lg font-bold text-zinc-900 dark:text-zinc-100"
-              >
-                <BrandIcon className="h-6 w-6 shrink-0" />
-                <span className="truncate">Totthobox</span>
-              </Link>
-
-              <button
-                type="button"
-                onClick={toggleCollapsed}
-                className="hidden min-h-11 min-w-11 items-center justify-center rounded-xl p-2 md:flex text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-                title="সাইডবার সংকুচিত করুন"
-                aria-label="Collapse sidebar"
-              >
-                <PanelLeftClose className="h-5 w-5" />
-              </button>
-            </>
-          )}
-
-          {collapsed && (
             <button
               type="button"
-              aria-label="সাইডবার প্রসারিত করুন"
-              className="group relative flex min-h-11 min-w-11 cursor-pointer items-center justify-center rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-              onMouseEnter={(e) => handleMouseEnter(e, "Expand Sidebar")}
-              onMouseLeave={handleMouseLeave}
               onClick={toggleCollapsed}
+              className="flex min-h-10 min-w-10 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+              title="সাইডবার সংকুচিত করুন"
+              aria-label="সাইডবার সংকুচিত করুন"
             >
-              <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-200 group-hover:opacity-0 group-hover:pointer-events-none">
-                <BrandIcon className="h-6 w-6" />
-              </div>
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-200 group-hover:opacity-100 text-zinc-900 dark:text-zinc-100">
-                <PanelLeft className="h-5 w-5" />
-              </div>
+              <PanelLeftClose className="size-4.5" strokeWidth={1.75} />
             </button>
-          )}
+          </>
+        )}
 
+        {collapsed && (
           <button
             type="button"
-            onClick={() => setIsOpen(false)}
-            aria-label="সাইডবার বন্ধ করুন"
-            className="flex min-h-11 min-w-11 items-center justify-center rounded-xl p-2.5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors md:hidden"
+            aria-label="সাইডবার প্রসারিত করুন"
+            className="group relative flex min-h-10 min-w-10 cursor-pointer items-center justify-center rounded-lg transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            onMouseEnter={(e) => handleMouseEnter(e, "সাইডবার প্রসারিত করুন")}
+            onMouseLeave={handleMouseLeave}
+            onClick={toggleCollapsed}
           >
-            <X className="size-5" />
-          </button>
-        </div>
-
-        {/* Scrollable Navigation Area */}
-        <div className="flex-1 overflow-y-auto p-2 space-y-3" onScroll={handleMouseLeave}>
-          {/* Quick Search */}
-          <SearchTrigger
-            className="w-full"
-            collapsed={collapsed}
-            onHover={handleMouseEnter}
-            onLeave={handleMouseLeave}
-            showLabel={true}
-          />
-
-          {/* ========================================================================= */}
-          {/* CONTEXT-AWARE FILTERED SIDEBAR: Displays only the active section's items  */}
-          {/* ========================================================================= */}
-          {activeModule && !showAllModules ? (
-            <div className="space-y-2">
-              {/* Context Module Header Bar */}
-              {!collapsed && (
-                <div className="flex items-center justify-between px-2 pt-1 pb-2 border-b border-zinc-200/80 dark:border-zinc-800/80">
-                  <span className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
-                    {activeModule === "international" && <Globe className="w-3.5 h-3.5 text-sky-500" />}
-                    {activeModule === "tools" && <Wrench className="w-3.5 h-3.5 text-emerald-500" />}
-                    {activeModule === "converter" && <ArrowLeftRight className="w-3.5 h-3.5 text-blue-500" />}
-                    {activeModule === "bangla" && <Calendar className="w-3.5 h-3.5 text-amber-500" />}
-                    {activeModule === "bangladesh" && <Flag className="w-3.5 h-3.5 text-teal-500" />}
-                    {activeModule === "islam" && <Moon className="w-3.5 h-3.5 text-emerald-600" />}
-                    {activeModule === "software" && <Cpu className="w-3.5 h-3.5 text-indigo-500" />}
-                    {activeModule === "contact" && <PhoneCall className="w-3.5 h-3.5 text-rose-500" />}
-                    {activeModule === "signs" && <ShieldAlert className="w-3.5 h-3.5 text-orange-500" />}
-                    {activeModule === "news" && <Newspaper className="w-3.5 h-3.5 text-purple-500" />}
-                    {activeModule === "settings" && <IoSettings className="w-3.5 h-3.5 text-zinc-500" />}
-                    <span>
-                      {activeModule === "international" && "গ্লোবাল তথ্য / International"}
-                      {activeModule === "tools" && "টুলস ও ইউটিলিটি"}
-                      {activeModule === "converter" && "কনভার্টার হাব"}
-                      {activeModule === "bangla" && "ক্যালেন্ডার ও ছুটি"}
-                      {activeModule === "bangladesh" && "বাংলাদেশ তথ্য"}
-                      {activeModule === "islam" && "ইসলামিক জ্ঞান"}
-                      {activeModule === "software" && "সফটওয়্যার ডিরেক্টরি"}
-                      {activeModule === "contact" && "জরুরী নাম্বার"}
-                      {activeModule === "signs" && "সংকেত ও নিয়ম"}
-                      {activeModule === "news" && "সংবাদ শিরোনাম"}
-                      {activeModule === "settings" && "সেটিংস"}
-                    </span>
-                  </span>
-
-                  <button
-                    type="button"
-                    onClick={() => setShowAllModules(true)}
-                    className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:underline flex min-h-11 min-w-11 items-center justify-center px-2 py-1"
-                  >
-                    সকল বিভাগ
-                  </button>
-                </div>
-              )}
-
-              {/* Module 1: INTERNATIONAL */}
-              {activeModule === "international" && (
-                <div className="space-y-1">
-                  <SubItem
-                    href="/international/world-clock"
-                    label="বিশ্ব ঘড়ি ও টাইমজোন"
-                    icon={Clock}
-                    isActive={pathname === "/international/world-clock"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  <SubItem
-                    href="/international/crypto-forex"
-                    label="ক্রিপ্টো ও ফরেক্স রেট"
-                    icon={CircleDollarSign}
-                    isActive={pathname === "/international/crypto-forex"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  <SubItem
-                    href="/international/calling-codes"
-                    label="আন্তর্জাতিক ডায়ালিং কোড"
-                    icon={Phone}
-                    isActive={pathname === "/international/calling-codes"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  <SubItem
-                    href="/international/all-country"
-                    label="বিশ্বের দেশ ও বিশ্বকোষ"
-                    icon={Globe}
-                    isActive={pathname === "/international/all-country"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                </div>
-              )}
-
-              {/* Module 2: TOOLS */}
-              {activeModule === "tools" && (
-                <div className="space-y-1">
-                  <SubItem
-                    href="/tools/internet-speed-test"
-                    label="ইন্টারনেট স্পিড টেস্ট"
-                    icon={Gauge}
-                    isActive={pathname === "/tools/internet-speed-test"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  <SubItem
-                    href="/tools/tax-vat-calculator"
-                    label="আয়কর ও ভ্যাট হিসাব"
-                    icon={Receipt}
-                    isActive={pathname === "/tools/tax-vat-calculator"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  <SubItem
-                    href="/tools/password-generator"
-                    label="পাসওয়ার্ড জেনারেটর"
-                    icon={KeyRound}
-                    isActive={pathname === "/tools/password-generator"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  <SubItem
-                    href="/tools/image-resizer"
-                    label="ইমেজ স্টুডিও (Resizer)"
-                    icon={ImageIcon}
-                    isActive={pathname === "/tools/image-resizer"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  <SubItem
-                    href="/tools/age-calculator"
-                    label="স্মার্ট এজ ক্যালকুলেটর"
-                    icon={CalendarDays}
-                    isActive={pathname === "/tools/age-calculator"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  <SubItem
-                    href="/tools/percentage-calculator"
-                    label="পার্সেন্টেজ ক্যালকুলেটর"
-                    icon={Percent}
-                    isActive={pathname === "/tools/percentage-calculator"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  <SubItem
-                    href="/tools/word-and-character-counter"
-                    label="ওয়ার্ড ও অক্ষর কাউন্টার"
-                    icon={FileText}
-                    isActive={pathname === "/tools/word-and-character-counter"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  <SubItem
-                    href="/tools/qrcode-generator"
-                    label="প্রফেশনাল QR কোড"
-                    icon={QrCode}
-                    isActive={pathname === "/tools/qrcode-generator"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  <SubItem
-                    href="/tools/zodiac-calculator"
-                    label="রাশিফল ক্যালকুলেটর"
-                    icon={Sparkles}
-                    isActive={pathname === "/tools/zodiac-calculator"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  <SubItem
-                    href="/tools/writing-practice"
-                    label="শিশুশিক্ষা (Writing)"
-                    icon={BookOpen}
-                    isActive={pathname === "/tools/writing-practice"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                </div>
-              )}
-
-              {/* Module 3: CONVERTER */}
-              {activeModule === "converter" && (
-                <div className="space-y-1">
-                  <SubItem
-                    href="/converter/currency"
-                    label="লাইভ কারেন্সি কনভার্টার"
-                    icon={CircleDollarSign}
-                    isActive={pathname === "/converter/currency"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  <SubItem
-                    href="/converter/number-to-word"
-                    label="Number to Word"
-                    icon={FileCode}
-                    isActive={pathname === "/converter/number-to-word"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  <SubItem
-                    href="/converter/adarshalipi"
-                    label="আদর্শলিপি কনভার্টার"
-                    icon={ArrowLeftRight}
-                    isActive={pathname === "/converter/adarshalipi"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  <SubItem
-                    href="/converter/image"
-                    label="ইমেজ ফরম্যাট কনভার্টার"
-                    icon={ImageIcon}
-                    isActive={pathname === "/converter/image"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  <SubItem
-                    href="/converter/document"
-                    label="ডকুমেন্ট কনভার্টার"
-                    icon={FileText}
-                    isActive={pathname === "/converter/document"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  <SubItem
-                    href="/converter/media"
-                    label="মিডিয়া কনভার্টার (Audio/Video)"
-                    icon={Volume2}
-                    isActive={pathname === "/converter/media"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  <SubItem
-                    href="/converter/file-data"
-                    label="ডাটা ফাইল কনভার্টার"
-                    icon={FolderArchive}
-                    isActive={pathname === "/converter/file-data"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-
-                  {/* Extra Measurement Units Collapsible */}
-                  <div className="pt-1">
-                    <button
-                      type="button"
-                      onClick={() => setIsExtraConvertersOpen(!isExtraConvertersOpen)}
-                      className={cn(
-                        "flex w-full min-h-10 items-center justify-between rounded-lg px-2.5 py-1.5 text-xs font-semibold text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-colors",
-                        collapsed && "justify-center px-1"
-                      )}
-                    >
-                      <span className="flex items-center gap-1.5">
-                        <Layers className="w-3.5 h-3.5 shrink-0" />
-                        {!collapsed && <span>অন্যান্য একক পরিমাপ ({10})</span>}
-                      </span>
-                      {!collapsed && (
-                        isExtraConvertersOpen ? (
-                          <ChevronDown className="w-3.5 h-3.5" />
-                        ) : (
-                          <ChevronRight className="w-3.5 h-3.5" />
-                        )
-                      )}
-                    </button>
-
-                    {isExtraConvertersOpen && (
-                      <div className={cn("space-y-0.5 pt-1", !collapsed && "ml-3 pl-2 border-l border-zinc-200 dark:border-zinc-800")}>
-                        <SubItem
-                          href="/converter/length"
-                          label="দৈর্ঘ্য কনভার্টার"
-                          icon={Ruler}
-                          isActive={pathname === "/converter/length"}
-                          onClick={closeMobile}
-                          collapsed={collapsed}
-                          onHover={handleMouseEnter}
-                          onLeave={handleMouseLeave}
-                        />
-                        <SubItem
-                          href="/converter/weight"
-                          label="ওজন কনভার্টার"
-                          icon={Scale}
-                          isActive={pathname === "/converter/weight"}
-                          onClick={closeMobile}
-                          collapsed={collapsed}
-                          onHover={handleMouseEnter}
-                          onLeave={handleMouseLeave}
-                        />
-                        <SubItem
-                          href="/converter/volume"
-                          label="পরিমাণ (Volume)"
-                          icon={Boxes}
-                          isActive={pathname === "/converter/volume"}
-                          onClick={closeMobile}
-                          collapsed={collapsed}
-                          onHover={handleMouseEnter}
-                          onLeave={handleMouseLeave}
-                        />
-                        <SubItem
-                          href="/converter/land"
-                          label="জমি ও ভূমির পরিমাপ"
-                          icon={Compass}
-                          isActive={pathname === "/converter/land"}
-                          onClick={closeMobile}
-                          collapsed={collapsed}
-                          onHover={handleMouseEnter}
-                          onLeave={handleMouseLeave}
-                        />
-                        <SubItem
-                          href="/converter/time"
-                          label="সময় কনভার্টার"
-                          icon={Clock}
-                          isActive={pathname === "/converter/time"}
-                          onClick={closeMobile}
-                          collapsed={collapsed}
-                          onHover={handleMouseEnter}
-                          onLeave={handleMouseLeave}
-                        />
-                        <SubItem
-                          href="/converter/area"
-                          label="এলাকা / ক্ষেত্রফল"
-                          icon={Compass}
-                          isActive={pathname === "/converter/area"}
-                          onClick={closeMobile}
-                          collapsed={collapsed}
-                          onHover={handleMouseEnter}
-                          onLeave={handleMouseLeave}
-                        />
-                        <SubItem
-                          href="/converter/temperature"
-                          label="তাপমাত্রা কনভার্টার"
-                          icon={Thermometer}
-                          isActive={pathname === "/converter/temperature"}
-                          onClick={closeMobile}
-                          collapsed={collapsed}
-                          onHover={handleMouseEnter}
-                          onLeave={handleMouseLeave}
-                        />
-                        <SubItem
-                          href="/converter/speed"
-                          label="গতিবেগ কনভার্টার"
-                          icon={Gauge}
-                          isActive={pathname === "/converter/speed"}
-                          onClick={closeMobile}
-                          collapsed={collapsed}
-                          onHover={handleMouseEnter}
-                          onLeave={handleMouseLeave}
-                        />
-                        <SubItem
-                          href="/converter/data"
-                          label="ডেটা স্টোরেজ কনভার্টার"
-                          icon={HardDrive}
-                          isActive={pathname === "/converter/data"}
-                          onClick={closeMobile}
-                          collapsed={collapsed}
-                          onHover={handleMouseEnter}
-                          onLeave={handleMouseLeave}
-                        />
-                        <SubItem
-                          href="/converter/energy"
-                          label="শক্তি/পাওয়ার কনভার্টার"
-                          icon={Zap}
-                          isActive={pathname === "/converter/energy"}
-                          onClick={closeMobile}
-                          collapsed={collapsed}
-                          onHover={handleMouseEnter}
-                          onLeave={handleMouseLeave}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Module 4: BANGLA */}
-              {activeModule === "bangla" && (
-                <div className="space-y-1">
-                  <SubItem
-                    href="/bangla/calendar"
-                    label="বাংলা ও ইংরেজি ক্যালেন্ডার"
-                    icon={CalendarDays}
-                    isActive={pathname === "/bangla/calendar"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  <SubItem
-                    href="/bangla/holiday"
-                    label="সরকারি ছুটির তালিকা"
-                    icon={CalendarRange}
-                    isActive={pathname === "/bangla/holiday"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                </div>
-              )}
-
-              {/* Module 5: BANGLADESH */}
-              {activeModule === "bangladesh" && (
-                <div className="space-y-1">
-                  <SubItem
-                    href="/bangladesh/introduction"
-                    label="পরিচিতি ও ভৌগোলিক তথ্য"
-                    icon={Flag}
-                    isActive={pathname.startsWith("/bangladesh/introduction")}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  <SubItem
-                    href="/bangladesh/tourism"
-                    label="দর্শনীয় স্থান ও পর্যটন"
-                    icon={MapPin}
-                    isActive={pathname === "/bangladesh/tourism"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  <SubItem
-                    href="/bangladesh/history"
-                    label="ইতিহাস ও স্বাধীনতা"
-                    icon={BookOpen}
-                    isActive={pathname === "/bangladesh/history"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  <SubItem
-                    href="/bangladesh/establishment"
-                    label="ঐতিহাসিক স্থাপনা"
-                    icon={Landmark}
-                    isActive={pathname === "/bangladesh/establishment"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  <SubItem
-                    href="/bangladesh/public-figure"
-                    label="প্রখ্যাত গুণীজন"
-                    icon={User}
-                    isActive={pathname === "/bangladesh/public-figure"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                </div>
-              )}
-
-              {/* Module 6: ISLAM */}
-              {activeModule === "islam" && (
-                <div className="space-y-1">
-                  <SubItem
-                    href="/islam/basic"
-                    label="ইসলামের মৌলিক বিষয়"
-                    icon={BookOpen}
-                    isActive={pathname === "/islam/basic"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  <SubItem
-                    href="/islam/dowan"
-                    label="প্রয়োজনীয় দোয়া ও মোনাজাত"
-                    icon={Sparkles}
-                    isActive={pathname === "/islam/dowan"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                </div>
-              )}
-
-              {/* Module 7: SOFTWARE */}
-              {activeModule === "software" && (
-                <div className="space-y-1">
-                  <SubItem
-                    href="/software/all"
-                    label="সব সফটওয়্যার"
-                    icon={Laptop}
-                    isActive={pathname === "/software/all"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  {softwarePlatforms.map((platform) => (
-                    <SubItem
-                      key={platform}
-                      href={`/software/all/${encodeURIComponent(platform)}`}
-                      label={platform}
-                      icon={Cpu}
-                      isActive={pathname === `/software/all/${platform}`}
-                      onClick={closeMobile}
-                      collapsed={collapsed}
-                      onHover={handleMouseEnter}
-                      onLeave={handleMouseLeave}
-                    />
-                  ))}
-                </div>
-              )}
-
-              {/* Module 8: CONTACT */}
-              {activeModule === "contact" && (
-                <div className="space-y-1">
-                  <SubItem
-                    href="/contact/police"
-                    label="বাংলাদেশ পুলিশ"
-                    icon={PhoneCall}
-                    isActive={pathname === "/contact/police"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  {contactCategories
-                    .filter((cat) => cat.slug !== "police")
-                    .map((cat) => (
-                      <SubItem
-                        key={cat.slug || cat.id}
-                        href={`/contact/${cat.slug}`}
-                        label={cat.name}
-                        icon={Phone}
-                        isActive={pathname === `/contact/${cat.slug}`}
-                        onClick={closeMobile}
-                        collapsed={collapsed}
-                        onHover={handleMouseEnter}
-                        onLeave={handleMouseLeave}
-                      />
-                    ))}
-                </div>
-              )}
-
-              {/* Module 9: SIGNS */}
-              {activeModule === "signs" && (
-                <div className="space-y-1">
-                  <SubItem
-                    href="/signs/all"
-                    label="সকল সংকেত"
-                    icon={ShieldAlert}
-                    isActive={pathname === "/signs/all"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  {signCategories.map((cat) => (
-                    <SubItem
-                      key={cat.slug || cat.id}
-                      href={`/signs/${cat.slug}`}
-                      label={cat.name}
-                      icon={ShieldAlert}
-                      isActive={pathname.includes(cat.slug)}
-                      onClick={closeMobile}
-                      collapsed={collapsed}
-                      onHover={handleMouseEnter}
-                      onLeave={handleMouseLeave}
-                    />
-                  ))}
-                </div>
-              )}
-
-              {/* Module 10: NEWS */}
-              {activeModule === "news" && (
-                <div className="space-y-1">
-                  <SubItem
-                    href="/news/headlines"
-                    label="শীর্ষ সংবাদ"
-                    icon={Newspaper}
-                    isActive={pathname === "/news/headlines"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  {(newsSources.bn ?? []).map((source: any) => (
-                    <SubItem
-                      key={source.key}
-                      href={`/news/headlines/${encodeURIComponent(source.key)}`}
-                      label={source.name}
-                      badge={Number.isFinite(source.total) && source.total > 0 ? source.total : undefined}
-                      isActive={pathname === `/news/headlines/${encodeURIComponent(source.key)}`}
-                      onClick={closeMobile}
-                      collapsed={collapsed}
-                      onHover={handleMouseEnter}
-                      onLeave={handleMouseLeave}
-                    />
-                  ))}
-                </div>
-              )}
-
-              {/* Module 11: SETTINGS */}
-              {activeModule === "settings" && (
-                <div className="space-y-1">
-                  <SubItem
-                    href="/settings/profile"
-                    label="প্রোফাইল"
-                    icon={User}
-                    isActive={pathname === "/settings/profile"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  <SubItem
-                    href="/settings/password"
-                    label="পাসওয়ার্ড"
-                    icon={Lock}
-                    isActive={pathname === "/settings/password"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                  <SubItem
-                    href="/settings/delete-account"
-                    label="অ্যাকাউন্ট মুছুন"
-                    icon={Trash2}
-                    isActive={pathname === "/settings/delete-account"}
-                    onClick={closeMobile}
-                    collapsed={collapsed}
-                    onHover={handleMouseEnter}
-                    onLeave={handleMouseLeave}
-                  />
-                </div>
-              )}
-
-              {/* Quick Navigation to All Services */}
-              {!collapsed && (
-                <div className="pt-3 border-t border-zinc-200/60 dark:border-zinc-800/60 space-y-1">
-                  <button
-                    type="button"
-                    onClick={() => setShowAllModules(true)}
-                    className="flex min-h-11 w-full items-center gap-2 px-3 py-2.5 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10 rounded-xl transition-colors"
-                  >
-                    <Grid className="w-4 h-4" />
-                    <span>অন্যান্য বিভাগ দেখুন</span>
-                  </button>
-                  <Link
-                    href="/services"
-                    onClick={closeMobile}
-                    className="flex min-h-11 w-full items-center gap-2 px-3 py-2.5 text-xs text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 rounded-xl transition-colors"
-                  >
-                    <Layers className="w-4 h-4" />
-                    <span>সকল সেবার তালিকা</span>
-                  </Link>
-                </div>
-              )}
+            <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-150 group-hover:pointer-events-none group-hover:opacity-0">
+              <BrandIcon className="size-6" />
             </div>
-          ) : (
-            /* ========================================================================= */
-            /* GLOBAL DIRECTORY: Shown when not in a module or when toggled "সকল বিভাগ"   */
-            /* ========================================================================= */
-            <nav className="space-y-1" aria-label="সকল বিভাগ ও মডিউল">
-              {activeModule && !collapsed && (
-                <div className="px-2 pb-2 mb-1 border-b border-zinc-200/80 dark:border-zinc-800/80 flex items-center justify-between">
-                  <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400">সকল প্রধান বিভাগ</span>
-                  <button
-                    type="button"
-                    onClick={() => setShowAllModules(false)}
-                    className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-0.5"
-                  >
-                    <ArrowLeft className="w-3 h-3" />
-                    বর্তমান মডিউল
-                  </button>
-                </div>
-              )}
+            <div className="absolute inset-0 flex items-center justify-center text-zinc-900 opacity-0 transition-opacity duration-150 group-hover:opacity-100 dark:text-zinc-100">
+              <PanelLeft className="size-4.5" strokeWidth={1.75} />
+            </div>
+          </button>
+        )}
+      </div>
 
-              <SubItem
-                href="/international/world-clock"
-                label="গ্লোবাল তথ্য / International"
-                icon={Globe}
-                isActive={pathname.startsWith("/international")}
-                onClick={closeMobile}
-                collapsed={collapsed}
-                onHover={handleMouseEnter}
-                onLeave={handleMouseLeave}
-              />
-              <SubItem
-                href="/tools/internet-speed-test"
-                label="টুলস ও ইউটিলিটি"
-                icon={Wrench}
-                isActive={pathname.startsWith("/tools")}
-                onClick={closeMobile}
-                collapsed={collapsed}
-                onHover={handleMouseEnter}
-                onLeave={handleMouseLeave}
-              />
-              <SubItem
-                href="/converter/currency"
-                label="কনভার্টার হাব"
-                icon={ArrowLeftRight}
-                isActive={pathname.startsWith("/converter")}
-                onClick={closeMobile}
-                collapsed={collapsed}
-                onHover={handleMouseEnter}
-                onLeave={handleMouseLeave}
-              />
-              <SubItem
-                href="/bangla/calendar"
-                label="বাংলা ক্যালেন্ডার ও ছুটি"
-                icon={Calendar}
-                isActive={pathname.startsWith("/bangla")}
-                onClick={closeMobile}
-                collapsed={collapsed}
-                onHover={handleMouseEnter}
-                onLeave={handleMouseLeave}
-              />
-              <SubItem
-                href="/bangladesh/introduction"
-                label="বাংলাদেশ তথ্য"
-                icon={Flag}
-                isActive={pathname.startsWith("/bangladesh")}
-                onClick={closeMobile}
-                collapsed={collapsed}
-                onHover={handleMouseEnter}
-                onLeave={handleMouseLeave}
-              />
-              <SubItem
-                href="/islam/basic"
-                label="ইসলামিক জ্ঞান"
-                icon={Moon}
-                isActive={pathname.startsWith("/islam")}
-                onClick={closeMobile}
-                collapsed={collapsed}
-                onHover={handleMouseEnter}
-                onLeave={handleMouseLeave}
-              />
-              <SubItem
-                href="/software/all"
-                label="সফটওয়্যার ডিরেক্টরি"
-                icon={Cpu}
-                isActive={pathname.startsWith("/software")}
-                onClick={closeMobile}
-                collapsed={collapsed}
-                onHover={handleMouseEnter}
-                onLeave={handleMouseLeave}
-              />
-              <SubItem
-                href="/contact/police"
-                label="জরুরী নাম্বার ও সেবা"
-                icon={PhoneCall}
-                isActive={pathname.startsWith("/contact")}
-                onClick={closeMobile}
-                collapsed={collapsed}
-                onHover={handleMouseEnter}
-                onLeave={handleMouseLeave}
-              />
-              <SubItem
-                href="/signs/all"
-                label="সংকেত ও সচেতনতা"
-                icon={ShieldAlert}
-                isActive={pathname.startsWith("/signs")}
-                onClick={closeMobile}
-                collapsed={collapsed}
-                onHover={handleMouseEnter}
-                onLeave={handleMouseLeave}
-              />
-              <SubItem
-                href="/news/headlines"
-                label="সংবাদ শিরোনাম"
-                icon={Newspaper}
-                isActive={pathname.startsWith("/news")}
-                onClick={closeMobile}
-                collapsed={collapsed}
-                onHover={handleMouseEnter}
-                onLeave={handleMouseLeave}
-              />
+      {/* Scrollable Navigation */}
+      <div
+        className="flex-1 space-y-3 overflow-y-auto p-3"
+        onScroll={handleMouseLeave}
+      >
+        <SearchTrigger
+          className="w-full"
+          collapsed={collapsed}
+          onHover={handleMouseEnter}
+          onLeave={handleMouseLeave}
+          showLabel={true}
+        />
 
-              <div className="pt-1.5 border-t border-zinc-200/60 dark:border-zinc-800/60">
+        {activeModule && !showAllModules ? (
+          <div className="space-y-2">
+            {!collapsed && (
+              <div className="flex items-center justify-between border-b border-zinc-200 px-1 pb-2 pt-1 dark:border-zinc-800">
+                <span className="flex items-center gap-1.5 text-xs font-semibold text-zinc-600 dark:text-zinc-300">
+                  {activeModule === "international" && "গ্লোবাল তথ্য"}
+                  {activeModule === "tools" && "টুলস ও ইউটিলিটি"}
+                  {activeModule === "converter" && "কনভার্টার হাব"}
+                  {activeModule === "bangla" && "ক্যালেন্ডার ও ছুটি"}
+                  {activeModule === "bangladesh" && "বাংলাদেশ তথ্য"}
+                  {activeModule === "islam" && "ইসলামিক জ্ঞান"}
+                  {activeModule === "contact" && "জরুরি নম্বর"}
+                  {activeModule === "signs" && "সংকেত ও নিয়ম"}
+                  {activeModule === "news" && "সংবাদ শিরোনাম"}
+                  {activeModule === "settings" && "অ্যাকাউন্ট সেটিংস"}
+                </span>
+
+                <button
+                  type="button"
+                  onClick={() => setShowAllModules(true)}
+                  className="rounded px-1.5 py-1 text-xs font-medium text-[var(--accent-ink)] hover:underline"
+                >
+                  সকল বিভাগ
+                </button>
+              </div>
+            )}
+
+            {activeModule === "international" && (
+              <div className="space-y-0.5">
                 <SubItem
-                  href="/ai/chat"
-                  label="Totthobox AI"
-                  icon={Sparkles}
-                  isActive={pathname.startsWith("/ai")}
-                  onClick={closeMobile}
+                  href="/international/world-clock"
+                  label="বিশ্ব ঘড়ি ও টাইমজোন"
+                  icon={Clock}
+                  isActive={pathname === "/international/world-clock"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SubItem
+                  href="/international/crypto-forex"
+                  label="ক্রিপ্টো ও ফরেক্স রেট"
+                  icon={CircleDollarSign}
+                  isActive={pathname === "/international/crypto-forex"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SubItem
+                  href="/international/calling-codes"
+                  label="আন্তর্জাতিক ডায়ালিং কোড"
+                  icon={Phone}
+                  isActive={pathname === "/international/calling-codes"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SubItem
+                  href="/international/all-country"
+                  label="বিশ্বের দেশ ও বিশ্বকোষ"
+                  icon={Globe}
+                  isActive={pathname === "/international/all-country"}
                   collapsed={collapsed}
                   onHover={handleMouseEnter}
                   onLeave={handleMouseLeave}
                 />
               </div>
-            </nav>
-          )}
-        </div>
-
-        {/* Footer: Settings & Profile */}
-        <div className="shrink-0 space-y-1.5 border-t border-zinc-200/60 dark:border-zinc-800/60 p-2.5 bg-zinc-50/50 dark:bg-zinc-900/50">
-          <button
-            type="button"
-            onClick={openSettingsModal}
-            onMouseEnter={(e) => handleMouseEnter(e, "সেটিংস")}
-            onMouseLeave={handleMouseLeave}
-            className={cn(
-              "flex w-full min-h-11 items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors",
-              collapsed && "justify-center px-2"
             )}
-            title="সেটিংস"
-            aria-label="সেটিংস"
-          >
-            <IoSettings className="h-5 w-5 shrink-0 text-zinc-500" />
-            {!collapsed && <span className="truncate flex-1 text-left">সেটিংস</span>}
-          </button>
 
-          <ProfileMenu
-            variant="sidebar"
-            collapsed={collapsed}
-            onHover={handleMouseEnter}
-            onLeave={handleMouseLeave}
+            {activeModule === "tools" && (
+              <div className="space-y-0.5">
+                <SubItem
+                  href="/tools/internet-speed-test"
+                  label="ইন্টারনেট স্পিড টেস্ট"
+                  icon={Gauge}
+                  isActive={pathname === "/tools/internet-speed-test"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SubItem
+                  href="/tools/tax-vat-calculator"
+                  label="আয়কর ও ভ্যাট হিসাব"
+                  icon={Receipt}
+                  isActive={pathname === "/tools/tax-vat-calculator"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SubItem
+                  href="/tools/password-generator"
+                  label="পাসওয়ার্ড জেনারেটর"
+                  icon={KeyRound}
+                  isActive={pathname === "/tools/password-generator"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SubItem
+                  href="/tools/image-resizer"
+                  label="ইমেজ স্টুডিও (Resizer)"
+                  icon={ImageIcon}
+                  isActive={pathname === "/tools/image-resizer"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SubItem
+                  href="/tools/age-calculator"
+                  label="বয়স ক্যালকুলেটর"
+                  icon={CalendarDays}
+                  isActive={pathname === "/tools/age-calculator"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SubItem
+                  href="/tools/percentage-calculator"
+                  label="পার্সেন্টেজ ক্যালকুলেটর"
+                  icon={Percent}
+                  isActive={pathname === "/tools/percentage-calculator"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SubItem
+                  href="/tools/word-and-character-counter"
+                  label="ওয়ার্ড ও অক্ষর কাউন্টার"
+                  icon={FileText}
+                  isActive={pathname === "/tools/word-and-character-counter"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SubItem
+                  href="/tools/qrcode-generator"
+                  label="প্রফেশনাল QR কোড"
+                  icon={QrCode}
+                  isActive={pathname === "/tools/qrcode-generator"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SubItem
+                  href="/tools/zodiac-calculator"
+                  label="রাশিফল ক্যালকুলেটর"
+                  icon={Compass}
+                  isActive={pathname === "/tools/zodiac-calculator"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SubItem
+                  href="/tools/writing-practice"
+                  label="শিশুশিক্ষা (Writing)"
+                  icon={BookOpen}
+                  isActive={pathname === "/tools/writing-practice"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+              </div>
+            )}
+
+            {activeModule === "converter" && (
+              <div className="space-y-0.5">
+                <SubItem
+                  href="/converter/currency"
+                  label="লাইভ কারেন্সি কনভার্টার"
+                  icon={CircleDollarSign}
+                  isActive={pathname === "/converter/currency"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SubItem
+                  href="/converter/number-to-word"
+                  label="Number to Word"
+                  icon={FileCode}
+                  isActive={pathname === "/converter/number-to-word"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SubItem
+                  href="/converter/adarshalipi"
+                  label="আদর্শলিপি কনভার্টার"
+                  icon={ArrowLeftRight}
+                  isActive={pathname === "/converter/adarshalipi"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SubItem
+                  href="/converter/image"
+                  label="ইমেজ ফরম্যাট কনভার্টার"
+                  icon={ImageIcon}
+                  isActive={pathname === "/converter/image"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SubItem
+                  href="/converter/document"
+                  label="ডকুমেন্ট কনভার্টার"
+                  icon={FileText}
+                  isActive={pathname === "/converter/document"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SubItem
+                  href="/converter/media"
+                  label="মিডিয়া কনভার্টার"
+                  icon={Volume2}
+                  isActive={pathname === "/converter/media"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SubItem
+                  href="/converter/file-data"
+                  label="ডাটা ফাইল কনভার্টার"
+                  icon={FolderArchive}
+                  isActive={pathname === "/converter/file-data"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+
+                <div className="pt-1">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setIsExtraConvertersOpen(!isExtraConvertersOpen)
+                    }
+                    className={cn(
+                      "flex min-h-9 w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-xs font-semibold text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800/60 dark:hover:text-zinc-100",
+                      collapsed && "justify-center px-1",
+                    )}
+                  >
+                    <span className="flex items-center gap-1.5">
+                      <Layers
+                        className="size-3.5 shrink-0"
+                        strokeWidth={1.75}
+                      />
+                      {!collapsed && <span>অন্যান্য একক পরিমাপ (১০)</span>}
+                    </span>
+                    {!collapsed &&
+                      (isExtraConvertersOpen ? (
+                        <ChevronDown className="size-3.5" strokeWidth={1.75} />
+                      ) : (
+                        <ChevronRight className="size-3.5" strokeWidth={1.75} />
+                      ))}
+                  </button>
+
+                  {isExtraConvertersOpen && (
+                    <div
+                      className={cn(
+                        "space-y-0.5 pt-1",
+                        !collapsed &&
+                          "ml-3 border-l border-zinc-200 pl-2 dark:border-zinc-800",
+                      )}
+                    >
+                      <SubItem
+                        href="/converter/length"
+                        label="দৈর্ঘ্য কনভার্টার"
+                        icon={Ruler}
+                        isActive={pathname === "/converter/length"}
+                        collapsed={collapsed}
+                        onHover={handleMouseEnter}
+                        onLeave={handleMouseLeave}
+                      />
+                      <SubItem
+                        href="/converter/weight"
+                        label="ওজন কনভার্টার"
+                        icon={Scale}
+                        isActive={pathname === "/converter/weight"}
+                        collapsed={collapsed}
+                        onHover={handleMouseEnter}
+                        onLeave={handleMouseLeave}
+                      />
+                      <SubItem
+                        href="/converter/volume"
+                        label="পরিমাণ (Volume)"
+                        icon={Boxes}
+                        isActive={pathname === "/converter/volume"}
+                        collapsed={collapsed}
+                        onHover={handleMouseEnter}
+                        onLeave={handleMouseLeave}
+                      />
+                      <SubItem
+                        href="/converter/land"
+                        label="জমি ও ভূমির পরিমাপ"
+                        icon={Compass}
+                        isActive={pathname === "/converter/land"}
+                        collapsed={collapsed}
+                        onHover={handleMouseEnter}
+                        onLeave={handleMouseLeave}
+                      />
+                      <SubItem
+                        href="/converter/time"
+                        label="সময় কনভার্টার"
+                        icon={Clock}
+                        isActive={pathname === "/converter/time"}
+                        collapsed={collapsed}
+                        onHover={handleMouseEnter}
+                        onLeave={handleMouseLeave}
+                      />
+                      <SubItem
+                        href="/converter/area"
+                        label="এলাকা / ক্ষেত্রফল"
+                        icon={Compass}
+                        isActive={pathname === "/converter/area"}
+                        collapsed={collapsed}
+                        onHover={handleMouseEnter}
+                        onLeave={handleMouseLeave}
+                      />
+                      <SubItem
+                        href="/converter/temperature"
+                        label="তাপমাত্রা কনভার্টার"
+                        icon={Thermometer}
+                        isActive={pathname === "/converter/temperature"}
+                        collapsed={collapsed}
+                        onHover={handleMouseEnter}
+                        onLeave={handleMouseLeave}
+                      />
+                      <SubItem
+                        href="/converter/speed"
+                        label="গতিবেগ কনভার্টার"
+                        icon={Gauge}
+                        isActive={pathname === "/converter/speed"}
+                        collapsed={collapsed}
+                        onHover={handleMouseEnter}
+                        onLeave={handleMouseLeave}
+                      />
+                      <SubItem
+                        href="/converter/data"
+                        label="ডেটা স্টোরেজ কনভার্টার"
+                        icon={HardDrive}
+                        isActive={pathname === "/converter/data"}
+                        collapsed={collapsed}
+                        onHover={handleMouseEnter}
+                        onLeave={handleMouseLeave}
+                      />
+                      <SubItem
+                        href="/converter/energy"
+                        label="শক্তি/পাওয়ার কনভার্টার"
+                        icon={Zap}
+                        isActive={pathname === "/converter/energy"}
+                        collapsed={collapsed}
+                        onHover={handleMouseEnter}
+                        onLeave={handleMouseLeave}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {activeModule === "bangla" && (
+              <div className="space-y-0.5">
+                <SubItem
+                  href="/bangla/calendar"
+                  label="বাংলা ও ইংরেজি ক্যালেন্ডার"
+                  icon={CalendarDays}
+                  isActive={pathname === "/bangla/calendar"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SubItem
+                  href="/bangla/holiday"
+                  label="সরকারি ছুটির তালিকা"
+                  icon={CalendarRange}
+                  isActive={pathname === "/bangla/holiday"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+              </div>
+            )}
+
+            {activeModule === "bangladesh" && (
+              <div className="space-y-0.5">
+                <SubItem
+                  href="/bangladesh/introduction"
+                  label="পরিচিতি ও ভৌগোলিক তথ্য"
+                  icon={Flag}
+                  isActive={pathname.startsWith("/bangladesh/introduction")}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SubItem
+                  href="/bangladesh/tourism"
+                  label="দর্শনীয় স্থান ও পর্যটন"
+                  icon={MapPin}
+                  isActive={pathname === "/bangladesh/tourism"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SubItem
+                  href="/bangladesh/history"
+                  label="ইতিহাস ও স্বাধীনতা"
+                  icon={BookOpen}
+                  isActive={pathname === "/bangladesh/history"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SubItem
+                  href="/bangladesh/establishment"
+                  label="ঐতিহাসিক স্থাপনা"
+                  icon={Landmark}
+                  isActive={pathname === "/bangladesh/establishment"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SubItem
+                  href="/bangladesh/public-figure"
+                  label="প্রখ্যাত গুণীজন"
+                  icon={User}
+                  isActive={pathname === "/bangladesh/public-figure"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+              </div>
+            )}
+
+            {activeModule === "islam" && (
+              <div className="space-y-0.5">
+                <SubItem
+                  href="/islam/basic"
+                  label="ইসলামের মৌলিক বিষয়"
+                  icon={BookOpen}
+                  isActive={pathname === "/islam/basic"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SubItem
+                  href="/islam/dowan"
+                  label="প্রয়োজনীয় দোয়া ও মোনাজাত"
+                  icon={Heart}
+                  isActive={pathname === "/islam/dowan"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+              </div>
+            )}
+
+            {activeModule === "contact" && (
+              <div className="space-y-0.5">
+                <SubItem
+                  href="/contact/police"
+                  label="বাংলাদেশ পুলিশ"
+                  icon={PhoneCall}
+                  isActive={pathname === "/contact/police"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                {contactCategories
+                  .filter((cat) => cat.slug !== "police")
+                  .map((cat) => (
+                    <SubItem
+                      key={cat.slug || cat.id}
+                      href={`/contact/${cat.slug}`}
+                      label={cat.name}
+                      icon={Phone}
+                      isActive={pathname === `/contact/${cat.slug}`}
+                      collapsed={collapsed}
+                      onHover={handleMouseEnter}
+                      onLeave={handleMouseLeave}
+                    />
+                  ))}
+              </div>
+            )}
+
+            {activeModule === "signs" && (
+              <div className="space-y-0.5">
+                <SubItem
+                  href="/signs/all"
+                  label="সকল সংকেত"
+                  icon={ShieldAlert}
+                  isActive={pathname === "/signs/all"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                {signCategories.map((cat) => (
+                  <SubItem
+                    key={cat.slug || cat.id}
+                    href={`/signs/${cat.slug}`}
+                    label={cat.name}
+                    icon={ShieldAlert}
+                    isActive={pathname.includes(cat.slug)}
+                    collapsed={collapsed}
+                    onHover={handleMouseEnter}
+                    onLeave={handleMouseLeave}
+                  />
+                ))}
+              </div>
+            )}
+
+            {activeModule === "news" && (
+              <div className="space-y-0.5">
+                <SubItem
+                  href="/news/headlines"
+                  label="শীর্ষ সংবাদ"
+                  icon={Newspaper}
+                  isActive={pathname === "/news/headlines"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                {(newsSources.bn ?? []).map((source) => (
+                  <SubItem
+                    key={source.key}
+                    href={`/news/headlines/${encodeURIComponent(source.key)}`}
+                    label={source.name}
+                    badge={
+                      Number.isFinite(source.total) && source.total > 0
+                        ? source.total
+                        : undefined
+                    }
+                    isActive={
+                      pathname ===
+                      `/news/headlines/${encodeURIComponent(source.key)}`
+                    }
+                    collapsed={collapsed}
+                    onHover={handleMouseEnter}
+                    onLeave={handleMouseLeave}
+                  />
+                ))}
+              </div>
+            )}
+
+            {activeModule === "settings" && (
+              <div className="space-y-0.5">
+                <SubItem
+                  href="/settings/profile"
+                  label="প্রোফাইল"
+                  icon={User}
+                  isActive={pathname === "/settings/profile"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SubItem
+                  href="/settings/password"
+                  label="পাসওয়ার্ড"
+                  icon={Lock}
+                  isActive={pathname === "/settings/password"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+                <SubItem
+                  href="/settings/delete-account"
+                  label="অ্যাকাউন্ট মুছুন"
+                  icon={Trash2}
+                  isActive={pathname === "/settings/delete-account"}
+                  collapsed={collapsed}
+                  onHover={handleMouseEnter}
+                  onLeave={handleMouseLeave}
+                />
+              </div>
+            )}
+
+            {!collapsed && (
+              <div className="space-y-1 border-t border-zinc-200 pt-3 dark:border-zinc-800">
+                <button
+                  type="button"
+                  onClick={() => setShowAllModules(true)}
+                  className="flex min-h-10 w-full items-center gap-2 rounded-lg px-2.5 py-2 text-xs font-medium text-[var(--accent-ink)] transition-colors hover:bg-[var(--accent-soft)]"
+                >
+                  <Grid className="size-4" strokeWidth={1.75} />
+                  <span>অন্যান্য বিভাগ দেখুন</span>
+                </button>
+                <Link
+                  href="/services"
+                  className="flex min-h-10 w-full items-center gap-2 rounded-lg px-2.5 py-2 text-xs font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+                >
+                  <Layers className="size-4" strokeWidth={1.75} />
+                  <span>সকল সেবার তালিকা</span>
+                </Link>
+              </div>
+            )}
+          </div>
+        ) : (
+          <nav className="space-y-0.5" aria-label="সকল বিভাগ ও মডিউল">
+            {activeModule && !collapsed && (
+              <div className="mb-1 flex items-center justify-between border-b border-zinc-200 px-1 pb-2 dark:border-zinc-800">
+                <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">
+                  সকল প্রধান বিভাগ
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowAllModules(false)}
+                  className="flex items-center gap-1 text-xs font-medium text-[var(--accent-ink)] hover:underline"
+                >
+                  <ArrowLeft className="size-3" strokeWidth={1.75} />
+                  বর্তমান মডিউল
+                </button>
+              </div>
+            )}
+
+            <SubItem
+              href="/international/world-clock"
+              label="গ্লোবাল তথ্য"
+              icon={Globe}
+              isActive={pathname.startsWith("/international")}
+              collapsed={collapsed}
+              onHover={handleMouseEnter}
+              onLeave={handleMouseLeave}
+            />
+            <SubItem
+              href="/tools/internet-speed-test"
+              label="টুলস ও ইউটিলিটি"
+              icon={Wrench}
+              isActive={pathname.startsWith("/tools")}
+              collapsed={collapsed}
+              onHover={handleMouseEnter}
+              onLeave={handleMouseLeave}
+            />
+            <SubItem
+              href="/converter/currency"
+              label="কনভার্টার হাব"
+              icon={ArrowLeftRight}
+              isActive={pathname.startsWith("/converter")}
+              collapsed={collapsed}
+              onHover={handleMouseEnter}
+              onLeave={handleMouseLeave}
+            />
+            <SubItem
+              href="/bangla/calendar"
+              label="বাংলা ক্যালেন্ডার ও ছুটি"
+              icon={Calendar}
+              isActive={pathname.startsWith("/bangla")}
+              collapsed={collapsed}
+              onHover={handleMouseEnter}
+              onLeave={handleMouseLeave}
+            />
+            <SubItem
+              href="/bangladesh/introduction"
+              label="বাংলাদেশ তথ্য"
+              icon={Flag}
+              isActive={pathname.startsWith("/bangladesh")}
+              collapsed={collapsed}
+              onHover={handleMouseEnter}
+              onLeave={handleMouseLeave}
+            />
+            <SubItem
+              href="/islam/basic"
+              label="ইসলামিক জ্ঞান"
+              icon={Moon}
+              isActive={pathname.startsWith("/islam")}
+              collapsed={collapsed}
+              onHover={handleMouseEnter}
+              onLeave={handleMouseLeave}
+            />
+            <SubItem
+              href="/contact/police"
+              label="জরুরি নম্বর ও সেবা"
+              icon={PhoneCall}
+              isActive={pathname.startsWith("/contact")}
+              collapsed={collapsed}
+              onHover={handleMouseEnter}
+              onLeave={handleMouseLeave}
+            />
+            <SubItem
+              href="/signs/all"
+              label="সংকেত ও সচেতনতা"
+              icon={ShieldAlert}
+              isActive={pathname.startsWith("/signs")}
+              collapsed={collapsed}
+              onHover={handleMouseEnter}
+              onLeave={handleMouseLeave}
+            />
+            <SubItem
+              href="/news/headlines"
+              label="সংবাদ শিরোনাম"
+              icon={Newspaper}
+              isActive={pathname.startsWith("/news")}
+              collapsed={collapsed}
+              onHover={handleMouseEnter}
+              onLeave={handleMouseLeave}
+            />
+
+            <div className="mt-1.5 border-t border-zinc-200 pt-1.5 dark:border-zinc-800">
+              <SubItem
+                href="/ai/chat"
+                label="Totthobox AI"
+                icon={MessageSquare}
+                isActive={pathname.startsWith("/ai")}
+                collapsed={collapsed}
+                onHover={handleMouseEnter}
+                onLeave={handleMouseLeave}
+              />
+            </div>
+          </nav>
+        )}
+      </div>
+
+      {/* Footer */}
+      <div className="shrink-0 space-y-1 border-t border-zinc-200 bg-zinc-50 p-2.5 dark:border-zinc-800 dark:bg-zinc-950">
+        <button
+          type="button"
+          onClick={openSettingsModal}
+          onMouseEnter={(e) => handleMouseEnter(e, "থিম ও সেটিংস")}
+          onMouseLeave={handleMouseLeave}
+          className={cn(
+            "flex min-h-10 w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-200/60 dark:text-zinc-300 dark:hover:bg-zinc-800",
+            collapsed && "justify-center px-2",
+          )}
+          title="থিম ও সেটিংস"
+          aria-label="থিম ও সেটিংস"
+        >
+          <Settings
+            className="size-4.5 shrink-0 text-zinc-500"
+            strokeWidth={1.75}
           />
-        </div>
-      </aside>
-    </>
+          {!collapsed && (
+            <span className="flex-1 truncate text-left">থিম ও সেটিংস</span>
+          )}
+        </button>
+
+        <ProfileMenu
+          variant="sidebar"
+          collapsed={collapsed}
+          onHover={handleMouseEnter}
+          onLeave={handleMouseLeave}
+        />
+      </div>
+    </aside>
   );
 }

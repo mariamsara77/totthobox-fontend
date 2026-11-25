@@ -219,7 +219,7 @@ export default function CookieSettings() {
       {isOpen && (
         <div className="fixed bottom-6 right-4 sm:right-6 z-50">
           <div
-            className="fixed inset-0 -z-10 bg-black/20 dark:bg-black/50 backdrop-blur-xs"
+            className="fixed inset-0 -z-10 bg-black/40"
             onClick={closeSettings}
           />
 
@@ -227,7 +227,7 @@ export default function CookieSettings() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="cookie-title"
-            className="w-[calc(100vw-2rem)] sm:w-96 max-w-sm overflow-hidden rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/95 shadow-2xl backdrop-blur-xl"
+            className="w-[calc(100vw-2rem)] sm:w-96 max-w-sm overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-lg dark:border-zinc-800 dark:bg-zinc-950"
           >
             <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-100 dark:border-zinc-800/80">
               <h3

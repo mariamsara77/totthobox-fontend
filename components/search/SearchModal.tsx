@@ -140,19 +140,19 @@ export default function SearchModal({ onClose }: SearchModalProps) {
     >
       {/* Backdrop */}
       <div
-        className={`absolute inset-0 bg-black/50 dark:bg-black/75 backdrop-blur-xs transition-all duration-300 ease-out ${
+        className={`absolute inset-0 bg-black/45 transition-opacity duration-200 ${
           entered ? "opacity-100" : "opacity-0"
         }`}
       />
 
-      {/* Modal Panel: Full-screen on mobile (<sm), elegant floating modal on sm+ */}
+      {/* Modal Panel: Full-screen on mobile (<sm), crisp floating modal on sm+ */}
       <div
         ref={modalRef}
         onClick={(e) => e.stopPropagation()}
-        className={`relative flex flex-col h-full sm:h-auto max-h-screen sm:max-h-[85vh] w-full max-w-none sm:max-w-2xl overflow-hidden rounded-none sm:rounded-2xl border-0 sm:border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-2xl backdrop-blur-xl transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`relative flex flex-col h-full sm:h-auto max-h-screen sm:max-h-[85vh] w-full max-w-none sm:max-w-2xl overflow-hidden rounded-none sm:rounded-2xl border-0 sm:border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 shadow-lg transition-[transform,opacity] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           entered
             ? "translate-y-0 scale-100 opacity-100"
-            : "translate-y-4 scale-[0.97] opacity-0"
+            : "translate-y-2 scale-[0.99] opacity-0"
         }`}
       >
         {/* Header */}

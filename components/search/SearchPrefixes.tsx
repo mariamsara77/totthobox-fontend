@@ -44,7 +44,7 @@ export default function SearchPrefixes({
               key={prefix}
               type="button"
               onClick={() => onChoose(prefix)}
-              className="rounded-lg border border-zinc-200/80 bg-zinc-50 px-2.5 py-1.5 text-[11.5px] font-medium text-zinc-600 transition-all hover:border-zinc-300 hover:bg-white hover:text-zinc-900 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-zinc-300 dark:border-zinc-800 dark:bg-zinc-400/10 dark:text-zinc-400 dark:hover:border-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+              className="rounded-lg border border-zinc-200 bg-zinc-50 px-2.5 py-1.5 text-xs font-medium text-zinc-600 transition-colors hover:border-zinc-300 hover:bg-white hover:text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:border-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
             >
               {prefix}:
             </button>
