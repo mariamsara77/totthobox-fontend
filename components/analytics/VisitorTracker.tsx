@@ -6,24 +6,11 @@ import { trackVisitorPageView, sendVisitorHeartbeat } from "@/lib/visitor-tracke
 
 export default function VisitorTracker() {
   const pathname = usePathname();
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const heartbeatTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Track pageview on route changes (debounced by 300ms)
+  // Track pageview immediately on mount and every route change
   useEffect(() => {
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-
-    debounceTimerRef.current = setTimeout(() => {
-      trackVisitorPageView(pathname);
-    }, 300);
-
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-    };
+    trackVisitorPageView(pathname);
   }, [pathname]);
 
   // Heartbeat management: every 60s while tab is visible

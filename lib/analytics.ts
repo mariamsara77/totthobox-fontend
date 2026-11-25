@@ -158,16 +158,6 @@ export function trackOutboundClick(url: string, targetType?: string): void {
 }
 
 /**
- * Track file or data download clicks.
- */
-export function trackDownload(filename: string, fileType?: string): void {
-  trackEvent("download_click", {
-    filename,
-    file_type: fileType ?? "unknown",
-  });
-}
-
-/**
  * Track infinite scroll pagination loads.
  */
 export function trackInfiniteScrollLoad(feedType: string, pageNumber: number): void {

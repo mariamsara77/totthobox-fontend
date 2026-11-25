@@ -148,61 +148,72 @@ function sendPayload(url: string, payload: unknown): void {
   }
 }
 
-function runWhenIdle(callback: () => void): void {
-  if (typeof window === "undefined") return;
-  if ("requestIdleCallback" in window) {
-    (window as Window & { requestIdleCallback: (cb: IdleRequestCallback, opt?: IdleRequestOptions) => number }).requestIdleCallback(
-      () => callback(),
-      { timeout: 3000 },
-    );
-  } else {
-    setTimeout(callback, 800);
+const PV_DEDUPE_STORAGE_KEY = "tb_pv_dedupe";
+const DEDUPE_WINDOW_MS = 30 * 60 * 1000; // 30 minutes per path
+const memoryDedupeMap = new Map<string, number>();
+
+function shouldSkipDuplicatePageView(pathname: string, now: number): boolean {
+  try {
+    const raw = sessionStorage.getItem(PV_DEDUPE_STORAGE_KEY);
+    const map: Record<string, number> = raw ? (JSON.parse(raw) as Record<string, number>) : {};
+    const lastSeen = map[pathname];
+    if (typeof lastSeen === "number" && now - lastSeen < DEDUPE_WINDOW_MS) {
+      return true;
+    }
+    // Prune expired entries to keep sessionStorage compact
+    for (const key of Object.keys(map)) {
+      if (now - map[key] >= DEDUPE_WINDOW_MS) {
+        delete map[key];
+      }
+    }
+    map[pathname] = now;
+    sessionStorage.setItem(PV_DEDUPE_STORAGE_KEY, JSON.stringify(map));
+    return false;
+  } catch {
+    const lastSeen = memoryDedupeMap.get(pathname);
+    if (typeof lastSeen === "number" && now - lastSeen < DEDUPE_WINDOW_MS) {
+      return true;
+    }
+    memoryDedupeMap.set(pathname, now);
+    return false;
   }
 }
-
-let lastTrackedPath = "";
-let lastTrackedTime = 0;
-const DEDUPE_WINDOW_MS = 4000;
 
 export function trackVisitorPageView(pathname: string): void {
   if (typeof window === "undefined" || isBot()) return;
   if (!hasAnalyticsConsent() || isIgnoredRoute(pathname)) return;
 
   const now = Date.now();
-  if (lastTrackedPath === pathname && now - lastTrackedTime < DEDUPE_WINDOW_MS) {
+  if (shouldSkipDuplicatePageView(pathname, now)) {
     return;
   }
-  lastTrackedPath = pathname;
-  lastTrackedTime = now;
 
-  runWhenIdle(() => {
-    const { visitorId, isFirstVisit } = getVisitorId();
-    const sessionId = getSessionId();
-    const searchParams = new URLSearchParams(window.location.search);
+  const { visitorId, isFirstVisit } = getVisitorId();
+  const sessionId = getSessionId();
+  const searchParams = new URLSearchParams(window.location.search);
 
-    const payload: VisitorPageviewPayload = {
-      visitor_id: visitorId,
-      session_id: sessionId,
-      is_first_visit: isFirstVisit,
-      is_pwa: detectPwa(),
-      has_installed: hasInstalledPwa(),
-      referrer: document.referrer || "",
-      path: pathname,
-      url: window.location.href, // Preserves real origin (localhost:3000 vs totthobox.com)
-      title: document.title || "",
-      utm_source: searchParams.get("utm_source"),
-      utm_medium: searchParams.get("utm_medium"),
-      utm_campaign: searchParams.get("utm_campaign"),
-      load_time_ms: getLoadTimeMs(),
-      screen_res: typeof window !== "undefined" ? `${screen.width}x${screen.height}` : "",
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Dhaka",
-      device_type: getDeviceType(),
-      language: navigator.language || "bn",
-      timestamp: now,
-    };
+  const payload: VisitorPageviewPayload = {
+    visitor_id: visitorId,
+    session_id: sessionId,
+    is_first_visit: isFirstVisit,
+    is_pwa: detectPwa(),
+    has_installed: hasInstalledPwa(),
+    referrer: document.referrer || "",
+    path: pathname,
+    url: window.location.href,
+    title: document.title || "",
+    utm_source: searchParams.get("utm_source"),
+    utm_medium: searchParams.get("utm_medium"),
+    utm_campaign: searchParams.get("utm_campaign"),
+    load_time_ms: getLoadTimeMs(),
+    screen_res: typeof window !== "undefined" ? `${screen.width}x${screen.height}` : "",
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Dhaka",
+    device_type: getDeviceType(),
+    language: navigator.language || "bn",
+    timestamp: now,
+  };
 
-    sendPayload("/api/analytics/pageview", payload);
-  });
+  sendPayload("/api/analytics/pageview", payload);
 }
 
 export function sendVisitorHeartbeat(pathname: string): void {

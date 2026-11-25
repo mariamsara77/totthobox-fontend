@@ -73,15 +73,23 @@ export function getClientHeaders(req: NextRequest): Record<string, string> {
     "127.0.0.1";
 
   const userAgent = req.headers.get("user-agent") || "TotthoboxFrontend/1.0";
+  const referer = req.headers.get("referer");
 
-  return {
+  const headers: Record<string, string> = {
     "Content-Type": "application/json",
     Accept: "application/json",
     "X-Requested-With": "XMLHttpRequest",
     "User-Agent": userAgent,
+    "CF-Connecting-IP": clientIp,
     "X-Forwarded-For": clientIp,
     "X-Real-IP": clientIp,
   };
+
+  if (referer) {
+    headers.Referer = referer;
+  }
+
+  return headers;
 }
 
 export function isBotOrIgnored(req: NextRequest, path?: string | null): boolean {
