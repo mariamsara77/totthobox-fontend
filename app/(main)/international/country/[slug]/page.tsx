@@ -618,7 +618,7 @@ export default async function CountryPage({ params }: Props) {
                     className="flex justify-between items-center px-4 py-3"
                   >
                     <div className="flex items-center gap-2">
-                      <span className="px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 text-xs font-mono font-bold">
+                      <span className="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 text-xs font-mono font-bold">
                         {cur.code}
                       </span>
                       <span className="text-sm ">{cur.name}</span>

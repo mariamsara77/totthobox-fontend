@@ -16,12 +16,12 @@ const PADDING_MAP = {
 
 const VARIANT_MAP: Record<CardVariant, string> = {
   default:
-    "border border-zinc-200/80 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 shadow-xs",
+    "border border-zinc-200/80 dark:border-zinc-800 bg-[var(--surface-card)] shadow-[var(--shadow-xs)]",
   elevated:
-    "border border-zinc-200/60 dark:border-zinc-800/80 bg-white dark:bg-zinc-900 shadow-md",
-  flat: "border-0 bg-zinc-100/80 dark:bg-zinc-800/60 shadow-none",
+    "border border-zinc-200/60 dark:border-zinc-800/80 bg-[var(--surface-card)] shadow-[var(--shadow-md)]",
+  flat: "border-0 bg-[var(--surface-raised)] shadow-none",
   interactive:
-    "border border-zinc-200/80 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 shadow-xs hover:shadow-md hover:border-indigo-400 dark:hover:border-indigo-500/50 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer",
+    "border border-zinc-200/80 dark:border-zinc-800 bg-[var(--surface-card)] shadow-[var(--shadow-xs)] hover:shadow-[var(--shadow-md)] hover:border-[var(--accent-soft-border)] hover:-translate-y-0.5 transition-[box-shadow,border-color,transform] duration-[var(--duration-normal)] motion-reduce:hover:translate-y-0 cursor-pointer",
 };
 
 export const Card = React.forwardRef<HTMLDivElement, CardProps>(

@@ -141,7 +141,7 @@ export default function EditorialPolicyPage() {
       {/* Section 4: Corrections */}
       <section className="space-y-4">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
+          <div className="p-2.5 rounded-xl bg-[var(--accent-soft)] text-[var(--accent-ink)]">
             <RefreshCw className="w-5 h-5" />
           </div>
           <h2 className="text-xl sm:text-2xl font-bold text-zinc-900 dark:text-zinc-100">

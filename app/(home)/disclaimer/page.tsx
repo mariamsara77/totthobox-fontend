@@ -54,7 +54,7 @@ export default function DisclaimerPage() {
     <div className="mx-auto max-w-3xl px-4 py-8 sm:py-12">
       {/* Header */}
       <div className="text-center space-y-4 mb-12">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium bg-[var(--accent-soft)] text-[var(--accent-ink)] border border-[var(--accent-soft-border)]">
           <ShieldAlert className="w-3.5 h-3.5" />
           আইনি নোটিশ ও ব্যবহারকারীর সচেতনতা
         </div>

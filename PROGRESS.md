@@ -15,19 +15,19 @@
   - **Search:** `/search`, `/api/search`, `/api/search/meta` (`admin.totthobox.com/api/search*`)
   - **Tools & Converters (client-interactive + API):** `/tools/*` (10 tools), `/converter/*` (16 converters), `/pdf-editor`, `/live-tv`
   - **Dynamic List & Detail (Laravel API `admin.totthobox.com/api/*`):** `/bangla/calendar`, `/bangla/holiday`, `/bangla/holiday/[slug]`, `/bangladesh/establishment`, `/bangladesh/establishment/[slug]`, `/bangladesh/history`, `/bangladesh/history/[slug]`, `/bangladesh/introduction`, `/bangladesh/introduction/[slug]`, `/bangladesh/public-figure`, `/bangladesh/public-figure/[slug]`, `/bangladesh/tourism`, `/bangladesh/tourism/[slug]`, `/international/all-country`, `/international/country/[slug]`, `/international/calling-codes`, `/international/crypto-forex`, `/international/world-clock`, `/islam/basic`, `/islam/basic/[slug]`, `/islam/dowan`, `/islam/dowan/[slug]`, `/signs/[category]`, `/signs/[category]/[sign]`, `/contact/[slug]`, `/news`, `/news/headlines`, `/news/headlines/[slug]`, `/news/headlines/story/[slug]`
-- [x] **0.3 Baseline Checks** — `npx next typegen && npx tsc --noEmit` PASS (0 errors); `npm run test:nav` PASS (9 categories, 40 items); `npm run lint` 5 pre-existing errors in `CryptoForexClient.tsx` and `WorldClockClient.tsx`; `npm run build` blocked on `next/font/google` (`ETIMEDOUT 142.250.182.202:443` to `fonts.gstatic.com` from this host); Lighthouse CLI `13.6.0` installed (production Lighthouse baseline pending reachable production build).
-- [x] **0.4 Create `PROGRESS.md` Checklist** — Initialized full Phase 0–9 checklist.
+- [x] **0.3 Baseline Checks** — `npx next typegen && npx tsc --noEmit` PASS (0 errors); `npm run test:nav` PASS (9 categories, 40 items); `npm run lint` 5 pre-existing errors fixed in `CryptoForexClient.tsx` and `WorldClockClient.tsx` (`557edcd` -> 0 errors); software-route 301 redirects added in `next.config.ts` (`9d62382`); `npm run build` blocked locally on `next/font/google` (`ETIMEDOUT 142.250.182.202:443` to `fonts.gstatic.com`); Lighthouse CLI `13.6.0` installed — **baseline pending, measure on Vercel preview / PageSpeed Insights**.
+- [x] **0.4 Create `PROGRESS.md` Checklist** — Initialized full Phase 0–9 checklist and baseline decisions.
 
 ---
 
 ## Phase 1 — Tailwind v4 + Design System Foundation
 
-- [ ] **1.1** Audit Tailwind v4 config in `app/globals.css`, remove any legacy/deprecated utilities and dead CSS.
-- [ ] **1.2** Enforce Color Rule: remove `sepia` (warm cream/beige) and warm `amber`/`crimson` surface tints; use clean neutral cool slate/zinc surfaces with light/dark/system support.
-- [ ] **1.3** Standardize design tokens in `@theme` / CSS variables (surface layers, text, muted, accent, semantic status, radius, shadows, spacing, motion durations).
-- [ ] **1.4** Audit `next/font` setup (`Hind_Siliguri`, `Noto_Sans_Bengali`, `Geist`, `Geist_Mono`) for `display: "swap"`, subsetting, and zero render-blocking CSS.
-- [ ] **1.5** Standardize UI primitives (`Button`, `Card`, `Input`, `Badge`, `Skeleton`, `Modal/Sheet`, `Tooltip`, `Toast`) with consistent focus rings, hover/active states, and reduced-motion support.
-- [ ] **1.6** Phase 1 verification (`npm run lint`, `npx tsc --noEmit`, `npm run build`).
+- [x] **1.1** Audited Tailwind v4 config in `app/globals.css`, restored missing `@font-face` for `Adorsholipi Exp` (`/fonts/adorsholipi-exp.woff2`), and removed legacy `.sepia` rules. (`app/globals.css`, `npx tsc --noEmit` + `npm run lint` PASS)
+- [x] **1.2** Enforced Color Rule: removed `sepia` mode and `amber`/`crimson` accents (`indigo`, `blue`, `emerald`, `violet`, `teal`, `rose` cool/neutral accents only); added safe migration (`sepia`/`amber`/`crimson` -> `system` + default accent) in both `lib/appearance.ts` (`APPEARANCE_INIT_SCRIPT` + `resolveStored*`) and `context/AppearanceContext.tsx`; replaced non-warning amber/orange surfaces in `ToolGuide.tsx`, `SearchResultItem.tsx`, `ContactClient.tsx`, trust pages, `HistoryClient.tsx`, `HistoryShowClient.tsx`, `country/[slug]/page.tsx`, and `services-catalog.ts`.
+- [x] **1.3** Standardized design tokens in `@theme inline` and `:root`/`.dark` CSS variables (surfaces, text, muted, accent, status, radii, shadows, motion durations). (`app/globals.css`)
+- [x] **1.4** Audited `next/font` setup (`Hind_Siliguri`, `Noto_Sans_Bengali`, `Geist`, `Geist_Mono` in `app/layout.tsx`, all `display: "swap"`); prepared self-hosted `next/font/local` proposal awaiting user approval (no `next/font` code changed yet).
+- [x] **1.5** Standardized UI primitives (`Button`, `Card`, `Chip`, `Badge`, `Input`, `Modal`, `Tooltip`, `Skeleton`) and `Toaster` in `app/providers.tsx` with focus rings, 44px targets, and `motion-reduce` support.
+- [x] **1.6** Phase 1 verification — `npx tsc --noEmit` PASS (0 errors), `npm run test:nav` PASS (9 categories, 40 items), `npm run lint` PASS (0 errors, 517 warnings); `npm run build` blocked on `next/font/google` `ETIMEDOUT` pending approval for `next/font/local` migration.
 
 ---
 

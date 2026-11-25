@@ -175,7 +175,7 @@ export default function HistoryShowClient({ history }: Props) {
               ইতিহাস ও ঐতিহ্য
             </span>
             {history.is_featured && (
-              <span className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-md bg-amber-500/15 text-amber-600 dark:text-amber-400">
+              <span className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-md bg-[var(--accent-soft)] text-[var(--accent-ink)]">
                 <Star className="w-3 h-3" />
                 Featured
               </span>

@@ -12,7 +12,7 @@ export interface ChipProps extends React.HTMLAttributes<HTMLSpanElement> {
 
 const VARIANT_MAP: Record<ChipVariant, string> = {
   default: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
-  primary: "bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20",
+  primary: "bg-[var(--accent-soft)] text-[var(--accent-ink)] border border-[var(--accent-soft-border)]",
   success: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20",
   warning: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20",
   danger: "bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20",

@@ -457,7 +457,7 @@ export default function ContactClient() {
       <div className="p-5 rounded-2xl bg-zinc-400/10 border border-zinc-400/25">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="p-3.5 rounded-xl bg-orange-100 dark:bg-orange-950/40 text-orange-600">
+            <div className="p-3.5 rounded-xl bg-[var(--accent-soft)] text-[var(--accent-ink)]">
               <MapPin className="w-6 h-6" />
             </div>
             <div>

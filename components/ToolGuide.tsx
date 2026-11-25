@@ -214,7 +214,7 @@ export default function ToolGuide({ content, guide, className = "" }: ToolGuideP
             {workedExamples.map((ex, idx) => (
               <div
                 key={idx}
-                className="p-4 rounded-2xl bg-amber-500/5 dark:bg-amber-500/5 border border-amber-500/20 space-y-2"
+                className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 space-y-2"
               >
                 <h4 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100">
                   {ex.title}

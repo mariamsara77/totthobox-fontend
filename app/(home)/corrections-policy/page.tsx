@@ -78,7 +78,7 @@ export default function CorrectionsPolicyPage() {
         {/* Section 3 */}
         <Card className="space-y-3">
           <div className="flex items-center gap-2.5 text-base font-bold text-zinc-900 dark:text-zinc-100">
-            <div className="flex size-8 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
+            <div className="flex size-8 items-center justify-center rounded-xl bg-[var(--accent-soft)] text-[var(--accent-ink)]">
               <Icon name="AlertCircle" size="xs" />
             </div>
             <h2>৩. পাঠক প্রতিক্রিয়া ও ভুল অবহিতকরণ প্রক্রিয়া</h2>

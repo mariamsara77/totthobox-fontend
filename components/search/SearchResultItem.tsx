@@ -29,7 +29,7 @@ function highlightMatch(text: string, query: string) {
         ) ? (
           <mark
             key={i}
-            className="rounded-xs bg-amber-100 px-0.5 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300"
+            className="rounded-xs bg-[var(--accent-soft)] px-0.5 text-[var(--accent-ink)]"
           >
             {part}
           </mark>

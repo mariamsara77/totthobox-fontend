@@ -23,7 +23,7 @@ export function Skeleton({
   return (
     <div
       aria-hidden="true"
-      className={`animate-pulse bg-zinc-200 dark:bg-zinc-800 ${variantClasses[variant]} ${className}`}
+      className={`animate-pulse motion-reduce:animate-none bg-zinc-200 dark:bg-zinc-800 ${variantClasses[variant]} ${className}`}
       style={{
         width,
         height,

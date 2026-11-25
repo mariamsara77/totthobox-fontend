@@ -63,7 +63,7 @@ const teamList = [
     key: "history",
     ...EDITORIAL_PROFILES.history,
     icon: Award,
-    color: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
+    color: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400",
   },
   {
     key: "engineering",

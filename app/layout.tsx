@@ -3,6 +3,7 @@ import Script from "next/script";
 import { Geist, Geist_Mono, Noto_Sans_Bengali, Hind_Siliguri } from "next/font/google";
 import "./globals.css";
 import { AppProviders } from "./providers";
+import { APPEARANCE_INIT_SCRIPT } from "@/lib/appearance";
 import TagManager from "@/components/partials/TagManager";
 import RouteTracker from "@/components/analytics/RouteTracker";
 import DeferredVisitorTracker from "@/components/DeferredVisitorTracker";
@@ -150,6 +151,10 @@ export default function RootLayout({
       }
     >
       <head>
+        <script
+          id="appearance-init"
+          dangerouslySetInnerHTML={{ __html: APPEARANCE_INIT_SCRIPT }}
+        />
         <meta name="author" content="Totthobox Team" />
         <meta property="fb:app_id" content="1108131871544005" />
         <meta
@@ -221,7 +226,7 @@ export default function RootLayout({
       </head>
       <body
         suppressHydrationWarning
-        className="antialiased bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+        className="antialiased"
       >
         <noscript>
           <iframe
