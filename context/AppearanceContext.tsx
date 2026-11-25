@@ -11,71 +11,134 @@ import {
 import {
   ACCENT_STORAGE_KEY,
   applyAppearanceToDocument,
-  DEFAULT_ACCENT,
-  DEFAULT_THEME_MODE,
+  DEFAULT_APPEARANCE,
+  DENSITY_STORAGE_KEY,
+  FONT_SIZE_STORAGE_KEY,
+  RADIUS_STORAGE_KEY,
+  REDUCE_MOTION_STORAGE_KEY,
   resolveEffectiveTheme,
   resolveStoredAccentId,
+  resolveStoredDensity,
+  resolveStoredFontSize,
+  resolveStoredRadius,
+  resolveStoredReduceMotion,
+  resolveStoredSidebarStyle,
   resolveStoredThemeMode,
+  SIDEBAR_STYLE_STORAGE_KEY,
   THEME_MODE_STORAGE_KEY,
   type AccentId,
+  type AppearancePreferences,
+  type DensityPreset,
+  type FontSizePreset,
+  type RadiusPreset,
   type ResolvedThemeMode,
+  type SidebarStyle,
   type ThemeMode,
 } from "@/lib/appearance";
 
-interface AppearanceContextValue {
-  mode: ThemeMode;
+interface AppearanceContextValue extends AppearancePreferences {
   resolvedMode: ResolvedThemeMode;
-  accent: AccentId;
   mounted: boolean;
   setMode: (mode: ThemeMode) => void;
   setAccent: (accent: AccentId) => void;
+  setRadius: (radius: RadiusPreset) => void;
+  setDensity: (density: DensityPreset) => void;
+  setFontSize: (fontSize: FontSizePreset) => void;
+  setReduceMotion: (reduceMotion: boolean) => void;
+  setSidebarStyle: (sidebarStyle: SidebarStyle) => void;
   resetAppearance: () => void;
 }
 
 const AppearanceContext = createContext<AppearanceContextValue | null>(null);
 
+function safeSetStorage(key: string, value: string) {
+  try {
+    window.localStorage.setItem(key, value);
+  } catch {
+    // Ignore storage errors in restricted contexts
+  }
+}
+
 export function AppearanceProvider({ children }: { children: ReactNode }) {
-  const [mode, setModeState] = useState<ThemeMode>(DEFAULT_THEME_MODE);
+  const [prefs, setPrefs] = useState<AppearancePreferences>(DEFAULT_APPEARANCE);
   const [resolvedMode, setResolvedMode] = useState<ResolvedThemeMode>("light");
-  const [accent, setAccentState] = useState<AccentId>(DEFAULT_ACCENT);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    let initialMode: ThemeMode = DEFAULT_THEME_MODE;
-    let initialAccent: AccentId = DEFAULT_ACCENT;
+    let loaded: AppearancePreferences = { ...DEFAULT_APPEARANCE };
 
     try {
       const rawMode = window.localStorage.getItem(THEME_MODE_STORAGE_KEY);
-      initialMode = resolveStoredThemeMode(rawMode);
-      if (rawMode !== null && initialMode !== rawMode) {
-        window.localStorage.setItem(THEME_MODE_STORAGE_KEY, initialMode);
+      const mode = resolveStoredThemeMode(rawMode);
+      if (rawMode !== null && mode !== rawMode) {
+        safeSetStorage(THEME_MODE_STORAGE_KEY, mode);
       }
 
       const rawAccent = window.localStorage.getItem(ACCENT_STORAGE_KEY);
-      initialAccent = resolveStoredAccentId(rawAccent);
-      if (rawAccent !== null && initialAccent !== rawAccent) {
-        window.localStorage.setItem(ACCENT_STORAGE_KEY, initialAccent);
+      const accent = resolveStoredAccentId(rawAccent);
+      if (rawAccent !== null && accent !== rawAccent) {
+        safeSetStorage(ACCENT_STORAGE_KEY, accent);
       }
+
+      const radius = resolveStoredRadius(
+        window.localStorage.getItem(RADIUS_STORAGE_KEY),
+      );
+      const density = resolveStoredDensity(
+        window.localStorage.getItem(DENSITY_STORAGE_KEY),
+      );
+      const fontSize = resolveStoredFontSize(
+        window.localStorage.getItem(FONT_SIZE_STORAGE_KEY),
+      );
+      const rawReduce = window.localStorage.getItem(REDUCE_MOTION_STORAGE_KEY);
+      const reduceMotion =
+        rawReduce !== null
+          ? resolveStoredReduceMotion(rawReduce)
+          : typeof window.matchMedia === "function" &&
+              window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const sidebarStyle = resolveStoredSidebarStyle(
+        window.localStorage.getItem(SIDEBAR_STYLE_STORAGE_KEY),
+      );
+
+      loaded = {
+        mode,
+        accent,
+        radius,
+        density,
+        fontSize,
+        reduceMotion,
+        sidebarStyle,
+      };
     } catch {
       // Ignore storage errors in restricted contexts
     }
 
-    setModeState(initialMode);
-    setAccentState(initialAccent);
-    setResolvedMode(applyAppearanceToDocument(initialMode, initialAccent));
+    setPrefs(loaded);
+    setResolvedMode(applyAppearanceToDocument(loaded));
     setMounted(true);
 
     const handleStorage = (event: StorageEvent) => {
-      if (event.key === THEME_MODE_STORAGE_KEY) {
-        const nextMode = resolveStoredThemeMode(event.newValue);
-        setModeState(nextMode);
-        setResolvedMode(applyAppearanceToDocument(nextMode, initialAccent));
-      }
-      if (event.key === ACCENT_STORAGE_KEY) {
-        const nextAccent = resolveStoredAccentId(event.newValue);
-        setAccentState(nextAccent);
-        setResolvedMode(applyAppearanceToDocument(initialMode, nextAccent));
-      }
+      setPrefs((prev) => {
+        const next = { ...prev };
+        if (event.key === THEME_MODE_STORAGE_KEY) {
+          next.mode = resolveStoredThemeMode(event.newValue);
+        } else if (event.key === ACCENT_STORAGE_KEY) {
+          next.accent = resolveStoredAccentId(event.newValue);
+        } else if (event.key === RADIUS_STORAGE_KEY) {
+          next.radius = resolveStoredRadius(event.newValue);
+        } else if (event.key === DENSITY_STORAGE_KEY) {
+          next.density = resolveStoredDensity(event.newValue);
+        } else if (event.key === FONT_SIZE_STORAGE_KEY) {
+          next.fontSize = resolveStoredFontSize(event.newValue);
+        } else if (event.key === REDUCE_MOTION_STORAGE_KEY) {
+          next.reduceMotion = resolveStoredReduceMotion(event.newValue);
+        } else if (event.key === SIDEBAR_STYLE_STORAGE_KEY) {
+          next.sidebarStyle = resolveStoredSidebarStyle(event.newValue);
+        } else {
+          return prev;
+        }
+        setResolvedMode(applyAppearanceToDocument(next));
+        return next;
+      });
     };
 
     window.addEventListener("storage", handleStorage);
@@ -83,65 +146,104 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (!mounted || mode !== "system" || typeof window.matchMedia !== "function") {
+    if (
+      !mounted ||
+      prefs.mode !== "system" ||
+      typeof window.matchMedia !== "function"
+    ) {
       return;
     }
     const media = window.matchMedia("(prefers-color-scheme: dark)");
     const handleChange = () => {
-      setResolvedMode(applyAppearanceToDocument("system", accent));
+      setResolvedMode(applyAppearanceToDocument(prefs));
     };
     media.addEventListener("change", handleChange);
     return () => media.removeEventListener("change", handleChange);
-  }, [accent, mode, mounted]);
+  }, [mounted, prefs]);
 
-  const setMode = useCallback(
-    (nextMode: ThemeMode) => {
-      setModeState(nextMode);
-      setResolvedMode(applyAppearanceToDocument(nextMode, accent));
-      try {
-        window.localStorage.setItem(THEME_MODE_STORAGE_KEY, nextMode);
-      } catch {
-        // ignore
-      }
+  const updatePref = useCallback(
+    <K extends keyof AppearancePreferences>(
+      key: K,
+      storageKey: string,
+      value: AppearancePreferences[K],
+    ) => {
+      setPrefs((prev) => {
+        const next = { ...prev, [key]: value };
+        setResolvedMode(applyAppearanceToDocument(next));
+        return next;
+      });
+      safeSetStorage(storageKey, String(value));
     },
-    [accent],
+    [],
   );
 
+  const setMode = useCallback(
+    (mode: ThemeMode) => updatePref("mode", THEME_MODE_STORAGE_KEY, mode),
+    [updatePref],
+  );
   const setAccent = useCallback(
-    (nextAccent: AccentId) => {
-      setAccentState(nextAccent);
-      setResolvedMode(applyAppearanceToDocument(mode, nextAccent));
-      try {
-        window.localStorage.setItem(ACCENT_STORAGE_KEY, nextAccent);
-      } catch {
-        // ignore
-      }
-    },
-    [mode],
+    (accent: AccentId) =>
+      updatePref("accent", ACCENT_STORAGE_KEY, accent),
+    [updatePref],
+  );
+  const setRadius = useCallback(
+    (radius: RadiusPreset) =>
+      updatePref("radius", RADIUS_STORAGE_KEY, radius),
+    [updatePref],
+  );
+  const setDensity = useCallback(
+    (density: DensityPreset) =>
+      updatePref("density", DENSITY_STORAGE_KEY, density),
+    [updatePref],
+  );
+  const setFontSize = useCallback(
+    (fontSize: FontSizePreset) =>
+      updatePref("fontSize", FONT_SIZE_STORAGE_KEY, fontSize),
+    [updatePref],
+  );
+  const setReduceMotion = useCallback(
+    (reduceMotion: boolean) =>
+      updatePref("reduceMotion", REDUCE_MOTION_STORAGE_KEY, reduceMotion),
+    [updatePref],
+  );
+  const setSidebarStyle = useCallback(
+    (sidebarStyle: SidebarStyle) =>
+      updatePref("sidebarStyle", SIDEBAR_STYLE_STORAGE_KEY, sidebarStyle),
+    [updatePref],
   );
 
   const resetAppearance = useCallback(() => {
-    setModeState(DEFAULT_THEME_MODE);
-    setAccentState(DEFAULT_ACCENT);
-    setResolvedMode(resolveEffectiveTheme(DEFAULT_THEME_MODE));
-    applyAppearanceToDocument(DEFAULT_THEME_MODE, DEFAULT_ACCENT);
-    try {
-      window.localStorage.setItem(THEME_MODE_STORAGE_KEY, DEFAULT_THEME_MODE);
-      window.localStorage.setItem(ACCENT_STORAGE_KEY, DEFAULT_ACCENT);
-    } catch {
-      // ignore
-    }
+    setPrefs(DEFAULT_APPEARANCE);
+    setResolvedMode(resolveEffectiveTheme(DEFAULT_APPEARANCE.mode));
+    applyAppearanceToDocument(DEFAULT_APPEARANCE);
+    safeSetStorage(THEME_MODE_STORAGE_KEY, DEFAULT_APPEARANCE.mode);
+    safeSetStorage(ACCENT_STORAGE_KEY, DEFAULT_APPEARANCE.accent);
+    safeSetStorage(RADIUS_STORAGE_KEY, DEFAULT_APPEARANCE.radius);
+    safeSetStorage(DENSITY_STORAGE_KEY, DEFAULT_APPEARANCE.density);
+    safeSetStorage(FONT_SIZE_STORAGE_KEY, DEFAULT_APPEARANCE.fontSize);
+    safeSetStorage(
+      REDUCE_MOTION_STORAGE_KEY,
+      String(DEFAULT_APPEARANCE.reduceMotion),
+    );
+    safeSetStorage(
+      SIDEBAR_STYLE_STORAGE_KEY,
+      DEFAULT_APPEARANCE.sidebarStyle,
+    );
   }, []);
 
   return (
     <AppearanceContext.Provider
       value={{
-        mode,
+        ...prefs,
         resolvedMode,
-        accent,
         mounted,
         setMode,
         setAccent,
+        setRadius,
+        setDensity,
+        setFontSize,
+        setReduceMotion,
+        setSidebarStyle,
         resetAppearance,
       }}
     >

@@ -8,6 +8,7 @@ import {
   useCallback,
 } from "react";
 import { usePathname } from "next/navigation";
+import { useAppearance } from "@/context/AppearanceContext";
 
 type SidebarContextType = {
   isOpen: boolean; // mobile overlay
@@ -19,43 +20,63 @@ type SidebarContextType = {
 
 const SidebarContext = createContext<SidebarContextType | null>(null);
 
-export const SidebarProvider = ({ children }: { children: React.ReactNode }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const pathname = usePathname();
+const AUTO_RAIL_BREAKPOINT = 1280;
 
-  // Hydration + localStorage থেকে collapsed state load
+export const SidebarProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [autoCollapsed, setAutoCollapsed] = useState(false);
+  const pathname = usePathname();
+  const { sidebarStyle, setSidebarStyle, mounted } = useAppearance();
+
   useEffect(() => {
-    setMounted(true);
-    const saved = localStorage.getItem("sidebar-collapsed");
-    if (saved === "true") setIsCollapsed(true);
+    if (typeof window === "undefined") return;
+    const update = () => {
+      setAutoCollapsed(window.innerWidth < AUTO_RAIL_BREAKPOINT);
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
   }, []);
 
-  // Route change হলে mobile sidebar বন্ধ
   useEffect(() => {
     setIsOpen(false);
   }, [pathname]);
 
-  const toggleCollapsed = useCallback(() => {
-    setIsCollapsed((prev) => {
-      const next = !prev;
-      localStorage.setItem("sidebar-collapsed", String(next));
-      return next;
-    });
-  }, []);
+  const isCollapsed = !mounted
+    ? false
+    : sidebarStyle === "rail"
+      ? true
+      : sidebarStyle === "expanded"
+        ? false
+        : autoCollapsed;
 
-  // SSR mismatch এড়াতে mounted না হলে default
-  const value: SidebarContextType = {
-    isOpen,
-    setIsOpen,
-    isCollapsed: mounted ? isCollapsed : false,
-    setIsCollapsed,
-    toggleCollapsed,
-  };
+  const setIsCollapsed = useCallback(
+    (collapsed: boolean) => {
+      setSidebarStyle(collapsed ? "rail" : "expanded");
+    },
+    [setSidebarStyle],
+  );
+
+  const toggleCollapsed = useCallback(() => {
+    setSidebarStyle(isCollapsed ? "expanded" : "rail");
+  }, [isCollapsed, setSidebarStyle]);
 
   return (
-    <SidebarContext.Provider value={value}>{children}</SidebarContext.Provider>
+    <SidebarContext.Provider
+      value={{
+        isOpen,
+        setIsOpen,
+        isCollapsed,
+        setIsCollapsed,
+        toggleCollapsed,
+      }}
+    >
+      {children}
+    </SidebarContext.Provider>
   );
 };
 

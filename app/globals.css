@@ -67,6 +67,8 @@
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
+  --space-card: 1.25rem;
+  --space-section: 2.5rem;
   --shadow-xs: 0 1px 2px 0 rgba(9, 9, 11, 0.04);
   --shadow-sm: 0 1px 3px 0 rgba(9, 9, 11, 0.06), 0 1px 2px -1px rgba(9, 9, 11, 0.04);
   --shadow-md: 0 4px 12px -2px rgba(9, 9, 11, 0.08);
@@ -77,6 +79,33 @@
   --font-base-size: 16px;
   --line-height-bangla: 1.75;
   --tap-target-min: 44px;
+}
+
+:root[data-radius="sharp"] {
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.625rem;
+}
+
+:root[data-radius="round"] {
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+}
+
+:root[data-density="compact"] {
+  --space-card: 0.875rem;
+  --space-section: 1.75rem;
+}
+
+:root[data-font-size="sm"] {
+  --font-base-size: 15px;
+}
+
+:root[data-font-size="lg"] {
+  --font-base-size: 17.5px;
 }
 
 .dark {
@@ -284,7 +313,14 @@ img, svg, video, canvas, audio, iframe, embed, object {
   max-width: 100%;
 }
 
-/* Respect user's motion preference */
+/* Respect user's motion preference or explicit Reduce Motion setting */
+.reduce-motion *, .reduce-motion *::before, .reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

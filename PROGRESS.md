@@ -35,7 +35,7 @@
 
 - [x] **2.1** Borders → tonal depth on sidebar and topbar (`--surface-sunken`, `--surface-topbar`, `--surface-hairline` in `app/globals.css`); sticky translucent topbar with `backdrop-blur-md` (`Navbar.tsx`, `NavbarHeader.tsx`, `StickyCategoryNav.tsx`, `MobileBottomNav.tsx`); collapsible desktop icon-rail (`Sidebar.tsx`) and animated mobile slide-over drawer (`MobileNavDrawer.tsx`).
 - [x] **2.2** Moved theme-change control to the **bottom** sticky footer area via shared `SidebarThemeControl.tsx` across expanded sidebar, collapsed icon rail (1-click cycle + settings trigger), and mobile drawer (`MobileNavDrawer.tsx` sticky bottom footer).
-- [ ] **2.3** Upgrade Theme Settings panel: Mode (`Light` / `Dark` / `System`), Accent color (cool palette, no warm tints), Radius (`sharp`/`medium`/`round`), Density (`comfortable`/`compact`), Font size (`S`/`M`/`L`), Reduce motion toggle, Sidebar style (`expanded`/`rail`/`auto`), Reset to default, keyboard accessible with ARIA + FOUC-free init script.
+- [x] **2.3** Upgraded Theme Settings panel (`AppearanceSettings.tsx`, `SettingsModal.tsx`, `lib/appearance.ts`, `AppearanceContext.tsx`, `SidebarContext.tsx`): Mode (`Light`/`Dark`/`System`) with live preview, cool Accent palette, Radius (`sharp`/`medium`/`round`), Density (`comfortable`/`compact`), Bangla Font Size (`S`/`M`/`L`), Sidebar style (`expanded`/`rail`/`auto`), Reduce motion switch, Reset to default, arrow-key `radiogroup` navigation + modal focus trap, and zero-FOUC `APPEARANCE_INIT_SCRIPT`.
 - [ ] **2.4** UI/UX improvement pass across all page types (spacing rhythm, skeletons, tap targets ≥ 44px, breadcrumbs, Bangla line-length, micro-interactions).
 - [ ] **2.5** Phase 2 verification (`npm run lint`, `npx tsc --noEmit`, `npm run build`).
 
