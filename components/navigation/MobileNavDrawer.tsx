@@ -62,13 +62,13 @@ export default function MobileNavDrawer() {
         type="button"
         aria-label="মেনু বন্ধ করুন"
         onClick={closeDrawer}
-        className="fixed inset-0 bg-black/45 transition-opacity"
+        className="tb-backdrop-enter fixed inset-0 bg-black/45 backdrop-blur-[2px]"
       />
 
       {/* Slide-over drawer */}
-      <aside className="pwa-safe-top pb-safe relative z-10 flex h-dvh w-[86vw] max-w-sm flex-col border-r border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
+      <aside className="tb-drawer-enter pwa-safe-top pb-safe relative z-10 flex h-dvh w-[86vw] max-w-sm flex-col bg-[var(--surface-sunken)] shadow-xl">
         {/* Header */}
-        <div className="flex h-14 shrink-0 items-center justify-between border-b border-zinc-200 px-4 dark:border-zinc-800">
+        <div className="flex h-14 shrink-0 items-center justify-between px-4 shadow-[0_1px_0_var(--surface-hairline)]">
           <Link
             href="/"
             onClick={closeDrawer}

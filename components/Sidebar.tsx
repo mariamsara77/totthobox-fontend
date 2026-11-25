@@ -287,8 +287,9 @@ export default function Sidebar() {
 
   return (
     <aside
+      aria-label="সাইডবার নেভিগেশন"
       className={cn(
-        "hidden md:sticky md:top-0 md:flex h-dvh shrink-0 flex-col border-r border-zinc-200 bg-white transition-[width] duration-200 dark:border-zinc-800 dark:bg-zinc-950",
+        "hidden md:sticky md:top-0 md:flex h-dvh shrink-0 flex-col bg-[var(--surface-sunken)] shadow-[1px_0_0_var(--surface-hairline)] transition-[width] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
         collapsed ? "w-16" : "w-64",
       )}
       onMouseLeave={handleMouseLeave}
@@ -367,7 +368,7 @@ export default function Sidebar() {
         {activeModule && !showAllModules ? (
           <div className="space-y-2">
             {!collapsed && (
-              <div className="flex items-center justify-between border-b border-zinc-200 px-1 pb-2 pt-1 dark:border-zinc-800">
+              <div className="flex items-center justify-between px-1 pb-1.5 pt-2">
                 <span className="flex items-center gap-1.5 text-xs font-semibold text-zinc-600 dark:text-zinc-300">
                   {activeModule === "international" && "গ্লোবাল তথ্য"}
                   {activeModule === "tools" && "টুলস ও ইউটিলিটি"}
@@ -939,7 +940,7 @@ export default function Sidebar() {
             )}
 
             {!collapsed && (
-              <div className="space-y-1 border-t border-zinc-200 pt-3 dark:border-zinc-800">
+              <div className="space-y-1 pt-3">
                 <button
                   type="button"
                   onClick={() => setShowAllModules(true)}
@@ -950,7 +951,7 @@ export default function Sidebar() {
                 </button>
                 <Link
                   href="/services"
-                  className="flex min-h-10 w-full items-center gap-2 rounded-lg px-2.5 py-2 text-xs font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+                  className="flex min-h-10 w-full items-center gap-2 rounded-lg px-2.5 py-2 text-xs font-medium text-zinc-600 transition-colors hover:bg-zinc-200/60 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
                 >
                   <Layers className="size-4" strokeWidth={1.75} />
                   <span>সকল সেবার তালিকা</span>
@@ -961,7 +962,7 @@ export default function Sidebar() {
         ) : (
           <nav className="space-y-0.5" aria-label="সকল বিভাগ ও মডিউল">
             {activeModule && !collapsed && (
-              <div className="mb-1 flex items-center justify-between border-b border-zinc-200 px-1 pb-2 dark:border-zinc-800">
+              <div className="mb-1 flex items-center justify-between px-1 pb-1.5 pt-1">
                 <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">
                   সকল প্রধান বিভাগ
                 </span>
@@ -1058,7 +1059,7 @@ export default function Sidebar() {
               onLeave={handleMouseLeave}
             />
 
-            <div className="mt-1.5 border-t border-zinc-200 pt-1.5 dark:border-zinc-800">
+            <div className="mt-2 pt-2">
               <SubItem
                 href="/ai/chat"
                 label="Totthobox AI"
@@ -1074,7 +1075,7 @@ export default function Sidebar() {
       </div>
 
       {/* Footer */}
-      <div className="shrink-0 space-y-1 border-t border-zinc-200 bg-zinc-50 p-2.5 dark:border-zinc-800 dark:bg-zinc-950">
+      <div className="sticky bottom-0 shrink-0 space-y-1 bg-[var(--surface-sunken)] p-2.5 shadow-[0_-1px_0_var(--surface-hairline)]">
         <button
           type="button"
           onClick={openSettingsModal}

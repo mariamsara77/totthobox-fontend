@@ -33,7 +33,7 @@
 
 ## Phase 2 — Sidebar / Topbar Redesign + Theme Settings
 
-- [ ] **2.1** Borders → tonal depth on sidebar and topbar; sticky translucent topbar with `backdrop-blur`; collapsible desktop icon-rail + mobile drawer.
+- [x] **2.1** Borders → tonal depth on sidebar and topbar (`--surface-sunken`, `--surface-topbar`, `--surface-hairline` in `app/globals.css`); sticky translucent topbar with `backdrop-blur-md` (`Navbar.tsx`, `NavbarHeader.tsx`, `StickyCategoryNav.tsx`, `MobileBottomNav.tsx`); collapsible desktop icon-rail (`Sidebar.tsx`) and animated mobile slide-over drawer (`MobileNavDrawer.tsx`).
 - [ ] **2.2** Move theme-change control to the **bottom** sticky footer area of the sidebar (accessible in expanded, collapsed rail, and mobile drawer).
 - [ ] **2.3** Upgrade Theme Settings panel: Mode (`Light` / `Dark` / `System`), Accent color (cool palette, no warm tints), Radius (`sharp`/`medium`/`round`), Density (`comfortable`/`compact`), Font size (`S`/`M`/`L`), Reduce motion toggle, Sidebar style (`expanded`/`rail`/`auto`), Reset to default, keyboard accessible with ARIA + FOUC-free init script.
 - [ ] **2.4** UI/UX improvement pass across all page types (spacing rhythm, skeletons, tap targets ≥ 44px, breadcrumbs, Bangla line-length, micro-interactions).

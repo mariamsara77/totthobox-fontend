@@ -67,7 +67,7 @@ export default function MobileBottomNav() {
   return (
     <nav
       aria-label="মোবাইল বটম নেভিগেশন"
-      className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-zinc-200 bg-white md:hidden dark:border-zinc-800 dark:bg-zinc-950"
+      className="pb-safe fixed inset-x-0 bottom-0 z-40 bg-[var(--surface-topbar)] shadow-[0_-1px_0_var(--surface-hairline)] backdrop-blur-md md:hidden"
     >
       <div className="grid h-14 grid-cols-5 items-stretch">
         <NavLink href="/" label="হোম" Icon={Home} active={isHome} />

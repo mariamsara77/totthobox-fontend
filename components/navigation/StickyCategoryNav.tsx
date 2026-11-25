@@ -115,7 +115,7 @@ export default function StickyCategoryNav() {
   return (
     <nav
       aria-label="বিভাগ অনুযায়ী দেখুন"
-      className="pwa-safe-top md:pt-0 sticky top-0 z-30 border-y border-zinc-200 bg-white md:top-14 dark:border-zinc-800 dark:bg-zinc-950"
+      className="pwa-safe-top md:pt-0 sticky top-0 z-30 bg-[var(--surface-topbar)] shadow-[0_1px_0_var(--surface-hairline)] backdrop-blur-md md:top-14"
     >
       <div className="mx-auto max-w-7xl px-3 sm:px-4">
         <div className="flex w-full min-w-0 items-center gap-3 py-2">

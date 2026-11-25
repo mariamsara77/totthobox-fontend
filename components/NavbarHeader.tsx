@@ -34,7 +34,7 @@ export default function NavbarHeader() {
   }, [isLoggedIn, setUnreadCount]);
 
   return (
-    <header className="pwa-safe-top z-40 w-full border-b border-zinc-200 bg-white transition-colors dark:border-zinc-800 dark:bg-zinc-950">
+    <header className="pwa-safe-top z-40 w-full bg-[var(--surface-topbar)] shadow-[0_1px_0_var(--surface-hairline)] backdrop-blur-md transition-colors">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
         <div className="flex items-center gap-6">
           <Link

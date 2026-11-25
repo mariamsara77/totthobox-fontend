@@ -3,7 +3,7 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useEffect } from "react";
-import { PanelLeft, MessageCircle, Settings } from "lucide-react";
+import { PanelLeft, PanelLeftClose, MessageCircle, Settings } from "lucide-react";
 import ProfileMenu from "./ProfileMenu";
 import { useSidebar } from "@/context/SidebarContext";
 import { useSettingsModal } from "@/context/SettingsModalContext";
@@ -36,20 +36,23 @@ export default function Navbar() {
   }, [isLoggedIn, setUnreadCount]);
 
   return (
-    <header className="pwa-safe-top z-40 w-full border-b border-zinc-200 bg-white transition-colors dark:border-zinc-800 dark:bg-zinc-950">
+    <header className="pwa-safe-top z-40 w-full bg-[var(--surface-topbar)] shadow-[0_1px_0_var(--surface-hairline)] backdrop-blur-md transition-colors">
       <div className="flex h-14 items-center justify-between px-4 sm:px-6">
         <div className="flex items-center gap-3">
-          {isCollapsed && (
-            <button
-              type="button"
-              onClick={toggleCollapsed}
-              className="hidden min-h-11 min-w-11 items-center justify-center rounded-lg p-2 text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 md:flex dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
-              title="সাইডবার প্রসারিত করুন"
-              aria-label="সাইডবার প্রসারিত করুন"
-            >
-              <PanelLeft className="size-5" strokeWidth={1.75} />
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={toggleCollapsed}
+            className="hidden min-h-11 min-w-11 items-center justify-center rounded-lg p-2 text-zinc-600 transition-colors hover:bg-zinc-200/60 hover:text-zinc-900 md:flex dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+            title={isCollapsed ? "সাইডবার প্রসারিত করুন" : "সাইডবার সংকুচিত করুন"}
+            aria-label={isCollapsed ? "সাইডবার প্রসারিত করুন" : "সাইডবার সংকুচিত করুন"}
+            aria-expanded={!isCollapsed}
+          >
+            {isCollapsed ? (
+              <PanelLeft className="size-5" strokeWidth={1.75} aria-hidden="true" />
+            ) : (
+              <PanelLeftClose className="size-5" strokeWidth={1.75} aria-hidden="true" />
+            )}
+          </button>
 
           <Link
             href="/"
