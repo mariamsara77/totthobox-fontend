@@ -10,7 +10,6 @@ const FEED_MAP: Record<string, string> = {
   tourism: "/api/tourism-bd",
   "islam-basic": "/api/islam/basic",
   "islam-dowan": "/api/islam/dowan",
-  software: "/api/apps",
   contacts: "/api/contacts",
   signs: "/api/signs/all",
 };

@@ -1,8 +1,8 @@
 import React from "react";
 import Link from "next/link";
-import { AlertCircle, Scale, ShieldAlert, HeartPulse, HardDriveDownload } from "lucide-react";
+import { AlertCircle, Scale, ShieldAlert, HeartPulse } from "lucide-react";
 
-export type DisclaimerType = "tax" | "islamic" | "emergency" | "health" | "software" | "general";
+export type DisclaimerType = "tax" | "islamic" | "emergency" | "health" | "general";
 
 interface DisclaimerProps {
   type?: DisclaimerType;
@@ -47,13 +47,6 @@ const DISCLAIMER_CONFIG: Record<
     badge: "চিকিৎসা সতর্কতা",
     colorClasses: "border-rose-500/30 bg-rose-500/5 text-rose-900 dark:text-rose-200",
     text: "এই প্ল্যাটফর্মের স্বাস্থ্য বা জরুরি সেবা সংক্রান্ত তথ্য সাধারণ জনসচেতনতা বৃদ্ধির লক্ষ্যে সংকলিত। যেকোনো রোগ নির্ণয়, ওষুধ সেবন বা চিকিৎসা পরিকল্পনায় অবশ্যই বাংলাদেশ মেডিকেল অ্যান্ড ডেন্টাল কাউন্সিল (BMDC) নিবন্ধিত রেজিস্টার্ড চিকিৎসকের পরামর্শ নিন।",
-  },
-  software: {
-    title: "নিরাপদ ডাউনলোড ও বৌদ্ধিক স্বত্বাধিকার নীতি",
-    icon: HardDriveDownload,
-    badge: "সফটওয়্যার সতর্কতা",
-    colorClasses: "border-blue-500/30 bg-blue-500/5 text-blue-900 dark:text-blue-200",
-    text: "তথ্যবক্স কঠোরভাবে পাইরেসি-বিরোধী নীতি মেনে চলে। এখানে তালিকাভুক্ত সকল সফটওয়্যার ও অ্যাপের অফিশিয়াল সোর্স বা ডেভেলপার লিঙ্ক নির্দেশ করা হয়েছে। আমরা কোনো প্রকার ক্র্যাকড, প্যাচড বা কপিরাইট লঙ্ঘিত ফাইল হোস্ট করি না।",
   },
   general: {
     title: "সাধারণ তথ্য ও সেবা দাবিত্যাগ",

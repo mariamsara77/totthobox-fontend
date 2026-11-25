@@ -98,10 +98,10 @@ const serviceHighlights = [
     desc: "কালেমা, নামাজের নিয়ম, প্রামাণ্য দোয়া ও ইসলামিক শিষ্টাচার সংক্রান্ত নির্ভরযোগ্য গাইড।",
   },
   {
-    href: "/software/all",
-    icon: Cpu,
-    title: "সফটওয়্যার ও অ্যাপস ডিরেক্টরি",
-    desc: "দৈনন্দিন কাজের প্রয়োজনীয় অফিশিয়াল সফটওয়্যার পরিচিতি ও সিস্টেম রিকোয়ারমেন্ট গাইড।",
+    href: "/pdf-editor",
+    icon: FileText,
+    title: "অনলাইন পিডিএফ ও ডকুমেন্ট টুলস",
+    desc: "ব্রাউজারেই পিডিএফ সম্পাদনা, কনভার্টার এবং দ্রুত ডকুমেন্ট প্রসেসিং সুবিধা।",
   },
 ];
 
@@ -109,12 +109,11 @@ export default function AboutUsPage() {
   return (
     <PageContainer size="narrow" className="space-y-12">
       {/* Hero */}
-      <header className="text-center space-y-4 max-w-3xl mx-auto">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20">
-          <Award className="w-4 h-4" />
-          বিশ্বস্ত ডিজিটাল তথ্য ও ইউটিলিটি প্ল্যাটফর্ম
-        </div>
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
+      <header className="text-center space-y-3 max-w-3xl mx-auto">
+        <p className="text-xs font-medium text-[var(--accent-ink)]">
+          ডিজিটাল তথ্য ও ইউটিলিটি প্ল্যাটফর্ম
+        </p>
+        <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
           তথ্যবক্স (Totthobox) সম্পর্কে জানুন
         </h1>
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
@@ -176,8 +175,8 @@ export default function AboutUsPage() {
             <p className="text-zinc-600 dark:text-zinc-400">বছর ও নীতিমালা পরিবর্তনের সাথে সাথে ছুটির তালিকা, ট্যাক্স স্ল্যাব ও কোডগুলো আপডেট করা হয়।</p>
           </li>
           <li className="space-y-1">
-            <strong className="text-zinc-900 dark:text-zinc-100">পাইরেসি ও ক্ষতিকর কন্টেন্ট বর্জন:</strong>
-            <p className="text-zinc-600 dark:text-zinc-400">সফটওয়্যার তালিকায় কোনো প্রকার ক্র্যাক, ম্যালওয়্যার বা লাইসেন্সহীন ফাইল যুক্ত করা সম্পূর্ণ নিষিদ্ধ।</p>
+            <strong className="text-zinc-900 dark:text-zinc-100">নিরাপদ ও মৌলিক ইউটিলিটি:</strong>
+            <p className="text-zinc-600 dark:text-zinc-400">সকল অনলাইন ক্যালকুলেটর ও ডকুমেন্ট টুলস সম্পূর্ণ ব্রাউজারে চলে এবং ব্যবহারকারীর গোপনীয়তা রক্ষা করে।</p>
           </li>
         </ul>
         <div className="pt-2">
@@ -206,13 +205,13 @@ export default function AboutUsPage() {
               <Link
                 key={idx}
                 href={service.href}
-                className="group p-5 rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/40 dark:bg-zinc-800/20 hover:bg-white dark:hover:bg-zinc-800 transition-all flex items-start gap-4"
+                className="group p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:border-[var(--accent-soft-border)] transition-colors flex items-start gap-4"
               >
-                <div className="p-3 rounded-xl bg-zinc-100 dark:bg-zinc-700/50 text-indigo-600 dark:text-indigo-400 shrink-0 group-hover:scale-105 transition-transform">
-                  <Icon className="w-6 h-6" />
+                <div className="p-2.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-[var(--accent-ink)] shrink-0">
+                  <Icon className="w-5 h-5" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="font-bold text-zinc-900 dark:text-zinc-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                  <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 group-hover:text-[var(--accent-ink)] transition-colors">
                     {service.title}
                   </h3>
                   <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">

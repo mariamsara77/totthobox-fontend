@@ -198,40 +198,12 @@ export default function DisclaimerPage() {
           </p>
         </section>
 
-        {/* ৬. সফটওয়্যার ও থার্ড-পার্টি ডাউনলোড */}
-        <section className="p-6 rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/60 dark:bg-zinc-800/30 space-y-3">
-          <div className="flex items-center gap-3 text-zinc-900 dark:text-zinc-100">
-            <Cpu className="w-5 h-5 text-purple-500 shrink-0" />
-            <h2 className="text-lg font-bold">
-              ৬. সফটওয়্যার পরিচিতি ও বাহ্যিক লিংক
-            </h2>
-          </div>
-          <p>
-            সফটওয়্যার ডিরেক্টরি সেকশনে বিভিন্ন দরকারি সফটওয়্যারের পরিচিতি,
-            সিস্টেম রিকোয়ারমেন্ট ও অফিসিয়াল ডাউনলোডের লিংক তুলে ধরা হয়েছে।
-          </p>
-          <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
-            <li>
-              Totthobox কোনো পাইরেটেড বা ম্যালওয়্যারযুক্ত সফটওয়্যার হোস্ট বা
-              বিতরণ করে না।
-            </li>
-            <li>
-              ব্যবহারকারী যখন কোনো বাহ্যিক ওয়েবসাইটে রিডাইরেক্ট হন, তখন সেই
-              সাইটের নিয়ম ও গোপনীয়তা নীতি প্রযোজ্য হবে।
-            </li>
-            <li>
-              ডাউনলোড করা সফটওয়্যার ব্যবহারে আপনার ডিভাইসে কোনো সমস্যা হলে তার
-              দায় সংশ্লিষ্ট সফটওয়্যার প্রস্তুতকারকের।
-            </li>
-          </ul>
-        </section>
-
-        {/* ৭. গুগল অ্যাডসেন্স ও বিজ্ঞাপন */}
+        {/* ৬. গুগল অ্যাডসেন্স ও বিজ্ঞাপন */}
         <section className="p-6 rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/60 dark:bg-zinc-800/30 space-y-3">
           <div className="flex items-center gap-3 text-zinc-900 dark:text-zinc-100">
             <ExternalLink className="w-5 h-5 text-amber-500 shrink-0" />
             <h2 className="text-lg font-bold">
-              ৭. গুগল অ্যাডসেন্স ও বিজ্ঞাপন সংক্রান্ত নীতিমালা
+              ৬. গুগল অ্যাডসেন্স ও বিজ্ঞাপন সংক্রান্ত নীতিমালা
             </h2>
           </div>
           <p>
@@ -263,12 +235,12 @@ export default function DisclaimerPage() {
           </ul>
         </section>
 
-        {/* ৮. পেশাগত পরামর্শের বিকল্প নয় */}
+        {/* ৭. পেশাগত পরামর্শের বিকল্প নয় */}
         <section className="p-6 rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/60 dark:bg-zinc-800/30 space-y-3">
           <div className="flex items-center gap-3 text-zinc-900 dark:text-zinc-100">
             <CheckCircle2 className="w-5 h-5 text-sky-500 shrink-0" />
             <h2 className="text-lg font-bold">
-              ৮. পেশাগত পরামর্শের বিকল্প নয় (No Professional Advice)
+              ৭. পেশাগত পরামর্শের বিকল্প নয় (No Professional Advice)
             </h2>
           </div>
           <p>
@@ -279,11 +251,11 @@ export default function DisclaimerPage() {
           </p>
         </section>
 
-        {/* ৯. মতামত ও সংশোধন */}
+        {/* ৮. মতামত ও সংশোধন */}
         <section className="p-6 rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/60 dark:bg-zinc-800/30 space-y-3">
           <div className="flex items-center gap-3 text-zinc-900 dark:text-zinc-100">
             <Mail className="w-5 h-5 text-rose-500 shrink-0" />
-            <h2 className="text-lg font-bold">৯. অসঙ্গতি সংশোধন ও যোগাযোগ</h2>
+            <h2 className="text-lg font-bold">৮. অসঙ্গতি সংশোধন ও যোগাযোগ</h2>
           </div>
           <p>
             আমাদের সাইটে কোনো তথ্য ভুল, অসম্পূর্ণ বা বিভ্রান্তিকর মনে হলে অনুগ্রহ

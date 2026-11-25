@@ -66,8 +66,8 @@ const teamList = [
     color: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
   },
   {
-    key: "software",
-    ...EDITORIAL_PROFILES.software,
+    key: "engineering",
+    ...EDITORIAL_PROFILES.engineering,
     icon: Cpu,
     color: "bg-sky-500/10 text-sky-600 dark:text-sky-400",
   },
@@ -84,12 +84,11 @@ export default function AuthorsPage() {
       />
 
       {/* Header */}
-      <header className="space-y-4 text-center sm:text-left border-b border-zinc-200 dark:border-zinc-800 pb-8">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
-          <ShieldCheck className="w-4 h-4" />
-          <span>E-E-A-T বিশ্বাসযোগ্যতা ও সততার অঙ্গীকার</span>
-        </div>
-        <h1 className="text-2xl sm:text-4xl font-black text-zinc-900 dark:text-zinc-50">
+      <header className="space-y-3 text-center sm:text-left border-b border-zinc-200 dark:border-zinc-800 pb-8">
+        <p className="text-xs font-medium text-[var(--accent-ink)]">
+          সম্পাদকীয় স্বচ্ছতা ও মানদণ্ড
+        </p>
+        <h1 className="text-2xl sm:text-4xl font-semibold text-zinc-900 dark:text-zinc-50">
           আমাদের সম্পাদকীয় দল ও গবেষকবৃন্দ
         </h1>
         <p className="text-xs sm:text-sm md:text-base text-zinc-600 dark:text-zinc-400 max-w-3xl leading-relaxed">
@@ -130,8 +129,8 @@ export default function AuthorsPage() {
 
                 {/* Expertise Badges */}
                 <div className="space-y-1.5 pt-1">
-                  <span className="text-2xs font-bold uppercase tracking-wider text-zinc-400">
-                    দক্ষতার ক্ষেত্র:
+                  <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+                    দক্ষতার ক্ষেত্র
                   </span>
                   <div className="flex flex-wrap gap-1.5">
                     {member.expertise.map((skill, sIdx) => (

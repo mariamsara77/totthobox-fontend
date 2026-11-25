@@ -345,50 +345,7 @@ export const SERVICES_CATALOG: CatalogCategory[] = [
     ],
   },
 
-  // 6. Software & Utilities
-  {
-    id: "software",
-    title: "সফটওয়্যার ও প্রযুক্তি হাব",
-    subtitle: "উইন্ডোজ, অ্যান্ড্রয়েড, ম্যাক ও বাংলা ফন্ট প্যাকেজ",
-    icon: Cpu,
-    iconColor: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400",
-    viewAllHref: "/software/all",
-    items: [
-      {
-        href: "/software/all",
-        label: "সকল সফটওয়্যার",
-        icon: Cpu,
-        color: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400",
-      },
-      {
-        href: "/software/all/windows",
-        label: "উইন্ডোজ অ্যাপ",
-        icon: Monitor,
-        color: "bg-sky-500/10 text-sky-600 dark:text-sky-400",
-      },
-      {
-        href: "/software/all/android",
-        label: "অ্যান্ড্রয়েড টুলস",
-        icon: Smartphone,
-        color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
-      },
-      {
-        href: "/software/all/mac",
-        label: "ম্যাক ও অ্যাপল",
-        icon: Laptop,
-        color: "bg-purple-500/10 text-purple-600 dark:text-purple-400",
-      },
-      {
-        href: "/software/all/fonts",
-        label: "বাংলা ফন্ট",
-        icon: Type,
-        color: "bg-rose-500/10 text-rose-600 dark:text-rose-400",
-        badge: "ফ্রি",
-      },
-    ],
-  },
-
-  // 7. Emergency Helplines
+  // 6. Emergency Helplines
   {
     id: "emergency",
     title: "জরুরি সেবা ও হটলাইন",

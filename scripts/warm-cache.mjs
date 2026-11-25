@@ -119,7 +119,6 @@ function getDefaultUrls(baseUrl) {
     `${clean}/tools/percentage-calculator`,
     `${clean}/tools/tax-vat-calculator`,
     `${clean}/tools/internet-speed-test`,
-    `${clean}/software/all`,
     `${clean}/signs/all`,
   ];
 }

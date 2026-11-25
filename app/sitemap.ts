@@ -62,7 +62,6 @@ const publicRoutes = [
   "/tools/internet-speed-test",
   "/tools/tax-vat-calculator",
   "/tools/password-generator",
-  "/software/all",
   "/signs/all",
   "/signs/emergency",
   "/signs/trafik-sain",
@@ -70,43 +69,8 @@ const publicRoutes = [
   "/contact/police",
 ];
 
-function hasSoftwareContent(item: unknown): boolean {
-  if (!item || typeof item !== "object") return false;
-
-  const description =
-    "description" in item && typeof item.description === "string"
-      ? item.description
-      : "";
-
-  return description
-    .replace(/<[^>]*>/g, "")
-    .replace(/\s+/g, "")
-    .trim().length > 0;
-}
-
 function hasIndexableContent(item: unknown): boolean {
   return !isThinContent(extractRecordText(item), 300);
-}
-
-async function fetchPlatforms(): Promise<string[]> {
-  try {
-    const response = await fetch(
-      `${API_BASE}/api/sidebar/software-platforms`,
-      { next: { revalidate: 86400 } },
-    );
-
-    if (!response.ok) return [];
-
-    const json = await response.json();
-    return Array.isArray(json)
-      ? json.filter(
-          (value): value is string =>
-            typeof value === "string" && value.trim() !== "",
-        )
-      : [];
-  } catch {
-    return [];
-  }
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -240,7 +204,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const [
     countries,
-    softwarePlatforms,
     holidays,
     introductions,
     histories,
@@ -249,10 +212,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     islamBasic,
     islamDowa,
     people,
-    apps,
   ] = await Promise.all([
     getAllCountries(),
-    fetchPlatforms(),
     fetchSlugs("/api/holidays", { includeItem: hasIndexableContent }),
     fetchSlugs("/api/intro-bd", { includeItem: hasIndexableContent }),
     fetchSlugs("/api/history-bd", { includeItem: hasIndexableContent }),
@@ -261,21 +222,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     fetchSlugs("/api/islam/basic", { includeItem: hasIndexableContent }),
     fetchSlugs("/api/islam/dowan", { includeItem: hasIndexableContent }),
     fetchSlugs("/api/people", { includeItem: hasIndexableContent }),
-    fetchSlugs("/api/apps", {
-      includeItem: (item) =>
-        hasSoftwareContent(item) && hasIndexableContent(item),
-    }),
   ]);
 
   const dynamicEntries: MetadataRoute.Sitemap = [
     ...countries.map((country) => ({
       url: `${SITE_URL}/international/country/${encodeURIComponent(country.slug)}`,
       changeFrequency: "monthly" as const,
-      priority: 0.6,
-    })),
-    ...softwarePlatforms.map((platform) => ({
-      url: `${SITE_URL}/software/all/${encodeURIComponent(platform)}`,
-      changeFrequency: "weekly" as const,
       priority: 0.6,
     })),
     ...holidays.map((item) => ({
@@ -322,12 +274,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
     ...people.map((item) => ({
       url: `${SITE_URL}/bangladesh/public-figure/${encodeURIComponent(item.slug)}`,
-      lastModified: item.updatedAt,
-      changeFrequency: "monthly" as const,
-      priority: 0.5,
-    })),
-    ...apps.map((item) => ({
-      url: `${SITE_URL}/software/${encodeURIComponent(item.slug)}`,
       lastModified: item.updatedAt,
       changeFrequency: "monthly" as const,
       priority: 0.5,

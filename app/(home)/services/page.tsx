@@ -2,7 +2,7 @@ import React from "react";
 import { QuickFavoritesBar } from "@/components/tools/QuickFavorites";
 import { PageContainer } from "@/components/layout";
 import { Metadata } from "next";
-import { Sparkles, ShieldCheck, HeartHandshake, Zap } from "lucide-react";
+import { ShieldCheck, HeartHandshake, Zap } from "lucide-react";
 import CategorySection from "@/components/home/CategorySection";
 import { NAVIGATION_REGISTRY } from "@/config/navigation";
 import TrendingServices from "@/components/home/TrendingServices";
@@ -12,7 +12,7 @@ export const revalidate = 86400;
 export const metadata: Metadata = {
   title: "সকল ডিজিটাল সেবা ও টুলস ডিরেক্টরি | তথ্যবক্স",
   description:
-    "Totthobox-এর সম্পূর্ণ সেবা তালিকা: বাংলা ক্যালেন্ডার, স্মার্ট কনভার্টার, এনবিআর আয়কর, জরুরি নম্বর, ইসলামিক জ্ঞান, সফটওয়্যার ও বাংলাদেশ তথ্য এক জায়গায়।",
+    "Totthobox-এর সম্পূর্ণ সেবা তালিকা: বাংলা ক্যালেন্ডার, স্মার্ট কনভার্টার, এনবিআর আয়কর, জরুরি নম্বর, ইসলামিক জ্ঞান ও বাংলাদেশ তথ্য এক জায়গায়।",
   alternates: { canonical: "https://totthobox.com/services" },
   openGraph: {
     title: "সকল ডিজিটাল সেবা ও টুলস ডিরেক্টরি | তথ্যবক্স",
@@ -36,11 +36,10 @@ export default function ServicesPage() {
     <PageContainer className="py-6 sm:py-10 space-y-10">
       {/* Header */}
       <header className="space-y-3 text-center sm:text-left border-b border-zinc-200 dark:border-zinc-800 pb-6">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20">
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>সারগ্রাহী ডিজিটাল ক্যাটালগ</span>
-        </div>
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-zinc-900 dark:text-zinc-50">
+        <p className="text-xs font-medium text-[var(--accent-ink)]">
+          সারগ্রাহী ডিজিটাল ক্যাটালগ
+        </p>
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-zinc-900 dark:text-zinc-50">
           সকল সেবা ও ডিজিটাল টুলস ডিরেক্টরি
         </h1>
         <p className="text-xs sm:text-sm md:text-base text-zinc-600 dark:text-zinc-400 max-w-3xl leading-relaxed">

@@ -23,7 +23,6 @@ const testQueries = [
   { q: "999", expectedTitle: "জাতীয় জরুরি সেবা ও হটলাইন", type: "Emergency hotline query" },
   { q: "emergency", expectedTitle: "জাতীয় জরুরি সেবা ও হটলাইন", type: "Emergency english query" },
   { q: "dollar", expectedTitle: "লাইভ মুদ্রা রূপান্তরকারী", type: "Currency query" },
-  { q: "avro", expectedTitle: "বাংলা সফটওয়্যার সম্ভার", type: "Software query" },
   { q: "ছুটি", expectedTitle: "সরকারি ও ঐচ্ছিক ছুটির তালিকা", type: "Holiday query" },
   { q: "টুলস: বয়স", expectedTitle: "বয়স ক্যালকুলেটর", type: "Scoped prefix query" },
 ];

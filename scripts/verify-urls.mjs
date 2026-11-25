@@ -8,8 +8,6 @@ const urls = [
   "/converter/number-to-word",
   "/bangla/holiday/english-new-year",
   "/bangla/calendar",
-  "/software/bijoy-bayanno",
-  "/software/kalpurush-bangla-font",
   "/bangladesh/establishment/baitul-mukarram-national-mosque",
   "/signs/emergency/emergency-stop"
 ];

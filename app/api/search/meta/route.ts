@@ -20,7 +20,6 @@ const DEFAULT_PREFIXES = [
   "দেশ",
   "ক্যালেন্ডার",
   "ছুটির দিন",
-  "সফটওয়্যার",
   "পর্যটন",
   "পরিচিতি",
   "প্রতিষ্ঠান",
@@ -38,7 +37,6 @@ const DEFAULT_HINTS: Record<string, string> = {
   দেশ: "country",
   ক্যালেন্ডার: "calendar",
   "ছুটির দিন": "holiday",
-  সফটওয়্যার: "software",
   পর্যটন: "tourism",
   পরিচিতি: "introduction",
   প্রতিষ্ঠান: "establishment",
@@ -68,11 +66,13 @@ export async function GET() {
     console.warn("[search/meta] Backend unavailable, using default search meta:", err);
   }
 
-  // Combine unique prefixes
+  // Combine unique prefixes (excluding deprecated software category)
   const combinedPrefixes = Array.from(
     new Set([...DEFAULT_PREFIXES, ...backendPrefixes]),
-  );
+  ).filter((prefix) => prefix !== "সফটওয়্যার" && prefix.toLowerCase() !== "software");
   const combinedHints = { ...DEFAULT_HINTS, ...backendHints };
+  delete combinedHints["সফটওয়্যার"];
+  delete combinedHints["software"];
 
   return NextResponse.json(
     {

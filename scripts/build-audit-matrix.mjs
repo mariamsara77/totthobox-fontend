@@ -101,16 +101,6 @@ const sampleUrlsByTemplate = {
     "/signs/emergency/emergency-alarm",
     "/signs/trafik-sain/turn-right"
   ],
-  "/software/[slug]": [
-    "/software/avro-keyborad",
-    "/software/bijoy-bayanno",
-    "/software/kalpurush-bangla-font"
-  ],
-  "/software/all/[platform]": [
-    "/software/all/Windows",
-    "/software/all/Android",
-    "/software/all/Mac"
-  ],
   "/users/[slug]": [
     "/users/admin",
     "/users/editor-totthobox",

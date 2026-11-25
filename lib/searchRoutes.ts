@@ -28,10 +28,6 @@ const SEARCH_ROUTES: Record<string, (item: SearchItem) => string> = {
   holiday: (item) => `/bangla/holiday/${item._search_slug}`,
   calendar: () => `/bangla/calendar`,
 
-  // Software & Fonts
-  software: (item) => `/software/${item._search_slug}`,
-  font: (item) => `/software/${item._search_slug}`,
-
   // News
   news: (item) => `/news/${item._search_slug}`,
 

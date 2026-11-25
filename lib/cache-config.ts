@@ -5,7 +5,7 @@
 
 export const CACHE_TTL = {
   // Static database-driven content: 24 hours (86,400s)
-  // History, tourism, establishment, islam, signs, holidays, countries, software
+  // History, tourism, establishment, islam, signs, holidays, countries
   STATIC_CONTENT: 86400,
 
   // Static editorial & policy pages: 24 hours
@@ -32,7 +32,6 @@ export const CACHE_TAGS = {
   ISLAM_DOWAN: "islam-dowan",
   SIGNS: "signs",
   COUNTRIES: "countries",
-  SOFTWARE: "software",
   CONTACTS: "contacts",
   NEWS: "news",
 } as const;

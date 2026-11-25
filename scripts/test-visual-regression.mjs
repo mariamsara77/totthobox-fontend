@@ -28,7 +28,6 @@ const TARGET_ROUTES = [
   "/bangladesh/history",
   "/international/world-clock",
   "/islam/basic",
-  "/software/all",
   "/authors",
   "/contact-us",
   "/privacy-policy",

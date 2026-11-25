@@ -4,7 +4,7 @@ import { ShieldCheck, UserCheck, CalendarCheck } from "lucide-react";
 import { getEditorialProfile } from "@/config/editorial";
 
 interface AuthorReviewerBlockProps {
-  category?: "general" | "tax" | "history" | "islamic" | "software";
+  category?: "general" | "tax" | "history" | "islamic" | "engineering";
   lastUpdated?: string;
   reviewerName?: string;
   reviewerRole?: string;

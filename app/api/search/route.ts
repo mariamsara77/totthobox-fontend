@@ -72,8 +72,15 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  // Also filter out any backend software/app results for AdSense policy compliance
+  const blockedTypes = new Set(["software", "font", "app", "apps"]);
+
   for (const item of backendItems) {
+    const itemType = (item._search_type || "").toLowerCase();
     const key = (item._search_url || "").toLowerCase().replace(/\/$/, "");
+    if (blockedTypes.has(itemType) || key.startsWith("/software") || key.includes("/software/")) {
+      continue;
+    }
     if (key && !seenUrls.has(key)) {
       seenUrls.add(key);
       mergedItems.push(item);

@@ -393,20 +393,6 @@ export const PLATFORM_SEARCH_CATALOG: CatalogItem[] = [
     ],
   },
   {
-    id: "service-software",
-    title: "বাংলা সফটওয়্যার সম্ভার",
-    subtitle: "অভ্র কিবোর্ড, বিজয় একুশে ও প্রয়োজনীয় বাংলা সফটওয়্যারের ডাউনলোড গাইড",
-    label: "সফটওয়্যার",
-    url: "/software/all",
-    type: "software",
-    icon: "arrow-down-tray",
-    color: "blue",
-    keywords: [
-      "সফটওয়্যার", "অভ্র কিবোর্ড", "বিজয়", "বাংলা সফটওয়্যার", "ডাউনলোড",
-      "software", "avro", "avro keyboard", "bijoy", "bangla software", "download"
-    ],
-  },
-  {
     id: "service-signs",
     title: "বাংলা ইশারা ভাষা অভিধান",
     subtitle: "বধির ও শ্রবণপ্রতিবন্ধীদের বাংলা বর্ণমালা ও শব্দের চিত্রভিত্তিক ইশারা",
@@ -535,7 +521,6 @@ export function searchLocalCatalog(query: string, limit = 10): SearchItem[] {
     else if (["দেশ", "country"].includes(rawPrefix)) targetType = "country";
     else if (["ছুটি", "ছুটির দিন", "holiday"].includes(rawPrefix)) targetType = "holiday";
     else if (["ক্যালেন্ডার", "calendar"].includes(rawPrefix)) targetType = "calendar";
-    else if (["সফটওয়্যার", "software"].includes(rawPrefix)) targetType = "software";
     else if (["পর্যটন", "tourism"].includes(rawPrefix)) targetType = "tourism";
     else if (["প্রতিষ্ঠান", "establishment"].includes(rawPrefix)) targetType = "establishment";
     else if (["ইতিহাস", "history"].includes(rawPrefix)) targetType = "history";

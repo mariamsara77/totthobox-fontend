@@ -21,7 +21,6 @@ const SAMPLE_ROUTES = [
   "/international/country/bangladesh",
   "/islam/basic",
   "/islam/dowan",
-  "/software/all",
   "/sitemap.xml",
   "/robots.txt",
 ];

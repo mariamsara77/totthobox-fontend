@@ -78,15 +78,6 @@ const groups: { match: (path: string) => boolean; title: string; items: RelatedI
     ],
   },
   {
-    match: (p) => p.startsWith("/software"),
-    title: "আরও দেখুন",
-    items: [
-      { href: "/software/all", label: "সফটওয়্যার ডিরেক্টরি", description: "Windows, Android ও Mac-এর সফটওয়্যার খুঁজুন।" },
-      { href: "/tools/image-resizer", label: "Image Resizer", description: "ছবির আকার পরিবর্তনের টুল ব্যবহার করুন।" },
-      { href: "/pdf-editor", label: "PDF Editor", description: "PDF নিয়ে প্রয়োজনীয় কাজ করুন।" },
-    ],
-  },
-  {
     match: (p) => p.startsWith("/signs/"),
     title: "আরও দেখুন",
     items: [
@@ -116,16 +107,14 @@ export default function RelatedLinks() {
 
   return (
     <section className="mx-auto w-full max-w-2xl px-4 pb-8 pt-6 sm:px-6 sm:pt-8" aria-labelledby="related-pages-title">
-      <div className="border-t border-zinc-200 dark:border-zinc-800 pt-6">
+      <div className="border-t border-zinc-200 pt-6 dark:border-zinc-800">
         <div className="mb-4 space-y-1">
-          <div>
-            <h2 id="related-pages-title" className="text-lg font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-              {group.title}
-            </h2>
-            <p className="text-sm leading-6 text-zinc-500 dark:text-zinc-400">
-              Totthobox-এর একই বিষয়ের আরও প্রয়োজনীয় তথ্য ও টুলস।
-            </p>
-          </div>
+          <h2 id="related-pages-title" className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+            {group.title}
+          </h2>
+          <p className="text-sm leading-6 text-zinc-500 dark:text-zinc-400">
+            Totthobox-এর একই বিষয়ের আরও প্রয়োজনীয় তথ্য ও টুলস।
+          </p>
         </div>
         <nav aria-label={group.title}>
           <div className="grid gap-3 sm:grid-cols-2">
@@ -135,18 +124,18 @@ export default function RelatedLinks() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="group block rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/70 dark:bg-zinc-800/40 p-4 transition-all duration-200 hover:bg-white dark:hover:bg-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 shadow-xs hover:shadow-md"
+                  className="group block rounded-xl border border-zinc-200 bg-white p-4 transition-colors duration-150 hover:border-[var(--accent-soft-border)] hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-zinc-800/70"
                 >
                   <div className="flex items-start gap-3">
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300">
-                      <Icon className="h-4 w-4" aria-hidden="true" />
+                    <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
+                      <Icon className="size-4" strokeWidth={1.75} aria-hidden="true" />
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="flex items-center gap-1 text-sm font-semibold leading-5 text-zinc-900 dark:text-zinc-100">
                         {item.label}
-                        <ArrowRight className="h-3.5 w-3.5 opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100 text-indigo-600 dark:text-indigo-400" aria-hidden="true" />
+                        <ArrowRight className="size-3.5 text-[var(--accent-ink)] opacity-0 transition-[opacity,transform] group-hover:translate-x-0.5 group-hover:opacity-100" strokeWidth={1.75} aria-hidden="true" />
                       </span>
-                      <span className="mt-1 block text-xs sm:text-sm leading-5 text-zinc-500 dark:text-zinc-400">
+                      <span className="mt-1 block text-xs leading-5 text-zinc-500 sm:text-sm dark:text-zinc-400">
                         {item.description}
                       </span>
                     </span>

@@ -21,7 +21,6 @@ const publicPageSources = [
   "/converter/:path*",
   "/pdf-editor",
   "/tools/:path*",
-  "/software/:path*",
   "/signs/:path*",
   "/contact/:path*",
   "/news",
@@ -330,6 +329,31 @@ const nextConfig: NextConfig = {
     ];
   },
 
+  async redirects() {
+    return [
+      {
+        source: "/software",
+        destination: "/services",
+        permanent: true,
+      },
+      {
+        source: "/software/all",
+        destination: "/services",
+        permanent: true,
+      },
+      {
+        source: "/software/all/:platform",
+        destination: "/services",
+        permanent: true,
+      },
+      {
+        source: "/software/:slug",
+        destination: "/services",
+        permanent: true,
+      },
+    ];
+  },
+
   experimental: {
     // Inline the small route CSS manifests into HTML so the first render does
     // not wait on separate render-blocking stylesheet requests.
@@ -392,7 +416,7 @@ const publicDocumentCaching: RuntimeCaching = {
   method: "GET",
   urlPattern: ({ request, url }) => {
     const isPublic =
-      /^\/(?:$|about-us(?:\/|$)|contact-us(?:\/|$)|services(?:\/|$)|privacy-policy(?:\/|$)|cookie-policy(?:\/|$)|copyright-policy(?:\/|$)|editorial-policy(?:\/|$)|terms-of-service(?:\/|$)|disclaimer(?:\/|$)|bangla(?:\/|$)|bangladesh(?:\/|$)|international(?:\/|$)|islam(?:\/|$)|converter(?:\/|$)|pdf-editor(?:\/|$)|tools(?:\/|$)|software(?:\/|$)|signs(?:\/|$)|contact\/police(?:\/|$)|news\/headlines(?:\/|$)|users(?:\/|$))/i.test(
+      /^\/(?:$|about-us(?:\/|$)|contact-us(?:\/|$)|services(?:\/|$)|privacy-policy(?:\/|$)|cookie-policy(?:\/|$)|copyright-policy(?:\/|$)|editorial-policy(?:\/|$)|terms-of-service(?:\/|$)|disclaimer(?:\/|$)|bangla(?:\/|$)|bangladesh(?:\/|$)|international(?:\/|$)|islam(?:\/|$)|converter(?:\/|$)|pdf-editor(?:\/|$)|tools(?:\/|$)|signs(?:\/|$)|contact\/police(?:\/|$)|news\/headlines(?:\/|$)|users(?:\/|$))/i.test(
         url.pathname,
       );
     const isExcludedApi = /^\/api(?:\/|$)/i.test(url.pathname);
@@ -445,7 +469,7 @@ const nonPublicNavigationNetworkOnlyCaching: RuntimeCaching = {
   method: "GET",
   urlPattern: ({ request, url }) => {
     const isPublic =
-      /^\/(?:$|about-us(?:\/|$)|contact-us(?:\/|$)|services(?:\/|$)|privacy-policy(?:\/|$)|cookie-policy(?:\/|$)|copyright-policy(?:\/|$)|editorial-policy(?:\/|$)|terms-of-service(?:\/|$)|disclaimer(?:\/|$)|bangla(?:\/|$)|bangladesh(?:\/|$)|international(?:\/|$)|islam(?:\/|$)|converter(?:\/|$)|pdf-editor(?:\/|$)|tools(?:\/|$)|software(?:\/|$)|signs(?:\/|$)|contact\/police(?:\/|$)|news\/headlines(?:\/|$)|users(?:\/|$))/i.test(
+      /^\/(?:$|about-us(?:\/|$)|contact-us(?:\/|$)|services(?:\/|$)|privacy-policy(?:\/|$)|cookie-policy(?:\/|$)|copyright-policy(?:\/|$)|editorial-policy(?:\/|$)|terms-of-service(?:\/|$)|disclaimer(?:\/|$)|bangla(?:\/|$)|bangladesh(?:\/|$)|international(?:\/|$)|islam(?:\/|$)|converter(?:\/|$)|pdf-editor(?:\/|$)|tools(?:\/|$)|signs(?:\/|$)|contact\/police(?:\/|$)|news\/headlines(?:\/|$)|users(?:\/|$))/i.test(
         url.pathname,
       );
     return (

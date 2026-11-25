@@ -50,12 +50,11 @@ export default function EditorialPolicyPage() {
   return (
     <main className="max-w-4xl mx-auto px-4 py-8 sm:py-12 space-y-10">
       {/* Header */}
-      <header className="space-y-4 border-b border-zinc-200 dark:border-zinc-800 pb-8 text-center sm:text-left">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
-          <ShieldCheck className="w-4 h-4" />
+      <header className="space-y-3 border-b border-zinc-200 dark:border-zinc-800 pb-8 text-center sm:text-left">
+        <p className="text-xs font-medium text-[var(--accent-ink)]">
           স্বচ্ছতা ও নির্ভরযোগ্যতার অঙ্গীকার
-        </div>
-        <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
+        </p>
+        <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
           সম্পাদকীয় ও কনটেন্ট নীতিমালা (Editorial Policy)
         </h1>
         <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 max-w-3xl leading-relaxed">
@@ -175,7 +174,6 @@ export default function EditorialPolicyPage() {
         <ul className="list-disc list-inside space-y-2 text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed pl-1">
           <li>বিজ্ঞাপন কখনোই আমাদের সম্পাদকীয় সিদ্ধান্ত, বিষয় নির্বাচন বা তথ্যের নিরপেক্ষতাকে প্রভাবিত করে না।</li>
           <li>বিজ্ঞাপন এবং মূল কন্টেন্ট সম্পূর্ণ পৃথকভাবে চিহ্নিত থাকে। আমরা কোনো ভুয়া বা বিভ্রান্তিকর বিজ্ঞাপন প্রচার সমর্থন করি না।</li>
-          <li>সফটওয়্যার ডাউনলোডের ক্ষেত্রে শুধুমাত্র অফিশিয়াল প্রকাশকের সোর্স উপস্থাপন করা হয়; কোনো প্রকার ক্র্যাক, পাইরেটেড বা ম্যালওয়্যারযুক্ত লিংক প্রচার করা কঠোরভাবে নিষিদ্ধ।</li>
         </ul>
       </section>
 
