@@ -211,9 +211,30 @@ export default async function NewsDetailPage({
             <span className="inline-flex items-center gap-1"><Clock3 className="h-4 w-4" />{formatDate(item.published_at)}</span>
           </div>
           <h1 className="text-2xl font-bold leading-relaxed tracking-tight text-zinc-900 dark:text-white sm:text-3xl">{item.title}</h1>
-          <p className="mt-4 text-sm leading-7 text-zinc-600 dark:text-zinc-300">
-            এই শিরোনামের সম্পূর্ণ প্রতিবেদন মূল সংবাদমাধ্যমে পড়ুন। Totthobox শিরোনাম ও উৎসের তথ্য এক জায়গায় দেখায়; মূল প্রতিবেদন প্রকাশকের ওয়েবসাইটে থাকে।
-          </p>
+          {(() => {
+            const editorSummary = cleanSeoText(
+              item.summary ?? item.description ?? item.excerpt,
+              "",
+            );
+            return (
+              <div className="mt-4 space-y-2 text-sm leading-7 text-zinc-600 dark:text-zinc-300">
+                {editorSummary ? (
+                  <p>{editorSummary}</p>
+                ) : (
+                  <p>
+                    এই শিরোনামের সম্পূর্ণ প্রতিবেদন মূল সংবাদমাধ্যমে পড়ুন। Totthobox শিরোনাম ও উৎসের তথ্য এক জায়গায় দেখায়; মূল প্রতিবেদন প্রকাশকের ওয়েবসাইটে থাকে।
+                  </p>
+                )}
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                  উৎস: <span className="font-medium text-zinc-700 dark:text-zinc-200">{item.source_name || "সংবাদমাধ্যম"}</span>
+                  {(item.author_name || item.author) && (
+                    <> · প্রতিবেদক: <span className="font-medium text-zinc-700 dark:text-zinc-200">{item.author_name || item.author}</span></>
+                  )}
+                  {" · "}সংকলন: Totthobox Editorial Desk
+                </p>
+              </div>
+            );
+          })()}
           {item.source_url && <a href={item.source_url} target="_blank" rel="noopener noreferrer" className="mt-5 inline-flex items-center gap-2 rounded-xl bg-zinc-800 px-4 py-3 text-sm font-semibold text-white transition hover:bg-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 focus-visible:ring-offset-2 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200">মূল প্রতিবেদন পড়ুন <ExternalLink className="h-4 w-4" /></a>}
         </div>
       </div>

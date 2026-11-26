@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -13,9 +13,10 @@ import {
   ChevronLeft,
   ChevronRight,
   Calendar,
+  Loader2,
 } from "lucide-react";
 
-type NewsItem = {
+export type NewsItem = {
   id: number | string;
   title: string;
   slug: string;
@@ -30,14 +31,14 @@ type NewsItem = {
   coverage_count?: number;
 };
 
-type NewsSource = {
+export type NewsSource = {
   key: string;
   name: string;
   language?: string;
   total?: number;
 };
 
-type NewsPayload = {
+export type NewsPayload = {
   data?: NewsItem[];
   meta?: {
     current_page: number;
@@ -64,8 +65,14 @@ function formatDate(value?: string | null) {
 
 export default function NewsHeadlines({
   initialSourceKey = "",
+  initialPayload,
+  initialSources,
+  initialQueryKey,
 }: {
   initialSourceKey?: string;
+  initialPayload?: NewsPayload;
+  initialSources?: NewsSource[];
+  initialQueryKey?: string;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -75,17 +82,51 @@ export default function NewsHeadlines({
   const language = searchParams.get("language") ?? "";
   const category = searchParams.get("category") ?? "";
   const date = searchParams.get("date") ?? ""; // YYYY-MM-DD
-  const page = Math.max(1, Number(searchParams.get("page") || 1));
+  const searchTerm = searchParams.get("search") ?? "";
+  const page = Math.max(1, Number(searchParams.get("page") || 1) || 1);
 
-  const [searchInput, setSearchInput] = useState(
-    searchParams.get("search") ?? "",
+  const currentQueryKey = [
+    source,
+    language,
+    category,
+    date,
+    searchTerm,
+    String(page),
+  ].join("|");
+  const hasMatchingInitialData = Boolean(
+    initialPayload && initialQueryKey && initialQueryKey === currentQueryKey,
   );
-  const [payload, setPayload] = useState<NewsPayload>({});
-  const [sources, setSources] = useState<NewsSource[]>([]);
-  const [loading, setLoading] = useState(true);
+
+  const [searchInput, setSearchInput] = useState(searchTerm);
+  const [payload, setPayload] = useState<NewsPayload>(
+    hasMatchingInitialData && initialPayload ? initialPayload : {},
+  );
+  const [sources, setSources] = useState<NewsSource[]>(initialSources ?? []);
+  const [loading, setLoading] = useState(!hasMatchingInitialData);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [loadedPage, setLoadedPage] = useState(
+    hasMatchingInitialData && initialPayload?.meta?.current_page
+      ? initialPayload.meta.current_page
+      : page,
+  );
   const [error, setError] = useState("");
+  const skippedInitialFetchRef = useRef(false);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   const queryString = searchParams.toString();
+
+  const buildPageHref = useCallback(
+    (targetPage: number) => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (targetPage <= 1) {
+        params.delete("page");
+      } else {
+        params.set("page", String(targetPage));
+      }
+      return `${pathname}${params.size ? `?${params.toString()}` : ""}`;
+    },
+    [pathname, searchParams],
+  );
 
   const categories = useMemo(
     () =>
@@ -104,8 +145,10 @@ export default function NewsHeadlines({
     setSearchInput(searchParams.get("search") ?? "");
   }, [queryString, searchParams]);
 
-  // Load sources once
+  // Load sources once (skip if server already provided them)
   useEffect(() => {
+    if (initialSources && initialSources.length > 0) return;
+
     const controller = new AbortController();
     fetch(`${API_BASE}/api/news/sources`, {
       signal: controller.signal,
@@ -140,10 +183,18 @@ export default function NewsHeadlines({
       });
 
     return () => controller.abort();
-  }, []);
+  }, [initialSources]);
 
   // Fetch news list
   useEffect(() => {
+    if (
+      !skippedInitialFetchRef.current &&
+      hasMatchingInitialData
+    ) {
+      skippedInitialFetchRef.current = true;
+      return;
+    }
+
     const controller = new AbortController();
     const params = new URLSearchParams();
 
@@ -161,6 +212,7 @@ export default function NewsHeadlines({
 
     setLoading(true);
     setError("");
+    setLoadedPage(page);
     const started = Date.now();
 
     fetch(`${API_BASE}/api/news?${params.toString()}`, {
@@ -195,7 +247,83 @@ export default function NewsHeadlines({
       });
 
     return () => controller.abort();
-  }, [source, language, category, date, page, searchParams]);
+  }, [source, language, category, date, page, searchParams, hasMatchingInitialData]);
+
+  const loadMore = useCallback(async () => {
+    if (loading || loadingMore || !payload.meta?.has_more) return;
+
+    const nextPage = loadedPage + 1;
+    const params = new URLSearchParams();
+    if (source) params.set("source", source);
+    if (language) params.set("language", language);
+    if (category) params.set("category", category);
+    if (date) params.set("date", date);
+    if (searchTerm) params.set("search", searchTerm);
+    params.set("page", String(nextPage));
+    params.set("per_page", "18");
+
+    setLoadingMore(true);
+    try {
+      const res = await fetch(`${API_BASE}/api/news?${params.toString()}`, {
+        cache: "default",
+        headers: { Accept: "application/json" },
+      });
+      if (!res.ok) return;
+      const result = (await res.json()) as NewsPayload;
+      const nextItems = Array.isArray(result?.data) ? result.data : [];
+
+      setPayload((prev) => {
+        const existing = prev.data ?? [];
+        const seen = new Set(existing.map((i) => i.slug || String(i.id)));
+        const merged = [
+          ...existing,
+          ...nextItems.filter((i) => !seen.has(i.slug || String(i.id))),
+        ];
+        return {
+          data: merged,
+          meta: result?.meta ?? prev.meta,
+        };
+      });
+      setLoadedPage(nextPage);
+
+      if (typeof window !== "undefined") {
+        window.history.replaceState(null, "", buildPageHref(nextPage));
+      }
+    } catch {
+      // Keep current items on transient load-more failure
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [
+    loading,
+    loadingMore,
+    payload.meta?.has_more,
+    loadedPage,
+    source,
+    language,
+    category,
+    date,
+    searchTerm,
+    buildPageHref,
+  ]);
+
+  // IntersectionObserver auto-load for subsequent pages
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel || !payload.meta?.has_more || loading) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          void loadMore();
+        }
+      },
+      { rootMargin: "300px 0px" },
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [loadMore, payload.meta?.has_more, loading]);
 
   function updateFilters(changes: Record<string, string | null>) {
     const params = new URLSearchParams(searchParams.toString());
@@ -499,32 +627,66 @@ export default function NewsHeadlines({
             ))}
           </div>
 
-          {/* Pagination */}
+          {/* IntersectionObserver Sentinel & Load more fallback */}
+          {meta?.has_more && (
+            <div ref={sentinelRef} className="mt-6 flex justify-center">
+              <button
+                type="button"
+                disabled={loadingMore}
+                onClick={() => void loadMore()}
+                className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-zinc-300 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-800 shadow-sm transition hover:bg-zinc-50 disabled:opacity-60 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800"
+              >
+                {loadingMore ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" /> লোড হচ্ছে...
+                  </>
+                ) : (
+                  "আরও দেখুন"
+                )}
+              </button>
+            </div>
+          )}
+
+          {/* Pagination (real <a href="?page=N"> links in HTML) */}
           {meta && meta.last_page > 1 && (
             <nav
               aria-label="সংবাদ পৃষ্ঠা"
               className="mt-7 flex items-center justify-center gap-3"
             >
-              <button
-                type="button"
-                disabled={page <= 1}
-                onClick={() => updateFilters({ page: String(page - 1) })}
-                className="inline-flex items-center gap-1 rounded-xl border border-zinc-400/30 px-4 py-2 text-sm transition hover:bg-zinc-400/10 disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                <ChevronLeft className="h-4 w-4" /> আগের
-              </button>
+              {loadedPage > 1 ? (
+                <Link
+                  href={buildPageHref(loadedPage - 1)}
+                  className="inline-flex items-center gap-1 rounded-xl border border-zinc-400/30 px-4 py-2 text-sm transition hover:bg-zinc-400/10"
+                >
+                  <ChevronLeft className="h-4 w-4" /> আগের
+                </Link>
+              ) : (
+                <span
+                  aria-disabled="true"
+                  className="inline-flex cursor-not-allowed items-center gap-1 rounded-xl border border-zinc-400/30 px-4 py-2 text-sm opacity-40"
+                >
+                  <ChevronLeft className="h-4 w-4" /> আগের
+                </span>
+              )}
               <span className="text-sm text-zinc-600 dark:text-zinc-300">
-                পৃষ্ঠা {page.toLocaleString("bn-BD")} /{" "}
+                পৃষ্ঠা {loadedPage.toLocaleString("bn-BD")} /{" "}
                 {meta.last_page.toLocaleString("bn-BD")}
               </span>
-              <button
-                type="button"
-                disabled={page >= meta.last_page}
-                onClick={() => updateFilters({ page: String(page + 1) })}
-                className="inline-flex items-center gap-1 rounded-xl border border-zinc-400/30 px-4 py-2 text-sm transition hover:bg-zinc-400/10 disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                পরের <ChevronRight className="h-4 w-4" />
-              </button>
+              {loadedPage < meta.last_page ? (
+                <Link
+                  href={buildPageHref(loadedPage + 1)}
+                  className="inline-flex items-center gap-1 rounded-xl border border-zinc-400/30 px-4 py-2 text-sm transition hover:bg-zinc-400/10"
+                >
+                  পরের <ChevronRight className="h-4 w-4" />
+                </Link>
+              ) : (
+                <span
+                  aria-disabled="true"
+                  className="inline-flex cursor-not-allowed items-center gap-1 rounded-xl border border-zinc-400/30 px-4 py-2 text-sm opacity-40"
+                >
+                  পরের <ChevronRight className="h-4 w-4" />
+                </span>
+              )}
             </nav>
           )}
         </>
