@@ -101,11 +101,66 @@ export function isIgnoredRoute(path: string | null | undefined): boolean {
   );
 }
 
+const SENSITIVE_QUERY_PARAMS = new Set([
+  "token",
+  "code",
+  "state",
+  "password",
+  "email",
+  "otp",
+  "access_token",
+  "id_token",
+  "refresh_token",
+  "key",
+  "secret",
+  "signature",
+  "session",
+]);
+
+const SENSITIVE_AUTH_PATHS = [
+  "/auth/callback",
+  "/auth/github/callback",
+  "/reset-password",
+  "/login",
+];
+
+/**
+ * Strips sensitive query params and auth callback query strings before analytics push.
+ */
+export function sanitizeAnalyticsUrl(rawUrl: string): string {
+  if (!rawUrl || typeof window === "undefined") return "";
+  try {
+    const parsed = new URL(rawUrl, window.location.origin);
+    const isSensitivePath = SENSITIVE_AUTH_PATHS.some(
+      (p) => parsed.pathname === p || parsed.pathname.startsWith(`${p}/`),
+    );
+    if (isSensitivePath) {
+      parsed.search = "";
+      parsed.hash = "";
+      return parsed.toString();
+    }
+    const toDelete: string[] = [];
+    parsed.searchParams.forEach((_, k) => {
+      if (SENSITIVE_QUERY_PARAMS.has(k.toLowerCase())) {
+        toDelete.push(k);
+      }
+    });
+    for (const k of toDelete) {
+      parsed.searchParams.delete(k);
+    }
+    parsed.hash = "";
+    return parsed.toString();
+  } catch {
+    return "";
+  }
+}
+
 /**
  * Push arbitrary analytics event to window.dataLayer safely.
  */
 export function trackEvent(name: string, params: Record<string, unknown> = {}): void {
   if (typeof window === "undefined" || isBot()) return;
+  if (!hasAnalyticsConsent()) return;
   const pathname = window.location.pathname;
   if (isIgnoredRoute(pathname)) return;
 

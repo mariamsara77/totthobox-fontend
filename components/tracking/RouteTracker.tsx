@@ -20,16 +20,32 @@ function RouteTrackerInner() {
   const searchKey = searchParams?.toString() || "";
   const fullRouteKey = searchKey ? `${pathname}?${searchKey}` : pathname;
 
+  const isFirstRouteRef = useRef<boolean>(true);
   const lastTrackedRef = useRef<{ routeKey: string; at: number } | null>(null);
   const currentViewUrlRef = useRef<string>("");
   const visibleSinceRef = useRef<number | null>(null);
   const accumulatedVisibleMsRef = useRef<number>(0);
+  const pendingNavStartPerfRef = useRef<number | null>(null);
 
-  // App start: system event, initial PWA sync, queue flush, online/60s flush, auth sync listener
+  // App start: system event, initial PWA sync, queue flush, online/60s flush, auth sync, nav timing
   useEffect(() => {
     trackSystem();
     void syncPwa();
     void flushQueue();
+
+    const handleLinkClick = (e: MouseEvent) => {
+      const target = e.target as Element | null;
+      const anchor = target?.closest?.("a[href]");
+      if (!anchor) return;
+      const href = anchor.getAttribute("href");
+      if (href && href.startsWith("/") && !href.startsWith("//")) {
+        pendingNavStartPerfRef.current = performance.now();
+      }
+    };
+
+    const handlePopState = () => {
+      pendingNavStartPerfRef.current = performance.now();
+    };
 
     const handleAppInstalled = () => {
       void syncPwa(true);
@@ -60,6 +76,8 @@ function RouteTrackerInner() {
       }
     }, 60_000);
 
+    document.addEventListener("click", handleLinkClick, true);
+    window.addEventListener("popstate", handlePopState);
     window.addEventListener("appinstalled", handleAppInstalled);
     standaloneMql?.addEventListener("change", handleDisplayModeChange);
     window.addEventListener("online", handleOnline);
@@ -67,6 +85,8 @@ function RouteTrackerInner() {
 
     return () => {
       window.clearInterval(flushInterval);
+      document.removeEventListener("click", handleLinkClick, true);
+      window.removeEventListener("popstate", handlePopState);
       window.removeEventListener("appinstalled", handleAppInstalled);
       standaloneMql?.removeEventListener("change", handleDisplayModeChange);
       window.removeEventListener("online", handleOnline);
@@ -100,11 +120,34 @@ function RouteTrackerInner() {
     }
 
     lastTrackedRef.current = { routeKey: fullRouteKey, at: nowWall };
-    const { sanitizedUrl } = trackPageView(pathname);
-    currentViewUrlRef.current = sanitizedUrl;
-    accumulatedVisibleMsRef.current = 0;
-    visibleSinceRef.current =
-      document.visibilityState === "visible" ? performance.now() : null;
+
+    const isSpa = !isFirstRouteRef.current;
+    isFirstRouteRef.current = false;
+    const navStartPerf = pendingNavStartPerfRef.current ?? nowPerf;
+    pendingNavStartPerfRef.current = null;
+
+    let rafId = 0;
+    rafId = window.requestAnimationFrame(() => {
+      const transitionMs = isSpa
+        ? Math.max(1, Math.round(performance.now() - navStartPerf))
+        : undefined;
+
+      const { sanitizedUrl } = trackPageView(pathname, {
+        isSpaNavigation: isSpa,
+        transitionMs,
+      });
+      currentViewUrlRef.current = sanitizedUrl;
+      accumulatedVisibleMsRef.current = 0;
+      visibleSinceRef.current =
+        document.visibilityState === "visible" ? performance.now() : null;
+    });
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+      if (!pendingNavStartPerfRef.current) {
+        pendingNavStartPerfRef.current = performance.now();
+      }
+    };
   }, [pathname, fullRouteKey]);
 
   // Visibility & pagehide handling: count only active visible time

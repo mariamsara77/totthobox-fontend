@@ -462,9 +462,34 @@ export async function trackEvent(input: TrackEventInput): Promise<void> {
   }
 }
 
+export interface TrackPageViewOptions {
+  routeName?: string;
+  isSpaNavigation?: boolean;
+  transitionMs?: number;
+}
+
+function measureInitialLoadTimeMs(): number {
+  if (typeof window === "undefined" || typeof performance === "undefined") {
+    return 0;
+  }
+  try {
+    const nav = performance.getEntriesByType("navigation")[0] as
+      | PerformanceNavigationTiming
+      | undefined;
+    if (nav && nav.loadEventEnd > 0) {
+      const ms = Math.round(nav.loadEventEnd - nav.startTime);
+      return ms >= 0 && ms < 60_000 ? ms : 0;
+    }
+    const nowMs = Math.round(performance.now());
+    return nowMs >= 0 && nowMs < 60_000 ? nowMs : 0;
+  } catch {
+    return 0;
+  }
+}
+
 export function trackPageView(
   pathname: string,
-  routeName?: string,
+  options: TrackPageViewOptions = {},
 ): { sanitizedUrl: string } {
   if (!canTrack(pathname)) return { sanitizedUrl: "" };
 
@@ -473,16 +498,11 @@ export function trackPageView(
   const searchParams = new URLSearchParams(window.location.search);
 
   let loadTimeMs = 0;
-  try {
-    const nav = performance.getEntriesByType("navigation")[0] as
-      | PerformanceNavigationTiming
-      | undefined;
-    if (nav && nav.loadEventEnd > 0) {
-      const ms = Math.round(nav.loadEventEnd - nav.startTime);
-      loadTimeMs = ms > 0 && ms < 60_000 ? ms : 0;
-    }
-  } catch {
-    loadTimeMs = 0;
+  if (options.isSpaNavigation) {
+    const raw = Math.round(options.transitionMs ?? 0);
+    loadTimeMs = Number.isFinite(raw) && raw >= 0 && raw < 60_000 ? raw : 0;
+  } else {
+    loadTimeMs = measureInitialLoadTimeMs();
   }
 
   const payload: PageViewPayload = {
@@ -490,7 +510,7 @@ export function trackPageView(
     path: pathname,
     title: document.title || "",
     referrer: sanitizedReferrer,
-    ...(routeName ? { route_name: routeName } : {}),
+    ...(options.routeName ? { route_name: options.routeName } : {}),
     load_time_ms: loadTimeMs,
     is_pwa: isStandalonePwa(),
     utm_source: searchParams.get("utm_source"),
