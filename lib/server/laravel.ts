@@ -1,12 +1,12 @@
 function getApiUrl(): string {
-  const url =
+  const raw = (
     process.env.NEXT_PUBLIC_API_URL ||
     process.env.LARAVEL_API_URL ||
-    (process.env.NEXT_PUBLIC_API_BASE_URL
-      ? `${process.env.NEXT_PUBLIC_API_BASE_URL.replace(/\/+$/, "")}/api`
-      : null) ||
-    "https://admin.totthobox.com/api";
-  return url.replace(/\/+$/, "");
+    process.env.NEXT_PUBLIC_API_BASE_URL ||
+    "https://admin.totthobox.com"
+  ).trim();
+  const origin = raw.replace(/\/+$/, "").replace(/\/api$/i, "");
+  return `${origin}/api`;
 }
 
 interface LaravelFetchInit extends Omit<RequestInit, "headers"> {

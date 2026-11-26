@@ -64,7 +64,17 @@ interface SyncPwaBody {
   visitor_id: string;
 }
 
-const API_BASE = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/+$/, "");
+function getApiOrigin(): string {
+  const raw = (
+    process.env.NEXT_PUBLIC_API_URL ||
+    process.env.NEXT_PUBLIC_API_BASE_URL ||
+    ""
+  ).trim();
+  if (!raw) return "";
+  return raw.replace(/\/+$/, "").replace(/\/api$/i, "");
+}
+
+const API_BASE = getApiOrigin();
 const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION || "0.1.0";
 
 const SYSTEM_TRACKED_KEY = "tb_system_tracked";
