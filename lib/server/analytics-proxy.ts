@@ -65,7 +65,10 @@ function logUpstreamErrorRateLimited(message: string, error?: unknown): void {
   }
 }
 
-export function getClientHeaders(req: NextRequest): Record<string, string> {
+export function getClientHeaders(
+  req: NextRequest,
+  visitorId?: string | null,
+): Record<string, string> {
   const clientIp =
     req.headers.get("cf-connecting-ip") ||
     req.headers.get("x-real-ip") ||
@@ -74,6 +77,8 @@ export function getClientHeaders(req: NextRequest): Record<string, string> {
 
   const userAgent = req.headers.get("user-agent") || "TotthoboxFrontend/1.0";
   const referer = req.headers.get("referer");
+  const resolvedVisitorId =
+    visitorId?.trim() || req.headers.get("x-visitor-id")?.trim() || "";
 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -84,6 +89,10 @@ export function getClientHeaders(req: NextRequest): Record<string, string> {
     "X-Forwarded-For": clientIp,
     "X-Real-IP": clientIp,
   };
+
+  if (resolvedVisitorId) {
+    headers["X-Visitor-Id"] = resolvedVisitorId;
+  }
 
   if (referer) {
     headers.Referer = referer;
@@ -104,7 +113,11 @@ export function isBotOrIgnored(req: NextRequest, path?: string | null): boolean 
     path === "/auth" ||
     path.startsWith("/auth/") ||
     path === "/settings" ||
-    path.startsWith("/settings/")
+    path.startsWith("/settings/") ||
+    path === "/admin" ||
+    path.startsWith("/admin/") ||
+    path === "/preview" ||
+    path.startsWith("/preview/")
   );
 }
 
@@ -170,7 +183,10 @@ export async function proxyPageView(req: NextRequest): Promise<NextResponse> {
         ? url
         : `${req.nextUrl.origin}${currentPath}`;
 
-    const headers = getClientHeaders(req);
+    const headers = getClientHeaders(
+      req,
+      typeof visitor_id === "string" ? visitor_id : null,
+    );
     const isDev = process.env.NODE_ENV !== "production";
     const cachedCapability = getCapability("pageview");
 
@@ -313,7 +329,10 @@ export async function proxyHeartbeat(req: NextRequest): Promise<NextResponse> {
         ? url
         : `${req.nextUrl.origin}${currentPath}`;
 
-    const headers = getClientHeaders(req);
+    const headers = getClientHeaders(
+      req,
+      typeof visitor_id === "string" ? visitor_id : null,
+    );
     const isDev = process.env.NODE_ENV !== "production";
     const cachedCapability = getCapability("heartbeat");
 

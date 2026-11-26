@@ -93,7 +93,11 @@ export function isIgnoredRoute(path: string | null | undefined): boolean {
     path === "/auth" ||
     path.startsWith("/auth/") ||
     path === "/settings" ||
-    path.startsWith("/settings/")
+    path.startsWith("/settings/") ||
+    path === "/admin" ||
+    path.startsWith("/admin/") ||
+    path === "/preview" ||
+    path.startsWith("/preview/")
   );
 }
 

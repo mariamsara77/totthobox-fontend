@@ -42,6 +42,9 @@ export async function POST(req: NextRequest) {
       payload,
     });
 
+    const visitorHeader =
+      req.headers.get("x-visitor-id")?.trim() || visitorId;
+
     // Non-blocking: don't await — let the response return immediately
     void fetch(`${LARAVEL_API}/tracking/event`, {
       method: "POST",
@@ -49,6 +52,7 @@ export async function POST(req: NextRequest) {
         "Content-Type": "application/json",
         Accept: "application/json",
         "X-Requested-With": "XMLHttpRequest",
+        "X-Visitor-Id": visitorHeader,
         "User-Agent": req.headers.get("user-agent") || "TotthoboxFrontend/1.0",
         "X-Forwarded-For":
           req.headers.get("x-forwarded-for") ||

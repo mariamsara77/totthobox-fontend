@@ -55,6 +55,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const visitorHeader =
+      req.headers.get("x-visitor-id")?.trim() ||
+      (typeof body.visitor_id === "string" ? body.visitor_id : "") ||
+      (typeof body.js_visitor_id === "string" ? body.js_visitor_id : "");
+
     // Forward offline sync data to Laravel backend (fire-and-forget)
     void fetch(`${LARAVEL_API}/tracking/sync`, {
       method: "POST",
@@ -62,6 +67,7 @@ export async function POST(req: NextRequest) {
         "Content-Type": "application/json",
         Accept: "application/json",
         "X-Requested-With": "XMLHttpRequest",
+        ...(visitorHeader ? { "X-Visitor-Id": visitorHeader } : {}),
         "User-Agent": req.headers.get("user-agent") || "TotthoboxFrontend/1.0",
         "X-Forwarded-For":
           req.headers.get("x-forwarded-for") ||
