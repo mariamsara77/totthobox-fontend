@@ -14,7 +14,7 @@ function VisitorTrackerInner() {
   const searchParams = useSearchParams();
   const searchKey = searchParams?.toString() || "";
   const heartbeatTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const enteredAtRef = useRef<number>(Date.now());
+  const enteredAtRef = useRef<number>(0);
   const durationSentRef = useRef<boolean>(false);
 
   // Track pageview immediately on mount and every route change
