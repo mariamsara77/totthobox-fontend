@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 import withPWAInit from "@ducanh2912/next-pwa";
 import type { RuntimeCaching } from "workbox-build";
+import pkg from "./package.json";
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -30,6 +31,10 @@ const publicPageSources = [
 const nextConfig: NextConfig = {
   compress: true,
   poweredByHeader: false,
+  env: {
+    NEXT_PUBLIC_APP_VERSION:
+      process.env.NEXT_PUBLIC_APP_VERSION || pkg.version || "0.1.0",
+  },
   turbopack: {},
   images: {
     formats: ["image/avif", "image/webp"],

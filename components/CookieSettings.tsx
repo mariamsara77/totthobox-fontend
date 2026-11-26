@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { RxSwitch } from "react-icons/rx";
+import { clearVisitorId } from "@/lib/tracking/visitor-id";
 
 // EEA + UK + CH: এই দেশগুলোতেই কেবল অটো ব্যানার দেখাবে
 const CONSENT_REQUIRED_COUNTRIES = new Set([
@@ -137,10 +138,7 @@ export default function CookieSettings() {
     };
     localStorage.setItem("cookie_consent", JSON.stringify(prefs));
     if (!prefs.analytics) {
-      try {
-        localStorage.removeItem("tb_visitor_id");
-        localStorage.removeItem("tb_visited_before");
-      } catch {}
+      clearVisitorId();
     }
     setSettings({ analytics: prefs.analytics, marketing: prefs.marketing });
     setIsOpen(false);

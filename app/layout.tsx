@@ -6,7 +6,7 @@ import { AppProviders } from "./providers";
 import { APPEARANCE_INIT_SCRIPT } from "@/lib/appearance";
 import TagManager from "@/components/partials/TagManager";
 import RouteTracker from "@/components/analytics/RouteTracker";
-import DeferredVisitorTracker from "@/components/DeferredVisitorTracker";
+import TrackingRouteTracker from "@/components/tracking/RouteTracker";
 import InstallPWA from "@/components/InstallPWA";
 import NetworkStatus from "@/components/NetworkStatus";
 import PWAUpdateToast from "@/components/pwa/PWAUpdateToast";
@@ -257,7 +257,7 @@ export default function RootLayout({
           {children}
           <MobileBottomNav />
         </AppProviders>
-        <DeferredVisitorTracker />
+        <TrackingRouteTracker />
         <InstallPWA />
         <PWAUpdateToast />
       </body>
