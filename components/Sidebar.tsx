@@ -748,7 +748,7 @@ export default function Sidebar() {
               </div>
             )}
 
-            {activeModule === "bangladesh" && (
+            {activeModule === "bangla" && (
               <div className="space-y-0.5">
                 <SubItem
                   href="/bangladesh/introduction"
