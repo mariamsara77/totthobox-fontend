@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import localFont from "next/font/local";
+import { Noto_Sans_Bengali } from "next/font/google";
 import "./globals.css";
 import { AppProviders } from "./providers";
 import { APPEARANCE_INIT_SCRIPT } from "@/lib/appearance";
@@ -53,6 +54,13 @@ const hindSiliguri = localFont({
     },
   ],
   variable: "--font-hind-siliguri",
+  display: "swap",
+});
+
+const notoSansBengali = Noto_Sans_Bengali({
+  subsets: ["bengali", "latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-noto-bengali",
   display: "swap",
 });
 
@@ -160,7 +168,9 @@ export default function RootLayout({
         " " +
         geistMono.variable +
         " " +
-        hindSiliguri.variable
+        hindSiliguri.variable +
+        " " +
+        notoSansBengali.variable
       }
     >
       <head>

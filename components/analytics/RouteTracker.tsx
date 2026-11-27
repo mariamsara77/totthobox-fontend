@@ -43,7 +43,7 @@ function RouteTrackerInner() {
     }
     lastPushedRef.current = { routeKey: fullRouteKey, at: now };
 
-    const rafId = window.requestAnimationFrame(() => {
+    const timerId = window.setTimeout(() => {
       const pageLocation = sanitizeAnalyticsUrl(window.location.href);
       let pagePath = pathname;
       try {
@@ -62,9 +62,9 @@ function RouteTrackerInner() {
         page_title: document.title || "",
         page_location: pageLocation || window.location.origin + pathname,
       });
-    });
+    }, 0);
 
-    return () => window.cancelAnimationFrame(rafId);
+    return () => window.clearTimeout(timerId);
   }, [pathname, fullRouteKey]);
 
   // Immediately emit page_view when user grants analytics consent on current page

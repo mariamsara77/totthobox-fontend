@@ -284,6 +284,22 @@ h3 {
   line-height: 1.45;
 }
 
+/* Paragraph & prose reading font + consistent size (keep headings/titles on Hind Siliguri) */
+@layer base {
+  p {
+    font-family: var(--font-noto-bengali), var(--font-hind-siliguri), var(--font-geist-sans), sans-serif;
+    font-size: 1.0625rem;
+    line-height: var(--line-height-bangla);
+  }
+}
+
+.prose :where(p, li, blockquote),
+.ai-prose :where(p, li, blockquote) {
+  font-family: var(--font-noto-bengali), var(--font-hind-siliguri), var(--font-geist-sans), sans-serif;
+  font-size: 1.0625rem;
+  line-height: var(--line-height-bangla);
+}
+
 pre, code {
   max-width: 100%;
 }

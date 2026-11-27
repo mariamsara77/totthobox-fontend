@@ -16,6 +16,7 @@ export interface TrackEventInput {
   label?: string;
   payload?: TrackingPayload;
   keepalive?: boolean;
+  skipQueue?: boolean;
   eventUuid?: string;
 }
 
@@ -64,13 +65,16 @@ interface SyncPwaBody {
   visitor_id: string;
 }
 
+const DEFAULT_API_ORIGIN = "https://admin.totthobox.com";
+
 function getApiOrigin(): string {
   const raw = (
     process.env.NEXT_PUBLIC_API_URL ||
     process.env.NEXT_PUBLIC_API_BASE_URL ||
-    ""
+    process.env.NEXT_PUBLIC_BACKEND_URL ||
+    DEFAULT_API_ORIGIN
   ).trim();
-  if (!raw) return "";
+  if (!raw) return DEFAULT_API_ORIGIN;
   return raw.replace(/\/+$/, "").replace(/\/api$/i, "");
 }
 
@@ -84,7 +88,7 @@ const AUTH_CACHE_KEY = "totthobox_auth_user_cache";
 const MAX_PAYLOAD_KEYS = 100;
 const MAX_PAYLOAD_BYTES = 32 * 1024;
 const MAX_SYNC_CHUNK = 100;
-const MAX_REQUESTS_PER_MINUTE = 30;
+const MAX_REQUESTS_PER_MINUTE = 180;
 const RATE_WINDOW_MS = 60_000;
 const MEDIA_HEARTBEAT_INTERVAL_MS = 30_000;
 
@@ -204,6 +208,9 @@ export function sanitizeUrl(rawUrl: string): string {
   if (!rawUrl || typeof window === "undefined") return "";
   try {
     const parsed = new URL(rawUrl, window.location.origin);
+    if (parsed.hostname === "www.totthobox.com") {
+      parsed.hostname = "totthobox.com";
+    }
     const isSensitivePath = SENSITIVE_AUTH_PATHS.some(
       (p) => parsed.pathname === p || parsed.pathname.startsWith(`${p}/`),
     );
@@ -262,6 +269,21 @@ function isLikelyLoggedIn(): boolean {
   }
 }
 
+function getCachedBearerToken(): string | null {
+  if (typeof window === "undefined") return null;
+  if (!isLikelyLoggedIn()) {
+    cachedAuthToken = null;
+    return null;
+  }
+
+  const now = Date.now();
+  if (cachedAuthToken && now - cachedAuthTokenAt < 60_000) {
+    return cachedAuthToken;
+  }
+
+  return null;
+}
+
 async function getBearerToken(): Promise<string | null> {
   if (typeof window === "undefined") return null;
   if (!isLikelyLoggedIn()) {
@@ -304,7 +326,7 @@ export function clearCachedAuthToken(): void {
   cachedAuthTokenAt = 0;
 }
 
-async function buildHeaders(includeAuth = true): Promise<Record<string, string>> {
+function buildHeadersSync(includeCachedAuth = true): Record<string, string> {
   const visitorId = getVisitorId();
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -313,6 +335,22 @@ async function buildHeaders(includeAuth = true): Promise<Record<string, string>>
     "X-App-Mode": isStandalonePwa() ? "standalone" : "browser",
     "X-App-Version": APP_VERSION,
   };
+
+  if (includeCachedAuth) {
+    const token = getCachedBearerToken();
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    } else if (isLikelyLoggedIn()) {
+      // Warm cache in background without blocking current tracking request
+      void getBearerToken();
+    }
+  }
+
+  return headers;
+}
+
+async function buildHeaders(includeAuth = true): Promise<Record<string, string>> {
+  const headers = buildHeadersSync(false);
 
   if (includeAuth) {
     const token = await getBearerToken();
@@ -350,9 +388,10 @@ async function sendWithRetry(
   url: string,
   body: TrackingEventBody,
   keepalive: boolean,
+  skipQueue = false,
 ): Promise<void> {
   const retryDelays = [1000, 3000];
-  const headers = await buildHeaders(!keepalive);
+  const headers = buildHeadersSync(!keepalive);
 
   for (let attempt = 0; attempt <= retryDelays.length; attempt += 1) {
     try {
@@ -363,7 +402,7 @@ async function sendWithRetry(
         keepalive,
       });
 
-      if (res.status === 200) {
+      if (res.ok) {
         return;
       }
       if (res.status === 413) {
@@ -379,7 +418,7 @@ async function sendWithRetry(
         continue;
       }
 
-      if (res.status >= 500) {
+      if (res.status >= 500 && !skipQueue) {
         enqueueActivity({
           id: body.event_uuid,
           type: body.category,
@@ -394,14 +433,16 @@ async function sendWithRetry(
         await new Promise((r) => setTimeout(r, retryDelays[attempt]));
         continue;
       }
-      devDebug("Tracking event failed, buffering offline", err);
-      enqueueActivity({
-        id: body.event_uuid,
-        type: body.category,
-        key: body.action,
-        value: toActivityValue(body.payload),
-        timestamp: Date.now(),
-      });
+      if (!skipQueue) {
+        devDebug("Tracking event failed, buffering offline", err);
+        enqueueActivity({
+          id: body.event_uuid,
+          type: body.category,
+          key: body.action,
+          value: toActivityValue(body.payload),
+          timestamp: Date.now(),
+        });
+      }
       return;
     }
   }
@@ -442,13 +483,15 @@ export async function trackEvent(input: TrackEventInput): Promise<void> {
       (typeof navigator !== "undefined" && navigator.onLine === false) ||
       (!input.keepalive && !isWithinRateLimit())
     ) {
-      enqueueActivity({
-        id: eventUuid,
-        type: category,
-        key: action,
-        value: toActivityValue(cleanPayload),
-        timestamp: Date.now(),
-      });
+      if (!input.skipQueue) {
+        enqueueActivity({
+          id: eventUuid,
+          type: category,
+          key: action,
+          value: toActivityValue(cleanPayload),
+          timestamp: Date.now(),
+        });
+      }
       return;
     }
 
@@ -456,6 +499,7 @@ export async function trackEvent(input: TrackEventInput): Promise<void> {
       `${API_BASE}/api/tracking/event`,
       body,
       Boolean(input.keepalive),
+      Boolean(input.skipQueue),
     );
   } catch (err) {
     devDebug("trackEvent error", err);
@@ -623,14 +667,25 @@ export async function flushQueue(): Promise<void> {
       });
 
       if (!res.ok) {
-        if (res.status >= 500) break;
+        if (res.status >= 500 || res.status === 429) break;
+        // Drop permanently invalid/unaccepted chunks (400/413/422) so they don't wedge the queue
+        if (res.status === 400 || res.status === 413 || res.status === 422) {
+          removeQueuedIds(chunk.map((item) => item.id));
+        }
         continue;
       }
 
       const data = (await res.json().catch(() => null)) as {
         status?: unknown;
+        success?: unknown;
       } | null;
-      if (data?.status === "success") {
+      if (
+        data === null ||
+        data.status === "success" ||
+        data.status === "ok" ||
+        data.success === true ||
+        (data.status !== "error" && data.status !== "failed")
+      ) {
         removeQueuedIds(chunk.map((item) => item.id));
       }
     }
@@ -653,5 +708,27 @@ export function trackMediaHeartbeat(channelSlug: string): void {
     action: "heartbeat",
     label: channelSlug,
     payload: { channel: channelSlug },
+    skipQueue: true,
+  });
+}
+
+export function trackVisitorHeartbeat(pathname?: string): void {
+  if (typeof window === "undefined") return;
+  const targetPath = pathname || window.location.pathname;
+  if (!canTrack(targetPath)) return;
+  if (typeof navigator !== "undefined" && navigator.onLine === false) return;
+  if (typeof document !== "undefined" && document.visibilityState !== "visible") {
+    return;
+  }
+
+  void trackEvent({
+    category: "visitor",
+    action: "heartbeat",
+    payload: {
+      path: targetPath,
+      url: sanitizeUrl(window.location.href),
+      is_pwa: isStandalonePwa(),
+    },
+    skipQueue: true,
   });
 }

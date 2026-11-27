@@ -9,10 +9,12 @@ import {
   trackPageLeave,
   trackPageView,
   trackSystem,
+  trackVisitorHeartbeat,
 } from "@/lib/tracking/client";
 import { getQueueLength } from "@/lib/tracking/queue";
 
 const DEDUPE_WINDOW_MS = 1000;
+const VISITOR_HEARTBEAT_INTERVAL_MS = 25_000;
 
 function RouteTrackerInner() {
   const pathname = usePathname();
@@ -126,8 +128,8 @@ function RouteTrackerInner() {
     const navStartPerf = pendingNavStartPerfRef.current ?? nowPerf;
     pendingNavStartPerfRef.current = null;
 
-    let rafId = 0;
-    rafId = window.requestAnimationFrame(() => {
+    let timerId = 0;
+    const recordPageView = () => {
       const transitionMs = isSpa
         ? Math.max(1, Math.round(performance.now() - navStartPerf))
         : undefined;
@@ -140,10 +142,16 @@ function RouteTrackerInner() {
       accumulatedVisibleMsRef.current = 0;
       visibleSinceRef.current =
         document.visibilityState === "visible" ? performance.now() : null;
-    });
+    };
+
+    if (!isSpa) {
+      recordPageView();
+    } else {
+      timerId = window.setTimeout(recordPageView, 0);
+    }
 
     return () => {
-      window.cancelAnimationFrame(rafId);
+      if (timerId) window.clearTimeout(timerId);
       if (!pendingNavStartPerfRef.current) {
         pendingNavStartPerfRef.current = performance.now();
       }
@@ -183,6 +191,12 @@ function RouteTrackerInner() {
       }
     };
 
+    const heartbeatInterval = window.setInterval(() => {
+      if (document.visibilityState === "visible") {
+        trackVisitorHeartbeat(pathname);
+      }
+    }, VISITOR_HEARTBEAT_INTERVAL_MS);
+
     const handlePageHide = () => {
       sendLeaveIfAny();
     };
@@ -206,6 +220,7 @@ function RouteTrackerInner() {
     window.addEventListener("totthobox:consent-updated", handleConsentUpdated);
 
     return () => {
+      window.clearInterval(heartbeatInterval);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.removeEventListener("pagehide", handlePageHide);
       window.removeEventListener(

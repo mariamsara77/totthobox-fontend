@@ -40,14 +40,6 @@ export function getClientCountry(): string | null {
 export function hasAnalyticsConsent(): boolean {
   if (typeof window === "undefined") return false;
 
-  // Respect Do-Not-Track
-  if (
-    navigator.doNotTrack === "1" ||
-    (window as unknown as { doNotTrack?: string }).doNotTrack === "1"
-  ) {
-    return false;
-  }
-
   // 1. Saved visitor choice overrides defaults
   try {
     const raw = window.localStorage.getItem("cookie_consent");
@@ -77,8 +69,9 @@ export function isBot(): boolean {
   if (typeof window === "undefined" || !navigator) return true;
   const ua = navigator.userAgent || "";
   return (
-    /bot|crawler|spider|slurp|lighthouse|headlesschrome|headless/i.test(ua) ||
-    Boolean(navigator.webdriver)
+    /(?:googlebot|bingbot|yandexbot|baiduspider|duckduckbot|slurp|sogou|exabot|facebot|ia_archiver|semrushbot|ahrefsbot|mj12bot|dotbot|petalbot|bytespider|gptbot|claudebot|ccbot|perplexitybot|applebot|twitterbot|linkedinbot|slackbot|discordbot|telegrambot|headlesschrome|phantomjs|lighthouse|\bcrawler\b|\bspider\b|\bbot\b)/i.test(
+      ua,
+    ) || Boolean(navigator.webdriver)
   );
 }
 
@@ -131,6 +124,9 @@ export function sanitizeAnalyticsUrl(rawUrl: string): string {
   if (!rawUrl || typeof window === "undefined") return "";
   try {
     const parsed = new URL(rawUrl, window.location.origin);
+    if (parsed.hostname === "www.totthobox.com") {
+      parsed.hostname = "totthobox.com";
+    }
     const isSensitivePath = SENSITIVE_AUTH_PATHS.some(
       (p) => parsed.pathname === p || parsed.pathname.startsWith(`${p}/`),
     );
