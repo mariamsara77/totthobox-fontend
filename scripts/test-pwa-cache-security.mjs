@@ -130,7 +130,11 @@ assert.ok(rootLayout.includes('process.env.ADSENSE_ENABLED === "true"'));
 assert.ok(rootLayout.includes('process.env.ADSENSE_CMP_READY === "true"'));
 assert.ok(rootLayout.includes("NEXT_PUBLIC_ADSENSE_CLIENT"));
 assert.ok(!rootLayout.includes("DeferredAdSense"));
-assert.ok(!rootLayout.includes("adsbygoogle.js"));
+assert.ok(
+  rootLayout.includes(
+    "pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=",
+  ),
+);
 
 assert.ok(adSenseLoader.includes("export function loadAdSense(clientId?: string)"));
 assert.ok(adSenseLoader.includes("pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client="));

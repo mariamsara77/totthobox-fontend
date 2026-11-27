@@ -246,6 +246,13 @@ export default function RootLayout({
           strategy="afterInteractive"
           src={`https://www.googletagmanager.com/gtm.js?id=${GTM_ID}`}
         />
+        {ADSENSE_ENABLED && ADSENSE_CLIENT && (
+          <script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+            crossOrigin="anonymous"
+          />
+        )}
       </head>
       <body
         suppressHydrationWarning
